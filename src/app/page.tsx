@@ -151,7 +151,7 @@ export default function Home() {
                     2
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2">Add Plugins</h3>
+                    <h3 className="text-lg font-semibold mb-2">Add Plugins (Coming Soon...)</h3>
                     <div className="bg-background p-4 rounded font-mono text-sm">
                       mediaproc add image video audio
                     </div>
