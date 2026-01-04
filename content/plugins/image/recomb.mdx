@@ -1,0 +1,37 @@
+# recomb
+
+Recombine color channels with custom matrix.
+
+## Usage
+
+```bash
+mediaproc image recomb <input> [options]
+```
+
+## Description
+
+The `recomb` command applies color channel recombination using a custom matrix for advanced color manipulation.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-m, --matrix` | string | - | 3x3 recombination matrix |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Swap red and blue channels
+mediaproc image recomb photo.jpg -m "0,0,1,0,1,0,1,0,0" -o swapped.jpg
+
+# Custom color mixing
+mediaproc image recomb image.jpg -m "1.5,0,-0.5,0,1,0,0,0,1" -o mixed.jpg
+```
+
+## See Also
+
+- [modulate](./modulate) - Color adjustments
+- [tint](./tint) - Color tinting

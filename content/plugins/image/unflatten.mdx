@@ -1,0 +1,39 @@
+# unflatten
+
+Split multi-page image into separate files.
+
+## Usage
+
+```bash
+mediaproc image unflatten <input> [options]
+```
+
+## Description
+
+The `unflatten` command extracts individual pages/frames from multi-page images (TIFF, PDF, animated GIF).
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output-pattern` | string | - | Output pattern (e.g., page-%d.jpg) |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Extract PDF pages
+mediaproc image unflatten document.pdf -o "page-%03d.jpg"
+
+# Extract GIF frames
+mediaproc image unflatten animation.gif -o "frame-%d.png"
+
+# Extract TIFF pages
+mediaproc image unflatten scan.tiff -o "scan-page-%d.jpg"
+```
+
+## See Also
+
+- [animated](./animated) - Create animations
+- [join](./join) - Combine images

@@ -1,0 +1,43 @@
+# webp
+
+Convert and optimize for WebP format.
+
+## Usage
+
+```bash
+mediaproc image webp <input> [options]
+```
+
+## Description
+
+The `webp` command provides WebP-specific optimization and conversion with advanced options.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-q, --quality` | number | 80 | Quality (1-100) |
+| `--lossless` | boolean | false | Lossless mode |
+| `--near-lossless` | boolean | false | Near-lossless mode |
+| `--alpha-quality` | number | 100 | Alpha channel quality |
+| `--effort` | number | 4 | Encoding effort (0-6) |
+
+## Examples
+
+```bash
+# Convert to WebP
+mediaproc image webp photo.jpg -q 85 -o photo.webp
+
+# Lossless WebP
+mediaproc image webp logo.png --lossless -o logo.webp
+
+# High-effort compression
+mediaproc image webp image.jpg -q 75 --effort 6 -o optimized.webp
+```
+
+## See Also
+
+- [convert](./convert) - Format conversion
+- [avif](./avif) - AVIF format
+- [optimize](./optimize) - General optimization

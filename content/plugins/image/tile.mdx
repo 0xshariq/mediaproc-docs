@@ -1,0 +1,43 @@
+# tile
+
+Create tiled image patterns.
+
+## Usage
+
+```bash
+mediaproc image tile <input> [options]
+```
+
+## Description
+
+The `tile` command creates repeating tile patterns from a source image.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-w, --width` | number | - | Output width |
+| `-h, --height` | number | - | Output height |
+| `--cols` | number | 3 | Number of columns |
+| `--rows` | number | 3 | Number of rows |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Create 3x3 tile
+mediaproc image tile pattern.png --cols 3 --rows 3 -o tiled.png
+
+# Specific dimensions
+mediaproc image tile texture.jpg -w 1920 -h 1080 -o background.jpg
+
+# Seamless pattern
+mediaproc image tile tile.png --cols 5 --rows 5 -o pattern.png
+```
+
+## See Also
+
+- [extend](./extend) - Add padding
+- [composite](./composite) - Overlay images

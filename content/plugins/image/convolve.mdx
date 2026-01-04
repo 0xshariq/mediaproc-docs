@@ -1,0 +1,37 @@
+# convolve
+
+Apply custom convolution kernel.
+
+## Usage
+
+```bash
+mediaproc image convolve <input> [options]
+```
+
+## Description
+
+The `convolve` command applies a custom convolution matrix for advanced image processing effects.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-k, --kernel` | string | - | Kernel matrix (comma-separated) |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Edge detection
+mediaproc image convolve photo.jpg -k "-1,-1,-1,-1,8,-1,-1,-1,-1" -o edges.jpg
+
+# Sharpen
+mediaproc image convolve image.jpg -k "0,-1,0,-1,5,-1,0,-1,0" -o sharp.jpg
+```
+
+## See Also
+
+- [sharpen](./sharpen) - Built-in sharpening
+- [blur](./blur) - Built-in blur

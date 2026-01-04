@@ -1,0 +1,40 @@
+# threshold
+
+Convert image to black and white based on threshold.
+
+## Usage
+
+```bash
+mediaproc image threshold <input> [options]
+```
+
+## Description
+
+The `threshold` command converts images to pure black and white based on a threshold value. Pixels above threshold become white, below become black.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-t, --threshold` | number | 128 | Threshold value (0-255) |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Basic threshold
+mediaproc image threshold scan.jpg -t 128 -o bw.jpg
+
+# High threshold (more white)
+mediaproc image threshold image.jpg -t 180 -o mostly-white.jpg
+
+# Low threshold (more black)
+mediaproc image threshold photo.jpg -t 80 -o mostly-black.jpg
+```
+
+## See Also
+
+- [grayscale](./grayscale) - Grayscale conversion
+- [negate](./negate) - Invert colors

@@ -1,0 +1,37 @@
+# median
+
+Apply median filter for noise reduction.
+
+## Usage
+
+```bash
+mediaproc image median <input> [options]
+```
+
+## Description
+
+The `median` command applies median filtering to reduce noise while preserving edges. Better than blur for noise reduction.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-s, --size` | number | 3 | Filter size (3, 5, 7, etc.) |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Remove noise
+mediaproc image median noisy.jpg -s 3 -o clean.jpg
+
+# Strong noise reduction
+mediaproc image median very-noisy.jpg -s 5 -o cleaned.jpg
+```
+
+## See Also
+
+- [blur](./blur) - Gaussian blur
+- [sharpen](./sharpen) - Sharpen details

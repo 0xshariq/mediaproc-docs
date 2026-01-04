@@ -1,0 +1,43 @@
+# join
+
+Join multiple images into one (grid or strip).
+
+## Usage
+
+```bash
+mediaproc image join <inputs...> [options]
+```
+
+## Description
+
+The `join` command combines multiple images into a single image in a grid or strip layout.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--direction` | string | horizontal | Direction (horizontal, vertical, grid) |
+| `--cols` | number | 3 | Grid columns (grid mode) |
+| `--spacing` | number | 0 | Spacing between images |
+| `--background` | string | #000000 | Background color |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Horizontal strip
+mediaproc image join img1.jpg img2.jpg img3.jpg --direction horizontal -o strip.jpg
+
+# Vertical collage
+mediaproc image join *.jpg --direction vertical --spacing 10 -o collage.jpg
+
+# Grid layout
+mediaproc image join image*.png --direction grid --cols 3 --spacing 5 -o grid.png
+```
+
+## See Also
+
+- [composite](./composite) - Layer images
+- [tile](./tile) - Create patterns

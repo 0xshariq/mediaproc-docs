@@ -1,0 +1,42 @@
+# compress
+
+Advanced compression with custom settings.
+
+## Usage
+
+```bash
+mediaproc image compress <input> [options]
+```
+
+## Description
+
+The `compress` command provides advanced compression control with format-specific optimization options.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-q, --quality` | number | 80 | Quality (1-100) |
+| `-f, --format` | string | - | Output format |
+| `--effort` | number | 4 | Compression effort (0-9) |
+| `--lossless` | boolean | false | Lossless compression |
+| `--progressive` | boolean | true | Progressive encoding |
+
+## Examples
+
+```bash
+# High quality compression
+mediaproc image compress photo.jpg -q 90 --effort 7 -o compressed.jpg
+
+# Maximum compression
+mediaproc image compress large.png -q 60 --effort 9 -o tiny.png
+
+# Lossless WebP
+mediaproc image compress image.png -f webp --lossless -o lossless.webp
+```
+
+## See Also
+
+- [optimize](./optimize) - Smart optimization
+- [batch-compress](./batch-compress) - Batch compression

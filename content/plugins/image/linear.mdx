@@ -1,0 +1,38 @@
+# linear
+
+Apply linear color adjustment.
+
+## Usage
+
+```bash
+mediaproc image linear <input> [options]
+```
+
+## Description
+
+The `linear` command applies linear multiplication and addition to color channels for precise color correction.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-a, --alpha` | number | 1 | Multiplier (slope) |
+| `-b, --beta` | number | 0 | Offset (intercept) |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Increase contrast
+mediaproc image linear photo.jpg -a 1.2 -b 0 -o contrasted.jpg
+
+# Brighten
+mediaproc image linear dark.jpg -a 1 -b 20 -o brightened.jpg
+```
+
+## See Also
+
+- [gamma](./gamma) - Non-linear adjustment
+- [normalize](./normalize) - Auto-enhance

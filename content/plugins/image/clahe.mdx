@@ -1,0 +1,39 @@
+# clahe
+
+Apply CLAHE (Contrast Limited Adaptive Histogram Equalization).
+
+## Usage
+
+```bash
+mediaproc image clahe <input> [options]
+```
+
+## Description
+
+The `clahe` command enhances local contrast while preventing over-amplification. Better than normalize for uneven lighting.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-w, --width` | number | 3 | Tile width |
+| `-h, --height` | number | 3 | Tile height |
+| `--max-slope` | number | 3 | Contrast limit |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Enhance local contrast
+mediaproc image clahe photo.jpg -o enhanced.jpg
+
+# Strong enhancement
+mediaproc image clahe dark.jpg --max-slope 5 -o brightened.jpg
+```
+
+## See Also
+
+- [normalize](./normalize) - Global contrast
+- [sharpen](./sharpen) - Sharpen edges

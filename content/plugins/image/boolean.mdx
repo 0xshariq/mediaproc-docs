@@ -1,0 +1,40 @@
+# boolean
+
+Perform boolean operations on images.
+
+## Usage
+
+```bash
+mediaproc image boolean <input1> <input2> [options]
+```
+
+## Description
+
+The `boolean` command performs boolean operations (AND, OR, XOR) between two images.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--operation` | string | and | Operation (and, or, xor, not) |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# AND operation
+mediaproc image boolean mask1.png mask2.png --operation and -o result.png
+
+# OR operation  
+mediaproc image boolean layer1.png layer2.png --operation or -o combined.png
+
+# XOR operation
+mediaproc image boolean img1.png img2.png --operation xor -o difference.png
+```
+
+## See Also
+
+- [composite](./composite) - Layer images
+- [negate](./negate) - Invert image

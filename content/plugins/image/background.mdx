@@ -1,0 +1,41 @@
+# background
+
+Change or remove image background.
+
+## Usage
+
+```bash
+mediaproc image background <input> [options]
+```
+
+## Description
+
+The `background` command changes the background color or makes it transparent. Works best with images that have alpha channel.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-c, --color` | string | - | Background color |
+| `--transparent` | boolean | false | Make background transparent |
+| `-f, --format` | string | png | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# White background
+mediaproc image background logo.png -c "#ffffff" -o white-bg.png
+
+# Transparent background
+mediaproc image background image.png --transparent -o transparent.png
+
+# Custom color
+mediaproc image background logo.png -c "#3b82f6" -o blue-bg.png
+```
+
+## See Also
+
+- [extend](./extend) - Add padding
+- [composite](./composite) - Layer images

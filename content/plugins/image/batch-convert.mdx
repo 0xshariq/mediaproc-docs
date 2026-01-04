@@ -1,0 +1,41 @@
+# batch-convert
+
+Batch convert images to different format.
+
+## Usage
+
+```bash
+mediaproc image batch-convert <input-pattern> [options]
+```
+
+## Description
+
+The `batch-convert` command converts multiple images to a different format efficiently.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-f, --format` | string | - | Target format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality |
+| `-o, --output-dir` | string | ./converted | Output directory |
+| `--strip-metadata` | boolean | false | Remove metadata |
+
+## Examples
+
+```bash
+# Convert all PNGs to WebP
+mediaproc image batch-convert "*.png" -f webp -q 85 -o ./webp
+
+# Convert and optimize
+mediaproc image batch-convert "photos/*.jpg" -f avif -q 75 --strip-metadata -o ./optimized
+
+# JPEGs from PNGs
+mediaproc image batch-convert "images/*.png" -f jpg -q 90 -o ./jpegs
+```
+
+## See Also
+
+- [convert](./convert) - Single file conversion
+- [batch-resize](./batch-resize) - Batch resizing
+- [optimize](./optimize) - Optimization

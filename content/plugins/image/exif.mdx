@@ -1,0 +1,41 @@
+# exif
+
+Manage EXIF metadata.
+
+## Usage
+
+```bash
+mediaproc image exif <input> [options]
+```
+
+## Description
+
+The `exif` command reads and modifies EXIF metadata in images, including camera settings, GPS data, and timestamps.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--show` | boolean | false | Display EXIF data |
+| `--strip` | boolean | false | Remove EXIF data |
+| `--set` | string | - | Set EXIF field (key=value) |
+| `--json` | boolean | false | JSON output |
+
+## Examples
+
+```bash
+# View EXIF data
+mediaproc image exif photo.jpg --show
+
+# Remove EXIF
+mediaproc image exif photo.jpg --strip -o clean.jpg
+
+# Set EXIF field
+mediaproc image exif photo.jpg --set "Copyright=© 2024" -o copyrighted.jpg
+```
+
+## See Also
+
+- [metadata](./metadata) - All metadata types
+- [info](./info) - Image information

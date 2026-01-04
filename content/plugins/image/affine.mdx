@@ -1,0 +1,38 @@
+# affine
+
+Apply affine transformations (rotate, scale, shear).
+
+## Usage
+
+```bash
+mediaproc image affine <input> [options]
+```
+
+## Description
+
+The `affine` command applies complex affine transformations including rotation, scaling, and shearing in one operation.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--matrix` | string | - | Affine transformation matrix |
+| `-b, --background` | string | #000000 | Background color |
+| `-f, --format` | string | - | Output format |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Rotate and scale
+mediaproc image affine photo.jpg --matrix "1.2,0,0,0,1.2,0" -o transformed.jpg
+
+# Complex transformation
+mediaproc image affine image.jpg --matrix "0.9,0.2,-50,0.2,0.9,-50" -o complex.jpg
+```
+
+## See Also
+
+- [rotate](./rotate) - Simple rotation
+- [resize](./resize) - Scaling

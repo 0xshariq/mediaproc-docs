@@ -1,0 +1,42 @@
+# animated
+
+Create or manipulate animated images (GIF, WebP, AVIF).
+
+## Usage
+
+```bash
+mediaproc image animated <input> [options]
+```
+
+## Description
+
+The `animated` command creates and manipulates animated images from multiple frames or video files.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--frames` | string | - | Input frames pattern |
+| `--delay` | number | 100 | Frame delay in ms |
+| `--loop` | number | 0 | Loop count (0 = infinite) |
+| `-f, --format` | string | gif | Output format (gif, webp) |
+| `-q, --quality` | number | 80 | Output quality |
+
+## Examples
+
+```bash
+# Create GIF from frames
+mediaproc image animated --frames "frame-*.png" --delay 100 -o animation.gif
+
+# Animated WebP
+mediaproc image animated --frames "*.jpg" -f webp --delay 50 -o animation.webp
+
+# Control loops
+mediaproc image animated --frames "images/*" --loop 3 -o limited-loop.gif
+```
+
+## See Also
+
+- [gifify](./gifify) - Video to GIF
+- [optimize](./optimize) - Optimize animated images

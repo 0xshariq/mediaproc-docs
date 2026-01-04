@@ -1,0 +1,46 @@
+# stats
+
+Get color and luminance statistics.
+
+## Usage
+
+```bash
+mediaproc image stats <input> [options]
+```
+
+## Description
+
+The `stats` command analyzes image color distribution, brightness, and provides detailed statistical information.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--json` | boolean | false | JSON output |
+| `--channels` | boolean | false | Per-channel statistics |
+
+## Examples
+
+```bash
+# Get basic stats
+mediaproc image stats photo.jpg
+
+# Detailed channel stats
+mediaproc image stats image.jpg --channels
+
+# JSON output
+mediaproc image stats photo.jpg --json > stats.json
+```
+
+## Output Includes
+
+- Mean brightness
+- Standard deviation
+- Min/max values
+- Dominant colors
+- Channel histograms
+
+## See Also
+
+- [info](./info) - File information
+- [metadata](./metadata) - Metadata

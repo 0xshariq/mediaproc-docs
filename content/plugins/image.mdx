@@ -1,0 +1,163 @@
+# Image Processing Plugin
+
+Professional image processing and manipulation toolkit with 49 powerful commands.
+
+## Overview
+
+The Image plugin provides comprehensive image processing capabilities including resizing, format conversion, filters, effects, optimization, and batch operations. Built on Sharp for high-performance processing.
+
+## Purpose
+
+The Image plugin is designed to handle all your image processing needs from the command line. Whether you're optimizing images for the web, creating thumbnails, applying filters, or batch processing thousands of images, this plugin provides the tools you need with a simple, consistent interface.
+
+## Installation
+
+```bash
+npm install @mediaproc/plugin-image
+```
+
+## Key Features
+
+- **49 specialized commands** for every image processing need
+- **Multiple format support**: JPEG, PNG, WebP, AVIF, TIFF, GIF
+- **High performance** powered by Sharp (libvips)
+- **Batch processing** for efficient bulk operations  
+- **Smart algorithms** for resizing, cropping, and optimization
+- **Metadata management** (EXIF, IPTC, XMP)
+- **Color manipulation** and corrections
+- **Filters and effects** for artistic results
+- **Watermarking and text overlays**
+- **Web optimization** with automatic compression
+
+## Common Use Cases
+
+- **Web Development**: Optimize and resize images for websites
+- **E-commerce**: Process product photos, create thumbnails
+- **Photography**: Batch process, watermark, color grade photos
+- **Social Media**: Create properly sized images for platforms
+- **Print Preparation**: Convert formats, adjust quality
+- **Content Management**: Automate image workflows
+- **Mobile Apps**: Generate app icons and splash screens
+- **Design Assets**: Create design mockups and templates
+
+## Commands by Category
+
+### Transformation
+- [resize](./resize) - Resize images with various fit modes
+- [crop](./crop) - Crop to specific dimensions or smart crop
+- [rotate](./rotate) - Rotate by any angle
+- [flip](./flip) - Flip horizontally (mirror)
+- [flop](./flop) - Flip vertically
+- [trim](./trim) - Auto-remove borders
+- [extend](./extend) - Add padding/borders
+- [affine](./affine) - Advanced transformations
+
+### Format & Optimization
+- [convert](./convert) - Convert between formats
+- [optimize](./optimize) - Smart optimization for web
+- [compress](./compress) - Advanced compression
+- [webp](./webp) - WebP-specific optimization
+- [avif](./avif) - AVIF-specific optimization
+- [thumbnail](./thumbnail) - Create optimized thumbnails
+
+### Effects & Filters
+- [blur](./blur) - Gaussian blur effect
+- [sharpen](./sharpen) - Enhance sharpness
+- [grayscale](./grayscale) - Convert to black & white
+- [sepia](./sepia) - Vintage sepia tone
+- [negate](./negate) - Invert colors (negative)
+- [normalize](./normalize) - Auto-enhance contrast
+- [clahe](./clahe) - Local contrast enhancement
+- [median](./median) - Noise reduction
+- [convolve](./convolve) - Custom convolution kernels
+- [threshold](./threshold) - Binary black/white
+
+### Color Adjustments
+- [modulate](./modulate) - Brightness, saturation, hue
+- [tint](./tint) - Apply color tints
+- [gamma](./gamma) - Gamma correction
+- [linear](./linear) - Linear color adjustment
+- [recomb](./recomb) - Channel recombination
+
+### Overlays & Composition
+- [composite](./composite) - Layer images together
+- [watermark](./watermark) - Add watermarks
+- [text](./text) - Add text overlays
+- [border](./border) - Add decorative borders
+- [background](./background) - Change background
+
+### Metadata & Info
+- [info](./info) - Image information
+- [metadata](./metadata) - Manage all metadata
+- [exif](./exif) - EXIF-specific operations
+- [stats](./stats) - Color statistics
+
+### Batch Operations
+- [batch-resize](./batch-resize) - Batch resizing
+- [batch-convert](./batch-convert) - Batch format conversion
+- [batch-compress](./batch-compress) - Batch compression
+
+### Advanced
+- [pipeline](./pipeline) - Chain multiple operations
+- [animated](./animated) - Create/edit animated images
+- [tile](./tile) - Create tiled patterns
+- [join](./join) - Combine multiple images
+- [unflatten](./unflatten) - Extract pages/frames
+- [extract](./extract) - Extract channels/regions
+- [boolean](./boolean) - Boolean image operations
+- [bandbool](./bandbool) - Channel boolean operations
+
+## Quick Start
+
+### Install
+```bash
+npm install @mediaproc/plugin-image
+```
+
+### Basic Usage
+```bash
+# Resize an image
+mediaproc image resize input.jpg -w 800 -h 600 -o output.jpg
+
+# Convert format
+mediaproc image convert photo.png -f webp -o photo.webp
+
+# Optimize for web
+mediaproc image optimize large.jpg -q 80 -o optimized.jpg
+```
+
+### Batch Processing
+```bash
+# Resize all images in a folder
+mediaproc image batch-resize "photos/*.jpg" -w 1920 -h 1080 -o ./resized
+
+# Convert all PNGs to WebP
+mediaproc image batch-convert "*.png" -f webp -q 85 -o ./webp
+```
+
+## Links
+
+- **NPM Package**: [@mediaproc/plugin-image](https://www.npmjs.com/package/@mediaproc/plugin-image)
+- **GitHub Repository**: [mediaproc-cli](https://github.com/0xshariq/mediaproc-cli)
+- **Report Issues**: [GitHub Issues](https://github.com/0xshariq/mediaproc-cli/issues)
+- **Documentation**: Browse all commands in the sidebar →
+
+## Performance
+
+The Image plugin uses Sharp, which is built on libvips - one of the fastest image processing libraries available:
+
+- **4-5x faster** than ImageMagick
+- **10x faster** than GraphicsMagick
+- **Memory efficient** streaming processing
+- **Optimized** for modern CPUs with SIMD
+- **Handles** very large images efficiently
+
+## Support & Community
+
+- **Discord**: [Join our community](https://discord.gg/mediaproc)
+- **GitHub Discussions**: [Ask questions](https://github.com/0xshariq/mediaproc-cli/discussions)
+- **Twitter**: [@mediaproc](https://twitter.com/mediaproc)
+
+---
+
+**Next Steps**: Explore the commands in the sidebar to see detailed documentation, examples, and best practices for each operation.
