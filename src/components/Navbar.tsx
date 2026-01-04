@@ -9,7 +9,7 @@ import { useState } from 'react';
 export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   const isDocsPage = pathname?.startsWith('/docs');
 
   return (
@@ -26,34 +26,33 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/docs/introduction" 
-              className={`text-sm font-medium transition-colors hover:text-foreground ${
-                isDocsPage ? 'text-foreground' : 'text-muted-foreground'
-              }`}
+            <Link
+              href="/docs/introduction"
+              className={`text-sm font-medium transition-colors hover:text-foreground ${isDocsPage ? 'text-foreground' : 'text-muted-foreground'
+                }`}
             >
               Documentation
             </Link>
-            <Link 
-              href="/docs/plugins/image" 
+            <Link
+              href="/docs/plugins/image"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               Plugins
             </Link>
-            <Link 
-              href="/docs/community/creating-plugins" 
+            <Link
+              href="/docs/community/creating-plugins"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               Community
             </Link>
-            <a 
-              href="https://github.com/0xshariq/mediaproc-cli" 
+            <Link
+              href="https://github.com/0xshariq/mediaproc-cli"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               <Github className="w-5 h-5" />
-            </a>
+            </Link>
             <Link href="/docs/installation">
               <Button size="sm">
                 Get Started
@@ -77,29 +76,29 @@ export function Navbar() {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-4 border-t border-border">
-            <Link 
-              href="/docs/introduction" 
+            <Link
+              href="/docs/introduction"
               className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Documentation
             </Link>
-            <Link 
-              href="/docs/plugins/image" 
+            <Link
+              href="/docs/plugins/image"
               className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Plugins
             </Link>
-            <Link 
-              href="/docs/community/creating-plugins" 
+            <Link
+              href="/docs/community/creating-plugins"
               className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Community
             </Link>
-            <a 
-              href="https://github.com/0xshariq/mediaproc-cli" 
+            <a
+              href="https://github.com/0xshariq/mediaproc-cli"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"

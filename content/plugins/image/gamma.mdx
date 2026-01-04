@@ -1,0 +1,698 @@
+---
+title: "gamma"
+description: "Apply gamma correction to adjust image brightness and midtones without affecting pure black or white"
+---
+
+# gamma
+
+Apply gamma correction to adjust image brightness, particularly in midtone regions. Gamma correction is a nonlinear operation that modifies the relationship between input and output pixel values, making images appear brighter or darker while preserving detail in shadows and highlights.
+
+## Usage
+
+```bash
+mediaproc image gamma <input> [options]
+```
+
+### Basic Syntax
+
+```bash
+# Apply standard gamma correction (2.2 - sRGB default)
+mediaproc image gamma photo.jpg
+
+# Brighten image (lower gamma)
+mediaproc image gamma photo.jpg -g 1.8
+
+# Darken image (higher gamma)
+mediaproc image gamma photo.jpg -g 2.8
+
+# Apply gamma with output gamma
+mediaproc image gamma photo.jpg -g 2.2 --gamma-out 1.8
+```
+
+## Options
+
+| Option        | Alias | Type      | Default                   | Description                          |
+| ------------- | ----- | --------- | ------------------------- | ------------------------------------ |
+| `--gamma`     | `-g`  | `number`  | `2.2`                     | Gamma value for correction (1.0-3.0) |
+| `--gamma-out` |       | `number`  | -                         | Optional output gamma for conversion |
+| `--output`    | `-o`  | `string`  | `gamma-corrected-[input]` | Output file path                     |
+| `--quality`   | `-q`  | `number`  | `90`                      | Output quality (1-100)               |
+| `--dry-run`   |       | `boolean` | `false`                   | Preview operation without saving     |
+| `--verbose`   | `-v`  | `boolean` | `false`                   | Show detailed processing information |
+
+### Gamma Values Guide
+
+| Gamma   | Effect                 | Use Case                              |
+| ------- | ---------------------- | ------------------------------------- |
+| **1.0** | Linear (no correction) | Raw sensor data, special effects      |
+| **1.5** | Significantly brighten | Very dark images, shadow recovery     |
+| **1.8** | Moderately brighten    | Mac OS classic display standard       |
+| **2.0** | Slight brighten        | Film emulation, creative look         |
+| **2.2** | Standard (sRGB)        | Default, web images, Windows standard |
+| **2.4** | Slight darken          | HD video standard (Rec. 709)          |
+| **2.6** | Moderately darken      | Cinema DCI-P3 standard                |
+| **3.0** | Significantly darken   | Maximum shadow detail preservation    |
+
+## Examples
+
+### 1. Basic Gamma Correction
+
+```bash
+# Apply standard sRGB gamma (2.2)
+mediaproc image gamma photo.jpg
+
+# Explicit gamma value
+mediaproc image gamma photo.jpg -g 2.2
+
+# With custom output
+mediaproc image gamma photo.jpg -g 2.2 -o corrected.jpg
+```
+
+### 2. Brighten Dark Images
+
+```bash
+# Moderately brighten (gamma 1.8)
+mediaproc image gamma dark-photo.jpg -g 1.8 -o brightened.jpg
+
+# Significantly brighten (gamma 1.5)
+mediaproc image gamma very-dark.jpg -g 1.5 -o much-brighter.jpg
+
+# Subtle brightening (gamma 2.0)
+mediaproc image gamma photo.jpg -g 2.0 -o slightly-brighter.jpg
+```
+
+### 3. Darken Bright Images
+
+```bash
+# Moderately darken (gamma 2.6)
+mediaproc image gamma bright-photo.jpg -g 2.6 -o darkened.jpg
+
+# Significantly darken (gamma 3.0)
+mediaproc image gamma overexposed.jpg -g 3.0 -o much-darker.jpg
+
+# Subtle darkening (gamma 2.4)
+mediaproc image gamma photo.jpg -g 2.4 -o slightly-darker.jpg
+```
+
+### 4. Display Calibration
+
+```bash
+# Mac display calibration (gamma 1.8)
+mediaproc image gamma photo.jpg -g 1.8 -o mac-display.jpg
+
+# Windows/sRGB calibration (gamma 2.2)
+mediaproc image gamma photo.jpg -g 2.2 -o windows-display.jpg
+
+# Cinema display (gamma 2.6)
+mediaproc image gamma photo.jpg -g 2.6 -o cinema-display.jpg
+```
+
+### 5. Color Space Conversion
+
+```bash
+# Convert from linear to sRGB
+mediaproc image gamma linear.jpg -g 1.0 --gamma-out 2.2 -o srgb.jpg
+
+# Convert from sRGB to linear
+mediaproc image gamma srgb.jpg -g 2.2 --gamma-out 1.0 -o linear.jpg
+
+# Convert between display standards
+mediaproc image gamma mac.jpg -g 1.8 --gamma-out 2.2 -o windows.jpg
+```
+
+### 6. Shadow Detail Enhancement
+
+```bash
+# Recover shadow details (lower gamma)
+mediaproc image gamma backlit.jpg -g 1.6 -o shadow-enhanced.jpg
+
+# Preserve shadow details (higher gamma)
+mediaproc image gamma high-contrast.jpg -g 2.6 -o shadow-preserved.jpg
+
+# Balanced shadow/highlight (standard gamma)
+mediaproc image gamma photo.jpg -g 2.2 -o balanced.jpg
+```
+
+### 7. Creative Effects
+
+```bash
+# Film look (gamma 2.0)
+mediaproc image gamma photo.jpg -g 2.0 -o film-look.jpg
+
+# High contrast look (gamma 2.8)
+mediaproc image gamma photo.jpg -g 2.8 -o high-contrast.jpg
+
+# Soft look (gamma 1.8)
+mediaproc image gamma photo.jpg -g 1.8 -o soft-look.jpg
+```
+
+### 8. Batch Processing
+
+```bash
+# Brighten all dark photos
+for img in dark-photos/*.jpg; do
+  mediaproc image gamma "$img" -g 1.8 -o "brightened/$(basename "$img")"
+done
+
+# Standardize to sRGB gamma
+for img in *.jpg; do
+  mediaproc image gamma "$img" -g 2.2 -o "srgb/$(basename "$img")"
+done
+
+# Apply creative gamma to series
+for img in series/*.jpg; do
+  mediaproc image gamma "$img" -g 2.4 -o "processed/$(basename "$img")"
+done
+```
+
+### 9. HDR Processing
+
+```bash
+# Tone mapping simulation (lower gamma)
+mediaproc image gamma hdr.jpg -g 1.5 -o tone-mapped.jpg
+
+# Preserve highlight detail (higher gamma)
+mediaproc image gamma bright-hdr.jpg -g 2.8 -o highlight-preserved.jpg
+
+# Balanced HDR look
+mediaproc image gamma hdr.jpg -g 2.0 -o balanced-hdr.jpg
+```
+
+### 10. Print Preparation
+
+```bash
+# Compensate for print darkening (gamma 1.8)
+mediaproc image gamma photo.jpg -g 1.8 -o print-ready.jpg
+
+# Professional print standard (gamma 2.2)
+mediaproc image gamma photo.jpg -g 2.2 -o pro-print.jpg
+
+# Newsprint compensation (gamma 1.6)
+mediaproc image gamma photo.jpg -g 1.6 -o newsprint.jpg
+```
+
+### 11. Video Frame Processing
+
+```bash
+# Video standard gamma (Rec. 709 = 2.4)
+mediaproc image gamma frame.jpg -g 2.4 -o video-frame.jpg
+
+# Cinema DCI-P3 (gamma 2.6)
+mediaproc image gamma frame.jpg -g 2.6 -o cinema-frame.jpg
+
+# Web video (gamma 2.2)
+mediaproc image gamma frame.jpg -g 2.2 -o web-video-frame.jpg
+```
+
+### 12. Quality Control
+
+```bash
+# Maximum quality gamma correction
+mediaproc image gamma photo.jpg -g 2.2 -q 100 -o high-quality.jpg
+
+# Web-optimized gamma
+mediaproc image gamma photo.jpg -g 2.2 -q 85 -o web-optimized.jpg
+
+# Balanced quality
+mediaproc image gamma photo.jpg -g 2.2 -q 90 -o balanced.jpg
+```
+
+### 13. Preview Operations
+
+```bash
+# Preview gamma correction
+mediaproc image gamma photo.jpg -g 1.8 --dry-run
+
+# Detailed preview
+mediaproc image gamma photo.jpg -g 2.6 --dry-run --verbose
+
+# Compare different gamma values
+mediaproc image gamma photo.jpg -g 1.8 --dry-run
+mediaproc image gamma photo.jpg -g 2.2 --dry-run
+mediaproc image gamma photo.jpg -g 2.6 --dry-run
+```
+
+### 14. Scientific Imaging
+
+```bash
+# Linear gamma for analysis (gamma 1.0)
+mediaproc image gamma raw-data.jpg -g 1.0 -o linear-analysis.jpg
+
+# Calibrated display (gamma 2.2)
+mediaproc image gamma microscope.jpg -g 2.2 -o calibrated-view.jpg
+
+# Enhanced detail visibility (gamma 1.8)
+mediaproc image gamma scan.jpg -g 1.8 -o enhanced-scan.jpg
+```
+
+### 15. Combining with Other Operations
+
+```bash
+# Gamma correction then contrast adjustment
+mediaproc image gamma photo.jpg -g 1.8 -o temp.jpg
+mediaproc image linear temp.jpg -a 1.2 -b 10 -o final.jpg
+rm temp.jpg
+
+# Resize then gamma correct
+mediaproc image resize photo.jpg -w 1920 -h 1080 -o temp.jpg
+mediaproc image gamma temp.jpg -g 2.2 -o final.jpg
+rm temp.jpg
+
+# Gamma correct then sharpen
+mediaproc image gamma photo.jpg -g 2.0 -o temp.jpg
+mediaproc image sharpen temp.jpg -o final.jpg
+rm temp.jpg
+```
+
+## Use Cases
+
+### 1. Display Calibration
+
+- **Monitor Matching**: Adjust images for different display types
+- **Cross-Platform**: Convert between Mac (1.8) and Windows (2.2) standards
+- **Professional Displays**: Calibrate for cinema and broadcast standards
+- **Print Preview**: Compensate for print vs screen differences
+
+### 2. Photography Workflow
+
+- **Exposure Compensation**: Recover underexposed or overexposed images
+- **Shadow Recovery**: Brighten shadows without blowing highlights
+- **Highlight Preservation**: Darken to preserve highlight detail
+- **Creative Looks**: Apply film-like or artistic gamma curves
+
+### 3. Video Production
+
+- **Frame Export**: Apply correct gamma for video frames
+- **Color Grading**: Base gamma adjustment before color work
+- **Standards Compliance**: Match Rec. 709, DCI-P3, or other standards
+- **Web Delivery**: Optimize for web video playback
+
+### 4. Print Preparation
+
+- **Compensation**: Adjust for paper and ink characteristics
+- **Proofing**: Create accurate print previews
+- **Newsprint**: Compensate for low-quality paper
+- **Professional Print**: Match commercial printing standards
+
+### 5. Scientific and Medical Imaging
+
+- **Linear Analysis**: Convert to linear space for measurements
+- **Display Standardization**: Ensure consistent viewing conditions
+- **Detail Enhancement**: Improve visibility of subtle features
+- **Quantitative Analysis**: Prepare images for scientific measurement
+
+### 6. Web and Digital Media
+
+- **sRGB Compliance**: Ensure images display correctly on web
+- **Mobile Optimization**: Adjust for mobile device displays
+- **Cross-Browser**: Consistent appearance across browsers
+- **Social Media**: Optimize for platform-specific requirements
+
+### 7. Game Development
+
+- **Asset Preparation**: Correct gamma for game engines
+- **Texture Processing**: Ensure textures display correctly
+- **Linear Workflow**: Convert between linear and gamma spaces
+- **Platform Targeting**: Adjust for console vs PC displays
+
+## Technical Details
+
+### Gamma Correction Formula
+
+**Basic Gamma Correction:**
+
+```
+Output = Input ^ (1 / gamma)
+
+Where:
+- Input: Original pixel value (0-1)
+- Gamma: Correction value (1.0-3.0)
+- Output: Corrected pixel value (0-1)
+```
+
+**Example Calculations:**
+
+```
+Gamma 1.8 (brighten):
+  0.5 ^ (1/1.8) = 0.614 (brighter midtone)
+
+Gamma 2.2 (standard):
+  0.5 ^ (1/2.2) = 0.730 (standard midtone)
+
+Gamma 2.6 (darken):
+  0.5 ^ (1/2.6) = 0.789 (darker midtone)
+```
+
+### Gamma Curve Visualization
+
+```
+Brightness Scale (0-255)
+
+Gamma 1.5 (brighten):
+255 ████████████████ (unchanged)
+128 ███████████      (brightens to ~167)
+64  ██████           (brightens to ~108)
+0   ░                (unchanged)
+
+Gamma 2.2 (standard):
+255 ████████████████ (unchanged)
+128 █████████        (stays ~128-140)
+64  ████             (stays ~64-75)
+0   ░                (unchanged)
+
+Gamma 3.0 (darken):
+255 ████████████████ (unchanged)
+128 ███████          (darkens to ~108)
+64  ██               (darkens to ~48)
+0   ░                (unchanged)
+```
+
+### Color Space Standards
+
+| Standard           | Gamma        | Description                   |
+| ------------------ | ------------ | ----------------------------- |
+| **sRGB**           | 2.2 (approx) | Web standard, Windows default |
+| **Mac OS Classic** | 1.8          | Older Mac displays            |
+| **Rec. 709**       | 2.4          | HD television standard        |
+| **DCI-P3**         | 2.6          | Digital cinema standard       |
+| **Linear**         | 1.0          | No gamma, raw sensor data     |
+
+### Gamma vs Other Adjustments
+
+| Operation      | Effect                       | Best For                    |
+| -------------- | ---------------------------- | --------------------------- |
+| **Gamma**      | Nonlinear midtone adjustment | Natural-looking brightness  |
+| **Brightness** | Linear addition              | Simple lightening/darkening |
+| **Contrast**   | Expand/compress range        | Increase visual impact      |
+| **Curves**     | Arbitrary nonlinear          | Precise tonal control       |
+| **Levels**     | Input/output mapping         | Complete tonal adjustment   |
+
+### Performance Considerations
+
+- **Fast Operation**: Simple power function per pixel
+- **Memory Efficient**: In-place transformation possible
+- **CPU Intensive**: More intensive than linear adjustments
+- **Precision**: Works in floating-point for accuracy
+- **Color Accurate**: Preserves color relationships
+
+### Gamma Out Parameter
+
+When `--gamma-out` is specified:
+
+```
+Step 1: Decode with input gamma
+  Linear = Input ^ gamma
+
+Step 2: Encode with output gamma
+  Output = Linear ^ (1 / gamma-out)
+
+Net effect:
+  Output = Input ^ (gamma / gamma-out)
+```
+
+**Example:**
+
+```bash
+# Convert from Mac (1.8) to Windows (2.2)
+mediaproc image gamma mac.jpg -g 1.8 --gamma-out 2.2 -o windows.jpg
+
+# Equivalent to:
+# Output = Input ^ (1.8 / 2.2) = Input ^ 0.818
+# This darkens the image slightly
+```
+
+## Common Patterns
+
+### Pattern 1: Brighten Dark Image
+
+```bash
+# Lower gamma to brighten
+mediaproc image gamma dark.jpg -g 1.8 -o brightened.jpg
+```
+
+### Pattern 2: Darken Bright Image
+
+```bash
+# Higher gamma to darken
+mediaproc image gamma bright.jpg -g 2.6 -o darkened.jpg
+```
+
+### Pattern 3: Standard sRGB Correction
+
+```bash
+# Apply standard web gamma
+mediaproc image gamma photo.jpg -g 2.2 -o srgb.jpg
+```
+
+### Pattern 4: Display Conversion
+
+```bash
+# Mac to Windows
+mediaproc image gamma mac.jpg -g 1.8 --gamma-out 2.2 -o windows.jpg
+```
+
+### Pattern 5: Linear to sRGB
+
+```bash
+# Convert linear to display-ready
+mediaproc image gamma linear.jpg -g 1.0 --gamma-out 2.2 -o srgb.jpg
+```
+
+## Troubleshooting
+
+### Issue: Image Too Bright/Dark
+
+**Problem**: Gamma correction makes image unusable
+
+**Solutions**:
+
+```bash
+# Try smaller gamma adjustments
+# Instead of gamma 1.5, try 1.8
+mediaproc image gamma photo.jpg -g 1.8 -o moderate.jpg
+
+# Preview different values first
+mediaproc image gamma photo.jpg -g 1.5 --dry-run
+mediaproc image gamma photo.jpg -g 1.8 --dry-run
+mediaproc image gamma photo.jpg -g 2.0 --dry-run
+
+# Combine with other adjustments if needed
+mediaproc image gamma photo.jpg -g 1.8 -o temp.jpg
+mediaproc image linear temp.jpg -a 0.9 -o final.jpg
+```
+
+### Issue: Colors Look Wrong
+
+**Problem**: Colors appear washed out or oversaturated
+
+**Solutions**:
+
+```bash
+# Gamma affects all channels equally
+# This is correct behavior for luminance
+
+# For selective color adjustment, use other tools:
+# 1. Adjust gamma
+mediaproc image gamma photo.jpg -g 2.0 -o temp.jpg
+
+# 2. Adjust saturation separately
+mediaproc image modulate temp.jpg -s 110 -o final.jpg
+
+# Or use curves for channel-specific control
+```
+
+### Issue: Highlights Blown Out
+
+**Problem**: Bright areas become pure white
+
+**Solutions**:
+
+```bash
+# Use higher gamma to preserve highlights
+mediaproc image gamma photo.jpg -g 2.6 -o preserved.jpg
+
+# Or combine with other techniques:
+# 1. Reduce exposure first
+mediaproc image linear photo.jpg -b -20 -o darkened.jpg
+
+# 2. Then apply gamma
+mediaproc image gamma darkened.jpg -g 2.2 -o final.jpg
+```
+
+### Issue: Shadows Too Dark
+
+**Problem**: Shadow detail lost after gamma correction
+
+**Solutions**:
+
+```bash
+# Use lower gamma to brighten shadows
+mediaproc image gamma photo.jpg -g 1.6 -o shadow-enhanced.jpg
+
+# Or apply shadow-specific adjustment:
+# 1. Extract shadow region
+# 2. Apply gamma to shadows
+# 3. Composite back
+
+# Or use clahe for local contrast
+mediaproc image clahe photo.jpg -o shadow-recovered.jpg
+```
+
+### Issue: Inconsistent Results
+
+**Problem**: Different images need different gamma values
+
+**Solutions**:
+
+```bash
+# This is normal - exposure varies
+# Create processing script with conditional logic:
+
+#!/bin/bash
+for img in *.jpg; do
+  # Analyze brightness first
+  brightness=$(mediaproc image stats "$img" | grep mean)
+
+  # Apply appropriate gamma
+  if [[ $brightness < 100 ]]; then
+    # Dark image, brighten
+    mediaproc image gamma "$img" -g 1.8 -o "processed/$(basename "$img")"
+  else
+    # Normal/bright, standard gamma
+    mediaproc image gamma "$img" -g 2.2 -o "processed/$(basename "$img")"
+  fi
+done
+```
+
+### Issue: Gamma vs Brightness Confusion
+
+**Problem**: Not sure whether to use gamma or brightness
+
+**Solutions**:
+
+```bash
+# Use GAMMA for:
+# - Nonlinear brightness adjustment
+# - Preserving shadow/highlight detail
+# - Display calibration
+# - Natural-looking corrections
+mediaproc image gamma photo.jpg -g 1.8
+
+# Use BRIGHTNESS (linear) for:
+# - Simple lightening/darkening
+# - Uniform adjustments
+# - Quick fixes
+mediaproc image linear photo.jpg -b 30
+
+# Gamma affects midtones most
+# Brightness affects all tones equally
+```
+
+## Best Practices
+
+1. **Understand Gamma Values**
+
+   - Lower gamma (< 2.2) = brighten
+   - Higher gamma (> 2.2) = darken
+   - 2.2 is standard for web/Windows
+   - Stay within 1.5-3.0 range for natural results
+
+2. **Preview Before Applying**
+
+   - Use `--dry-run` to test values
+   - Compare multiple gamma values
+   - Check highlights and shadows
+   - Verify overall appearance
+
+3. **Combine with Other Adjustments**
+
+   - Gamma is one tool in workflow
+   - May need contrast adjustment too
+   - Consider color correction
+   - Apply sharpening after gamma
+
+4. **Display Considerations**
+
+   - Know target display gamma
+   - Test on actual target device
+   - Consider viewing environment
+   - Account for ambient light
+
+5. **Quality Management**
+
+   - Use high quality for final output
+   - PNG for lossless corrections
+   - JPEG 90+ for photography
+   - Consider bit depth for gradients
+
+6. **Batch Processing**
+
+   - Test on sample images first
+   - Group similar exposures
+   - Use consistent gamma per group
+   - Automate with scripts
+
+7. **Documentation**
+   - Note gamma values used
+   - Record before/after examples
+   - Document decision rationale
+   - Maintain workflow consistency
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Gamma correct then sharpen
+mediaproc image gamma photo.jpg -g 2.0 -o temp.jpg
+mediaproc image sharpen temp.jpg -o final.jpg
+
+# Auto-enhance then gamma
+mediaproc image auto-enhance photo.jpg -o temp.jpg
+mediaproc image gamma temp.jpg -g 2.2 -o final.jpg
+
+# Gamma then adjust contrast
+mediaproc image gamma photo.jpg -g 1.8 -o temp.jpg
+mediaproc image linear temp.jpg -a 1.1 -o final.jpg
+
+# Resize then gamma correct
+mediaproc image resize photo.jpg -w 1920 -o temp.jpg
+mediaproc image gamma temp.jpg -g 2.2 -o final.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Apply gamma correction based on image brightness
+
+for img in photos/*.jpg; do
+  filename=$(basename "$img" .jpg)
+
+  # Get mean brightness
+  mean=$(mediaproc image stats "$img" | grep -oP 'mean: \K\d+')
+
+  # Apply appropriate gamma
+  if [ "$mean" -lt 90 ]; then
+    # Dark image - brighten
+    gamma=1.8
+  elif [ "$mean" -gt 165 ]; then
+    # Bright image - darken
+    gamma=2.6
+  else
+    # Normal - standard gamma
+    gamma=2.2
+  fi
+
+  echo "Processing $filename with gamma $gamma"
+  mediaproc image gamma "$img" -g "$gamma" -o "corrected/${filename}.jpg"
+done
+```
+
+## See Also
+
+- [linear](./linear) - Linear brightness and contrast adjustment
+- [auto-enhance](./auto-enhance) - Automatic image enhancement
+- [normalize](./normalize) - Normalize image levels
+- [clahe](./clahe) - Adaptive histogram equalization
+- [modulate](./modulate) - Adjust brightness, saturation, hue

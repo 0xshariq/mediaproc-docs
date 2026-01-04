@@ -1,6 +1,17 @@
-# negate
+---
+title: Negate
+description: Create negative/inverted image for artistic and technical effects
+---
 
-Invert image colors (negative effect).
+# Negate (Invert Colors)
+
+Create negative (inverted) image by reversing all colors. The negate command transforms images by inverting pixel values, creating effects reminiscent of photographic film negatives, X-ray images, or unique artistic styles.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,69 +19,689 @@ Invert image colors (negative effect).
 mediaproc image negate <input> [options]
 ```
 
-## Description
-
-The `negate` command inverts all colors in an image, creating a photographic negative effect. Black becomes white, colors become their complementary opposites.
-
-## Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
-| `--alpha` | boolean | false | Negate alpha channel as well |
-
-## Examples
-
-### Basic Negate
+### Basic Usage
 
 ```bash
 # Create negative image
+mediaproc image negate photo.jpg
+
+# Invert including alpha channel
+mediaproc image negate image.png --alpha
+
+# Specify output location
+mediaproc image negate pic.jpg -o inverted.jpg
+
+# Preview without executing
+mediaproc image negate photo.jpg --dry-run
+```
+
+## Options
+
+| Option                | Alias | Type    | Default                 | Description                               |
+| --------------------- | ----- | ------- | ----------------------- | ----------------------------------------- |
+| `--output <path>`     | `-o`  | string  | `<input>-negated.<ext>` | Output file path                          |
+| `--quality <quality>` | `-q`  | number  | `90`                    | Output quality (1-100) for lossy formats  |
+| `--alpha`             |       | boolean | `false`                 | Also negate alpha/transparency channel    |
+| `--dry-run`           |       | boolean | `false`                 | Show what would be done without executing |
+| `--verbose`           | `-v`  | boolean | `false`                 | Show detailed processing information      |
+| `--help`              |       | boolean | `false`                 | Display help information                  |
+
+## How Negate Works
+
+The negate operation inverts pixel values using simple subtraction from maximum:
+
+**Formula**: `output_value = 255 - input_value`
+
+### RGB Inversion
+
+For each color channel (Red, Green, Blue):
+
+- Black (0) becomes White (255)
+- White (255) becomes Black (0)
+- Mid-gray (128) stays Mid-gray (127)
+
+### Color Transformations
+
+- **Red** (255, 0, 0) → **Cyan** (0, 255, 255)
+- **Green** (0, 255, 0) → **Magenta** (255, 0, 255)
+- **Blue** (0, 0, 255) → **Yellow** (255, 255, 0)
+- **Cyan** (0, 255, 255) → **Red** (255, 0, 0)
+- **Magenta** (255, 0, 255) → **Green** (0, 255, 0)
+- **Yellow** (255, 255, 0) → **Blue** (0, 0, 255)
+
+### Alpha Channel
+
+By default, alpha (transparency) is preserved. Use `--alpha` flag to also invert transparency:
+
+- Fully opaque (255) becomes fully transparent (0)
+- Fully transparent (0) becomes fully opaque (255)
+
+## Examples
+
+### 1. Basic Color Inversion
+
+Create standard negative image:
+
+```bash
+mediaproc image negate photo.jpg
+```
+
+**Result**: Outputs `photo-negated.jpg` with all colors inverted.
+
+### 2. Custom Output Location
+
+Specify exact output path:
+
+```bash
+mediaproc image negate portrait.jpg -o negative-portrait.jpg
+```
+
+**Control**: Full control over output filename and location.
+
+### 3. Invert with Alpha
+
+Invert both colors and transparency:
+
+```bash
+mediaproc image negate transparent-image.png --alpha
+```
+
+**Effect**: Colors and transparency are both reversed.
+
+### 4. High-Quality Output
+
+Preserve maximum quality:
+
+```bash
+mediaproc image negate important-photo.jpg -q 100
+```
+
+**Quality**: Lossless compression for best results.
+
+### 5. Batch Processing
+
+Invert multiple images:
+
+```bash
+mediaproc image negate "photos/*.jpg"
+```
+
+**Output**: Creates `*-negated.jpg` for each input file.
+
+### 6. X-Ray Style Effect
+
+Create medical imaging aesthetic:
+
+```bash
+mediaproc image negate medical-image.png -o xray-style.png
+```
+
+**Aesthetic**: Popular for artistic or technical visualization.
+
+### 7. Dark Mode Conversion
+
+Convert light images to dark theme:
+
+```bash
+mediaproc image negate light-diagram.png -o dark-diagram.png
+```
+
+**UI/UX**: Quick dark mode variations.
+
+### 8. Film Negative Effect
+
+Recreate analog photography look:
+
+```bash
+mediaproc image negate digital-photo.jpg -o film-negative.jpg
+```
+
+**Vintage**: Classic film photography aesthetic.
+
+### 9. Preview Before Processing
+
+Check effect before creating file:
+
+```bash
+mediaproc image negate photo.jpg --dry-run
+```
+
+**Safety**: Verify settings and output path.
+
+### 10. Artistic Surreal Effects
+
+Create unusual color combinations:
+
+```bash
+mediaproc image negate landscape.jpg -o surreal-landscape.jpg
+```
+
+**Art**: Otherworldly, psychedelic appearance.
+
+### 11. Double Negative (Return to Original)
+
+Negate twice to return to original:
+
+```bash
+# First negation
 mediaproc image negate photo.jpg -o negative.jpg
 
-# Negate with alpha channel
-mediaproc image negate image.png --alpha -o inverted.png
+# Second negation (back to original)
+mediaproc image negate negative.jpg -o restored.jpg
 ```
 
-### Artistic Effects
+**Reversible**: Lossless color transformation (excluding compression).
+
+### 12. Technical Visualization
+
+Enhance visibility of certain features:
 
 ```bash
-# Create surreal effect
-mediaproc image negate landscape.jpg -f webp -o surreal.webp
-
-# Double negate (return to original)
-mediaproc image negate photo.jpg -o neg.jpg
-mediaproc image negate neg.jpg -o restored.jpg
+mediaproc image negate technical-diagram.png
 ```
 
-### Batch Processing
+**Analysis**: Sometimes inverted colors reveal hidden details.
+
+### 13. PNG with Transparency
+
+Handle transparent images correctly:
 
 ```bash
-# Negate all images
-for img in *.jpg; do
-  mediaproc image negate "$img" -o "neg-$img"
-done
+# Preserve transparency (default)
+mediaproc image negate logo.png -o inverted-logo.png
+
+# Invert transparency too
+mediaproc image negate logo.png --alpha -o fully-inverted-logo.png
+```
+
+**Flexibility**: Choose transparency handling.
+
+### 14. WebP Format
+
+Invert modern image format:
+
+```bash
+mediaproc image negate image.webp -o negative.webp -q 95
+```
+
+**Modern**: Supports all contemporary formats.
+
+### 15. Verbose Output
+
+See detailed processing information:
+
+```bash
+mediaproc image negate photo.jpg --verbose
+```
+
+**Debugging**: Shows dimensions, format, and processing steps.
+
+## Use Cases
+
+### 1. Artistic Effects
+
+Create unique visual styles:
+
+```bash
+mediaproc image negate portrait.jpg -o artistic-portrait.jpg
+```
+
+**Creative**: Instantly recognizable, striking appearance.
+
+### 2. X-Ray Style Imagery
+
+Medical or technical aesthetic:
+
+```bash
+mediaproc image negate photo.png -o xray-effect.png
+```
+
+**Professional**: Popular in medical, scientific contexts.
+
+### 3. Film Negative Reproduction
+
+Traditional photography look:
+
+```bash
+mediaproc image negate digital-scan.jpg -o film-negative.jpg
+```
+
+**Vintage**: Recreate analog film appearance.
+
+### 4. High Contrast Visualization
+
+Alternative viewing mode for complex images:
+
+```bash
+mediaproc image negate complex-diagram.png
+```
+
+**Analysis**: Sometimes easier to see certain details inverted.
+
+### 5. Dark Mode Themes
+
+Convert light-themed graphics:
+
+```bash
+mediaproc image negate light-icon.png -o dark-icon.png
+```
+
+**UI Design**: Quick dark theme alternatives.
+
+### 6. Psychedelic Art
+
+Create surreal color effects:
+
+```bash
+mediaproc image negate nature-photo.jpg -o psychedelic-art.jpg
+```
+
+**Artistic**: Unusual, attention-grabbing colors.
+
+### 7. Scientific Imaging
+
+Technical visualization enhancement:
+
+```bash
+mediaproc image negate microscope-image.png
+```
+
+**Research**: May enhance visibility of specific features.
+
+### 8. Printing Negatives
+
+Create printable film negatives:
+
+```bash
+mediaproc image negate photo.jpg -o printable-negative.jpg -q 100
+```
+
+**Alternative Process**: For contact printing or other analog techniques.
+
+### 9. Educational Demonstrations
+
+Teaching color theory:
+
+```bash
+mediaproc image negate color-wheel.png
+```
+
+**Learning**: Shows complementary color relationships.
+
+### 10. Social Media Content
+
+Create eye-catching posts:
+
+```bash
+mediaproc image negate regular-photo.jpg -o viral-content.jpg
+```
+
+**Marketing**: Unique, scroll-stopping appearance.
+
+## Combining with Other Commands
+
+### Negate + Grayscale
+
+Create classic negative look:
+
+```bash
+# First convert to grayscale
+mediaproc image grayscale photo.jpg -o gray.jpg
+
+# Then negate
+mediaproc image negate gray.jpg -o classic-negative.jpg
+```
+
+**Classic**: Traditional black-and-white film negative.
+
+### Negate + Contrast
+
+Enhance inverted image:
+
+```bash
+# Invert colors
+mediaproc image negate photo.jpg -o inverted.jpg
+
+# Increase contrast
+mediaproc image linear inverted.jpg -a 1.3
+```
+
+**Enhancement**: Stronger visual impact.
+
+### Negate + Blur
+
+Create soft, dreamy negative:
+
+```bash
+mediaproc image negate photo.jpg -o inverted.jpg
+mediaproc image blur inverted.jpg -s 5
+```
+
+**Artistic**: Ethereal, surreal effect.
+
+### Negate + Sharpen
+
+Enhance detail in negative:
+
+```bash
+mediaproc image negate scan.jpg -o negative.jpg
+mediaproc image sharpen negative.jpg
+```
+
+**Detail**: Crisp, clear negative image.
+
+### Negate + Sepia
+
+Alternative vintage effect:
+
+```bash
+# Create negative
+mediaproc image negate old-photo.jpg -o negative.jpg
+
+# Apply sepia tone
+mediaproc image sepia negative.jpg
+```
+
+**Vintage**: Unique aged photograph appearance.
+
+### Double Negate for Lossy Compression Test
+
+Test quality loss:
+
+```bash
+# First negate
+mediaproc image negate original.jpg -q 90 -o negative.jpg
+
+# Second negate
+mediaproc image negate negative.jpg -q 90 -o restored.jpg
+
+# Compare original.jpg vs restored.jpg to see compression artifacts
+```
+
+**Quality Testing**: Reveals compression impact.
+
+## Alpha Channel Handling
+
+### Default Behavior (Preserve Transparency)
+
+```bash
+# Colors inverted, transparency preserved
+mediaproc image negate transparent-logo.png
+```
+
+**Use When**:
+
+- Logo or icon with transparency
+- Maintaining transparent areas
+- UI elements with alpha
+
+### Invert Alpha Flag
+
+```bash
+# Colors AND transparency inverted
+mediaproc image negate transparent-logo.png --alpha
+```
+
+**Use When**:
+
+- Creating opposite transparency effects
+- Experimental artistic effects
+- Specific technical requirements
+
+### Comparison
+
+```bash
+# Without --alpha (transparency preserved)
+mediaproc image negate logo.png -o logo-preserved-alpha.png
+
+# With --alpha (transparency inverted)
+mediaproc image negate logo.png --alpha -o logo-inverted-alpha.png
+```
+
+**Visual Difference**: Inverted alpha may make transparent areas opaque and vice versa.
+
+## Technical Details
+
+### Color Inversion Formula
+
+For each pixel channel:
+
+```
+R_out = 255 - R_in
+G_out = 255 - G_in
+B_out = 255 - B_in
+```
+
+### Example Values
+
+| Input RGB       | Output RGB      | Color Transformation |
+| --------------- | --------------- | -------------------- |
+| (0, 0, 0)       | (255, 255, 255) | Black → White        |
+| (255, 255, 255) | (0, 0, 0)       | White → Black        |
+| (255, 0, 0)     | (0, 255, 255)   | Red → Cyan           |
+| (0, 255, 0)     | (255, 0, 255)   | Green → Magenta      |
+| (0, 0, 255)     | (255, 255, 0)   | Blue → Yellow        |
+| (128, 128, 128) | (127, 127, 127) | Mid-gray → Mid-gray  |
+
+### Alpha Channel Formula
+
+When `--alpha` flag is used:
+
+```
+A_out = 255 - A_in
+```
+
+### Performance
+
+Negate is extremely fast:
+
+- Small image (<1MP): <10ms
+- Medium image (5MP): ~20-30ms
+- Large image (20MP): ~50-100ms
+- Very efficient, per-pixel operation
+
+### Memory Usage
+
+Minimal memory overhead:
+
+- Only requires input and output buffers
+- No complex calculations
+- Small images: <50MB
+- Large images: <200MB
+
+## Reversibility
+
+### Perfect Inversion
+
+Negating is perfectly reversible (ignoring compression):
+
+```bash
+# Original → Negative
+mediaproc image negate original.png -o negative.png -q 100
+
+# Negative → Back to Original
+mediaproc image negate negative.png -o restored.png -q 100
+
+# original.png ≈ restored.png (except for lossy compression)
+```
+
+### Lossy Format Considerations
+
+With JPEG compression:
+
+```bash
+# First negate (quality loss)
+mediaproc image negate original.jpg -q 90 -o negative.jpg
+
+# Second negate (more quality loss)
+mediaproc image negate negative.jpg -q 90 -o restored.jpg
+
+# restored.jpg will differ from original.jpg due to double compression
+```
+
+**Solution**: Use PNG or high quality (95-100) for reversible operations.
+
+## Troubleshooting
+
+### Issue: Transparency Affected Unexpectedly
+
+**Problem**: Transparent areas become opaque or vice versa
+
+**Solution**: Don't use `--alpha` flag:
+
+```bash
+# This inverts transparency (usually unwanted)
+mediaproc image negate logo.png --alpha
+
+# This preserves transparency (usually desired)
+mediaproc image negate logo.png
+```
+
+### Issue: Image Looks Strange After Double Negate
+
+**Problem**: Quality degradation after negating twice
+
+**Solution**: Use lossless format or maximum quality:
+
+```bash
+# Use PNG (lossless)
+mediaproc image negate photo.png -o negative.png
+mediaproc image negate negative.png -o restored.png
+
+# Or use maximum JPEG quality
+mediaproc image negate photo.jpg -q 100 -o negative.jpg
+mediaproc image negate negative.jpg -q 100 -o restored.jpg
+```
+
+### Issue: Colors Don't Match Expected
+
+**Problem**: Negate produces unexpected colors
+
+**Solution**: Remember negate inverts to complementary colors:
+
+- Red → Cyan (not green)
+- Green → Magenta (not red)
+- Blue → Yellow (not orange)
+
+This is correct behavior based on RGB color model.
+
+### Issue: Batch Processing Creates Too Many Files
+
+**Problem**: Negated files mixed with originals
+
+**Solution**: Use output directory:
+
+```bash
+# Instead of creating files in same directory
+mkdir negatives
+mediaproc image negate "photos/*.jpg"
+# Then move outputs: mv *-negated.jpg negatives/
+```
+
+### Issue: Effect Too Subtle or Not Working
+
+**Problem**: Negate seems to have no effect
+
+**Solution**: Check image already has extreme values:
+
+```bash
+# Verify input with verbose
+mediaproc image negate photo.jpg --verbose
+
+# If image is mostly mid-tones, negate will look similar
+# Try on image with clear blacks/whites for dramatic effect
 ```
 
 ## Best Practices
 
-1. **Artistic Use**: Creates striking, surreal effects
-2. **Film Negatives**: Scan and invert film negatives
-3. **Design Elements**: Create complementary color schemes
-4. **Quality**: High quality preserves color accuracy
+### 1. Test First
 
-## Common Use Cases
+Use dry-run to verify settings:
 
-- **Film Scanning**: Convert scanned negatives to positives
-- **Artistic Effects**: Create surreal, otherworldly images
-- **Color Analysis**: View complementary color schemes
-- **Design Work**: Explore alternative color palettes
-- **Scientific Imaging**: Analyze inverted images
-- **Creative Projects**: Unique visual effects
+```bash
+mediaproc image negate photo.jpg --dry-run
+```
 
-## See Also
+Preview operation before execution.
 
-- [grayscale](./grayscale) - Black and white conversion
-- [threshold](./threshold) - Binary black/white effect
-- [modulate](./modulate) - Color adjustments
+### 2. Preserve Quality
+
+Use high quality for important work:
+
+```bash
+mediaproc image negate photo.jpg -q 95
+```
+
+Or use PNG for lossless:
+
+```bash
+# Convert to PNG, negate, convert back
+mediaproc image convert photo.jpg photo.png
+mediaproc image negate photo.png -o negative.png
+```
+
+### 3. Don't Negate Alpha (Usually)
+
+Only use `--alpha` when specifically needed:
+
+```bash
+# Default: preserve transparency
+mediaproc image negate logo.png
+
+# Only if you really need inverted transparency
+mediaproc image negate logo.png --alpha
+```
+
+### 4. Consider Grayscale First
+
+For classic film negative look:
+
+```bash
+mediaproc image grayscale photo.jpg -o gray.jpg
+mediaproc image negate gray.jpg -o negative.jpg
+```
+
+### 5. Combine with Other Effects
+
+Negate is more interesting combined:
+
+```bash
+# Negate + adjust
+mediaproc image negate photo.jpg -o neg.jpg
+mediaproc image modulate neg.jpg -b 1.2 -s 1.3
+```
+
+### 6. Use for Quick Dark Mode
+
+Create dark variations:
+
+```bash
+# Batch convert UI elements
+mediaproc image negate "light-theme/*.png"
+# Rename to dark-theme versions
+```
+
+### 7. Document Artistic Settings
+
+Record successful creative combinations:
+
+```bash
+# Surreal landscape effect
+mediaproc image negate landscape.jpg -o neg.jpg
+mediaproc image modulate neg.jpg -s 1.5 --hue 30
+```
+
+## Related Commands
+
+- [linear](./linear.mdx) - Precise mathematical color transformations
+- [modulate](./modulate.mdx) - Adjust brightness, saturation, hue
+- [grayscale](./grayscale.mdx) - Remove color for classic negative look
+- [threshold](./threshold.mdx) - Black and white conversion
+- [normalize](./normalize.mdx) - Automatic brightness normalization
+
+## Further Reading
+
+- [Negative (Photography)](<https://en.wikipedia.org/wiki/Negative_(photography)>)
+- [Image Inversion](<https://en.wikipedia.org/wiki/Negative_(photography)#Digital_photography>)
+- [Complementary Colors](https://en.wikipedia.org/wiki/Complementary_colors)
+- [Color Inversion Accessibility](https://webaim.org/articles/visual/colorblind)

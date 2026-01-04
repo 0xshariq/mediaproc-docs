@@ -21,7 +21,7 @@ npm install @mediaproc/plugin-image
 - **49 specialized commands** for every image processing need
 - **Multiple format support**: JPEG, PNG, WebP, AVIF, TIFF, GIF
 - **High performance** powered by Sharp (libvips)
-- **Batch processing** for efficient bulk operations  
+- **Batch processing** for efficient bulk operations
 - **Smart algorithms** for resizing, cropping, and optimization
 - **Metadata management** (EXIF, IPTC, XMP)
 - **Color manipulation** and corrections
@@ -43,6 +43,7 @@ npm install @mediaproc/plugin-image
 ## Commands by Category
 
 ### Transformation
+
 - [resize](./resize) - Resize images with various fit modes
 - [crop](./crop) - Crop to specific dimensions or smart crop
 - [rotate](./rotate) - Rotate by any angle
@@ -53,6 +54,7 @@ npm install @mediaproc/plugin-image
 - [affine](./affine) - Advanced transformations
 
 ### Format & Optimization
+
 - [convert](./convert) - Convert between formats
 - [optimize](./optimize) - Smart optimization for web
 - [compress](./compress) - Advanced compression
@@ -61,6 +63,7 @@ npm install @mediaproc/plugin-image
 - [thumbnail](./thumbnail) - Create optimized thumbnails
 
 ### Effects & Filters
+
 - [blur](./blur) - Gaussian blur effect
 - [sharpen](./sharpen) - Enhance sharpness
 - [grayscale](./grayscale) - Convert to black & white
@@ -73,6 +76,7 @@ npm install @mediaproc/plugin-image
 - [threshold](./threshold) - Binary black/white
 
 ### Color Adjustments
+
 - [modulate](./modulate) - Brightness, saturation, hue
 - [tint](./tint) - Apply color tints
 - [gamma](./gamma) - Gamma correction
@@ -80,6 +84,7 @@ npm install @mediaproc/plugin-image
 - [recomb](./recomb) - Channel recombination
 
 ### Overlays & Composition
+
 - [composite](./composite) - Layer images together
 - [watermark](./watermark) - Add watermarks
 - [text](./text) - Add text overlays
@@ -87,17 +92,20 @@ npm install @mediaproc/plugin-image
 - [background](./background) - Change background
 
 ### Metadata & Info
+
 - [info](./info) - Image information
 - [metadata](./metadata) - Manage all metadata
 - [exif](./exif) - EXIF-specific operations
 - [stats](./stats) - Color statistics
 
 ### Batch Operations
+
 - [batch-resize](./batch-resize) - Batch resizing
 - [batch-convert](./batch-convert) - Batch format conversion
 - [batch-compress](./batch-compress) - Batch compression
 
 ### Advanced
+
 - [pipeline](./pipeline) - Chain multiple operations
 - [animated](./animated) - Create/edit animated images
 - [tile](./tile) - Create tiled patterns
@@ -110,11 +118,13 @@ npm install @mediaproc/plugin-image
 ## Quick Start
 
 ### Install
+
 ```bash
 npm install @mediaproc/plugin-image
 ```
 
 ### Basic Usage
+
 ```bash
 # Resize an image
 mediaproc image resize input.jpg -w 800 -h 600 -o output.jpg
@@ -127,6 +137,7 @@ mediaproc image optimize large.jpg -q 80 -o optimized.jpg
 ```
 
 ### Batch Processing
+
 ```bash
 # Resize all images in a folder
 mediaproc image batch-resize "photos/*.jpg" -w 1920 -h 1080 -o ./resized

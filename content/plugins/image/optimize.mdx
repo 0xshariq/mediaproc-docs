@@ -1,6 +1,17 @@
-# optimize
+---
+title: Optimize
+description: Reduce file size with minimal quality loss for web and storage
+---
 
-Optimize images for web with smart compression.
+# Optimize
+
+Optimize image file size with minimal quality loss. Perfect for web optimization, faster loading times, reduced storage costs, and bandwidth savings while maintaining visual quality.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,252 +19,694 @@ Optimize images for web with smart compression.
 mediaproc image optimize <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `optimize` command intelligently reduces file size while maintaining visual quality. Automatically chooses the best compression settings, strips metadata, and applies format-specific optimizations.
+```bash
+# Optimize with default quality (85)
+mediaproc image optimize photo.jpg
+
+# Light optimization (high quality)
+mediaproc image optimize image.png -q 90
+
+# Aggressive compression
+mediaproc image optimize pic.jpg --aggressive
+
+# Custom quality
+mediaproc image optimize photo.webp -q 80
+
+# Preview without executing
+mediaproc image optimize photo.jpg --dry-run
+```
 
 ## Options
 
-### Quality Options
+| Option                | Alias | Type    | Default                   | Description                               |
+| --------------------- | ----- | ------- | ------------------------- | ----------------------------------------- |
+| `--output <path>`     | `-o`  | string  | `<input>-optimized.<ext>` | Output file path                          |
+| `--quality <quality>` | `-q`  | number  | `85`                      | Quality level (1-100)                     |
+| `--aggressive`        |       | boolean | `false`                   | Aggressive compression (quality 70)       |
+| `--dry-run`           |       | boolean | `false`                   | Show what would be done without executing |
+| `--verbose`           | `-v`  | boolean | `false`                   | Show detailed processing information      |
+| `--help`              |       | boolean | `false`                   | Display help information                  |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
-| `--preset` | string | balanced | Optimization preset (maximum, balanced, minimum) |
+## Quality Guide
 
-### Format Options
+### Quality Levels
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `--progressive` | boolean | true | Progressive JPEG |
-| `--lossless` | boolean | false | Lossless compression |
+- **90-100**: Minimal compression, large files, near-lossless
+- **85-89**: Balanced (recommended for web) - default
+- **70-84**: Good compression, slight quality loss
+- **50-69**: High compression, noticeable quality loss
+- **1-49**: Maximum compression, significant artifacts
 
-### Advanced Options
+### Aggressive Mode
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--strip-metadata` | boolean | true | Remove EXIF/metadata |
-| `--mozjpeg` | boolean | true | Use MozJPEG encoder |
-| `--effort` | number | 4 | Compression effort (0-9, higher = better but slower) |
+When `--aggressive` flag is used:
+
+- Quality set to 70
+- Maximum compression applied
+- Metadata stripped
+- Best for thumbnails and previews
+
+## Optimization Techniques
+
+### JPEG Optimization
+
+```bash
+mediaproc image optimize photo.jpg -q 85
+```
+
+**Techniques Applied:**
+
+- Progressive JPEG encoding
+- MozJPEG compression (better than standard JPEG)
+- Metadata removal (EXIF, IPTC)
+- Optimized Huffman tables
+- Chroma subsampling
+
+### PNG Optimization
+
+```bash
+mediaproc image optimize image.png -q 85
+```
+
+**Techniques Applied:**
+
+- Maximum compression level (9)
+- Progressive rendering
+- Metadata removal
+- Maximum optimization effort (10)
+- Palette optimization for indexed colors
+
+### WebP Optimization
+
+```bash
+mediaproc image optimize modern.webp -q 85
+```
+
+**Techniques Applied:**
+
+- WebP-specific compression
+- Effort level 6 (high quality/size balance)
+- Metadata removal
+- Smart lossy compression
+
+### AVIF Optimization
+
+```bash
+mediaproc image optimize next-gen.avif -q 85
+```
+
+**Techniques Applied:**
+
+- AVIF compression (best compression)
+- Effort level 9 (maximum quality)
+- Metadata removal
+- Next-generation codec efficiency
 
 ## Examples
 
-### Basic Optimization
+### 1. Default Web Optimization
+
+Optimize for web with balanced quality/size:
 
 ```bash
-# Auto-optimize image
-mediaproc image optimize photo.jpg -o optimized.jpg
-
-# Optimize with quality control
-mediaproc image optimize large.png -q 75 -o smaller.png
-
-# Maximum optimization
-mediaproc image optimize image.jpg --preset maximum -o tiny.jpg
+mediaproc image optimize website-image.jpg
 ```
 
-### Preset-Based Optimization
+**Result**: ~30-50% size reduction, imperceptible quality loss, outputs `website-image-optimized.jpg`.
+
+### 2. High Quality Optimization
+
+Minimal compression for important images:
 
 ```bash
-# Maximum quality, smaller size
-mediaproc image optimize photo.jpg --preset balanced -o web-ready.jpg
-
-# Minimum file size
-mediaproc image optimize banner.png --preset minimum -o compressed.png
-
-# Maximum quality (light optimization)
-mediaproc image optimize hero.jpg --preset maximum -q 90 -o high-quality.jpg
+mediaproc image optimize hero-image.jpg -q 90
 ```
 
-### Format Conversion with Optimization
+**Effect**: ~20-30% size reduction, virtually no visible quality loss.
+
+### 3. Aggressive Compression
+
+Maximum size reduction for thumbnails:
 
 ```bash
-# Convert to WebP with optimization
-mediaproc image optimize photo.jpg -f webp -q 80 -o optimized.webp
-
-# Convert to AVIF for maximum compression
-mediaproc image optimize large.png -f avif -q 75 -o tiny.avif
-
-# Optimize PNG
-mediaproc image optimize screenshot.png --lossless -o compressed.png
+mediaproc image optimize thumbnail.jpg --aggressive
 ```
 
-### Batch Optimization
+**Size**: ~60-70% reduction, quality 70, suitable for small previews.
+
+### 4. Custom Quality Level
+
+Fine-tune compression:
 
 ```bash
-# Optimize all JPEGs
-for img in *.jpg; do
-  mediaproc image optimize "$img" -q 80 -o "optimized/$img"
-done
-
-# Optimize and convert to WebP
-find images/ -name "*.jpg" -exec \
-  mediaproc image optimize {} -f webp -q 85 -o {}.webp \;
-
-# Recursive optimization
-find . -type f \( -name "*.jpg" -o -name "*.png" \) -exec \
-  mediaproc image optimize {} --preset balanced -o {} \;
+mediaproc image optimize product.jpg -q 80 -o compressed.jpg
 ```
 
-### Web Optimization Workflows
+**Balance**: Good compression with acceptable quality for product photos.
+
+### 5. Batch Web Optimization
+
+Optimize all images for website:
 
 ```bash
-# Optimize for hero images
-mediaproc image optimize hero.jpg -q 85 --progressive -o hero-optimized.jpg
-
-# Optimize for thumbnails
-mediaproc image optimize thumb.jpg -q 70 --preset minimum -o thumb-optimized.jpg
-
-# Optimize for retina displays
-mediaproc image optimize large.png -q 80 --effort 6 -f webp -o retina.webp
+mediaproc image optimize "website-images/*.jpg"
 ```
 
-### Progressive JPEG
+**Output**: Creates `*-optimized.jpg` for each file with consistent compression.
+
+### 6. PNG Optimization
+
+Optimize large PNG files:
 
 ```bash
-# Create progressive JPEG (loads gradually)
-mediaproc image optimize photo.jpg --progressive -q 82 -o progressive.jpg
-
-# Non-progressive (baseline) JPEG
-mediaproc image optimize image.jpg --progressive false -q 85 -o baseline.jpg
+mediaproc image optimize screenshot.png
 ```
 
-### Lossless Optimization
+**Effect**: Lossless size reduction through better compression, metadata removal.
+
+### 7. WebP Optimization
+
+Optimize modern WebP images:
 
 ```bash
-# Lossless PNG optimization
-mediaproc image optimize screenshot.png --lossless -o optimized.png
-
-# Lossless WebP
-mediaproc image optimize logo.png -f webp --lossless -o logo.webp
+mediaproc image optimize banner.webp -q 85
 ```
 
-### Metadata Handling
+**Modern**: WebP already efficient, further optimized with smart compression.
+
+### 8. Social Media Optimization
+
+Optimize for social media upload:
 
 ```bash
-# Strip all metadata (default)
-mediaproc image optimize photo.jpg -o clean.jpg
-
-# Keep metadata
-mediaproc image optimize photo.jpg --strip-metadata false -o with-exif.jpg
+mediaproc image optimize social-post.jpg -q 80
 ```
 
-### High-Effort Optimization
+**Fast Upload**: Smaller files upload faster to social platforms.
+
+### 9. Email Optimization
+
+Reduce size for email attachments:
 
 ```bash
-# Maximum compression effort (slower but smaller)
-mediaproc image optimize large.jpg -q 80 --effort 9 -o best-compression.jpg
-
-# Fast optimization (lower effort)
-mediaproc image optimize batch-image.jpg --effort 2 -o quick-optimized.jpg
+mediaproc image optimize attachment.jpg -q 75
 ```
 
-## Optimization Presets
+**Email-Friendly**: Small enough for quick sending, good enough for viewing.
 
-### Maximum Preset
-- Quality: 90-95
-- Best visual quality
-- Moderate file size reduction (20-40%)
-- Best for: Hero images, portfolios, high-end photography
+### 10. Mobile App Assets
 
-### Balanced Preset (Default)
-- Quality: 80-85
-- Good visual quality
-- Significant size reduction (40-60%)
-- Best for: General web images, blog posts, galleries
+Optimize app images:
 
-### Minimum Preset
-- Quality: 65-75
-- Acceptable visual quality
-- Maximum size reduction (60-80%)
-- Best for: Thumbnails, backgrounds, preview images
+```bash
+mediaproc image optimize "app-assets/*.png" -q 85
+```
 
-## Format Recommendations
+**App Size**: Reduced app download size without quality issues.
 
-| Format | Use Case | Pros | Cons |
-|--------|----------|------|------|
-| **JPEG** | Photos, complex images | Universal support | Lossy |
-| **PNG** | Logos, screenshots, transparency | Lossless | Large files |
-| **WebP** | Modern web | 25-35% smaller than JPEG | Limited old browser support |
-| **AVIF** | Next-gen web | 40-50% smaller than JPEG | Slower encoding, newer format |
+### 11. Preview Changes
 
-## Quality Guidelines
+Check optimization before processing:
 
-| Quality | File Size | Visual Quality | Use Case |
-|---------|-----------|----------------|----------|
-| 60-70 | Smallest | Good | Thumbnails, previews |
-| 70-80 | Small | Very good | General web images |
-| 80-90 | Medium | Excellent | Photography, portfolios |
-| 90-100 | Large | Perfect | Print, professional work |
+```bash
+mediaproc image optimize large-file.jpg --dry-run
+```
+
+**Safety**: Verify operation and output path.
+
+### 12. Portfolio Images
+
+Balance quality and loading speed:
+
+```bash
+mediaproc image optimize portfolio-shot.jpg -q 88
+```
+
+**Professional**: High quality for portfolio while optimized for web.
+
+### 13. E-commerce Products
+
+Optimize product catalog:
+
+```bash
+mediaproc image optimize "products/*.jpg" -q 85
+```
+
+**Retail**: Fast page loading without compromising product appearance.
+
+### 14. Blog Images
+
+Optimize blog post images:
+
+```bash
+mediaproc image optimize blog-photo.jpg -q 82
+```
+
+**Performance**: Faster blog loading, better SEO.
+
+### 15. Verbose Output
+
+See detailed optimization info:
+
+```bash
+mediaproc image optimize photo.jpg --verbose
+```
+
+**Analysis**: Shows original size, compressed size, percentage saved.
+
+## File Size Reduction
+
+### Expected Savings
+
+**JPEG (Quality 85):**
+
+- Original (Quality 100): 5.2 MB
+- Optimized (Quality 85): 1.8 MB
+- Savings: ~65%
+
+**PNG:**
+
+- Original (Unoptimized): 3.4 MB
+- Optimized (Level 9): 2.1 MB
+- Savings: ~38%
+
+**WebP (Quality 85):**
+
+- From JPEG: ~25-35% smaller
+- From PNG: ~26-50% smaller
+
+### Quality vs Size
+
+```bash
+# Quality 95 - Minimal savings (~20-30%)
+mediaproc image optimize photo.jpg -q 95
+
+# Quality 85 - Good savings (~50-60%) - RECOMMENDED
+mediaproc image optimize photo.jpg -q 85
+
+# Quality 70 - Max savings (~70-80%)
+mediaproc image optimize photo.jpg --aggressive
+```
+
+## Format-Specific Optimization
+
+### JPEG
+
+```bash
+mediaproc image optimize photo.jpg -q 85
+```
+
+**Techniques:**
+
+- Progressive encoding: Loads gradually
+- MozJPEG: Superior compression
+- Strips EXIF: Removes camera data
+- Optimized tables: Better compression ratios
+
+### PNG
+
+```bash
+mediaproc image optimize graphic.png -q 85
+```
+
+**Techniques:**
+
+- Compression level 9: Maximum lossless compression
+- Progressive: Interlaced rendering
+- Effort 10: Maximum optimization time
+- Strips metadata: Removes unnecessary chunks
+
+### WebP
+
+```bash
+mediaproc image optimize modern.webp -q 85
+```
+
+**Techniques:**
+
+- Effort 6: Balance between speed and compression
+- Smart lossy: Perceptually optimized
+- Better than JPEG: ~25% smaller at same quality
+
+### AVIF
+
+```bash
+mediaproc image optimize next-gen.avif -q 85
+```
+
+**Techniques:**
+
+- Effort 9: Near-maximum compression
+- Best compression: ~50% better than JPEG
+- Modern browsers: Chrome, Firefox support
+
+## Use Cases
+
+### 1. Website Performance
+
+Speed up website loading:
+
+```bash
+mediaproc image optimize "website/*.jpg" -q 85
+```
+
+**Benefits:**
+
+- Faster page load
+- Better SEO ranking
+- Improved user experience
+- Reduced bandwidth costs
+
+### 2. Mobile App Size
+
+Reduce app download size:
+
+```bash
+mediaproc image optimize "app-assets/*.png"
+```
+
+**Impact:**
+
+- Smaller app package
+- Faster installation
+- Lower cellular data usage
+
+### 3. Email Attachments
+
+Make emails sendable:
+
+```bash
+mediaproc image optimize large-photo.jpg -q 75
+```
+
+**Result:**
+
+- Under email size limits
+- Quick upload/download
+- Maintains viewability
+
+### 4. Cloud Storage
+
+Save storage space:
+
+```bash
+mediaproc image optimize "cloud-backup/*.jpg"
+```
+
+**Savings:**
+
+- Reduced storage costs
+- Faster sync times
+- More storage capacity
+
+### 5. Social Media
+
+Optimize before uploading:
+
+```bash
+mediaproc image optimize instagram-post.jpg -q 80
+```
+
+**Advantage:**
+
+- Faster upload
+- Preserve quality before platform compression
+- Better final appearance
+
+### 6. E-commerce
+
+Optimize product images:
+
+```bash
+mediaproc image optimize "products/*.jpg" -q 85
+```
+
+**Business Impact:**
+
+- Faster catalog loading
+- Better conversion rates
+- Lower CDN costs
+
+### 7. Blog/CMS
+
+Optimize content images:
+
+```bash
+mediaproc image optimize article-image.jpg -q 82
+```
+
+**Publishing:**
+
+- Quick page rendering
+- Better reader experience
+- SEO benefits
+
+### 8. Photography Portfolio
+
+Balance quality and performance:
+
+```bash
+mediaproc image optimize portfolio/*.jpg -q 88
+```
+
+**Professional:**
+
+- Show work at high quality
+- Fast gallery loading
+- Bandwidth savings
+
+### 9. Digital Marketing
+
+Optimize ad creatives:
+
+```bash
+mediaproc image optimize ad-banner.jpg -q 80
+```
+
+**Marketing:**
+
+- Fast ad loading
+- Better ad performance
+- Lower hosting costs
+
+### 10. PDF Generation
+
+Optimize images before PDF:
+
+```bash
+mediaproc image optimize "report-images/*.jpg" -q 80
+```
+
+**Documents:**
+
+- Smaller PDF files
+- Easier sharing
+- Faster viewing
+
+## Metadata Handling
+
+### Removed Metadata
+
+Optimization strips:
+
+- **EXIF**: Camera settings, GPS location
+- **IPTC**: Copyright, keywords
+- **XMP**: Adobe metadata
+- **ICC Profile**: Color profile (sometimes)
+
+### Preserved Data
+
+Only essential data kept:
+
+- **Orientation**: Image rotation
+- **Pixel data**: Image content
+- **Format**: File type information
+
+### Privacy Benefits
+
+```bash
+# Remove location data automatically
+mediaproc image optimize geotagged-photo.jpg
+```
+
+**Security**: GPS coordinates and camera info removed.
+
+## Performance Optimization
+
+### Processing Speed
+
+- **JPEG**: Fast (~100-200ms per megapixel)
+- **PNG**: Slower (~200-400ms per megapixel, lossless)
+- **WebP**: Moderate (~150-300ms per megapixel)
+- **AVIF**: Slowest (~500ms+ per megapixel, best compression)
+
+### Batch Processing
+
+```bash
+# Process multiple files efficiently
+mediaproc image optimize "images/*.jpg"
+```
+
+**Efficient**: Sequential processing with automatic memory management.
+
+### Memory Usage
+
+- Small images (<2MP): ~100MB
+- Medium images (2-8MP): ~200-300MB
+- Large images (>8MP): ~300-500MB
 
 ## Best Practices
 
-1. **Choose Right Format**: WebP for web, JPEG for photos, PNG for graphics
-2. **Balance Quality**: 80-85 quality is ideal for most web images
-3. **Progressive JPEG**: Enable for images > 10KB
-4. **Strip Metadata**: Reduces file size 10-30%
-5. **Batch Process**: Optimize all images at once
-6. **Test Visually**: Always check optimized output
-7. **Effort Setting**: Use 4-6 for production, 2-3 for development
-8. **Responsive Images**: Create multiple sizes for different devices
+### 1. Choose Right Quality
 
-## File Size Expectations
+```bash
+# Web images: 80-85
+mediaproc image optimize web-image.jpg -q 85
 
-### Before Optimization (typical JPEG export):
-- 1920x1080 photo: ~800KB-1.2MB
-- 3840x2160 photo: ~3-5MB
+# Thumbnails: 70-75
+mediaproc image optimize thumb.jpg -q 70
 
-### After Optimization (quality 80, WebP):
-- 1920x1080 photo: ~150-300KB (70-80% reduction)
-- 3840x2160 photo: ~600KB-1.2MB (70-80% reduction)
+# Portfolio/Print: 88-92
+mediaproc image optimize portfolio.jpg -q 90
+```
 
-## Common Use Cases
+### 2. Test on Sample
 
-- **Website Performance**: Reduce page load times
-- **Mobile Optimization**: Smaller images for mobile users
-- **SEO**: Faster sites rank better
-- **Bandwidth Savings**: Reduce hosting costs
-- **User Experience**: Faster image loading
-- **Storage**: Save disk space
-- **Email Attachments**: Reduce attachment sizes
-- **Social Media**: Optimize before uploading
+Before batch processing:
 
-## Performance Impact
+```bash
+# Test one image
+mediaproc image optimize sample.jpg -q 85
 
-### Image Load Time (3G connection):
-- Original 1MB JPEG: ~8 seconds
-- Optimized 150KB WebP: ~1.2 seconds
-- **6.8 seconds faster!**
+# Compare quality
+# If good, process all
+mediaproc image optimize "all/*.jpg" -q 85
+```
 
-### Page Speed:
-- 5 unoptimized images (5MB): Page load 10-15s
-- 5 optimized images (800KB): Page load 2-3s
-- **5x faster page loads!**
+### 3. Keep Originals
 
-## Optimization Checklist
+Always preserve originals:
 
-✅ **Before Publishing**:
-1. Run optimize command
-2. Check visual quality
-3. Verify file size reduction
-4. Test in target browsers
-5. Measure load time improvement
+```bash
+# Outputs to new file by default
+mediaproc image optimize original.jpg
+# Creates: original-optimized.jpg
+# Original preserved
+```
 
-## Performance Tips
+### 4. Consider Format Conversion
 
-- Optimize after all edits (resize, crop, etc.)
-- Use WebP for modern browsers
-- Batch process for consistency
-- Higher effort = better compression but slower
-- Progressive JPEG for large images
-- Strip metadata for public images
-- Test different quality settings
+For maximum savings, convert format:
 
-## See Also
+```bash
+# Convert PNG to WebP (even better compression)
+mediaproc image convert logo.png -f webp -q 85
+```
 
-- [compress](./compress) - Advanced compression control
-- [webp](./webp) - WebP-specific optimization
-- [avif](./avif) - AVIF-specific optimization
-- [resize](./resize) - Resize before optimizing
-- [batch-compress](./batch-compress) - Batch optimization workflows
+### 5. Use Dry Run
+
+Preview before processing:
+
+```bash
+mediaproc image optimize photo.jpg --dry-run
+```
+
+### 6. Monitor File Size
+
+Check savings with verbose mode:
+
+```bash
+mediaproc image optimize large-file.jpg -q 85 --verbose
+```
+
+### 7. Batch Similar Images
+
+Group by type for consistent quality:
+
+```bash
+# Photos
+mediaproc image optimize "photos/*.jpg" -q 85
+
+# Graphics
+mediaproc image optimize "graphics/*.png" -q 88
+```
+
+## Troubleshooting
+
+### Issue: Quality Too Low
+
+**Problem**: Output looks worse than expected
+
+**Solution**: Increase quality:
+
+```bash
+# Instead of
+mediaproc image optimize photo.jpg --aggressive
+
+# Use
+mediaproc image optimize photo.jpg -q 85
+```
+
+### Issue: Not Enough Savings
+
+**Problem**: File size didn't reduce much
+
+**Possible Causes**:
+
+- Image already optimized
+- PNG with minimal redundancy
+- Quality setting too high
+
+**Solutions**:
+
+```bash
+# Try lower quality
+mediaproc image optimize photo.jpg -q 80
+
+# Or aggressive mode
+mediaproc image optimize photo.jpg --aggressive
+
+# Or convert format
+mediaproc image convert photo.jpg -f webp -q 85
+```
+
+### Issue: Slow Processing
+
+**Problem**: Optimization takes too long
+
+**Cause**: Large files, high effort settings
+
+**Solution**: Process in batches, be patient:
+
+```bash
+# PNG is slower but worthwhile
+mediaproc image optimize large.png
+# This is normal, wait for completion
+```
+
+### Issue: Output Looks Same
+
+**Problem**: No visible difference after optimization
+
+**Good News**: That's the goal! Check file size:
+
+```bash
+mediaproc image optimize photo.jpg --verbose
+# Shows: 5.2MB → 1.8MB (65% savings)
+```
+
+## Related Commands
+
+- [convert](./convert.mdx) - Convert to more efficient formats (WebP, AVIF)
+- [resize](./resize.mdx) - Reduce dimensions for additional savings
+- [thumbnail](./thumbnail.mdx) - Create small optimized previews
+- [auto-enhance](./auto-enhance.mdx) - Enhance before optimizing
+
+## Further Reading
+
+- [Image Optimization](https://web.dev/fast/#optimize-your-images)
+- [WebP Format](https://developers.google.com/speed/webp)
+- [AVIF Format](https://jakearchibald.com/2020/avif-has-landed/)
+- [MozJPEG](https://github.com/mozilla/mozjpeg)

@@ -1,6 +1,17 @@
-# pixelate
+---
+title: Pixelate
+description: Apply pixelate/mosaic effect for retro gaming aesthetics or privacy protection
+---
 
-Apply pixelation effect to images.
+# Pixelate
+
+Apply pixelate or mosaic effect to images. Creates retro 8-bit/16-bit gaming style, protects privacy by obscuring faces or text, or adds artistic blocky effects.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,40 +19,611 @@ Apply pixelation effect to images.
 mediaproc image pixelate <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `pixelate` command creates a pixelated/mosaic effect by reducing image resolution in blocks.
+```bash
+# Default pixelation (10px blocks)
+mediaproc image pixelate photo.jpg
+
+# Custom pixel size
+mediaproc image pixelate image.png --pixels 20
+
+# Subtle effect
+mediaproc image pixelate photo.jpg -p 5
+
+# Heavy pixelation for privacy
+mediaproc image pixelate face.jpg --pixels 30
+
+# Retro 8-bit gaming style
+mediaproc image pixelate game.jpg -p 8 -o retro.jpg
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--size` | number | 10 | Pixel block size |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option            | Alias | Type    | Default                   | Description                                       |
+| ----------------- | ----- | ------- | ------------------------- | ------------------------------------------------- |
+| `--pixels <size>` | `-p`  | number  | `10`                      | Pixel block size (2-50) - larger = more pixelated |
+| `--output <path>` | `-o`  | string  | `<input>-pixelated.<ext>` | Output file path                                  |
+| `--dry-run`       |       | boolean | `false`                   | Preview without making changes                    |
+| `--verbose`       | `-v`  | boolean | `false`                   | Show detailed output                              |
+| `--help`          |       | boolean | `false`                   | Display help information                          |
+
+## How It Works
+
+The pixelate effect works by:
+
+1. **Shrinking**: Image reduced by pixel size factor
+2. **Enlarging**: Resized back to original using nearest neighbor interpolation
+3. **Result**: Blocky, pixelated appearance
+
+### Example Process
+
+Original: 1000x1000px with 10px blocks
+
+1. Shrink to 100x100px (1000 ÷ 10)
+2. Enlarge to 1000x1000px (nearest neighbor)
+3. Result: 10x10px blocks across image
+
+## Pixel Size Guide
+
+### 2-5: Subtle Pixelation
+
+- **Effect**: Slight pixelation, retains most detail
+- **Use**: Artistic touch, mild privacy
+- **Example**: `--pixels 3`
+
+### 8-12: Retro Gaming
+
+- **Effect**: Classic 8-bit/16-bit game style
+- **Use**: Retro aesthetics, gaming content
+- **Example**: `--pixels 8` (8-bit) or `--pixels 12` (16-bit)
+
+### 15-25: Strong Effect
+
+- **Effect**: Heavy pixelation, significant detail loss
+- **Use**: Privacy protection, strong stylization
+- **Example**: `--pixels 20`
+
+### 30-50: Extreme Pixelation
+
+- **Effect**: Very blocky, minimal detail
+- **Use**: Heavy censorship, extreme artistic effect
+- **Example**: `--pixels 40`
 
 ## Examples
 
+### 1. Default Pixelation
+
+Apply moderate pixelation:
+
 ```bash
-# Light pixelation
-mediaproc image pixelate photo.jpg --size 5 -o pixelated.jpg
-
-# Heavy pixelation
-mediaproc image pixelate image.jpg --size 20 -o mosaic.jpg
-
-# Privacy protection
-mediaproc image pixelate face.jpg --size 15 -o censored.jpg
+mediaproc image pixelate photo.jpg
 ```
 
-## Common Use Cases
+**Result**: 10x10px blocks (default size).
 
-- **Privacy**: Blur sensitive information
-- **Artistic Effects**: Retro pixel art look
-- **Censorship**: Hide faces or information
-- **Thumbnails**: Create pixelated previews
+### 2. Retro 8-Bit Style
 
-## See Also
+Classic 8-bit gaming aesthetic:
 
-- [blur](./blur) - Blur effect
-- [mosaic](./mosaic) - Mosaic patterns
+```bash
+mediaproc image pixelate game-sprite.png --pixels 8
+```
+
+**Perfect for**: Retro game graphics, pixel art style.
+
+### 3. Privacy Protection
+
+Blur faces or sensitive information:
+
+```bash
+mediaproc image pixelate document.jpg --pixels 20 -o censored.jpg
+```
+
+**Privacy**: Obscures text, faces, or sensitive data.
+
+### 4. Subtle Artistic Effect
+
+Light pixelation for artistic touch:
+
+```bash
+mediaproc image pixelate portrait.jpg -p 5
+```
+
+**Artistic**: Retains detail while adding pixelated aesthetic.
+
+### 5. Heavy Censorship
+
+Extreme pixelation for redaction:
+
+```bash
+mediaproc image pixelate sensitive.png --pixels 40
+```
+
+**Censorship**: Complete obscuration of content.
+
+### 6. 16-Bit Gaming Style
+
+Classic console gaming look:
+
+```bash
+mediaproc image pixelate character.png -p 12 -o 16bit.png
+```
+
+**Retro**: 16-bit console era style.
+
+### 7. Batch Processing
+
+Pixelate multiple images:
+
+```bash
+mediaproc image pixelate "photos/*.jpg" --pixels 10
+```
+
+**Batch**: All images get same pixel size.
+
+### 8. Custom Output Path
+
+Save to specific location:
+
+```bash
+mediaproc image pixelate photo.jpg -p 15 -o output/pixel-art.jpg
+```
+
+**Organization**: Custom output directory.
+
+### 9. Different Pixel Sizes
+
+Compare effects:
+
+```bash
+# Subtle
+mediaproc image pixelate photo.jpg -p 5 -o subtle.jpg
+
+# Medium
+mediaproc image pixelate photo.jpg -p 10 -o medium.jpg
+
+# Strong
+mediaproc image pixelate photo.jpg -p 20 -o strong.jpg
+```
+
+**Comparison**: Test different intensities.
+
+### 10. Verbose Mode
+
+Show detailed processing info:
+
+```bash
+mediaproc image pixelate image.png -p 8 --verbose
+```
+
+**Output**: Original size, processing steps, output details.
+
+### 11. Portrait Pixelation
+
+Pixelate portrait for effect:
+
+```bash
+mediaproc image pixelate portrait.jpg --pixels 6
+```
+
+**Artistic**: Pixel art portrait style.
+
+### 12. Landscape Retro
+
+Retro gaming landscape:
+
+```bash
+mediaproc image pixelate landscape.jpg -p 10 -o retro-landscape.jpg
+```
+
+**Gaming**: Retro game background style.
+
+### 13. Logo Pixelation
+
+Pixelate logo for creative effect:
+
+```bash
+mediaproc image pixelate logo.png -p 4
+```
+
+**Branding**: Pixelated logo variation.
+
+### 14. Preview Operation
+
+Check before applying:
+
+```bash
+mediaproc image pixelate photo.jpg --pixels 15 --dry-run
+```
+
+**Safety**: Verify settings before processing.
+
+### 15. Extreme Blocks
+
+Very large pixel blocks:
+
+```bash
+mediaproc image pixelate image.png --pixels 50
+```
+
+**Extreme**: Maximum blockiness for dramatic effect.
+
+## Use Cases
+
+### 1. Retro Gaming Graphics
+
+Create 8-bit or 16-bit style:
+
+```bash
+# 8-bit style
+mediaproc image pixelate sprite.png --pixels 8
+
+# 16-bit style
+mediaproc image pixelate character.png --pixels 12
+```
+
+**Gaming**: Perfect for retro game assets, pixel art.
+
+### 2. Privacy Protection
+
+Obscure faces, text, or sensitive info:
+
+```bash
+# Blur faces
+mediaproc image pixelate group-photo.jpg --pixels 20
+
+# Hide text
+mediaproc image pixelate document.png -p 25
+```
+
+**Privacy**: GDPR compliance, content moderation.
+
+### 3. Artistic Effects
+
+Creative pixelated style:
+
+```bash
+# Subtle art effect
+mediaproc image pixelate portrait.jpg -p 6
+
+# Strong artistic style
+mediaproc image pixelate photo.jpg -p 15
+```
+
+**Art**: Unique visual aesthetic, modern pixel art.
+
+### 4. Censorship/Redaction
+
+Hide sensitive content:
+
+```bash
+# Moderate censorship
+mediaproc image pixelate sensitive.jpg --pixels 20
+
+# Heavy censorship
+mediaproc image pixelate classified.png -p 40
+```
+
+**Compliance**: Redact PII, sensitive data, classified info.
+
+### 5. Vintage/Retro Look
+
+Early computer graphics style:
+
+```bash
+# Vintage computer style
+mediaproc image pixelate photo.jpg -p 10
+
+# Early digital camera look
+mediaproc image pixelate image.png -p 8
+```
+
+**Nostalgia**: Retro digital aesthetic.
+
+### 6. Social Media Content
+
+Eye-catching pixelated posts:
+
+```bash
+# Instagram pixelated aesthetic
+mediaproc image pixelate post.jpg -p 12
+
+# TikTok retro effect
+mediaproc image pixelate video-frame.png -p 8
+```
+
+**Social**: Trendy pixelated content.
+
+### 7. Game Development
+
+Create pixel art assets:
+
+```bash
+# Game sprites
+mediaproc image pixelate character.png --pixels 8
+
+# Background tiles
+mediaproc image pixelate tile.jpg -p 10
+```
+
+**GameDev**: Quick pixel art conversion.
+
+### 8. Low-Resolution Aesthetic
+
+Intentional low-res look:
+
+```bash
+# Low-res monitor style
+mediaproc image pixelate photo.jpg -p 15
+
+# Early LCD screen look
+mediaproc image pixelate image.png -p 12
+```
+
+**Aesthetic**: Deliberate low-resolution style.
+
+## Combining with Other Commands
+
+### Pixelate + Sepia
+
+Vintage pixelated photo:
+
+```bash
+# Pixelate first
+mediaproc image pixelate photo.jpg -p 10 -o temp.jpg
+
+# Add sepia tone
+mediaproc image sepia temp.jpg -o vintage-pixel.jpg
+```
+
+**Vintage**: Retro pixelated sepia photograph.
+
+### Resize + Pixelate
+
+Optimize then pixelate:
+
+```bash
+# Resize to smaller
+mediaproc image resize large.jpg -w 800 -o resized.jpg
+
+# Apply pixelation
+mediaproc image pixelate resized.jpg -p 10
+```
+
+**Efficiency**: Faster processing on smaller images.
+
+### Pixelate + Border
+
+Framed pixelated image:
+
+```bash
+# Pixelate
+mediaproc image pixelate photo.jpg -p 8 -o pixel.jpg
+
+# Add border
+mediaproc image border pixel.jpg --width 10 --color black
+```
+
+**Framing**: Bordered pixel art style.
+
+### Crop + Pixelate
+
+Pixelate specific area:
+
+```bash
+# Crop area of interest
+mediaproc image crop photo.jpg --x 100 --y 100 --width 200 --height 200 -o face.jpg
+
+# Pixelate cropped area
+mediaproc image pixelate face.jpg --pixels 30
+```
+
+**Privacy**: Blur specific regions (faces, license plates).
+
+## Technical Details
+
+### Algorithm
+
+**Nearest Neighbor Resampling**:
+
+- Downscale to (width ÷ pixels) × (height ÷ pixels)
+- Upscale to original size using nearest neighbor
+- No interpolation = blocky appearance
+
+### Calculation
+
+For 1920×1080 image with 10px blocks:
+
+- Shrink to: 192×108 pixels (1920÷10, 1080÷10)
+- Enlarge to: 1920×1080 pixels (nearest neighbor)
+- Result: 10×10 pixel blocks
+
+### Performance
+
+- **Very Fast**: Resize operations are efficient
+- **Small images (<1MP)**: ~50-100ms
+- **Medium images (5MP)**: ~100-200ms
+- **Large images (>10MP)**: ~200-400ms
+- **Larger pixel sizes**: Faster (less shrunk image data)
+
+### File Size
+
+Pixelated images often:
+
+- **Compress better** (fewer unique colors)
+- **Smaller file sizes** (JPEG/WebP benefit from blocks)
+- **PNG can be larger** (depends on compression)
+
+## Best Practices
+
+### 1. Start with Default
+
+Begin with size 10, adjust as needed:
+
+```bash
+# Test default first
+mediaproc image pixelate photo.jpg
+
+# Adjust if needed
+mediaproc image pixelate photo.jpg -p 15
+```
+
+### 2. Match Pixel Size to Purpose
+
+**Privacy**: 15-30 pixels
+
+```bash
+mediaproc image pixelate sensitive.jpg -p 20
+```
+
+**Artistic**: 5-12 pixels
+
+```bash
+mediaproc image pixelate art.jpg -p 8
+```
+
+**Extreme**: 30-50 pixels
+
+```bash
+mediaproc image pixelate censor.jpg -p 40
+```
+
+### 3. Use Dry Run
+
+Test settings first:
+
+```bash
+mediaproc image pixelate photo.jpg --pixels 15 --dry-run
+```
+
+### 4. Consider Output Format
+
+**JPEG**: Good compression for pixelated images
+
+```bash
+mediaproc image pixelate photo.png -p 10 -o output.jpg
+```
+
+**PNG**: If you need transparency
+
+```bash
+mediaproc image pixelate logo.png -p 8 -o pixel-logo.png
+```
+
+### 5. Batch Similar Content
+
+Process multiple images:
+
+```bash
+# All with same pixel size
+mediaproc image pixelate "photos/*.jpg" --pixels 10
+```
+
+### 6. Combine Effects for Style
+
+Pixelate + other effects:
+
+```bash
+# Retro sepia pixelated
+mediaproc image pixelate photo.jpg -p 8 -o temp.jpg
+mediaproc image sepia temp.jpg -o retro.jpg
+```
+
+### 7. Power of Two Sizes
+
+Use 2, 4, 8, 16 for cleaner results:
+
+```bash
+# 8-bit style
+mediaproc image pixelate image.jpg -p 8
+
+# 16-bit style
+mediaproc image pixelate image.jpg -p 16
+```
+
+## Troubleshooting
+
+### Issue: Too Pixelated
+
+**Problem**: Image is too blocky, unrecognizable
+
+**Cause**: Pixel size too large
+
+**Solution**: Use smaller pixel size
+
+```bash
+# Too much
+mediaproc image pixelate photo.jpg -p 40
+
+# Better
+mediaproc image pixelate photo.jpg -p 10
+```
+
+### Issue: Not Enough Effect
+
+**Problem**: Pixelation barely visible
+
+**Cause**: Pixel size too small
+
+**Solution**: Increase pixel size
+
+```bash
+# Too subtle
+mediaproc image pixelate photo.jpg -p 2
+
+# More visible
+mediaproc image pixelate photo.jpg -p 10
+```
+
+### Issue: File Size Increased
+
+**Problem**: Output larger than input
+
+**Cause**: PNG format with compression
+
+**Solution**: Use JPEG for pixelated images
+
+```bash
+# May be larger (PNG)
+mediaproc image pixelate photo.png -p 10
+
+# Likely smaller (JPEG)
+mediaproc image pixelate photo.png -p 10 -o photo-pixel.jpg
+```
+
+### Issue: Artifacts at Edges
+
+**Problem**: Edge artifacts visible
+
+**Cause**: Image dimensions not divisible by pixel size
+
+**Solution**: This is normal behavior. Adjust pixel size if needed.
+
+### Issue: Processing Slow
+
+**Problem**: Takes long time
+
+**Cause**: Very large image
+
+**Solution**: Resize first
+
+```bash
+# Resize, then pixelate (faster)
+mediaproc image resize huge.jpg -w 2000 -o temp.jpg
+mediaproc image pixelate temp.jpg -p 10
+```
+
+## Related Commands
+
+- [blur](./blur.mdx) - Alternative for privacy/obscuring
+- [sepia](./sepia.mdx) - Combine for vintage pixelated look
+- [resize](./resize.mdx) - Resize before pixelating for speed
+- [border](./border.mdx) - Frame pixelated images
+
+## Further Reading
+
+- [Pixel Art](https://en.wikipedia.org/wiki/Pixel_art)
+- [Nearest Neighbor Interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)
+- [8-Bit Graphics](https://en.wikipedia.org/wiki/8-bit_color)
+- [Image Resampling](https://en.wikipedia.org/wiki/Image_scaling)

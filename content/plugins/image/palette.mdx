@@ -1,6 +1,17 @@
-# palette
+---
+title: Palette
+description: Extract dominant color palette from images for design inspiration
+---
 
-Extract a color palette from an image.
+# Palette
+
+Extract and display the dominant color palette from images. Perfect for design inspiration, brand color extraction, theme generation, and understanding image color composition.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,39 +19,633 @@ Extract a color palette from an image.
 mediaproc image palette <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `palette` command extracts a color palette from an image, useful for design and theming.
+```bash
+# Extract 5 dominant colors (default)
+mediaproc image palette photo.jpg
+
+# Extract 8 colors
+mediaproc image palette image.png --colors 8
+
+# Show detailed output with hex codes
+mediaproc image palette brand-logo.jpg -c 3 -v
+
+# Extract full 10-color palette
+mediaproc image palette artwork.png --colors 10
+
+# Preview operation
+mediaproc image palette photo.jpg --dry-run
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--count` | number | 5 | Number of colors to extract |
-| `--format` | string | hex | Output format (hex, rgb, hsl) |
-| `--output` | string | - | Save palette as JSON |
+| Option             | Alias | Type    | Default | Description                                   |
+| ------------------ | ----- | ------- | ------- | --------------------------------------------- |
+| `--colors <count>` | `-c`  | number  | `5`     | Number of colors to extract (1-10)            |
+| `--verbose`        | `-v`  | boolean | `false` | Show detailed output with hex codes and RGB   |
+| `--dry-run`        |       | boolean | `false` | Show what would be analyzed without executing |
+| `--help`           |       | boolean | `false` | Display help information                      |
+
+## Output Information
+
+The palette command provides:
+
+1. **Primary Dominant Color**: The single most prevalent color
+2. **Channel Analysis**: RGB channel statistics
+3. **Average Image Tone**: Overall color tendency
+4. **Overall Brightness**: Light/dark classification (0-255)
+5. **Color Temperature**: Warm/cool/neutral classification
+6. **Saturation Level**: Color intensity percentage
+
+### Output Format
+
+```
+📷 Image: photo.jpg
+   Size: 1920x1080
+   Format: JPEG
+
+🎨 Dominant Color Palette:
+
+  Primary Dominant Color:
+  ██████ RGB(142, 168, 195) #8EA8C3
+
+  Channel Analysis:
+  Red   : ██ Avg: 142 (min: 12, max: 255)
+  Green : ██ Avg: 168 (min: 15, max: 253)
+  Blue  : ██ Avg: 195 (min: 18, max: 250)
+
+  Average Image Tone:
+  ██████ RGB(142, 168, 195) #8EA8C3
+
+  Overall Brightness: Light (168/255)
+  Color Temperature: Cool
+  Saturation: 27.2%
+```
 
 ## Examples
 
+### 1. Basic Palette Extraction
+
+Extract default 5-color palette:
+
 ```bash
-# Extract 5 colors
-mediaproc image palette photo.jpg --count 5
-
-# Extract 10 colors in RGB
-mediaproc image palette image.png --count 10 --format rgb
-
-# Save palette to file
-mediaproc image palette photo.jpg --count 8 --output palette.json
+mediaproc image palette photo.jpg
 ```
 
-## Common Use Cases
+**Result**: Shows dominant color, channel analysis, and image tone.
 
-- **Design Systems**: Generate color schemes
-- **Brand Colors**: Extract brand palettes
-- **Theme Generation**: Create UI themes
-- **Color Analysis**: Analyze image colors
+### 2. Brand Color Extraction
 
-## See Also
+Extract brand colors from logo:
 
-- [dominant-color](./dominant-color) - Get dominant color
-- [stats](./stats) - Color statistics
+```bash
+mediaproc image palette company-logo.jpg -c 3 -v
+```
+
+**Use Case**: Get 3 main brand colors with hex codes for design work.
+
+### 3. Design Inspiration
+
+Extract color scheme from inspiring image:
+
+```bash
+mediaproc image palette inspiration.png --colors 8
+```
+
+**Creative**: 8-color palette for design project inspiration.
+
+### 4. Artwork Analysis
+
+Analyze art piece colors:
+
+```bash
+mediaproc image palette painting.jpg --colors 10 -v
+```
+
+**Art**: Full 10-color palette with detailed color information.
+
+### 5. Batch Analysis
+
+Analyze multiple images:
+
+```bash
+mediaproc image palette "photos/*.jpg"
+```
+
+**Output**: Palette for each image, one after another.
+
+### 6. Product Color Matching
+
+Extract product colors:
+
+```bash
+mediaproc image palette product-photo.jpg -c 3 -v
+```
+
+**E-commerce**: Get main product colors for descriptions or filters.
+
+### 7. Theme Generation
+
+Create color theme from photo:
+
+```bash
+mediaproc image palette landscape.jpg --colors 6
+```
+
+**Web Design**: Generate 6-color palette for website theme.
+
+### 8. Minimal Palette
+
+Extract just primary colors:
+
+```bash
+mediaproc image palette image.png -c 3
+```
+
+**Simplicity**: Clean, minimal 3-color palette.
+
+### 9. Photography Analysis
+
+Analyze photo color composition:
+
+```bash
+mediaproc image palette portrait.jpg --verbose
+```
+
+**Photography**: Understand color distribution in photograph.
+
+### 10. Interior Design
+
+Extract colors from room photo:
+
+```bash
+mediaproc image palette room-inspiration.jpg -c 5 -v
+```
+
+**Design**: Get color scheme for interior decoration.
+
+### 11. Nature Photography
+
+Extract natural color palette:
+
+```bash
+mediaproc image palette sunset.jpg --colors 7
+```
+
+**Nature**: Capture natural color harmonies.
+
+### 12. Logo Analysis
+
+Analyze competitor logo colors:
+
+```bash
+mediaproc image palette competitor-logo.png -c 3 -v
+```
+
+**Research**: Understand competitive brand colors.
+
+### 13. Fashion Colors
+
+Extract clothing colors:
+
+```bash
+mediaproc image palette outfit.jpg --colors 4
+```
+
+**Fashion**: Get color combinations from fashion photography.
+
+### 14. UI Design
+
+Extract colors from UI screenshot:
+
+```bash
+mediaproc image palette ui-design.png -c 6 -v
+```
+
+**UX**: Analyze color usage in interface design.
+
+### 15. Preview Analysis
+
+Check what would be analyzed:
+
+```bash
+mediaproc image palette photo.jpg --dry-run
+```
+
+**Safety**: Verify file path and settings.
+
+## Understanding Color Information
+
+### Dominant Color
+
+The primary dominant color is calculated from:
+
+- Overall image statistics
+- Most prevalent color values
+- Weighted by frequency
+
+### Channel Analysis
+
+Shows average, minimum, and maximum values for:
+
+- **Red Channel**: Red intensity (0-255)
+- **Green Channel**: Green intensity (0-255)
+- **Blue Channel**: Blue intensity (0-255)
+
+### Average Image Tone
+
+The overall color tendency:
+
+- Calculated from average of all RGB channels
+- Represents the "mood" of the image
+- Useful for understanding overall color cast
+
+### Brightness Classification
+
+- **Very Dark**: 0-50
+- **Dark**: 51-100
+- **Medium**: 101-150
+- **Light**: 151-200
+- **Very Light**: 201-255
+
+### Color Temperature
+
+- **Warm**: Red > Blue (warm tones, reds, oranges, yellows)
+- **Cool**: Blue > Red (cool tones, blues, greens, purples)
+- **Neutral**: Red ≈ Blue (balanced, grays, whites)
+
+### Saturation
+
+Percentage of color intensity:
+
+- **0%**: Completely desaturated (grayscale)
+- **1-20%**: Low saturation (muted, pastel)
+- **21-50%**: Medium saturation (natural)
+- **51-80%**: High saturation (vivid)
+- **81-100%**: Very high saturation (intense, neon)
+
+## Use Cases
+
+### 1. Brand Color Extraction
+
+Extract colors from brand materials:
+
+```bash
+mediaproc image palette brand-photo.jpg -c 3 -v
+```
+
+**Branding**: Get hex codes for brand guidelines.
+
+### 2. Website Theme
+
+Create color scheme for website:
+
+```bash
+mediaproc image palette hero-image.jpg --colors 5 -v
+```
+
+**Web Design**: Generate complementary color palette.
+
+### 3. Product Descriptions
+
+Extract colors for product listings:
+
+```bash
+mediaproc image palette product.jpg -c 2
+```
+
+**E-commerce**: "Available in [extracted colors]"
+
+### 4. Design Inspiration
+
+Find color combinations:
+
+```bash
+mediaproc image palette inspiration/*.jpg --colors 6
+```
+
+**Creativity**: Explore color palettes from inspiring images.
+
+### 5. Art Analysis
+
+Study artwork color usage:
+
+```bash
+mediaproc image palette famous-painting.jpg --colors 10 -v
+```
+
+**Art History**: Understand artist's color choices.
+
+### 6. Photography Planning
+
+Plan photo shoot colors:
+
+```bash
+mediaproc image palette reference-photo.jpg -c 5
+```
+
+**Photography**: Match or complement color schemes.
+
+### 7. Interior Design
+
+Plan room color schemes:
+
+```bash
+mediaproc image palette room-inspo.jpg --colors 4 -v
+```
+
+**Decoration**: Get paint colors and accent colors.
+
+### 8. Fashion Styling
+
+Match clothing colors:
+
+```bash
+mediaproc image palette outfit-inspo.jpg -c 3
+```
+
+**Fashion**: Create coordinated looks.
+
+### 9. UI/UX Design
+
+Analyze interface colors:
+
+```bash
+mediaproc image palette app-screenshot.png --colors 6 -v
+```
+
+**Design System**: Create or analyze color systems.
+
+### 10. Social Media
+
+Create cohesive feed:
+
+```bash
+mediaproc image palette "instagram/*.jpg" -c 5
+```
+
+**Social**: Maintain consistent brand colors.
+
+## Combining with Other Commands
+
+### Resize + Palette
+
+Analyze large images faster:
+
+```bash
+# Resize first for faster processing
+mediaproc image resize huge-image.jpg -w 1000 -o temp.jpg
+
+# Extract palette
+mediaproc image palette temp.jpg -c 5 -v
+```
+
+**Efficiency**: Faster analysis of very large images.
+
+### Auto-Enhance + Palette
+
+Analyze enhanced version:
+
+```bash
+# Enhance image
+mediaproc image auto-enhance dull-photo.jpg -o enhanced.jpg
+
+# Extract palette from enhanced
+mediaproc image palette enhanced.jpg
+```
+
+**Improved**: Get colors from optimized version.
+
+### Batch Analysis Workflow
+
+Process and analyze:
+
+```bash
+# Process images
+mediaproc image optimize "raw/*.jpg"
+
+# Analyze palettes
+mediaproc image palette "raw/*-optimized.jpg" --colors 5
+```
+
+**Workflow**: Complete processing with color analysis.
+
+## Color Theory Applications
+
+### Complementary Colors
+
+Find opposite colors on color wheel:
+
+- Red (RGB 255,0,0) ↔ Cyan (RGB 0,255,255)
+- Green (RGB 0,255,0) ↔ Magenta (RGB 255,0,255)
+- Blue (RGB 0,0,255) ↔ Yellow (RGB 255,255,0)
+
+### Analogous Colors
+
+Colors next to each other on wheel:
+
+- Example: Red, Orange, Yellow (warm palette)
+- Example: Blue, Blue-Green, Green (cool palette)
+
+### Monochromatic Scheme
+
+Variations of single hue:
+
+- Different brightness levels
+- Different saturation levels
+- Same base color
+
+## Technical Details
+
+### Color Extraction Algorithm
+
+1. **Statistics Calculation**: Analyzes all pixels
+2. **Dominant Color**: Most frequent color values
+3. **Channel Analysis**: Per-channel statistics
+4. **Average Calculation**: Mean RGB values
+5. **Classification**: Brightness, temperature, saturation
+
+### Color Space
+
+Analysis performed in RGB color space:
+
+- **R**: Red (0-255)
+- **G**: Green (0-255)
+- **B**: Blue (0-255)
+
+### Hex Code Format
+
+Colors displayed as hex codes:
+
+- Format: `#RRGGBB`
+- Example: `#8EA8C3`
+- R = 8E (142), G = A8 (168), B = C3 (195)
+
+### Performance
+
+- Small images (<1MP): ~50-100ms
+- Medium images (5MP): ~200-300ms
+- Large images (>10MP): ~500ms-1s
+- No output file created (analysis only)
+
+## Best Practices
+
+### 1. Use Verbose Mode for Design
+
+Always use `-v` when extracting for design:
+
+```bash
+mediaproc image palette design-ref.jpg -c 5 -v
+```
+
+Get hex codes for direct use in design tools.
+
+### 2. Fewer Colors for Cleaner Palettes
+
+Start with 3-5 colors:
+
+```bash
+# Clean, focused palette
+mediaproc image palette photo.jpg -c 3
+```
+
+More colors can be overwhelming.
+
+### 3. Consider Image Content
+
+- **Logos**: 2-3 colors
+- **Photos**: 5-7 colors
+- **Complex art**: 8-10 colors
+
+### 4. Test on Representative Images
+
+```bash
+# Test on sample
+mediaproc image palette sample.jpg -c 5
+
+# If good, analyze all
+mediaproc image palette "all/*.jpg" -c 5
+```
+
+### 5. Use for Consistent Branding
+
+Extract from brand photos:
+
+```bash
+mediaproc image palette "brand-photos/*.jpg" -c 3 -v
+```
+
+Find recurring brand colors.
+
+### 6. Copy Hex Codes
+
+Verbose mode shows hex codes:
+
+```bash
+mediaproc image palette logo.jpg -c 3 -v
+# Output: #8EA8C3
+# Copy directly to design tools
+```
+
+### 7. Analyze Different Resolutions
+
+Same colors at different sizes:
+
+```bash
+# Full size
+mediaproc image palette full-size.jpg -c 5
+
+# Thumbnail (faster, same colors)
+mediaproc image palette thumb.jpg -c 5
+```
+
+## Troubleshooting
+
+### Issue: Colors Not What Expected
+
+**Problem**: Extracted colors don't match visual perception
+
+**Cause**: Algorithm extracts most prevalent, not most noticeable
+
+**Solution**: This is expected. Visual prominence ≠ statistical dominance.
+
+### Issue: Too Many Similar Colors
+
+**Problem**: Multiple extracted colors look similar
+
+**Cause**: Image has limited color variation
+
+**Solution**: Use fewer colors:
+
+```bash
+# Instead of
+mediaproc image palette photo.jpg -c 10
+
+# Use
+mediaproc image palette photo.jpg -c 3
+```
+
+### Issue: Grayscale Image
+
+**Problem**: All colors are shades of gray
+
+**Cause**: Image is actually grayscale
+
+**Solution**: This is correct. Low saturation indicates grayscale image.
+
+### Issue: Batch Output Too Long
+
+**Problem**: Too much output when processing many files
+
+**Solution**: Process specific files or redirect output:
+
+```bash
+mediaproc image palette "photos/*.jpg" > palette-results.txt
+```
+
+## Related Commands
+
+- [dominant-color](./dominant-color.mdx) - Extract single dominant color
+- [stats](./stats.mdx) - Detailed image statistics
+- [metadata](./metadata.mdx) - Image metadata information
+
+## Design Tool Integration
+
+### CSS Usage
+
+```css
+/* Use extracted hex codes directly */
+:root {
+  --primary: #8ea8c3;
+  --secondary: #c39e8e;
+  --accent: #8ec3a8;
+}
+```
+
+### Design Software
+
+Copy hex codes to:
+
+- **Photoshop**: Color Picker
+- **Figma**: Fill color
+- **Sketch**: Color panel
+- **Illustrator**: Swatches
+
+### Web Development
+
+```javascript
+// Use in JavaScript
+const colors = {
+  primary: "#8EA8C3",
+  secondary: "#C39E8E",
+  accent: "#8EC3A8",
+};
+```
+
+## Further Reading
+
+- [Color Theory](https://en.wikipedia.org/wiki/Color_theory)
+- [RGB Color Model](https://en.wikipedia.org/wiki/RGB_color_model)
+- [Hex Color Codes](https://en.wikipedia.org/wiki/Web_colors)
+- [Color Schemes](https://www.colormatters.com/color-and-design/basic-color-schemes)

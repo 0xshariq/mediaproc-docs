@@ -1,0 +1,488 @@
+---
+title: Contributing
+description: How to contribute to MediaProc and its ecosystem
+---
+
+# Contributing to MediaProc
+
+Thank you for your interest in contributing to MediaProc! This guide will help you get started with contributing to the core, plugins, or documentation.
+
+## Ways to Contribute
+
+### 1. Report Bugs
+
+Found a bug? Help us fix it:
+
+- Search existing issues to avoid duplicates
+- Use the bug report template
+- Include reproduction steps
+- Provide system information
+- Attach relevant logs or screenshots
+
+### 2. Suggest Features
+
+Have an idea for improvement?
+
+- Check if it's already requested
+- Use the feature request template
+- Explain the use case
+- Provide examples
+- Discuss alternatives
+
+### 3. Improve Documentation
+
+Documentation is crucial:
+
+- Fix typos or unclear explanations
+- Add missing examples
+- Update outdated information
+- Translate to other languages
+- Improve code comments
+
+### 4. Write Code
+
+Contribute to codebase:
+
+- Fix bugs
+- Implement features
+- Optimize performance
+- Add tests
+- Improve error messages
+
+### 5. Create Plugins
+
+Extend MediaProc:
+
+- Build new plugins
+- Enhance existing plugins
+- Share useful utilities
+- Create plugin templates
+
+## Getting Started
+
+### Fork and Clone
+
+```bash
+# Fork the repository on GitHub, then clone your fork
+git clone https://github.com/YOUR_USERNAME/mediaproc.git
+cd mediaproc
+
+# Add upstream remote
+git remote add upstream https://github.com/mediaproc/mediaproc.git
+```
+
+### Install Dependencies
+
+```bash
+# Install pnpm if you haven't
+npm install -g pnpm
+
+# Install dependencies
+pnpm install
+
+# Build all packages
+pnpm build
+```
+
+### Create a Branch
+
+```bash
+# Create a feature branch
+git checkout -b feature/my-new-feature
+
+# Or a bugfix branch
+git checkout -b fix/issue-123
+```
+
+## Development Workflow
+
+### 1. Make Changes
+
+```bash
+# Edit files
+code .
+
+# Run in watch mode during development
+pnpm dev
+```
+
+### 2. Test Changes
+
+```bash
+# Run all tests
+pnpm test
+
+# Run specific test
+pnpm test path/to/test.ts
+
+# Run tests in watch mode
+pnpm test:watch
+```
+
+### 3. Lint and Format
+
+```bash
+# Check linting
+pnpm lint
+
+# Fix linting issues
+pnpm lint:fix
+
+# Format code
+pnpm format
+```
+
+### 4. Build
+
+```bash
+# Build all packages
+pnpm build
+
+# Build specific package
+pnpm build --filter @mediaproc/image
+```
+
+### 5. Test Locally
+
+```bash
+# Link for local testing
+pnpm link --global
+
+# Test your changes
+mediaproc image resize test.jpg -w 800
+```
+
+## Coding Standards
+
+### TypeScript
+
+```typescript
+// Use TypeScript for all new code
+export interface ResizeOptions {
+  width?: number;
+  height?: number;
+  fit?: "cover" | "contain" | "fill";
+}
+
+// Avoid 'any' type
+function process(options: ResizeOptions): Promise<void> {
+  // Implementation
+}
+
+// Use async/await over callbacks
+async function readFile(path: string): Promise<Buffer> {
+  return await fs.readFile(path);
+}
+```
+
+### Code Style
+
+Follow existing patterns:
+
+```typescript
+// Use 2 spaces for indentation
+function example() {
+  if (condition) {
+    doSomething();
+  }
+}
+
+// Use single quotes for strings
+const message = "Hello, world!";
+
+// Use template literals for interpolation
+const greeting = `Hello, ${name}!`;
+
+// Use arrow functions for callbacks
+array.map((item) => item.value);
+
+// Use destructuring
+const { width, height } = options;
+
+// Use async/await
+async function process() {
+  const data = await readFile(path);
+  return processData(data);
+}
+```
+
+### Naming Conventions
+
+```typescript
+// PascalCase for types and classes
+interface ImageOptions {}
+class ImageProcessor {}
+
+// camelCase for variables and functions
+const inputFile = "image.jpg";
+function processImage() {}
+
+// UPPER_CASE for constants
+const MAX_FILE_SIZE = 1024 * 1024 * 10;
+
+// kebab-case for file names
+// image-processor.ts
+// path-validator.ts
+```
+
+### Error Handling
+
+```typescript
+// Use custom error classes
+class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+// Throw meaningful errors
+if (!input) {
+  throw new ValidationError("Input file is required");
+}
+
+// Handle errors appropriately
+try {
+  await processFile(input);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.error("Validation failed:", error.message);
+  } else {
+    console.error("Unexpected error:", error);
+  }
+  process.exit(1);
+}
+```
+
+## Testing Guidelines
+
+### Unit Tests
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { validatePath } from "./validator";
+
+describe("validatePath", () => {
+  it("should accept valid paths", () => {
+    expect(validatePath("/path/to/file.jpg")).toBe(true);
+  });
+
+  it("should reject empty paths", () => {
+    expect(() => validatePath("")).toThrow("Path is required");
+  });
+
+  it("should reject invalid extensions", () => {
+    expect(() => validatePath("file.txt")).toThrow("Invalid file type");
+  });
+});
+```
+
+### Integration Tests
+
+```typescript
+describe("resize command", () => {
+  it("should resize image to specified width", async () => {
+    await resize("test.jpg", { width: 800 });
+    const metadata = await getMetadata("test-resized.jpg");
+    expect(metadata.width).toBe(800);
+  });
+});
+```
+
+### Test Coverage
+
+- Aim for >80% code coverage
+- Test happy paths and edge cases
+- Test error conditions
+- Mock external dependencies
+
+## Commit Guidelines
+
+### Commit Message Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+- **feat**: New feature
+- **fix**: Bug fix
+- **docs**: Documentation changes
+- **style**: Code style changes (formatting)
+- **refactor**: Code refactoring
+- **test**: Adding or updating tests
+- **chore**: Build process or auxiliary tools
+
+### Examples
+
+```bash
+feat(image): add smart crop command
+
+Add new smart crop command that uses AI to detect important
+areas in images and crop accordingly.
+
+Closes #123
+
+fix(video): correct fps calculation
+
+The fps calculation was incorrect for variable frame rate videos.
+Now properly handles VFR content.
+
+Fixes #456
+
+docs(readme): update installation instructions
+
+Update instructions to use pnpm instead of npm.
+```
+
+### Best Practices
+
+- Use present tense ("add feature" not "added feature")
+- Use imperative mood ("move cursor" not "moves cursor")
+- Keep subject line under 72 characters
+- Separate subject from body with blank line
+- Reference issues in footer
+
+## Pull Request Process
+
+### 1. Update Your Branch
+
+```bash
+# Fetch upstream changes
+git fetch upstream
+
+# Rebase your branch
+git rebase upstream/main
+```
+
+### 2. Push Changes
+
+```bash
+# Push to your fork
+git push origin feature/my-new-feature
+```
+
+### 3. Create Pull Request
+
+- Use the PR template
+- Link related issues
+- Describe your changes
+- Add screenshots if relevant
+- Request reviews
+
+### 4. Address Feedback
+
+```bash
+# Make requested changes
+git add .
+git commit -m "Address review feedback"
+git push origin feature/my-new-feature
+```
+
+### 5. Merge
+
+Once approved:
+
+- Squash commits if needed
+- Update CHANGELOG
+- Maintainers will merge
+
+## Review Process
+
+### For Contributors
+
+- Be patient, reviews take time
+- Respond to feedback promptly
+- Be open to suggestions
+- Keep PRs focused and small
+
+### For Reviewers
+
+- Be respectful and constructive
+- Explain why changes are needed
+- Approve when ready
+- Test changes if possible
+
+## Code of Conduct
+
+### Our Standards
+
+- Be welcoming and inclusive
+- Be respectful of differing viewpoints
+- Accept constructive criticism gracefully
+- Focus on what's best for the community
+- Show empathy towards others
+
+### Unacceptable Behavior
+
+- Harassment or discrimination
+- Trolling or insulting comments
+- Personal or political attacks
+- Publishing others' private information
+- Other unprofessional conduct
+
+### Enforcement
+
+Violations may result in:
+
+- Warning
+- Temporary ban
+- Permanent ban
+
+Report issues to: conduct@mediaproc.dev
+
+## Getting Help
+
+### Resources
+
+- **Documentation**: [docs.mediaproc.dev](https://docs.mediaproc.dev)
+- **GitHub Discussions**: Ask questions and share ideas
+- **Discord**: Real-time chat with community
+- **Email**: support@mediaproc.dev
+
+### Questions?
+
+Don't hesitate to ask:
+
+- Open a discussion on GitHub
+- Ask in Discord
+- Comment on relevant issues
+- Email maintainers
+
+## Recognition
+
+Contributors are recognized in:
+
+- CONTRIBUTORS.md file
+- Release notes
+- Documentation credits
+- Social media shoutouts
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.
+
+## Thank You!
+
+Every contribution matters, whether it's:
+
+- A typo fix
+- A new feature
+- A bug report
+- Documentation improvement
+- Community support
+
+Thank you for making MediaProc better! 🎉
+
+## Quick Links
+
+- [Creating Plugins](./creating-plugins.mdx) - Build your own plugins
+- [Plugin Guidelines](./plugin-guidelines.mdx) - Best practices
+- [Plugin Integration](./plugin-integration.mdx) - Integration guide
+- [GitHub Repository](https://github.com/mediaproc/mediaproc)
+- [Issue Tracker](https://github.com/mediaproc/mediaproc/issues)

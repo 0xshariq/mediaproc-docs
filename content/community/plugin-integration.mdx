@@ -1,0 +1,526 @@
+---
+title: Plugin Integration
+description: Technical guide for integrating plugins with MediaProc core
+---
+
+# Plugin Integration
+
+Learn how MediaProc plugins integrate with the core system, including registration, command handling, and lifecycle management.
+
+## Integration Architecture
+
+### Plugin Discovery
+
+MediaProc discovers plugins through npm package naming convention:
+
+```bash
+@mediaproc/image     # Official plugin
+@mediaproc/video     # Official plugin
+@company/mediaproc-* # Third-party plugins
+```
+
+### Plugin Loading
+
+```typescript
+// Core loads plugins dynamically
+async function loadPlugin(pluginName: string): Promise<Plugin> {
+  const pluginPath = `@mediaproc/${pluginName}`;
+  const plugin = await import(pluginPath);
+  return plugin.default || plugin;
+}
+```
+
+## Registration System
+
+### Plugin Registration
+
+Every plugin must export a default registration function:
+
+```typescript
+// src/register.ts
+import type { Command } from "commander";
+import { imageCommand } from "./commands/index.js";
+
+export default function register(program: Command): void {
+  const pluginCmd = program
+    .command("image")
+    .description("Image processing commands");
+
+  // Register all commands
+  imageCommand(pluginCmd);
+}
+```
+
+### Command Registration
+
+Commands are registered with the plugin's command group:
+
+```typescript
+// src/commands/resize.ts
+export function registerResize(pluginCmd: Command): void {
+  pluginCmd
+    .command("resize <input>")
+    .description("Resize image to specified dimensions")
+    .option("-w, --width <pixels>", "Target width")
+    .option("-h, --height <pixels>", "Target height")
+    .action(async (input: string, options: ResizeOptions) => {
+      await resizeImage(input, options);
+    });
+}
+```
+
+## Lifecycle Hooks
+
+### Initialization
+
+```typescript
+export interface Plugin {
+  name: string;
+  version: string;
+  init?: () => Promise<void>;
+  register: (program: Command) => void;
+  cleanup?: () => Promise<void>;
+}
+
+// Plugin with initialization
+export default {
+  name: "image",
+  version: "1.0.0",
+
+  async init() {
+    // Initialize resources
+    await loadNativeBindings();
+    await validateDependencies();
+  },
+
+  register(program: Command) {
+    // Register commands
+  },
+
+  async cleanup() {
+    // Clean up resources
+    await releaseNativeBindings();
+  },
+} as Plugin;
+```
+
+### Command Execution
+
+```typescript
+// Core handles command execution
+async function executeCommand(
+  command: string,
+  args: string[],
+  options: CommandOptions
+): Promise<void> {
+  try {
+    // Pre-execution hook
+    await onBeforeExecute?.(command, args, options);
+
+    // Execute command
+    await runCommand(command, args, options);
+
+    // Post-execution hook
+    await onAfterExecute?.(command, args, options);
+  } catch (error) {
+    // Error handling hook
+    await onError?.(error, command, args, options);
+    throw error;
+  }
+}
+```
+
+## Dependency Management
+
+### Plugin Dependencies
+
+Declare dependencies in package.json:
+
+```json
+{
+  "name": "@mediaproc/image",
+  "dependencies": {
+    "sharp": "^0.32.0",
+    "commander": "^11.0.0"
+  },
+  "peerDependencies": {
+    "@mediaproc/core": "^1.0.0"
+  }
+}
+```
+
+### Runtime Dependencies
+
+Check dependencies at runtime:
+
+```typescript
+export async function init(): Promise<void> {
+  try {
+    await import("sharp");
+  } catch {
+    throw new Error("sharp is required. Install with: npm install sharp");
+  }
+}
+```
+
+## Command Sharing
+
+### Shared Utilities
+
+Plugins can export utilities for other plugins:
+
+```typescript
+// @mediaproc/core/utils
+export { validatePath } from "./path-validator.js";
+export { formatSize } from "./format-helper.js";
+export { createProgress } from "./progress.js";
+
+// Other plugins can import
+import { validatePath } from "@mediaproc/core/utils";
+```
+
+### Cross-Plugin Commands
+
+Plugins can invoke commands from other plugins:
+
+```typescript
+import { execCommand } from "@mediaproc/core";
+
+async function processVideo(input: string): Promise<void> {
+  // Extract frame using video plugin
+  const frame = await execCommand("video", "extract-frame", {
+    input,
+    time: "00:00:05",
+  });
+
+  // Process frame using image plugin
+  await execCommand("image", "resize", {
+    input: frame,
+    width: 800,
+  });
+}
+```
+
+## Event System
+
+### Plugin Events
+
+```typescript
+import { EventEmitter } from "events";
+
+export const pluginEvents = new EventEmitter();
+
+// Emit events
+pluginEvents.emit("processing:start", { file: "image.jpg" });
+pluginEvents.emit("processing:progress", { percent: 50 });
+pluginEvents.emit("processing:complete", { file: "image.jpg" });
+
+// Listen to events
+pluginEvents.on("processing:start", (data) => {
+  console.log(`Processing started: ${data.file}`);
+});
+```
+
+### Core Events
+
+Core emits global events:
+
+```typescript
+// Core events
+core.on("plugin:loaded", (plugin) => {
+  console.log(`Loaded plugin: ${plugin.name}`);
+});
+
+core.on("command:execute", (command, args) => {
+  console.log(`Executing: ${command}`);
+});
+
+core.on("error", (error) => {
+  console.error("Error:", error);
+});
+```
+
+## Configuration Integration
+
+### Plugin Configuration
+
+```typescript
+interface PluginConfig {
+  [key: string]: any;
+}
+
+export function loadConfig(): PluginConfig {
+  const config = loadCoreConfig();
+  return config.plugins?.image || {};
+}
+
+// Usage
+const config = loadConfig();
+const defaultQuality = config.defaultQuality || 90;
+```
+
+### Configuration Schema
+
+```typescript
+export const configSchema = {
+  type: "object",
+  properties: {
+    defaultQuality: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      default: 90,
+    },
+    defaultFormat: {
+      type: "string",
+      enum: ["jpg", "png", "webp"],
+      default: "jpg",
+    },
+  },
+};
+```
+
+## Error Handling
+
+### Custom Error Types
+
+```typescript
+export class PluginError extends Error {
+  constructor(message: string, public plugin: string, public code?: string) {
+    super(message);
+    this.name = "PluginError";
+  }
+}
+
+export class CommandError extends PluginError {
+  constructor(message: string, plugin: string, public command: string) {
+    super(message, plugin);
+    this.name = "CommandError";
+  }
+}
+```
+
+### Error Propagation
+
+```typescript
+async function executeCommand(cmd: string): Promise<void> {
+  try {
+    await runCommand(cmd);
+  } catch (error) {
+    if (error instanceof PluginError) {
+      // Plugin-specific error handling
+      console.error(`Plugin error in ${error.plugin}: ${error.message}`);
+    } else {
+      // Generic error handling
+      console.error("Unexpected error:", error);
+    }
+    throw error;
+  }
+}
+```
+
+## Performance Optimization
+
+### Lazy Loading
+
+```typescript
+// Load commands only when needed
+export default function register(program: Command): void {
+  program
+    .command("image")
+    .description("Image processing")
+    .action(async () => {
+      // Lazy load command implementation
+      const { imageCommand } = await import("./commands/image.js");
+      await imageCommand();
+    });
+}
+```
+
+### Resource Pooling
+
+```typescript
+import { Pool } from "generic-pool";
+
+// Create resource pool
+const processorPool = Pool({
+  create: async () => await createProcessor(),
+  destroy: async (processor) => await processor.cleanup(),
+  max: 4,
+  min: 1,
+});
+
+// Use pooled resources
+async function processImage(input: string): Promise<void> {
+  const processor = await processorPool.acquire();
+  try {
+    await processor.process(input);
+  } finally {
+    await processorPool.release(processor);
+  }
+}
+```
+
+## Testing Integration
+
+### Plugin Testing
+
+```typescript
+import { describe, it, expect, beforeAll } from "vitest";
+import { loadPlugin } from "@mediaproc/core";
+
+describe("Plugin Integration", () => {
+  let plugin: Plugin;
+
+  beforeAll(async () => {
+    plugin = await loadPlugin("image");
+    await plugin.init?.();
+  });
+
+  it("should register commands", () => {
+    const program = createProgram();
+    plugin.register(program);
+    expect(program.commands).toHaveLength(1);
+  });
+
+  it("should execute commands", async () => {
+    await execCommand("image", "resize", {
+      input: "test.jpg",
+      width: 800,
+    });
+    // Assert results
+  });
+});
+```
+
+### Mock Dependencies
+
+```typescript
+import { vi } from "vitest";
+
+vi.mock("sharp", () => ({
+  default: vi.fn(() => ({
+    resize: vi.fn().mockReturnThis(),
+    toFile: vi.fn().mockResolvedValue(undefined),
+  })),
+}));
+```
+
+## Distribution
+
+### Package Structure
+
+```json
+{
+  "name": "@mediaproc/image",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "mediaproc-image": "bin/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./commands": "./dist/commands/index.js",
+    "./utils": "./dist/utils/index.js"
+  },
+  "files": ["dist", "bin", "README.md", "LICENSE"]
+}
+```
+
+### Publishing
+
+```bash
+# Build plugin
+pnpm build
+
+# Test locally
+pnpm link --global
+
+# Publish to npm
+pnpm publish --access public
+```
+
+## Versioning Strategy
+
+### Semantic Versioning
+
+```
+MAJOR.MINOR.PATCH
+
+1.0.0 → 1.0.1  # Bug fix
+1.0.0 → 1.1.0  # New feature
+1.0.0 → 2.0.0  # Breaking change
+```
+
+### Compatibility
+
+```typescript
+// Check version compatibility
+import semver from "semver";
+
+function checkCompatibility(
+  coreVersion: string,
+  pluginVersion: string
+): boolean {
+  return semver.satisfies(coreVersion, pluginVersion);
+}
+```
+
+## Best Practices
+
+### 1. Minimal Dependencies
+
+Keep dependencies minimal:
+
+```json
+{
+  "dependencies": {
+    "sharp": "^0.32.0", // Essential
+    "commander": "^11.0.0" // Essential
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0", // Development only
+    "@types/node": "^20.0.0" // Development only
+  }
+}
+```
+
+### 2. Error Recovery
+
+Implement graceful degradation:
+
+```typescript
+async function processWithFallback(input: string): Promise<void> {
+  try {
+    await processWithNativeLib(input);
+  } catch (error) {
+    console.warn("Native processing failed, using fallback");
+    await processWithJavaScript(input);
+  }
+}
+```
+
+### 3. Resource Cleanup
+
+Always clean up:
+
+```typescript
+async function process(input: string): Promise<void> {
+  const tempFile = await createTempFile();
+  try {
+    await processFile(tempFile);
+  } finally {
+    await fs.unlink(tempFile).catch(() => {});
+  }
+}
+```
+
+## Resources
+
+- [Creating Plugins](./creating-plugins.mdx) - Plugin development guide
+- [Plugin Guidelines](./plugin-guidelines.mdx) - Best practices
+- [Contributing](./contributing.mdx) - Contribution guidelines
+- [API Documentation](https://docs.mediaproc.dev/api)
+- [Plugin Registry](https://plugins.mediaproc.dev)

@@ -23,73 +23,57 @@ export interface NavItem {
 }
 
 export const imageCommands: Command[] = [
-  // Transform & Resize
-  { name: 'resize', slug: 'resize', description: 'Resize images to specified dimensions' },
-  { name: 'crop', slug: 'crop', description: 'Crop images to a specific region' },
-  { name: 'rotate', slug: 'rotate', description: 'Rotate images by degrees' },
-  { name: 'flip', slug: 'flip', description: 'Flip images horizontally' },
-  { name: 'flop', slug: 'flop', description: 'Flip images vertically' },
-  { name: 'trim', slug: 'trim', description: 'Trim edges of images' },
-  { name: 'extend', slug: 'extend', description: 'Extend image canvas with background' },
-  { name: 'extract', slug: 'extract', description: 'Extract a region or channel from image' },
   { name: 'affine', slug: 'affine', description: 'Apply affine transformation' },
-  { name: 'composite', slug: 'composite', description: 'Composite images together' },
-
-  // Format & Conversion
-  { name: 'convert', slug: 'convert', description: 'Convert images between formats' },
-  { name: 'optimize', slug: 'optimize', description: 'Optimize images for web' },
-
-  // Effects & Filters
-  { name: 'blur', slug: 'blur', description: 'Apply blur effect' },
-  { name: 'sharpen', slug: 'sharpen', description: 'Sharpen image details' },
-  { name: 'grayscale', slug: 'grayscale', description: 'Convert to grayscale' },
-  { name: 'sepia', slug: 'sepia', description: 'Apply sepia tone effect' },
-  { name: 'negate', slug: 'negate', description: 'Invert image colors' },
-  { name: 'normalize', slug: 'normalize', description: 'Normalize image levels' },
-  { name: 'median', slug: 'median', description: 'Apply median filter' },
-  { name: 'clahe', slug: 'clahe', description: 'Apply CLAHE enhancement' },
-  { name: 'convolve', slug: 'convolve', description: 'Apply convolution kernel' },
-  { name: 'recomb', slug: 'recomb', description: 'Recombine color channels' },
-
-  // Color Adjustments
-  { name: 'modulate', slug: 'modulate', description: 'Adjust brightness, saturation, hue' },
-  { name: 'tint', slug: 'tint', description: 'Apply color tint' },
-  { name: 'gamma', slug: 'gamma', description: 'Adjust gamma correction' },
-  { name: 'linear', slug: 'linear', description: 'Apply linear adjustment' },
-  { name: 'threshold', slug: 'threshold', description: 'Apply threshold effect' },
-
-  // Overlays & Borders
-  { name: 'watermark', slug: 'watermark', description: 'Add watermark to images' },
-  { name: 'border', slug: 'border', description: 'Add border to images' },
-
-  // Metadata & Info
-  { name: 'metadata-cmd', slug: 'metadata-cmd', description: 'View and edit image metadata' },
-  { name: 'stats', slug: 'stats', description: 'Show image statistics' },
-
-  // Batch & Smart Operations
-  { name: 'batch', slug: 'batch', description: 'Batch process multiple images' },
-  { name: 'thumbnail', slug: 'thumbnail', description: 'Generate thumbnails' },
-  { name: 'smart-crop', slug: 'smart-crop', description: 'Smart crop with AI' },
   { name: 'auto-enhance', slug: 'auto-enhance', description: 'Auto enhance image quality' },
   { name: 'auto-orient', slug: 'auto-orient', description: 'Auto orient based on EXIF' },
-
-  // Image Manipulation
-  { name: 'flatten', slug: 'flatten', description: 'Flatten image layers' },
-  { name: 'unflatten', slug: 'unflatten', description: 'Unflatten image' },
+  { name: 'batch', slug: 'batch', description: 'Batch process multiple images' },
+  { name: 'blur', slug: 'blur', description: 'Apply blur effect' },
   { name: 'boolean', slug: 'boolean', description: 'Boolean operations on images' },
-  { name: 'mirror', slug: 'mirror', description: 'Mirror image' },
-  { name: 'pixelate', slug: 'pixelate', description: 'Apply pixelation effect' },
-  { name: 'vignette', slug: 'vignette', description: 'Apply vignette effect' },
-
-  // Advanced Operations
-  { name: 'grid', slug: 'grid', description: 'Create image grid' },
-  { name: 'stack', slug: 'stack', description: 'Stack images together' },
-  { name: 'split', slug: 'split', description: 'Split image into parts' },
-  { name: 'palette', slug: 'palette', description: 'Extract color palette' },
-  { name: 'dominant-color', slug: 'dominant-color', description: 'Get dominant color' },
+  { name: 'border', slug: 'border', description: 'Add border to images' },
+  { name: 'clahe', slug: 'clahe', description: 'Apply CLAHE enhancement' },
+  { name: 'composite', slug: 'composite', description: 'Composite images together' },
+  { name: 'convert', slug: 'convert', description: 'Convert images between formats' },
+  { name: 'convolve', slug: 'convolve', description: 'Apply convolution kernel' },
+  { name: 'crop', slug: 'crop', description: 'Crop images to a specific region' },
   { name: 'dilate', slug: 'dilate', description: 'Dilate image regions' },
+  { name: 'dominant-color', slug: 'dominant-color', description: 'Get dominant color' },
   { name: 'erode', slug: 'erode', description: 'Erode image regions' },
+  { name: 'extend', slug: 'extend', description: 'Extend image canvas with background' },
+  { name: 'extract', slug: 'extract', description: 'Extract a region or channel from image' },
+  { name: 'flatten', slug: 'flatten', description: 'Flatten image layers' },
+  { name: 'flip', slug: 'flip', description: 'Flip images horizontally' },
+  { name: 'flop', slug: 'flop', description: 'Flip images vertically' },
+  { name: 'gamma', slug: 'gamma', description: 'Adjust gamma correction' },
+  { name: 'grayscale', slug: 'grayscale', description: 'Convert to grayscale' },
+  { name: 'grid', slug: 'grid', description: 'Create image grid' },
+  { name: 'linear', slug: 'linear', description: 'Apply linear adjustment' },
+  { name: 'median', slug: 'median', description: 'Apply median filter' },
+  { name: 'metadata-cmd', slug: 'metadata-cmd', description: 'View and edit image metadata' },
+  { name: 'mirror', slug: 'mirror', description: 'Mirror image' },
+  { name: 'modulate', slug: 'modulate', description: 'Adjust brightness, saturation, hue' },
+  { name: 'negate', slug: 'negate', description: 'Invert image colors' },
+  { name: 'normalize', slug: 'normalize', description: 'Normalize image levels' },
+  { name: 'optimize', slug: 'optimize', description: 'Optimize images for web' },
+  { name: 'palette', slug: 'palette', description: 'Extract color palette' },
+  { name: 'pixelate', slug: 'pixelate', description: 'Apply pixelation effect' },
+  { name: 'recomb', slug: 'recomb', description: 'Recombine color channels' },
+  { name: 'resize', slug: 'resize', description: 'Resize images to specified dimensions' },
+  { name: 'rotate', slug: 'rotate', description: 'Rotate images by degrees' },
+  { name: 'sepia', slug: 'sepia', description: 'Apply sepia tone effect' },
+  { name: 'sharpen', slug: 'sharpen', description: 'Sharpen image details' },
+  { name: 'smart-crop', slug: 'smart-crop', description: 'Smart crop with AI' },
+  { name: 'split', slug: 'split', description: 'Split image into parts' },
+  { name: 'stack', slug: 'stack', description: 'Stack images together' },
+  { name: 'stats', slug: 'stats', description: 'Show image statistics' },
+  { name: 'threshold', slug: 'threshold', description: 'Apply threshold effect' },
+  { name: 'thumbnail', slug: 'thumbnail', description: 'Generate thumbnails' },
+  { name: 'tint', slug: 'tint', description: 'Apply color tint' },
+  { name: 'trim', slug: 'trim', description: 'Trim edges of images' },
+  { name: 'unflatten', slug: 'unflatten', description: 'Unflatten image' },
+  { name: 'vignette', slug: 'vignette', description: 'Apply vignette effect' },
+  { name: 'watermark', slug: 'watermark', description: 'Add watermark to images' },
 ];
+
 
 export const plugins: Plugin[] = [
   {
@@ -188,6 +172,7 @@ export const navigationConfig: NavSection[] = [
       { title: 'Creating Plugins', slug: 'community/creating-plugins' },
       { title: 'Plugin Guidelines', slug: 'community/plugin-guidelines' },
       { title: 'Contributing', slug: 'community/contributing' },
+      { title: 'Plugin Integration', slug: 'community/plugin-integration' }
     ],
   },
 ];

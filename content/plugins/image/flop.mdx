@@ -1,0 +1,631 @@
+---
+title: "flop"
+description: "Flip images horizontally to create mirror effects and fix reversed orientations"
+---
+
+# flop
+
+Flip images horizontally (mirror left-right) using a dedicated command. This is a specialized version of the flip command, optimized specifically for horizontal mirroring.
+
+## Usage
+
+```bash
+mediaproc image flop <input> [options]
+```
+
+### Basic Syntax
+
+```bash
+# Flip horizontally
+mediaproc image flop photo.jpg
+
+# Flip with custom output
+mediaproc image flop photo.jpg -o mirrored.jpg
+
+# Flip with high quality
+mediaproc image flop photo.jpg -q 100 -o high-quality.jpg
+```
+
+## Options
+
+| Option      | Alias | Type      | Default           | Description                          |
+| ----------- | ----- | --------- | ----------------- | ------------------------------------ |
+| `--output`  | `-o`  | `string`  | `flopped-[input]` | Output file path                     |
+| `--quality` | `-q`  | `number`  | `90`              | Output quality (1-100)               |
+| `--dry-run` |       | `boolean` | `false`           | Preview operation without saving     |
+| `--verbose` | `-v`  | `boolean` | `false`           | Show detailed processing information |
+
+## What is Flop?
+
+**Flop** is the technical term for horizontal flipping (mirroring left-right). In image processing terminology:
+
+- **Flop**: Horizontal flip (this command)
+- **Flip**: Vertical flip (see flip command)
+
+## Examples
+
+### 1. Basic Horizontal Flip
+
+```bash
+# Simple horizontal flip
+mediaproc image flop photo.jpg
+
+# With custom output name
+mediaproc image flop photo.jpg -o mirrored-photo.jpg
+
+# High quality output
+mediaproc image flop photo.jpg -q 100 -o high-quality.jpg
+```
+
+### 2. Fix Front Camera Selfies
+
+```bash
+# Correct front camera mirror effect
+mediaproc image flop selfie.jpg -o corrected-selfie.jpg
+
+# Fix multiple selfies
+for img in selfies/*.jpg; do
+  mediaproc image flop "$img" -o "corrected-$(basename "$img")"
+done
+```
+
+### 3. Mirror Text Correction
+
+```bash
+# Make mirrored text readable
+mediaproc image flop reversed-text.jpg -o readable-text.jpg
+
+# Fix sign reflections
+mediaproc image flop mirror-sign.jpg -o proper-sign.jpg
+
+# Correct backwards logo
+mediaproc image flop logo.jpg -o correct-logo.jpg
+```
+
+### 4. Create Symmetrical Designs
+
+```bash
+# Mirror for symmetry
+mediaproc image flop pattern.jpg -o symmetric-pattern.jpg
+
+# Create kaleidoscope base
+mediaproc image flop texture.jpg -o mirrored-texture.jpg
+
+# Artistic mirror effect
+mediaproc image flop abstract.jpg -o mirror-art.jpg
+```
+
+### 5. Product Photography
+
+```bash
+# Show product from opposite angle
+mediaproc image flop product-left.jpg -o product-right.jpg
+
+# Create facing variations
+mediaproc image flop model-left.jpg -o model-right.jpg
+
+# Mirror catalog items
+for img in products/*.jpg; do
+  mediaproc image flop "$img" -o "mirrored/$(basename "$img")"
+done
+```
+
+### 6. Social Media Content
+
+```bash
+# Fix selfie for social media
+mediaproc image flop story.jpg -o story-corrected.jpg
+
+# Create mirror effect post
+mediaproc image flop creative.jpg -o mirror-effect.jpg
+
+# Prepare profile picture
+mediaproc image flop profile.jpg -o profile-final.jpg
+```
+
+### 7. Batch Processing
+
+```bash
+# Flop all images in directory
+for img in *.jpg; do
+  mediaproc image flop "$img" -o "flopped-$(basename "$img")"
+done
+
+# Flop specific file types
+for img in *.png; do
+  filename=$(basename "$img" .png)
+  mediaproc image flop "$img" -o "${filename}-flopped.png"
+done
+
+# Conditional flop based on naming
+for img in *-reverse.jpg; do
+  output=${img/-reverse.jpg/.jpg}
+  mediaproc image flop "$img" -o "$output"
+done
+```
+
+### 8. Web Development Assets
+
+```bash
+# Create RTL (right-to-left) version
+mediaproc image flop arrow-left.png -o arrow-right.png
+
+# Mirror UI elements
+mediaproc image flop icon-left.svg -o icon-right.svg
+
+# Flip navigation icons
+mediaproc image flop chevron-left.png -o chevron-right.png
+```
+
+### 9. Quality Control
+
+```bash
+# Maximum quality
+mediaproc image flop photo.jpg -q 100 -o max-quality.jpg
+
+# Web-optimized
+mediaproc image flop photo.jpg -q 80 -o web-optimized.jpg
+
+# Balanced quality
+mediaproc image flop photo.jpg -q 90 -o balanced.jpg
+```
+
+### 10. Preview Operations
+
+```bash
+# Preview before processing
+mediaproc image flop photo.jpg --dry-run
+
+# Detailed preview
+mediaproc image flop photo.jpg --dry-run --verbose
+
+# Check output size estimate
+mediaproc image flop large-image.jpg --dry-run --verbose
+```
+
+### 11. E-commerce Applications
+
+```bash
+# Standardize product facing direction
+for img in products/*.jpg; do
+  mediaproc image flop "$img" -o "standardized/$(basename "$img")"
+done
+
+# Create before/after product views
+mediaproc image flop product-before.jpg -o product-after.jpg
+
+# Mirror catalog for consistency
+mediaproc image flop item.jpg -o item-mirrored.jpg
+```
+
+### 12. Photography Workflow
+
+```bash
+# Correct camera mirror shots
+mediaproc image flop mirror-photo.jpg -o corrected.jpg
+
+# Fix reversed compositions
+mediaproc image flop composition.jpg -o proper-composition.jpg
+
+# Batch correct photo shoot
+for img in shoot/*.jpg; do
+  mediaproc image flop "$img" -o "corrected/$(basename "$img")"
+done
+```
+
+### 13. Design and Graphics
+
+```bash
+# Create mirror pattern
+mediaproc image flop half-pattern.jpg -o full-pattern.jpg
+
+# Flip texture for tiling
+mediaproc image flop texture.jpg -o mirrored-texture.jpg
+
+# Generate symmetrical artwork
+mediaproc image flop art-left.jpg -o art-right.jpg
+```
+
+### 14. Document Processing
+
+```bash
+# Fix scanned mirror documents
+mediaproc image flop scan.jpg -o readable-scan.jpg
+
+# Correct reversed diagrams
+mediaproc image flop diagram.png -o correct-diagram.png
+
+# Fix mirrored charts
+mediaproc image flop chart.jpg -o proper-chart.jpg
+```
+
+### 15. Combining with Other Operations
+
+```bash
+# Flop then resize
+mediaproc image flop photo.jpg -o temp.jpg
+mediaproc image resize temp.jpg -w 800 -h 600 -o final.jpg
+rm temp.jpg
+
+# Flop then crop
+mediaproc image flop photo.jpg -o temp.jpg
+mediaproc image crop temp.jpg -w 1000 -h 800 -o final.jpg
+rm temp.jpg
+
+# Resize then flop
+mediaproc image resize photo.jpg -w 1200 -o temp.jpg
+mediaproc image flop temp.jpg -o final.jpg
+rm temp.jpg
+```
+
+## Use Cases
+
+### 1. Selfie and Camera Corrections
+
+- **Front Camera Fix**: Correct mirror effect from phone cameras
+- **Mirror Photo Correction**: Fix photos taken in mirrors
+- **Webcam Images**: Correct webcam mirror effect
+- **Video Thumbnails**: Fix mirrored video frame captures
+
+### 2. Text and Logo Corrections
+
+- **Reversed Text**: Make mirror text readable
+- **Logo Orientation**: Ensure logos face correct direction
+- **Sign Corrections**: Fix mirrored signs in photos
+- **Brand Assets**: Standardize brand element direction
+
+### 3. Design and Art
+
+- **Symmetry Creation**: Generate symmetrical designs
+- **Pattern Mirroring**: Create mirrored patterns
+- **Texture Generation**: Generate flipped textures
+- **Artistic Effects**: Create mirror art effects
+
+### 4. E-commerce and Product Photos
+
+- **Product Direction**: Standardize which way products face
+- **Model Shots**: Ensure models face desired direction
+- **Catalog Consistency**: Maintain uniform product presentation
+- **Comparison Images**: Create before/after comparisons
+
+### 5. Web Development
+
+- **RTL Layouts**: Create assets for right-to-left languages
+- **Icon Variations**: Generate directional icon variants
+- **UI Elements**: Create mirrored UI components
+- **Navigation**: Flip directional navigation elements
+
+### 6. Social Media
+
+- **Story Corrections**: Fix selfie orientations
+- **Post Preparation**: Ensure correct text/logo orientation
+- **Profile Pictures**: Correct camera mirror effects
+- **Content Creation**: Create mirrored creative effects
+
+## Technical Details
+
+### Processing Method
+
+The flop command uses Sharp's `flop()` method:
+
+- Flips image horizontally (mirrors left-right)
+- Fast operation (coordinate remapping)
+- No quality loss (no resampling)
+- Maintains dimensions exactly
+- Preserves color information perfectly
+
+### Coordinate Transformation
+
+```
+For image of width W:
+  new_x = W - 1 - x
+  new_y = y
+
+Where:
+- x: original horizontal position
+- y: original vertical position (unchanged)
+- new_x: flipped horizontal position
+- new_y: same vertical position
+```
+
+### Visual Transformation
+
+**Original (4×3 pixels):**
+
+```
+A B C D
+E F G H
+I J K L
+```
+
+**After Flop:**
+
+```
+D C B A
+H G F E
+L K J I
+```
+
+### Performance Characteristics
+
+- **Speed**: Very fast (simple remapping)
+- **Memory**: Efficient (in-place when possible)
+- **Quality**: Lossless (no interpolation)
+- **CPU**: Minimal (no complex calculations)
+- **Format**: Works with all image formats
+
+### Metadata Handling
+
+- Preserves most EXIF metadata
+- Updates orientation tag appropriately
+- Maintains color profile
+- Keeps creation date/time
+- Preserves camera information
+
+## Flop vs Flip vs Rotate
+
+| Operation           | Direction  | Result             | Use Case                  |
+| ------------------- | ---------- | ------------------ | ------------------------- |
+| **flop**            | Horizontal | Mirror left-right  | Selfie fix, text reversal |
+| **flip** (vertical) | Vertical   | Mirror top-bottom  | Upside-down correction    |
+| **rotate 180°**     | Both axes  | Same as flip+flop  | Complete inversion        |
+| **rotate 90°**      | Clockwise  | Landscape↔Portrait | Orientation change        |
+
+## Common Patterns
+
+### Pattern 1: Selfie Correction (Most Common)
+
+```bash
+# Fix front camera mirror effect
+mediaproc image flop selfie.jpg -o corrected.jpg
+```
+
+### Pattern 2: Batch Selfie Fix
+
+```bash
+# Fix all selfies at once
+for img in selfies/*.jpg; do
+  mediaproc image flop "$img" -o "fixed/$(basename "$img")"
+done
+```
+
+### Pattern 3: Create RTL Asset
+
+```bash
+# Generate right-to-left version
+mediaproc image flop ltr-arrow.png -o rtl-arrow.png
+```
+
+### Pattern 4: Mirror Pattern
+
+```bash
+# Create symmetrical design
+mediaproc image flop half-pattern.jpg -o symmetric.jpg
+```
+
+### Pattern 5: Logo Correction
+
+```bash
+# Fix reversed logo
+mediaproc image flop reversed-logo.png -o correct-logo.png
+```
+
+## Troubleshooting
+
+### Issue: Image Appears Unchanged
+
+**Problem**: No visible difference after flop
+
+**Solutions**:
+
+```bash
+# Check if image is horizontally symmetrical
+# Symmetrical images show no change when flopped
+
+# Add asymmetric element to test
+# Or use test image with text
+
+# Verify operation with --verbose
+mediaproc image flop input.jpg --dry-run --verbose
+```
+
+### Issue: Text is Backwards
+
+**Problem**: After flop, text appears reversed
+
+**Solutions**:
+
+```bash
+# This is expected behavior
+# Flop mirrors everything including text
+
+# If text should be readable:
+# Either don't flop, or flop again to restore
+mediaproc image flop mirrored.jpg -o restored.jpg
+
+# Double flop returns to original orientation
+```
+
+### Issue: Wrong Direction Flipped
+
+**Problem**: Image flipped vertically instead of horizontally
+
+**Solutions**:
+
+```bash
+# Flop only does horizontal flip
+# For vertical flip, use flip command
+mediaproc image flip input.jpg --vertical
+
+# Flop = horizontal only
+mediaproc image flop input.jpg  # ✓ Left-right mirror
+```
+
+### Issue: Quality Loss
+
+**Problem**: Output quality appears degraded
+
+**Solutions**:
+
+```bash
+# Increase quality setting
+mediaproc image flop input.jpg -q 100 -o output.jpg
+
+# Use lossless format
+mediaproc image flop input.jpg -o output.png
+
+# Flop itself is lossless
+# Quality loss comes from output format compression
+```
+
+### Issue: Metadata Not Preserved
+
+**Problem**: EXIF data missing or incorrect
+
+**Solutions**:
+
+```bash
+# Flop preserves most EXIF data
+# But updates orientation tag
+
+# Check metadata before and after
+mediaproc image metadata input.jpg > before.json
+mediaproc image flop input.jpg -o output.jpg
+mediaproc image metadata output.jpg > after.json
+
+# Most metadata should be preserved
+```
+
+### Issue: Flop vs Flip Confusion
+
+**Problem**: Not sure which command to use
+
+**Solutions**:
+
+```bash
+# Use FLOP for:
+# - Horizontal flip (left-right mirror)
+# - Selfie corrections
+# - Text reversal fixes
+mediaproc image flop input.jpg
+
+# Use FLIP for:
+# - Vertical flip (top-bottom mirror)
+# - Upside-down corrections
+# - Both directions (flip --both)
+mediaproc image flip input.jpg --vertical
+```
+
+## Best Practices
+
+1. **Understand the Operation**
+
+   - Flop = horizontal only (left becomes right)
+   - Creates mirror image along vertical axis
+   - Fast and lossless operation
+
+2. **Selfie Corrections**
+
+   - Always flop front camera photos
+   - Check if text/logos need correction
+   - Preview one image before batch processing
+
+3. **Preserve Originals**
+
+   - Keep original files unmodified
+   - Create flopped copies with descriptive names
+   - Don't overwrite source images
+
+4. **Quality Settings**
+
+   - Use q=90-100 for important images
+   - PNG for lossless operations
+   - JPEG q=80-90 for web delivery
+
+5. **Batch Operations**
+
+   - Test with single image first
+   - Use consistent naming convention
+   - Verify results before processing large batches
+
+6. **Documentation**
+
+   - Note why images were flopped
+   - Maintain consistent workflow
+   - Script repetitive operations
+
+7. **Performance**
+   - Flop is very fast
+   - Can process thousands of images quickly
+   - Consider parallel processing for large batches
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Auto-orient then flop
+mediaproc image auto-orient photo.jpg -o oriented.jpg
+mediaproc image flop oriented.jpg -o final.jpg
+
+# Flop then resize
+mediaproc image flop photo.jpg -o temp.jpg
+mediaproc image resize temp.jpg -w 800 -h 600 -o final.jpg
+
+# Crop then flop
+mediaproc image crop photo.jpg -w 1000 -h 800 -o temp.jpg
+mediaproc image flop temp.jpg -o final.jpg
+
+# Flop then composite
+mediaproc image flop overlay.png -o mirrored.png
+mediaproc image composite base.jpg --overlay mirrored.png -o final.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Fix all front-camera photos
+
+for img in photos/*.jpg; do
+  filename=$(basename "$img" .jpg)
+
+  # Fix mirror effect
+  mediaproc image flop "$img" -o "corrected/${filename}.jpg"
+
+  # Create thumbnail
+  mediaproc image resize "corrected/${filename}.jpg" -w 300 -h 300 -o "thumbs/${filename}.jpg"
+done
+
+echo "Processed $(ls photos/*.jpg | wc -l) images"
+```
+
+### Creating Symmetrical Compositions
+
+```bash
+#!/bin/bash
+# Create symmetrical image from half
+
+input="half-pattern.jpg"
+flopped="flopped-half.jpg"
+output="symmetric-pattern.jpg"
+
+# 1. Flop the half
+mediaproc image flop "$input" -o "$flopped"
+
+# 2. Combine side-by-side
+mediaproc image composite "$input" --overlay "$flopped" --gravity east -o "$output"
+
+# 3. Clean up
+rm "$flopped"
+
+echo "Created symmetrical pattern: $output"
+```
+
+## See Also
+
+- [flip](./flip) - Flip vertically, horizontally, or both
+- [rotate](./rotate) - Rotate images by any angle
+- [auto-orient](./auto-orient) - Fix EXIF orientation automatically
+- [mirror](./mirror) - Create advanced mirror effects
+- [composite](./composite) - Combine flopped images for effects

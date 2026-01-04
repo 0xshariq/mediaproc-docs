@@ -1,6 +1,17 @@
-# recomb
+---
+title: Recomb
+description: Recombine RGB channels using matrix transformation for creative color effects
+---
 
-Recombine color channels with custom matrix.
+# Recomb
+
+Recombine image RGB channels using a transformation matrix. Create custom color effects by mixing red, green, and blue channels in creative ways.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,30 +19,595 @@ Recombine color channels with custom matrix.
 mediaproc image recomb <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `recomb` command applies color channel recombination using a custom matrix for advanced color manipulation.
+```bash
+# Identity matrix (no change)
+mediaproc image recomb photo.jpg --matrix "[[1,0,0],[0,1,0],[0,0,1]]"
+
+# Swap red and blue channels
+mediaproc image recomb image.png --matrix "[[0,0,1],[0,1,0],[1,0,0]]"
+
+# Mix channels creatively
+mediaproc image recomb photo.jpg --matrix "[[0.5,0.5,0],[0.5,0.5,0],[0,0,1]]"
+
+# Extract red channel only
+mediaproc image recomb image.png --matrix "[[1,0,0],[0,0,0],[0,0,0]]"
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-m, --matrix` | string | - | 3x3 recombination matrix |
-| `-f, --format` | string | - | Output format |
-| `-q, --quality` | number | 80 | Output quality |
+| Option                | Alias | Type    | Default                     | Description                       |
+| --------------------- | ----- | ------- | --------------------------- | --------------------------------- |
+| `--matrix <values>`   |       | string  | `[[1,0,0],[0,1,0],[0,0,1]]` | 3×3 transformation matrix as JSON |
+| `--output <path>`     | `-o`  | string  | `<input>-recomb.<ext>`      | Output file path                  |
+| `--quality <quality>` | `-q`  | number  | `90`                        | Output quality (1-100)            |
+| `--dry-run`           |       | boolean | `false`                     | Preview without making changes    |
+| `--verbose`           | `-v`  | boolean | `false`                     | Show detailed output              |
+| `--help`              |       | boolean | `false`                     | Display help information          |
+
+## Understanding the Matrix
+
+### Matrix Structure
+
+A 3×3 matrix that defines how channels are combined:
+
+```
+[[R_out], [G_out], [B_out]]
+```
+
+Each row defines one output channel:
+
+- **Row 1**: Output Red channel
+- **Row 2**: Output Green channel
+- **Row 3**: Output Blue channel
+
+Each column represents input channels (R, G, B).
+
+### Identity Matrix (No Change)
+
+```json
+[
+  [1, 0, 0],
+  [0, 1, 0],
+  [0, 0, 1]
+]
+```
+
+- Red → Red (1×R + 0×G + 0×B)
+- Green → Green (0×R + 1×G + 0×B)
+- Blue → Blue (0×R + 0×G + 1×B)
+
+### Reading the Matrix
+
+For matrix `[[a,b,c],[d,e,f],[g,h,i]]`:
+
+```
+Output Red   = a×Red + b×Green + c×Blue
+Output Green = d×Red + e×Green + f×Blue
+Output Blue  = g×Red + h×Green + i×Blue
+```
+
+## Common Operations
+
+### Swap Red and Blue
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0,0,1],[0,1,0],[1,0,0]]"
+```
+
+**Effect**: Red becomes blue, blue becomes red, green unchanged.
+
+### Swap Red and Green
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0,1,0],[1,0,0],[0,0,1]]"
+```
+
+**Effect**: Red becomes green, green becomes red, blue unchanged.
+
+### Swap Green and Blue
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[1,0,0],[0,0,1],[0,1,0]]"
+```
+
+**Effect**: Green becomes blue, blue becomes green, red unchanged.
+
+### Grayscale (Equal Mix)
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0.33,0.33,0.33],[0.33,0.33,0.33],[0.33,0.33,0.33]]"
+```
+
+**Effect**: All channels get equal mix of R+G+B.
+
+### Red Channel Only
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[1,0,0],[0,0,0],[0,0,0]]"
+```
+
+**Effect**: Output shows only red channel data.
+
+### Remove Red Channel
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0,0,0],[0,1,0],[0,0,1]]"
+```
+
+**Effect**: Red channel zeroed, cyan appearance.
+
+### Average Red and Green
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0.5,0.5,0],[0.5,0.5,0],[0,0,1]]"
+```
+
+**Effect**: Red and green channels averaged, blue unchanged.
 
 ## Examples
 
-```bash
-# Swap red and blue channels
-mediaproc image recomb photo.jpg -m "0,0,1,0,1,0,1,0,0" -o swapped.jpg
+### 1. Identity (No Change)
 
-# Custom color mixing
-mediaproc image recomb image.jpg -m "1.5,0,-0.5,0,1,0,0,0,1" -o mixed.jpg
+Apply identity matrix:
+
+```bash
+mediaproc image recomb photo.jpg
 ```
 
-## See Also
+**Result**: Image unchanged (default identity matrix).
 
-- [modulate](./modulate) - Color adjustments
-- [tint](./tint) - Color tinting
+### 2. Swap R/B Channels
+
+Red ↔ Blue swap:
+
+```bash
+mediaproc image recomb image.png --matrix "[[0,0,1],[0,1,0],[1,0,0]]"
+```
+
+**Effect**: Warm tones become cool, cool tones become warm.
+
+### 3. Infrared Effect
+
+Swap R/G for infrared-like look:
+
+```bash
+mediaproc image recomb landscape.jpg --matrix "[[0,1,0],[1,0,0],[0,0,1]]"
+```
+
+**Infrared**: Green foliage appears red.
+
+### 4. Cyan/Magenta Shift
+
+Remove red channel:
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0,0,0],[0,1,0],[0,0,1]]" -o cyan.jpg
+```
+
+**Effect**: Cyan color cast.
+
+### 5. Red Channel Only
+
+Extract red channel:
+
+```bash
+mediaproc image recomb image.png --matrix "[[1,0,0],[0,0,0],[0,0,0]]"
+```
+
+**Monochrome**: Shows red channel intensity.
+
+### 6. Creative Channel Mix
+
+Mix all channels creatively:
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0.5,0.3,0.2],[0.2,0.5,0.3],[0.3,0.2,0.5]]"
+```
+
+**Artistic**: Unique color transformation.
+
+### 7. High Quality Output
+
+Maximum quality:
+
+```bash
+mediaproc image recomb image.jpg --matrix "[[0,0,1],[0,1,0],[1,0,0]]" -q 100
+```
+
+**Quality**: No compression artifacts.
+
+### 8. Batch Processing
+
+Transform multiple images:
+
+```bash
+mediaproc image recomb "photos/*.jpg" --matrix "[[0,0,1],[0,1,0],[1,0,0]]"
+```
+
+**Batch**: Same transformation to all images.
+
+### 9. False Color
+
+Create false color image:
+
+```bash
+mediaproc image recomb satellite.jpg --matrix "[[0,0,1],[1,0,0],[0,1,0]]"
+```
+
+**Scientific**: False color for analysis.
+
+### 10. Color Blindness Simulation
+
+Simulate color blindness:
+
+```bash
+# Deuteranopia (green-blind) approximation
+mediaproc image recomb photo.jpg --matrix "[[0.625,0.375,0],[0.7,0.3,0],[0,0.3,0.7]]"
+```
+
+**Accessibility**: Test designs for color blindness.
+
+### 11. Negative Red
+
+Invert red channel:
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[-1,0,0],[0,1,0],[0,0,1]]"
+```
+
+**Effect**: Negative red, normal green/blue.
+
+### 12. Sepia-Like Effect
+
+Sepia-style recombination:
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0.393,0.769,0.189],[0.349,0.686,0.168],[0.272,0.534,0.131]]"
+```
+
+**Vintage**: Sepia tone through recombination.
+
+### 13. Blue to Red Shift
+
+Shift blue to red:
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[1,0,1],[0,1,0],[0,0,0]]"
+```
+
+**Effect**: Add blue data to red channel.
+
+### 14. Preview Operation
+
+Check settings:
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0,0,1],[0,1,0],[1,0,0]]" --dry-run
+```
+
+**Safety**: Verify before processing.
+
+### 15. Verbose Output
+
+Show detailed processing:
+
+```bash
+mediaproc image recomb image.jpg --matrix "[[0,0,1],[0,1,0],[1,0,0]]" -v
+```
+
+**Info**: Matrix used, quality, output path.
+
+## Use Cases
+
+### 1. Artistic Color Effects
+
+Create unique color palettes:
+
+```bash
+# Shift all colors
+mediaproc image recomb art.jpg --matrix "[[0,0.8,0.2],[0.8,0,0.2],[0.2,0.8,0]]"
+```
+
+**Art**: Distinctive color transformations.
+
+### 2. Infrared Photography Simulation
+
+Mimic infrared photography:
+
+```bash
+# Swap red and green (simplified infrared)
+mediaproc image recomb landscape.jpg --matrix "[[0,1,0],[1,0,0],[0,0,1]]"
+```
+
+**Photography**: Infrared-like effects without special camera.
+
+### 3. Scientific Visualization
+
+False color for data visualization:
+
+```bash
+# Remap channels for clarity
+mediaproc image recomb data.png --matrix "[[0,0,1],[1,0,0],[0,1,0]]"
+```
+
+**Science**: Highlight features in scientific images.
+
+### 4. Color Correction
+
+Fix color casts:
+
+```bash
+# Reduce red cast by mixing with other channels
+mediaproc image recomb photo.jpg --matrix "[[0.8,0.1,0.1],[0,1,0],[0,0,1]]"
+```
+
+**Correction**: Color balance adjustments.
+
+### 5. Accessibility Testing
+
+Simulate color vision deficiencies:
+
+```bash
+# Test design for color blindness
+mediaproc image recomb ui-design.png --matrix "[[0.567,0.433,0],[0.558,0.442,0],[0,0.242,0.758]]"
+```
+
+**Design**: Ensure accessibility for all users.
+
+### 6. Channel Analysis
+
+Isolate individual channels:
+
+```bash
+# Red channel only
+mediaproc image recomb photo.jpg --matrix "[[1,0,0],[0,0,0],[0,0,0]]" -o red.jpg
+
+# Green channel only
+mediaproc image recomb photo.jpg --matrix "[[0,0,0],[0,1,0],[0,0,0]]" -o green.jpg
+
+# Blue channel only
+mediaproc image recomb photo.jpg --matrix "[[0,0,0],[0,0,0],[0,0,1]]" -o blue.jpg
+```
+
+**Analysis**: Study individual channel contributions.
+
+### 7. Creative Photo Effects
+
+Unique stylistic effects:
+
+```bash
+# Mix channels for psychedelic effect
+mediaproc image recomb photo.jpg --matrix "[[0.5,0.3,0.7],[0.7,0.5,0.3],[0.3,0.7,0.5]]"
+```
+
+**Creative**: Experimental photo art.
+
+### 8. Thermal Imaging Style
+
+Simulate thermal camera look:
+
+```bash
+# False color temperature-like effect
+mediaproc image recomb photo.jpg --matrix "[[0,0,1],[0,1,0.5],[1,0,0]]"
+```
+
+**Effect**: Thermal camera aesthetic.
+
+## Technical Details
+
+### Channel Recombination
+
+Each output pixel calculated as:
+
+```
+For each pixel (r, g, b):
+  new_r = matrix[0][0] * r + matrix[0][1] * g + matrix[0][2] * b
+  new_g = matrix[1][0] * r + matrix[1][1] * g + matrix[1][2] * b
+  new_b = matrix[2][0] * r + matrix[2][1] * g + matrix[2][2] * b
+```
+
+Values clamped to 0-255 range.
+
+### Matrix Values
+
+- **0**: No contribution from that channel
+- **1**: Full contribution (100%)
+- **0.5**: Half contribution (50%)
+- **Negative**: Inverts channel
+- **>1**: Amplifies channel (may clip to 255)
+
+### Performance
+
+- **Fast**: Matrix multiplication is efficient
+- **Small images (<1MP)**: ~50-100ms
+- **Medium images (5MP)**: ~150-250ms
+- **Large images (>10MP)**: ~300-500ms
+- Same speed regardless of matrix values
+
+### Output Formats
+
+Supports:
+
+- **JPEG**: Quality control with `-q`
+- **PNG**: Quality control (compression level)
+- **WebP**: Quality control
+- **Other formats**: Based on extension
+
+## Best Practices
+
+### 1. Start with Known Operations
+
+Use common operations first:
+
+```bash
+# Simple swap
+mediaproc image recomb photo.jpg --matrix "[[0,0,1],[0,1,0],[1,0,0]]"
+```
+
+### 2. Test with Identity Matrix
+
+Verify command works:
+
+```bash
+# Should produce identical output
+mediaproc image recomb photo.jpg
+```
+
+### 3. Use Dry Run
+
+Preview before processing:
+
+```bash
+mediaproc image recomb image.jpg --matrix "[[0,0,1],[0,1,0],[1,0,0]]" --dry-run
+```
+
+### 4. Validate Matrix Format
+
+Ensure correct JSON:
+
+- Use double quotes
+- 3×3 array structure
+- Proper nesting: `[[row1],[row2],[row3]]`
+
+```bash
+# Correct format
+--matrix "[[1,0,0],[0,1,0],[0,0,1]]"
+```
+
+### 5. Preserve Quality
+
+Use high quality for final output:
+
+```bash
+mediaproc image recomb photo.jpg --matrix "..." -q 95
+```
+
+### 6. Experiment with Values
+
+Try different matrices:
+
+```bash
+# Try variations
+mediaproc image recomb photo.jpg --matrix "[[0.7,0.3,0],[0.3,0.7,0],[0,0,1]]" -o test1.jpg
+mediaproc image recomb photo.jpg --matrix "[[0.5,0.5,0],[0.5,0.5,0],[0,0,1]]" -o test2.jpg
+```
+
+### 7. Document Your Matrices
+
+Save successful matrices:
+
+```bash
+# Good effect - document it!
+# Matrix: [[0,0,1],[0,1,0],[1,0,0]]
+# Effect: R/B swap, infrared-like on landscapes
+```
+
+## Troubleshooting
+
+### Issue: Invalid Matrix Format
+
+**Problem**: Error parsing matrix
+
+**Cause**: Incorrect JSON format
+
+**Solution**: Check syntax
+
+```bash
+# Wrong (single quotes)
+--matrix '[[1,0,0],[0,1,0],[0,0,1]]'
+
+# Correct (double quotes)
+--matrix "[[1,0,0],[0,1,0],[0,0,1]]"
+```
+
+### Issue: No Visible Change
+
+**Problem**: Output looks same as input
+
+**Cause**: Identity or near-identity matrix
+
+**Solution**: Use different values
+
+```bash
+# No change
+--matrix "[[1,0,0],[0,1,0],[0,0,1]]"
+
+# Visible change
+--matrix "[[0,0,1],[0,1,0],[1,0,0]]"
+```
+
+### Issue: Image Too Bright/Dark
+
+**Problem**: Output brightness changed
+
+**Cause**: Matrix coefficients sum > 1 or < 1
+
+**Solution**: Normalize matrix values
+
+```bash
+# Too bright (sums to 2)
+--matrix "[[1,1,0],[0,1,1],[1,0,1]]"
+
+# Balanced (sums to 1)
+--matrix "[[0.5,0.5,0],[0,0.5,0.5],[0.5,0,0.5]]"
+```
+
+### Issue: Clipping/Banding
+
+**Problem**: Posterization or banding
+
+**Cause**: Values exceeding 255
+
+**Solution**: Keep coefficients ≤ 1
+
+```bash
+# May clip
+--matrix "[[2,0,0],[0,1,0],[0,0,1]]"
+
+# Safe
+--matrix "[[1,0,0],[0,1,0],[0,0,1]]"
+```
+
+### Issue: Unexpected Colors
+
+**Problem**: Strange color shifts
+
+**Cause**: Matrix swaps/mixes channels differently than expected
+
+**Solution**: This is normal! Verify matrix logic.
+
+## Related Commands
+
+- [modulate](./modulate.mdx) - Adjust brightness, saturation, hue
+- [tint](./tint.mdx) - Apply color tint
+- [grayscale](./grayscale.mdx) - Convert to grayscale
+- [negate](./negate.mdx) - Invert colors
+
+## Advanced Examples
+
+### Night Vision Effect
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[0,1,0],[1,1,0],[0,0.5,0]]"
+```
+
+### Cross-Process Effect
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[1.1,0,-0.1],[0,1.1,0],[-0.1,0,1.1]]"
+```
+
+### Vintage Film Look
+
+```bash
+mediaproc image recomb photo.jpg --matrix "[[1,0.2,0],[0,0.9,0.1],[0,0,0.8]]"
+```
+
+## Further Reading
+
+- [Color Spaces](https://en.wikipedia.org/wiki/Color_space)
+- [RGB Color Model](https://en.wikipedia.org/wiki/RGB_color_model)
+- [Matrix Multiplication](https://en.wikipedia.org/wiki/Matrix_multiplication)
+- [Color Blindness](https://en.wikipedia.org/wiki/Color_blindness)

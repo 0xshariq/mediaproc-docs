@@ -1,6 +1,17 @@
-# modulate
+---
+title: Modulate
+description: Adjust brightness, saturation, and hue for perfect color balance
+---
 
-Adjust brightness, saturation, and hue.
+# Modulate
+
+Adjust brightness, saturation, and hue of images in a single operation. Modulate provides fine-grained control over image appearance, allowing you to brighten/darken, enhance/reduce color intensity, and shift colors for creative effects.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,212 +19,783 @@ Adjust brightness, saturation, and hue.
 mediaproc image modulate <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `modulate` command adjusts color properties: brightness (lightness), saturation (color intensity), and hue (color shift). Fine-tune images with precise control over color characteristics.
+```bash
+# Increase brightness by 20%
+mediaproc image modulate photo.jpg -b 1.2
+
+# Boost saturation by 50%
+mediaproc image modulate image.png -s 1.5
+
+# Rotate hue by 180 degrees
+mediaproc image modulate pic.jpg --hue 180
+
+# Adjust all parameters
+mediaproc image modulate photo.jpg -b 1.2 -s 1.3 --hue 30
+
+# Preview without executing
+mediaproc image modulate photo.jpg -b 1.5 --dry-run
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-b, --brightness` | number | 1 | Brightness multiplier (0-3, 1 = no change) |
-| `-s, --saturation` | number | 1 | Saturation multiplier (0-3, 1 = no change) |
-| `-h, --hue` | number | 0 | Hue rotation in degrees (0-360) |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option                 | Alias | Type    | Default                   | Description                                 |
+| ---------------------- | ----- | ------- | ------------------------- | ------------------------------------------- |
+| `--brightness <value>` | `-b`  | number  | `1`                       | Brightness multiplier (0.1-10, 1=no change) |
+| `--saturation <value>` | `-s`  | number  | `1`                       | Saturation multiplier (0.1-10, 1=no change) |
+| `--hue <degrees>`      |       | number  | `0`                       | Hue rotation in degrees (-360 to 360)       |
+| `--output <path>`      | `-o`  | string  | `<input>-modulated.<ext>` | Output file path                            |
+| `--quality <quality>`  | `-q`  | number  | `90`                      | Output quality (1-100) for lossy formats    |
+| `--dry-run`            |       | boolean | `false`                   | Show what would be done without executing   |
+| `--verbose`            | `-v`  | boolean | `false`                   | Show detailed processing information        |
+| `--help`               |       | boolean | `false`                   | Display help information                    |
 
-## Examples
+## Understanding Parameters
 
-### Brightness Adjustment
+### Brightness Multiplier
 
-```bash
-# Brighten image
-mediaproc image modulate dark.jpg -b 1.3 -o brighter.jpg
+The brightness value is a multiplier applied to pixel lightness:
 
-# Darken image
-mediaproc image modulate bright.jpg -b 0.7 -o darker.jpg
+- `< 1.0`: Darker (0.5 = 50% brightness)
+- `= 1.0`: No change (default)
+- `> 1.0`: Brighter (1.5 = 150% brightness)
 
-# Extreme brightness
-mediaproc image modulate photo.jpg -b 1.8 -o very-bright.jpg
-```
+**Formula**: `output_brightness = input_brightness × multiplier`
 
-### Saturation Adjustment
+### Saturation Multiplier
 
-```bash
-# Increase saturation (vibrant)
-mediaproc image modulate photo.jpg -s 1.4 -o vibrant.jpg
+The saturation value controls color intensity:
 
-# Decrease saturation
-mediaproc image modulate colorful.jpg -s 0.6 -o muted.jpg
+- `= 0.0`: Completely desaturated (grayscale)
+- `< 1.0`: Muted colors (0.5 = half saturation)
+- `= 1.0`: No change (default)
+- `> 1.0`: More vibrant (1.5 = 50% more saturated)
 
-# Remove color (grayscale effect)
-mediaproc image modulate image.jpg -s 0 -o desaturated.jpg
-
-# Maximum saturation
-mediaproc image modulate photo.jpg -s 2.0 -o super-saturated.jpg
-```
+**Formula**: `output_saturation = input_saturation × multiplier`
 
 ### Hue Rotation
 
-```bash
-# Shift hue 30 degrees
-mediaproc image modulate photo.jpg -h 30 -o hue-shifted.jpg
+The hue value rotates colors around the color wheel:
 
-# Complementary colors (180 degree shift)
-mediaproc image modulate image.jpg -h 180 -o complementary.jpg
+- `0°`: No change (default)
+- `30°`: Subtle color shift
+- `90°`: Quarter rotation (blue → magenta)
+- `180°`: Opposite colors (blue → yellow)
+- `360°`: Full circle (back to original)
 
-# Seasonal color shifts
-mediaproc image modulate summer.jpg -h 45 -o autumn-tones.jpg
-```
+**Formula**: `output_hue = (input_hue + rotation) % 360`
 
-### Combined Adjustments
+## Examples
 
-```bash
-# Enhance photo (brighter + more saturated)
-mediaproc image modulate photo.jpg -b 1.2 -s 1.3 -o enhanced.jpg
+### 1. Basic Brightness Adjustment
 
-# Muted, darker aesthetic
-mediaproc image modulate image.jpg -b 0.8 -s 0.7 -o moody.jpg
-
-# Vintage look (desaturate + darken)
-mediaproc image modulate modern.jpg -b 0.9 -s 0.6 -o vintage.jpg
-
-# Fantasy colors (hue shift + vibrant)
-mediaproc image modulate landscape.jpg -h 90 -s 1.5 -o fantasy.jpg
-```
-
-### Batch Color Grading
+Make image 20% brighter:
 
 ```bash
-# Apply consistent color grade
-for img in photos/*.jpg; do
-  mediaproc image modulate "$img" -b 1.1 -s 1.2 -o "graded-$(basename $img)"
-done
-
-# Seasonal transformation
-for img in *.jpg; do
-  mediaproc image modulate "$img" -h 30 -s 1.1 -o "autumn-$img"
-done
+mediaproc image modulate photo.jpg -b 1.2
 ```
 
-### Social Media Filters
+**Effect**: All pixels become lighter while maintaining color relationships.
+
+### 2. Darken Image
+
+Reduce brightness by 30%:
 
 ```bash
-# Warm filter
-mediaproc image modulate photo.jpg -h 15 -s 1.2 -b 1.1 -o warm.jpg
-
-# Cool filter
-mediaproc image modulate photo.jpg -h -15 -s 1.1 -b 0.95 -o cool.jpg
-
-# Pastel effect
-mediaproc image modulate image.jpg -s 0.7 -b 1.2 -o pastel.jpg
-
-# High contrast vivid
-mediaproc image modulate photo.jpg -s 1.5 -b 1.1 -o vivid.jpg
+mediaproc image modulate bright-photo.jpg -b 0.7
 ```
 
-## Parameter Guide
+**Result**: Outputs `bright-photo-modulated.jpg` that is darker and more dramatic.
 
-### Brightness
-- **< 1.0**: Darker (0.7 = 30% darker)
-- **1.0**: No change
-- **> 1.0**: Brighter (1.3 = 30% brighter)
-- **Range**: 0-3 (0 = black, 3 = very bright)
+### 3. Boost Saturation
 
-### Saturation
-- **0**: Grayscale (no color)
-- **< 1.0**: Desaturated/muted
-- **1.0**: Original colors
-- **> 1.0**: More vibrant
-- **Range**: 0-3 (2+ = highly saturated)
+Make colors 50% more vibrant:
 
-### Hue
-- **0**: No shift
-- **30-60**: Warm shift (orange/yellow)
-- **90**: Quarter rotation
-- **180**: Complementary colors
-- **-30 to -60**: Cool shift (blue/cyan)
-- **Range**: 0-360 degrees (wraps around)
+```bash
+mediaproc image modulate dull-photo.png -s 1.5
+```
+
+**Effect**: Colors become more vivid and eye-catching without changing brightness.
+
+### 4. Mute Colors
+
+Reduce saturation by 50% for subtle, muted look:
+
+```bash
+mediaproc image modulate vibrant-photo.jpg -s 0.5
+```
+
+**Style**: Creates pastel, vintage, or minimalist aesthetic.
+
+### 5. Create Grayscale Effect
+
+Remove all color saturation:
+
+```bash
+mediaproc image modulate color-photo.jpg -s 0
+```
+
+**Alternative**: Using modulate for grayscale allows combining with brightness/hue adjustments.
+
+### 6. Rotate Hue 180°
+
+Create color-inverted effect:
+
+```bash
+mediaproc image modulate landscape.jpg --hue 180
+```
+
+**Result**: Blue sky becomes yellow, green grass becomes magenta - creative artistic effect.
+
+### 7. Subtle Hue Shift
+
+Shift colors slightly for mood:
+
+```bash
+mediaproc image modulate photo.jpg --hue 30
+```
+
+**Effect**: Adds warm or cool tone depending on original colors.
+
+### 8. Combined Adjustments
+
+Brighten and enhance colors simultaneously:
+
+```bash
+mediaproc image modulate underexposed.jpg -b 1.3 -s 1.4
+```
+
+**Benefit**: Single operation performs multiple adjustments efficiently.
+
+### 9. Dark and Saturated
+
+Create moody, high-contrast look:
+
+```bash
+mediaproc image modulate photo.jpg -b 0.8 -s 1.5
+```
+
+**Style**: Popular for portrait and product photography.
+
+### 10. Bright and Muted
+
+Create light, airy aesthetic:
+
+```bash
+mediaproc image modulate image.jpg -b 1.3 -s 0.7
+```
+
+**Look**: Soft, dreamy, high-key photography style.
+
+### 11. All Three Parameters
+
+Maximum creative control:
+
+```bash
+mediaproc image modulate photo.jpg -b 1.2 -s 1.3 --hue 30 -o stylized.jpg
+```
+
+**Effect**: Comprehensive color grading in one command.
+
+### 12. Batch Color Correction
+
+Apply consistent adjustments to multiple images:
+
+```bash
+mediaproc image modulate "photos/*.jpg" -b 1.15 -s 1.2
+```
+
+**Use Case**: Consistent look across photo series or product images.
+
+### 13. Extreme Brightness
+
+Create high-key look:
+
+```bash
+mediaproc image modulate photo.jpg -b 2.0
+```
+
+**Effect**: Very bright, washed-out aesthetic with maximum lightness.
+
+### 14. Extreme Darkness
+
+Create low-key, dramatic effect:
+
+```bash
+mediaproc image modulate photo.jpg -b 0.3
+```
+
+**Result**: Very dark with only highlights visible.
+
+### 15. Custom Output Location
+
+Specify exact output path:
+
+```bash
+mediaproc image modulate input.jpg -b 1.2 -s 1.3 -o output/enhanced.jpg -q 95
+```
+
+**Control**: Full control over output location and quality.
+
+## Brightness Guide
+
+### Common Values
+
+```bash
+# Much darker (50% brightness)
+mediaproc image modulate photo.jpg -b 0.5
+
+# Slightly darker
+mediaproc image modulate photo.jpg -b 0.8
+
+# No change (default)
+mediaproc image modulate photo.jpg -b 1.0
+
+# Slightly brighter
+mediaproc image modulate photo.jpg -b 1.2
+
+# Much brighter (150%)
+mediaproc image modulate photo.jpg -b 1.5
+
+# Double brightness
+mediaproc image modulate photo.jpg -b 2.0
+```
+
+### Visual Effects
+
+- **0.3-0.5**: Very dark, low-key, dramatic
+- **0.6-0.8**: Darker, moody, cinematic
+- **0.9-1.1**: Subtle adjustment
+- **1.2-1.5**: Brighter, cheerful, airy
+- **1.6-2.0**: Very bright, high-key, ethereal
+
+## Saturation Guide
+
+### Common Values
+
+```bash
+# Completely desaturated (grayscale)
+mediaproc image modulate photo.jpg -s 0
+
+# Half saturation (muted)
+mediaproc image modulate photo.jpg -s 0.5
+
+# Subtle reduction
+mediaproc image modulate photo.jpg -s 0.8
+
+# No change (default)
+mediaproc image modulate photo.jpg -s 1.0
+
+# 50% more vibrant
+mediaproc image modulate photo.jpg -s 1.5
+
+# Double saturation (very vivid)
+mediaproc image modulate photo.jpg -s 2.0
+```
+
+### Visual Effects
+
+- **0.0**: Complete grayscale
+- **0.3-0.5**: Desaturated, vintage, muted
+- **0.6-0.8**: Slightly muted, elegant
+- **0.9-1.1**: Subtle adjustment
+- **1.2-1.6**: Enhanced, vivid, vibrant
+- **1.7-2.0**: Very intense, pop art style
+
+## Hue Rotation Effects
+
+### Rotation Guide
+
+```bash
+# No change
+mediaproc image modulate photo.jpg --hue 0
+
+# Subtle warm shift
+mediaproc image modulate photo.jpg --hue 30
+
+# Noticeable shift
+mediaproc image modulate photo.jpg --hue 60
+
+# Quarter rotation (blue → magenta)
+mediaproc image modulate photo.jpg --hue 90
+
+# Opposite colors (blue → yellow)
+mediaproc image modulate photo.jpg --hue 180
+
+# Three-quarter rotation
+mediaproc image modulate photo.jpg --hue 270
+
+# Full circle (back to original)
+mediaproc image modulate photo.jpg --hue 360
+```
+
+### Color Wheel Transformations
+
+- **0°**: Original colors
+- **30°**: Slight warm/cool shift
+- **60°**: Moderate shift (red → orange, blue → cyan)
+- **90°**: Quarter wheel (red → yellow, blue → magenta)
+- **120°**: Major shift (red → green, blue → red)
+- **180°**: Complementary colors (red → cyan, yellow → blue)
+- **240°**: Inverse shift (red → magenta, green → blue)
+- **360°/-0°**: Back to original
+
+### Negative Rotations
+
+```bash
+# Rotate backwards 30°
+mediaproc image modulate photo.jpg --hue -30
+
+# Rotate backwards 90°
+mediaproc image modulate photo.jpg --hue -90
+
+# Rotate backwards 180° (same as forward 180°)
+mediaproc image modulate photo.jpg --hue -180
+```
+
+## Use Cases
+
+### 1. Exposure Correction
+
+Fix underexposed photos:
+
+```bash
+mediaproc image modulate underexposed.jpg -b 1.4
+```
+
+**Benefit**: Quick brightness correction without complex curves.
+
+### 2. Color Grading
+
+Apply consistent color style:
+
+```bash
+mediaproc image modulate "photos/*.jpg" -b 1.1 -s 1.3 --hue 15
+```
+
+**Professional**: Create signature look across portfolio.
+
+### 3. Product Photography
+
+Enhance product appeal:
+
+```bash
+mediaproc image modulate product.jpg -b 1.15 -s 1.4
+```
+
+**Marketing**: Make products look brighter and more colorful.
+
+### 4. Vintage Effect
+
+Create retro, faded look:
+
+```bash
+mediaproc image modulate modern-photo.jpg -b 1.1 -s 0.6
+```
+
+**Style**: Instagram-style vintage filter.
+
+### 5. Cinematic Look
+
+Create movie-like color grading:
+
+```bash
+mediaproc image modulate footage.jpg -b 0.9 -s 1.2 --hue 10
+```
+
+**Atmosphere**: Moody, professional film appearance.
+
+### 6. High-Key Photography
+
+Create bright, minimalist look:
+
+```bash
+mediaproc image modulate portrait.jpg -b 1.5 -s 0.8
+```
+
+**Fashion**: Popular in fashion and beauty photography.
+
+### 7. Low-Key Photography
+
+Create dark, dramatic effect:
+
+```bash
+mediaproc image modulate portrait.jpg -b 0.6 -s 1.3
+```
+
+**Drama**: Emphasizes shadows and contrast.
+
+### 8. Landscape Enhancement
+
+Boost nature colors:
+
+```bash
+mediaproc image modulate landscape.jpg -b 1.1 -s 1.5 --hue -5
+```
+
+**Nature**: Makes skies bluer, grass greener.
+
+### 9. Portrait Warmth
+
+Add warm, flattering tones:
+
+```bash
+mediaproc image modulate portrait.jpg -b 1.1 -s 1.2 --hue 20
+```
+
+**Skin Tones**: Creates warm, inviting feeling.
+
+### 10. Creative Color Shifts
+
+Artistic recoloring:
+
+```bash
+mediaproc image modulate photo.jpg --hue 180 -s 1.5
+```
+
+**Art**: Surreal, psychedelic effects.
+
+## Common Combinations
+
+### Natural Enhancement
+
+Subtle, realistic improvements:
+
+```bash
+mediaproc image modulate photo.jpg -b 1.1 -s 1.2
+```
+
+**Use**: Everyday photo enhancement.
+
+### Instagram-Style
+
+Popular social media look:
+
+```bash
+mediaproc image modulate photo.jpg -b 1.2 -s 0.7 --hue 25
+```
+
+**Trend**: Warm, faded aesthetic.
+
+### Professional Product
+
+E-commerce ready:
+
+```bash
+mediaproc image modulate product.jpg -b 1.15 -s 1.4 -q 95
+```
+
+**Commercial**: Bright, appealing, accurate.
+
+### Moody Portrait
+
+Dramatic, artistic:
+
+```bash
+mediaproc image modulate portrait.jpg -b 0.85 -s 1.3 --hue -10
+```
+
+**Style**: Editorial, fashion photography.
+
+### Summer Vibes
+
+Bright and warm:
+
+```bash
+mediaproc image modulate photo.jpg -b 1.3 -s 1.4 --hue 30
+```
+
+**Mood**: Cheerful, energetic, tropical.
+
+### Winter Tones
+
+Cool and muted:
+
+```bash
+mediaproc image modulate photo.jpg -b 1.1 -s 0.9 --hue -20
+```
+
+**Atmosphere**: Cold, crisp, nordic.
+
+## Advanced Techniques
+
+### Incremental Adjustments
+
+Make small, controlled changes:
+
+```bash
+# Step 1: Brightness
+mediaproc image modulate photo.jpg -b 1.1 -o step1.jpg
+
+# Step 2: Saturation
+mediaproc image modulate step1.jpg -s 1.2 -o step2.jpg
+
+# Step 3: Hue
+mediaproc image modulate step2.jpg --hue 15 -o final.jpg
+```
+
+**Control**: Fine-tune each parameter separately.
+
+### A/B Testing
+
+Compare different settings:
+
+```bash
+# Version A
+mediaproc image modulate photo.jpg -b 1.2 -s 1.3 -o version-a.jpg
+
+# Version B
+mediaproc image modulate photo.jpg -b 1.1 -s 1.5 -o version-b.jpg
+```
+
+**Decision**: Choose best result by comparison.
+
+### Batch Consistency
+
+Apply same adjustments to series:
+
+```bash
+mediaproc image modulate "series/*.jpg" -b 1.15 -s 1.25 --hue 10
+```
+
+**Professional**: Consistent look across photo sets.
+
+## Performance Considerations
+
+### Processing Speed
+
+Modulate is very fast:
+
+- Typical image (<5MP): ~50-100ms
+- Large image (>10MP): ~100-200ms
+- Batch processing: ~100-150ms per image
+
+### Memory Usage
+
+Minimal memory overhead:
+
+- Small images: <50MB
+- Large images: <200MB
+- Multiple parameters: No additional memory
+
+### Quality Impact
+
+- Brightness: No quality loss
+- Saturation: No quality loss
+- Hue: No quality loss
+- Operations are lossless until final output encoding
+
+## Combining with Other Commands
+
+### Modulate + Contrast
+
+Color adjustment followed by contrast:
+
+```bash
+# Adjust colors
+mediaproc image modulate photo.jpg -b 1.2 -s 1.3 -o adjusted.jpg
+
+# Increase contrast
+mediaproc image linear adjusted.jpg -a 1.2
+```
+
+**Enhancement**: Better color and tonal range.
+
+### Modulate + Sharpen
+
+Color then detail enhancement:
+
+```bash
+mediaproc image modulate photo.jpg -b 1.1 -s 1.2 -o colored.jpg
+mediaproc image sharpen colored.jpg
+```
+
+**Professional**: Complete photo enhancement.
+
+### Auto-Enhance + Modulate
+
+Automatic then manual adjustments:
+
+```bash
+# Auto adjust
+mediaproc image auto-enhance photo.jpg -o auto.jpg
+
+# Fine-tune
+mediaproc image modulate auto.jpg -s 1.2 --hue 10
+```
+
+**Workflow**: Quick base + manual creative control.
+
+### Modulate + Vignette
+
+Color grading with vignette:
+
+```bash
+mediaproc image modulate photo.jpg -b 1.1 -s 1.3 -o graded.jpg
+mediaproc image vignette graded.jpg
+```
+
+**Cinematic**: Professional film look.
+
+## Troubleshooting
+
+### Issue: Colors Look Unnatural
+
+**Problem**: Excessive saturation or hue shift
+
+**Solution**: Use more subtle values:
+
+```bash
+# Instead of
+mediaproc image modulate photo.jpg -s 2.0 --hue 90
+
+# Try
+mediaproc image modulate photo.jpg -s 1.2 --hue 15
+```
+
+### Issue: Image Too Dark/Bright
+
+**Problem**: Extreme brightness values
+
+**Solution**: Stay within reasonable range:
+
+```bash
+# Avoid extremes
+mediaproc image modulate photo.jpg -b 0.5  # Too dark
+mediaproc image modulate photo.jpg -b 2.5  # Too bright
+
+# Use moderate values
+mediaproc image modulate photo.jpg -b 0.8  # Darker
+mediaproc image modulate photo.jpg -b 1.3  # Brighter
+```
+
+### Issue: Lost Detail in Shadows/Highlights
+
+**Problem**: Brightness pushed too far
+
+**Solution**: Combine with other adjustments:
+
+```bash
+# Instead of just brightness
+mediaproc image modulate dark-photo.jpg -b 1.8
+
+# Use moderate brightness + other tools
+mediaproc image modulate dark-photo.jpg -b 1.3 -o step1.jpg
+mediaproc image normalize step1.jpg
+```
+
+### Issue: Color Casts
+
+**Problem**: Unwanted color tints after hue rotation
+
+**Solution**: Fine-tune hue rotation:
+
+```bash
+# Adjust rotation incrementally
+mediaproc image modulate photo.jpg --hue 10 -o test1.jpg
+mediaproc image modulate photo.jpg --hue 20 -o test2.jpg
+# Compare and choose best
+```
+
+### Issue: Inconsistent Batch Results
+
+**Problem**: Different images need different adjustments
+
+**Solution**: Group by similarity:
+
+```bash
+# Bright images
+mediaproc image modulate "bright/*.jpg" -b 0.9 -s 1.2
+
+# Dark images
+mediaproc image modulate "dark/*.jpg" -b 1.3 -s 1.1
+```
 
 ## Best Practices
 
-1. **Subtle Changes**: Use small increments (±0.1-0.3)
-2. **Test Combinations**: Try different combinations
-3. **Monitor Preview**: Check results before batch processing
-4. **Quality**: Use 90+ quality for color-graded images
-5. **Consistent Grading**: Apply same values for uniform look
-6. **Save Presets**: Document successful combinations
+### 1. Start with Small Adjustments
 
-## Color Grading Presets
+Begin with subtle changes:
 
-### Warm & Inviting
 ```bash
--b 1.1 -s 1.2 -h 10
+mediaproc image modulate photo.jpg -b 1.1 -s 1.1 --dry-run
 ```
 
-### Cool & Modern
+Gradually increase if needed.
+
+### 2. Use Dry Run for Testing
+
+Preview before processing:
+
 ```bash
--b 0.95 -s 1.1 -h -10
+mediaproc image modulate photo.jpg -b 1.3 -s 1.5 --dry-run
 ```
 
-### Vintage/Film
+Verify settings and output path.
+
+### 3. Maintain Realism
+
+Keep adjustments natural (unless creating artistic effects):
+
+- Brightness: 0.7-1.3 range
+- Saturation: 0.8-1.5 range
+- Hue: ±30° for subtle effects
+
+### 4. Document Settings
+
+Record successful combinations:
+
 ```bash
--b 0.9 -s 0.7 -h 5
+# Portraits: warm and bright
+mediaproc image modulate portraits/*.jpg -b 1.15 -s 1.2 --hue 20
+
+# Landscapes: vivid colors
+mediaproc image modulate landscapes/*.jpg -b 1.1 -s 1.4 --hue -5
 ```
 
-### Vibrant/Pop
+### 5. Consider Original Quality
+
+Higher quality inputs allow more aggressive adjustments:
+
 ```bash
--b 1.15 -s 1.4 -h 5
+# RAW/high-quality
+mediaproc image modulate high-quality.jpg -b 1.3 -s 1.5
+
+# Compressed/low-quality
+mediaproc image modulate compressed.jpg -b 1.1 -s 1.2
 ```
 
-### Moody/Dark
+### 6. Test on Representative Samples
+
+Before batch processing:
+
 ```bash
--b 0.75 -s 0.8 -h -5
+# Test on one image
+mediaproc image modulate sample.jpg -b 1.2 -s 1.3
+
+# If good, apply to all
+mediaproc image modulate "all/*.jpg" -b 1.2 -s 1.3
 ```
 
-### Pastel/Soft
+### 7. Save High Quality
+
+Preserve quality for important work:
+
 ```bash
--b 1.2 -s 0.6 -h 15
+mediaproc image modulate photo.jpg -b 1.2 -s 1.3 -q 95
 ```
 
-## Common Use Cases
+## Related Commands
 
-- **Color Grading**: Apply consistent looks across photos
-- **Photo Enhancement**: Fix exposure and color issues
-- **Artistic Effects**: Create unique color palettes
-- **Brand Consistency**: Match brand color guidelines
-- **Seasonal Themes**: Transform summer to autumn colors
-- **Instagram Filters**: Recreate popular filter effects
-- **Product Photos**: Enhance product colors
-- **Mood Setting**: Create emotional tone through color
+- [linear](./linear.mdx) - Precise brightness/contrast with mathematical control
+- [auto-enhance](./auto-enhance.mdx) - Automatic brightness and color adjustments
+- [normalize](./normalize.mdx) - Automatic brightness normalization
+- [grayscale](./grayscale.mdx) - Remove all color (saturation to zero)
+- [sepia](./sepia.mdx) - Apply sepia tone color effect
 
-## When to Use
+## Further Reading
 
-✅ **Perfect for**:
-- Color correction
-- Artistic color grading
-- Creating filter effects
-- Brand color consistency
-- Seasonal themes
-
-❌ **Not ideal for**:
-- Precise color replacement (use tint instead)
-- White balance correction (use normalize)
-- Local adjustments (affects entire image)
-
-## Performance Tips
-
-- Fast operation suitable for batch processing
-- Combine all adjustments in one command
-- Process before resizing for better quality
-- Use consistent values for uniform look
-
-## See Also
-
-- [tint](./tint) - Apply color tints
-- [normalize](./normalize) - Auto-enhance contrast
-- [gamma](./gamma) - Adjust gamma curve
-- [linear](./linear) - Linear color adjustments
-- [grayscale](./grayscale) - Remove all color
-- [threshold](./threshold) - Convert to black/white
+- [HSL Color Space](https://en.wikipedia.org/wiki/HSL_and_HSV)
+- [Color Grading Techniques](https://en.wikipedia.org/wiki/Color_grading)
+- [Brightness in Photography](<https://en.wikipedia.org/wiki/Exposure_(photography)>)

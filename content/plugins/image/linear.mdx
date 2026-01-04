@@ -1,6 +1,11 @@
+---
+title: "linear"
+description: "Apply linear transformation to pixel values for precise brightness and contrast control"
+---
+
 # linear
 
-Apply linear color adjustment.
+Apply linear transformation to pixel values using the formula: `output = (a × input) + b`. Provides precise, reproducible control over image brightness and contrast with exact numerical values.
 
 ## Usage
 
@@ -8,31 +13,726 @@ Apply linear color adjustment.
 mediaproc image linear <input> [options]
 ```
 
-## Description
+### Basic Syntax
 
-The `linear` command applies linear multiplication and addition to color channels for precise color correction.
+```bash
+# Apply linear formula
+mediaproc image linear photo.jpg -a 1.5 -b 10
+
+# Increase contrast
+mediaproc image linear photo.jpg -a 1.3
+
+# Increase brightness
+mediaproc image linear photo.jpg -b 50
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-a, --alpha` | number | 1 | Multiplier (slope) |
-| `-b, --beta` | number | 0 | Offset (intercept) |
-| `-f, --format` | string | - | Output format |
-| `-q, --quality` | number | 80 | Output quality |
+| Option      | Alias | Type      | Default                | Description                          |
+| ----------- | ----- | --------- | ---------------------- | ------------------------------------ |
+| `--a`       | `-a`  | `number`  | `1`                    | Multiplier (contrast control)        |
+| `--b`       | `-b`  | `number`  | `0`                    | Offset (brightness control)          |
+| `--output`  | `-o`  | `string`  | `[input]-linear.[ext]` | Output file path                     |
+| `--quality` | `-q`  | `number`  | `90`                   | Output quality (1-100)               |
+| `--dry-run` |       | `boolean` | `false`                | Preview operation without saving     |
+| `--verbose` | `-v`  | `boolean` | `false`                | Show detailed processing information |
+
+## Formula
+
+```
+output = (a × input) + b
+
+Where:
+- input: Original pixel value (0-255)
+- a: Multiplier (contrast adjustment)
+- b: Offset (brightness adjustment)
+- output: Result pixel value (clamped to 0-255)
+```
+
+### Parameter Effects
+
+**Multiplier (a):**
+
+- `a > 1`: Increase contrast
+- `a = 1`: No contrast change
+- `a < 1`: Decrease contrast
+- `a = 0`: Solid gray (128)
+- `a < 0`: Invert contrast
+
+**Offset (b):**
+
+- `b > 0`: Increase brightness
+- `b = 0`: No brightness change
+- `b < 0`: Decrease brightness
 
 ## Examples
 
-```bash
-# Increase contrast
-mediaproc image linear photo.jpg -a 1.2 -b 0 -o contrasted.jpg
+### 1. Brightness Adjustment
 
-# Brighten
-mediaproc image linear dark.jpg -a 1 -b 20 -o brightened.jpg
+```bash
+# Increase brightness by 30
+mediaproc image linear dark.jpg -a 1 -b 30
+
+# Increase brightness by 50
+mediaproc image linear photo.jpg -b 50
+
+# Decrease brightness by 30
+mediaproc image linear bright.jpg -b -30
+
+# Maximum brightness increase
+mediaproc image linear very-dark.jpg -b 80
+```
+
+### 2. Contrast Adjustment
+
+```bash
+# Increase contrast by 30%
+mediaproc image linear flat.jpg -a 1.3
+
+# Increase contrast by 50%
+mediaproc image linear low-contrast.jpg -a 1.5
+
+# Decrease contrast by 20%
+mediaproc image linear harsh.jpg -a 0.8
+
+# Dramatic contrast increase
+mediaproc image linear photo.jpg -a 2.0
+```
+
+### 3. Combined Brightness and Contrast
+
+```bash
+# Brighten and increase contrast
+mediaproc image linear photo.jpg -a 1.2 -b 20
+
+# Darken and increase contrast
+mediaproc image linear photo.jpg -a 1.3 -b -20
+
+# Brighten and decrease contrast
+mediaproc image linear photo.jpg -a 0.8 -b 30
+
+# Balanced adjustment
+mediaproc image linear photo.jpg -a 1.1 -b 10
+```
+
+### 4. Special Effects
+
+```bash
+# Invert (negative)
+mediaproc image linear photo.jpg -a -1 -b 255
+
+# High-key effect (bright, low contrast)
+mediaproc image linear photo.jpg -a 0.5 -b 128
+
+# Low-key effect (dark, high contrast)
+mediaproc image linear photo.jpg -a 1.5 -b -40
+
+# Posterization effect
+mediaproc image linear photo.jpg -a 2 -b 0
+```
+
+### 5. Exposure Correction
+
+```bash
+# Underexposed (+1 stop equivalent)
+mediaproc image linear underexposed.jpg -a 2 -b 0
+
+# Underexposed (+0.5 stop)
+mediaproc image linear dark.jpg -a 1.4 -b 10
+
+# Overexposed (-0.5 stop)
+mediaproc image linear bright.jpg -a 0.7 -b 0
+
+# Severe underexposure correction
+mediaproc image linear very-dark.jpg -a 2.5 -b 20
+```
+
+### 6. Batch Processing with Consistent Values
+
+```bash
+# Apply same adjustment to all images
+for img in *.jpg; do
+  mediaproc image linear "$img" -a 1.2 -b 15 -o "adjusted/$(basename "$img")"
+done
+
+# Brighten dark photos
+for img in dark-photos/*.jpg; do
+  mediaproc image linear "$img" -a 1.3 -b 30 -o "corrected/$(basename "$img")"
+done
+
+# Reduce contrast in harsh photos
+for img in harsh/*.jpg; do
+  mediaproc image linear "$img" -a 0.8 -b 10 -o "softened/$(basename "$img")"
+done
+```
+
+### 7. Scientific Image Processing
+
+```bash
+# Normalize to specific range
+mediaproc image linear data.jpg -a 0.5 -b 64
+
+# Apply calibration curve
+mediaproc image linear measurement.jpg -a 1.15 -b 5
+
+# Standardize batch of scientific images
+for img in samples/*.jpg; do
+  mediaproc image linear "$img" -a 1.1 -b 0 -o "calibrated/$(basename "$img")"
+done
+```
+
+### 8. Quality Control
+
+```bash
+# Maximum quality output
+mediaproc image linear photo.jpg -a 1.2 -b 20 -q 100 -o high-quality.jpg
+
+# Web-optimized output
+mediaproc image linear photo.jpg -a 1.1 -b 10 -q 85 -o web-optimized.jpg
+
+# Balanced quality
+mediaproc image linear photo.jpg -a 1.3 -b 15 -q 90 -o balanced.jpg
+```
+
+### 9. Preview Operations
+
+```bash
+# Preview transformation
+mediaproc image linear photo.jpg -a 1.5 -b 20 --dry-run
+
+# Detailed preview
+mediaproc image linear photo.jpg -a 1.2 -b 10 --dry-run --verbose
+
+# Test different values
+mediaproc image linear photo.jpg -a 1.3 -b 0 --dry-run
+mediaproc image linear photo.jpg -a 1 -b 30 --dry-run
+mediaproc image linear photo.jpg -a 1.2 -b 15 --dry-run
+```
+
+### 10. Color Grading
+
+```bash
+# Slight lift (film look)
+mediaproc image linear photo.jpg -a 0.9 -b 20
+
+# Crushed blacks effect
+mediaproc image linear photo.jpg -a 1.2 -b -15
+
+# Lifted shadows, compressed highlights
+mediaproc image linear photo.jpg -a 0.85 -b 30
+
+# Cinematic look
+mediaproc image linear photo.jpg -a 1.1 -b 5
+```
+
+### 11. Histogram Manipulation
+
+```bash
+# Expand dynamic range
+mediaproc image linear compressed.jpg -a 1.5 -b -30
+
+# Compress dynamic range
+mediaproc image linear wide-range.jpg -a 0.7 -b 40
+
+# Shift histogram right (brighter)
+mediaproc image linear photo.jpg -a 1 -b 40
+
+# Shift histogram left (darker)
+mediaproc image linear photo.jpg -a 1 -b -40
+```
+
+### 12. Photography Workflow
+
+```bash
+# RAW-style adjustment
+mediaproc image linear raw-export.jpg -a 1.15 -b 8
+
+# Portrait brightening
+mediaproc image linear portrait.jpg -a 1.05 -b 15
+
+# Landscape contrast boost
+mediaproc image linear landscape.jpg -a 1.25 -b -5
+
+# Product photo adjustment
+mediaproc image linear product.jpg -a 1.1 -b 20
+```
+
+### 13. Document Enhancement
+
+```bash
+# Improve legibility
+mediaproc image linear scan.jpg -a 1.3 -b 10
+
+# Enhance faded document
+mediaproc image linear old-document.jpg -a 1.5 -b 20
+
+# Darken washed-out text
+mediaproc image linear faded.jpg -a 1.4 -b -10
+```
+
+### 14. Creative Effects
+
+```bash
+# Dreamy effect
+mediaproc image linear photo.jpg -a 0.7 -b 60
+
+# Gritty effect
+mediaproc image linear photo.jpg -a 1.6 -b -20
+
+# Washed-out vintage
+mediaproc image linear photo.jpg -a 0.6 -b 80
+
+# Moody dark
+mediaproc image linear photo.jpg -a 1.3 -b -30
+```
+
+### 15. Combining with Other Operations
+
+```bash
+# Auto-orient then linear adjust
+mediaproc image auto-orient photo.jpg -o temp.jpg
+mediaproc image linear temp.jpg -a 1.2 -b 15 -o final.jpg
+rm temp.jpg
+
+# Linear adjust then sharpen
+mediaproc image linear photo.jpg -a 1.1 -b 10 -o temp.jpg
+mediaproc image sharpen temp.jpg -o final.jpg
+rm temp.jpg
+
+# Grayscale then adjust contrast
+mediaproc image grayscale photo.jpg -o temp.jpg
+mediaproc image linear temp.jpg -a 1.4 -b 0 -o high-contrast-bw.jpg
+rm temp.jpg
+```
+
+## Use Cases
+
+### 1. Precise Exposure Correction
+
+- **Reproducible Adjustments**: Exact values for consistent results
+- **Batch Processing**: Same adjustment to multiple images
+- **Scientific Work**: Documented, repeatable corrections
+- **Client Specifications**: Meet exact brightness/contrast requirements
+
+### 2. Photography Workflow
+
+- **RAW Processing**: Fine-tune RAW exports
+- **Series Consistency**: Maintain look across photo series
+- **Style Matching**: Match specific visual style
+- **Color Grading Base**: Foundation for color grading
+
+### 3. Scientific and Medical Imaging
+
+- **Calibration**: Apply known calibration curves
+- **Standardization**: Normalize image sets
+- **Measurement Preparation**: Prepare for analysis
+- **Quality Control**: Consistent processing parameters
+
+### 4. Print Preparation
+
+- **Compensation**: Adjust for paper/ink characteristics
+- **Proofing**: Create accurate print previews
+- **Standards Compliance**: Meet printing specifications
+- **Batch Preparation**: Process print jobs consistently
+
+### 5. Web and Digital Media
+
+- **Optimization**: Precise web image adjustments
+- **Consistent Branding**: Maintain visual consistency
+- **Thumbnail Generation**: Standardized thumbnail brightness
+- **User Interface**: Button/icon brightness adjustment
+
+### 6. Document Processing
+
+- **Scan Enhancement**: Improve scanned document quality
+- **Legibility**: Enhance text readability
+- **Archive Preparation**: Standardize historical documents
+- **OCR Preparation**: Optimize for text recognition
+
+### 7. Creative Effects
+
+- **Film Looks**: Replicate film characteristics
+- **Mood Creation**: Specific atmospheric effects
+- **Style Development**: Create signature looks
+- **Artistic Expression**: Non-realistic adjustments
+
+## Technical Details
+
+### Linear Transformation Formula
+
+**Basic formula:**
+
+```
+output = (a × input) + b
+```
+
+**With clamping:**
+
+```
+output = clamp((a × input) + b, 0, 255)
+```
+
+### Examples with Real Values
+
+**Example 1: Brighten (a=1, b=50)**
+
+```
+Input: 100 → Output: (1 × 100) + 50 = 150
+Input: 200 → Output: (1 × 200) + 50 = 250
+Input: 220 → Output: (1 × 220) + 50 = 255 (clamped)
+```
+
+**Example 2: Increase Contrast (a=1.5, b=0)**
+
+```
+Input: 50  → Output: (1.5 × 50) + 0 = 75
+Input: 128 → Output: (1.5 × 128) + 0 = 192
+Input: 200 → Output: (1.5 × 200) + 0 = 255 (clamped)
+```
+
+**Example 3: Combined (a=1.2, b=20)**
+
+```
+Input: 50  → Output: (1.2 × 50) + 20 = 80
+Input: 128 → Output: (1.2 × 128) + 20 = 174
+Input: 200 → Output: (1.2 × 200) + 20 = 255 (clamped)
+```
+
+### Visual Effects
+
+**Contrast adjustment (a parameter):**
+
+```
+Original histogram:     After a=1.5:            After a=0.5:
+[...▂▃▅▇▅▃▂...]      → [▁▂▅██▅▂▁]           → [▃▄▅▆▅▄▃]
+                         (expanded)                (compressed)
+```
+
+**Brightness adjustment (b parameter):**
+
+```
+Original histogram:     After b=50:            After b=-50:
+    [▂▃▅▇▅▃▂]       →    [▂▃▅▇▅▃▂]         → [▂▃▅▇▅▃▂]
+                          (shifted right)        (shifted left)
+```
+
+### Common Parameter Combinations
+
+| Effect            | a    | b   | Result          |
+| ----------------- | ---- | --- | --------------- |
+| **Identity**      | 1.0  | 0   | No change       |
+| **Brighten mild** | 1.0  | 30  | +30 brightness  |
+| **Darken mild**   | 1.0  | -30 | -30 brightness  |
+| **Contrast +30%** | 1.3  | 0   | More contrast   |
+| **Contrast -20%** | 0.8  | 0   | Less contrast   |
+| **Invert**        | -1.0 | 255 | Negative        |
+| **High-key**      | 0.5  | 128 | Bright, flat    |
+| **Low-key**       | 1.5  | -40 | Dark, contrasty |
+| **Film lift**     | 0.9  | 20  | Lifted shadows  |
+
+### Limitations and Clamping
+
+**Output values are clamped:**
+
+```
+if (output < 0) output = 0;
+if (output > 255) output = 255;
+```
+
+**This means:**
+
+- Extreme adjustments lose detail
+- Highlights can blow out (a too large, b too large)
+- Shadows can crush (a too large, b too negative)
+- Moderate values (a: 0.5-2.0, b: -50 to 50) are safest
+
+### Performance Characteristics
+
+- **Speed**: Very fast (simple arithmetic per pixel)
+- **Memory**: Efficient (in-place when possible)
+- **Precision**: Floating-point calculation, integer output
+- **Color**: Applies to all channels equally (preserves hue)
+- **Alpha**: Preserved unchanged
+
+## Common Patterns
+
+### Pattern 1: Brighten Image
+
+```bash
+# Simple brightness increase
+mediaproc image linear photo.jpg -b 30
+```
+
+### Pattern 2: Increase Contrast
+
+```bash
+# Simple contrast increase
+mediaproc image linear photo.jpg -a 1.3
+```
+
+### Pattern 3: Brighten and Boost Contrast
+
+```bash
+# Most common adjustment
+mediaproc image linear photo.jpg -a 1.2 -b 20
+```
+
+### Pattern 4: Darken with More Contrast
+
+```bash
+# Moody, dramatic look
+mediaproc image linear photo.jpg -a 1.3 -b -20
+```
+
+### Pattern 5: Invert (Negative)
+
+```bash
+# Create negative
+mediaproc image linear photo.jpg -a -1 -b 255
+```
+
+## Troubleshooting
+
+### Issue: Blown Out Highlights
+
+**Problem**: Bright areas become pure white
+
+**Solutions**:
+
+```bash
+# Reduce multiplier
+mediaproc image linear photo.jpg -a 1.1 -b 20  # Instead of a=1.5
+
+# Reduce offset
+mediaproc image linear photo.jpg -a 1.2 -b 10  # Instead of b=30
+
+# Use negative offset to protect highlights
+mediaproc image linear photo.jpg -a 1.3 -b -10
+
+# Preview to test
+mediaproc image linear photo.jpg -a 1.5 -b 30 --dry-run
+```
+
+### Issue: Crushed Shadows
+
+**Problem**: Dark areas become pure black
+
+**Solutions**:
+
+```bash
+# Reduce multiplier
+mediaproc image linear photo.jpg -a 1.1 -b 20  # Instead of a=2.0
+
+# Add positive offset
+mediaproc image linear photo.jpg -a 1.2 -b 30  # Lifts shadows
+
+# Use moderate values
+mediaproc image linear photo.jpg -a 1.1 -b 15
+```
+
+### Issue: Too Flat/Low Contrast
+
+**Problem**: Image looks washed out
+
+**Solutions**:
+
+```bash
+# Increase multiplier
+mediaproc image linear photo.jpg -a 1.4 -b 0
+
+# Reduce offset if too bright
+mediaproc image linear photo.jpg -a 1.5 -b -10
+
+# Dramatic contrast boost
+mediaproc image linear photo.jpg -a 2.0 -b 0
+```
+
+### Issue: Image Too Dark Overall
+
+**Problem**: Entire image is too dark
+
+**Solutions**:
+
+```bash
+# Increase brightness offset
+mediaproc image linear photo.jpg -a 1 -b 50
+
+# Or combine with slight contrast increase
+mediaproc image linear photo.jpg -a 1.1 -b 40
+
+# Large brightness boost
+mediaproc image linear photo.jpg -a 1.2 -b 60
+```
+
+### Issue: Colors Look Wrong
+
+**Problem**: Colors appear off after adjustment
+
+**Solutions**:
+
+```bash
+# Linear applies to all channels equally
+# This is correct behavior - preserves color relationships
+
+# If colors need separate adjustment, use:
+# - modulate (HSL adjustments)
+# - recomb (channel mixing)
+# - curves (per-channel curves)
+
+# Linear is best for luminance-only adjustments
+mediaproc image linear photo.jpg -a 1.2 -b 15
+```
+
+### Issue: Hard to Find Right Values
+
+**Problem**: Trial and error to find good parameters
+
+**Solutions**:
+
+```bash
+# Start with conservative values
+# a: 1.0-1.3 (contrast)
+# b: 0-30 (brightness)
+
+# Preview quickly
+mediaproc image linear photo.jpg -a 1.2 -b 20 --dry-run
+mediaproc image linear photo.jpg -a 1.3 -b 15 --dry-run
+mediaproc image linear photo.jpg -a 1.1 -b 25 --dry-run
+
+# For brightness only, use b
+# For contrast only, use a
+# For both, combine moderately
+```
+
+## Best Practices
+
+1. **Start with Moderate Values**
+
+   - a: 0.8-1.5 (safe contrast range)
+   - b: -30 to 30 (safe brightness range)
+   - Test with --dry-run first
+   - Increase gradually
+
+2. **Use for Reproducibility**
+
+   - Document exact values used
+   - Apply same values to similar images
+   - Create processing scripts with fixed values
+   - Maintain consistency across projects
+
+3. **Preserve Originals**
+
+   - Keep original files
+   - Use descriptive output names
+   - Document adjustments
+   - Allow for re-processing
+
+4. **Combine Parameters Carefully**
+
+   - High a + high b = blown highlights
+   - High a + negative b = crushed shadows
+   - Moderate both for balanced results
+   - Preview combinations
+
+5. **Quality Management**
+
+   - Use high quality (90-100) for important images
+   - PNG for lossless adjustments
+   - JPEG for final output
+   - Consider re-compression impact
+
+6. **Scientific Work**
+
+   - Document formula and parameters
+   - Apply same transformation to all samples
+   - Maintain metadata
+   - Use lossless formats (PNG, TIFF)
+
+7. **Creative Work**
+   - Experiment with extreme values
+   - Create lookup tables for consistent looks
+   - Combine with other operations
+   - Test on representative images
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Grayscale then adjust contrast
+mediaproc image grayscale photo.jpg -o temp.jpg
+mediaproc image linear temp.jpg -a 1.4 -b 0 -o high-contrast-bw.jpg
+
+# Adjust then sharpen
+mediaproc image linear photo.jpg -a 1.2 -b 15 -o temp.jpg
+mediaproc image sharpen temp.jpg -o final.jpg
+
+# Resize then adjust
+mediaproc image resize photo.jpg -w 1920 -o temp.jpg
+mediaproc image linear temp.jpg -a 1.1 -b 10 -o final.jpg
+
+# Auto-enhance then fine-tune
+mediaproc image auto-enhance photo.jpg -o temp.jpg
+mediaproc image linear temp.jpg -a 1.05 -b 5 -o final.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Batch process with consistent linear adjustment
+
+input_dir="originals"
+output_dir="adjusted"
+
+# Parameters
+a_value=1.2
+b_value=15
+
+mkdir -p "$output_dir"
+
+for img in "$input_dir"/*.jpg; do
+  filename=$(basename "$img")
+  echo "Processing: $filename"
+
+  mediaproc image linear "$img" -a "$a_value" -b "$b_value" \
+    -o "$output_dir/$filename"
+done
+
+echo "Processed $(ls "$input_dir"/*.jpg | wc -l) images"
+echo "Used formula: ($a_value × input) + $b_value"
+```
+
+### Creating Custom LUTs
+
+```bash
+#!/bin/bash
+# Create consistent look for photo series
+
+series_dir="photo-series"
+output_dir="styled-series"
+
+mkdir -p "$output_dir"
+
+# Define style parameters
+style_a=1.15
+style_b=10
+
+for img in "$series_dir"/*.jpg; do
+  filename=$(basename "$img" .jpg)
+
+  # Apply linear transformation
+  mediaproc image linear "$img" -a "$style_a" -b "$style_b" \
+    -q 95 -o "$output_dir/${filename}-styled.jpg"
+done
+
+echo "Style applied: a=$style_a, b=$style_b"
 ```
 
 ## See Also
 
-- [gamma](./gamma) - Non-linear adjustment
-- [normalize](./normalize) - Auto-enhance
+- [gamma](./gamma) - Gamma correction (nonlinear adjustment)
+- [modulate](./modulate) - Adjust brightness, saturation, hue
+- [auto-enhance](./auto-enhance) - Automatic enhancement
+- [normalize](./normalize) - Normalize image levels
+- [clahe](./clahe) - Adaptive histogram equalization

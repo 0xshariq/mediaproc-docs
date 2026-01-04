@@ -1,0 +1,514 @@
+---
+title: Plugin Guidelines
+description: Standards and best practices for MediaProc plugin development
+---
+
+# Plugin Guidelines
+
+Follow these guidelines to create high-quality, maintainable MediaProc plugins that integrate seamlessly with the ecosystem.
+
+## Naming Conventions
+
+### Plugin Names
+
+- **Package name**: `@mediaproc/plugin-name`
+- **Command prefix**: `mediaproc plugin-name`
+- **Use lowercase**: `image`, `video`, `audio` (not `Image`, `VIDEO`)
+- **Use hyphens**: `smart-crop`, `auto-enhance` (not `smartCrop`, `auto_enhance`)
+- **Be descriptive**: `dominant-color` is better than `domcol`
+
+### File Names
+
+- **Commands**: `convert.ts`, `resize.ts`, `optimize.ts`
+- **Utilities**: `pathValidator.ts`, `formatHelper.ts`
+- **Types**: `types.ts` or `interfaces.ts`
+- **Tests**: `convert.test.ts`, `resize.spec.ts`
+
+### Function Names
+
+```typescript
+// Good
+export function resizeCommand(cmd: Command): void;
+export function validateImagePath(path: string): boolean;
+export function formatFileSize(bytes: number): string;
+
+// Avoid
+export function resize_cmd(cmd: Command): void;
+export function validatePath(path: string): boolean;
+export function fmt(bytes: number): string;
+```
+
+## Code Structure
+
+### Plugin Organization
+
+```
+plugin/
+├── package.json          # Package configuration
+├── tsconfig.json         # TypeScript config
+├── README.md            # Documentation
+├── LICENSE              # License file
+├── bin/
+│   └── cli.js           # Executable entry
+└── src/
+    ├── index.ts         # Main export
+    ├── cli.ts           # CLI setup
+    ├── register.ts      # Plugin registration
+    ├── types.ts         # Type definitions
+    ├── commands/        # Command implementations
+    │   ├── command1.ts
+    │   └── command2.ts
+    └── utils/           # Shared utilities
+        ├── helpers.ts
+        └── validators.ts
+```
+
+### Command Structure
+
+Every command should follow this pattern:
+
+```typescript
+import type { Command } from "commander";
+import chalk from "chalk";
+import ora from "ora";
+
+interface CommandOptions {
+  output?: string;
+  quality?: number;
+  verbose?: boolean;
+  dryRun?: boolean;
+}
+
+export function myCommand(pluginCmd: Command): void {
+  pluginCmd
+    .command("my-command <input>")
+    .description("Clear, concise description")
+    .option("-o, --output <path>", "Output file path")
+    .option("-q, --quality <number>", "Quality (1-100)", parseInt, 90)
+    .option("--dry-run", "Preview without executing")
+    .option("-v, --verbose", "Verbose output")
+    .action(async (input: string, options: CommandOptions) => {
+      const spinner = ora("Processing...").start();
+
+      try {
+        // 1. Validate inputs
+        validateInput(input, options);
+
+        // 2. Show dry-run preview
+        if (options.dryRun) {
+          spinner.info(chalk.blue("Dry run mode"));
+          console.log(chalk.dim(`Would process: ${input}`));
+          return;
+        }
+
+        // 3. Process
+        const result = await process(input, options);
+
+        // 4. Report success
+        spinner.succeed(chalk.green("Processing complete!"));
+
+        if (options.verbose) {
+          console.log(chalk.dim(`Output: ${result.output}`));
+        }
+      } catch (error) {
+        // 5. Handle errors
+        spinner.fail(chalk.red("Processing failed"));
+        if (options.verbose) {
+          console.error(chalk.red("Error:"), error);
+        } else {
+          console.error(chalk.red((error as Error).message));
+        }
+        process.exit(1);
+      }
+    });
+}
+
+function validateInput(input: string, options: CommandOptions): void {
+  if (!input) {
+    throw new Error("Input file is required");
+  }
+  if (options.quality && (options.quality < 1 || options.quality > 100)) {
+    throw new Error("Quality must be between 1 and 100");
+  }
+}
+
+async function process(input: string, options: CommandOptions): Promise<any> {
+  // Implementation
+}
+```
+
+## Standard Options
+
+All commands should support these standard options:
+
+### Required Options
+
+```typescript
+.option('-o, --output <path>', 'Output file path')
+.option('--dry-run', 'Preview without executing')
+.option('-v, --verbose', 'Verbose output')
+```
+
+### Common Options
+
+```typescript
+.option('-q, --quality <number>', 'Quality (1-100)', parseInt, 90)
+.option('-f, --format <format>', 'Output format')
+.option('--overwrite', 'Overwrite existing files')
+```
+
+### Avoid
+
+- Single-letter options without long form: `.option('-q')` ❌
+- Inconsistent naming: `--qual`, `--qlt` ❌
+- Unclear descriptions: `.option('-q', 'q')` ❌
+
+## Error Handling
+
+### Validation Errors
+
+```typescript
+if (!fs.existsSync(input)) {
+  throw new Error(`File not found: ${input}`);
+}
+
+if (options.width && options.width < 1) {
+  throw new Error("Width must be positive");
+}
+
+if (!SUPPORTED_FORMATS.includes(format)) {
+  throw new Error(
+    `Unsupported format: ${format}. Supported: ${SUPPORTED_FORMATS.join(", ")}`
+  );
+}
+```
+
+### Processing Errors
+
+```typescript
+try {
+  await processFile(input, options);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    spinner.fail(chalk.red("Invalid input"));
+    console.error(chalk.red(error.message));
+  } else if (error instanceof ProcessingError) {
+    spinner.fail(chalk.red("Processing failed"));
+    console.error(chalk.red(error.message));
+  } else {
+    spinner.fail(chalk.red("Unexpected error"));
+    if (options.verbose) {
+      console.error(error);
+    }
+  }
+  process.exit(1);
+}
+```
+
+### Batch Processing Errors
+
+```typescript
+let successCount = 0;
+let failCount = 0;
+
+for (const file of files) {
+  try {
+    await processFile(file);
+    successCount++;
+  } catch (error) {
+    console.error(chalk.red(`Failed: ${file} - ${error.message}`));
+    failCount++;
+  }
+}
+
+console.log(chalk.green(`✓ Success: ${successCount}`));
+if (failCount > 0) {
+  console.log(chalk.red(`✗ Failed: ${failCount}`));
+  process.exit(1);
+}
+```
+
+## User Experience
+
+### Progress Feedback
+
+```typescript
+// For single operations
+const spinner = ora("Processing image...").start();
+await process();
+spinner.succeed(chalk.green("✓ Image processed"));
+
+// For batch operations
+for (let i = 0; i < files.length; i++) {
+  spinner.text = `Processing ${i + 1}/${files.length}: ${files[i]}`;
+  await processFile(files[i]);
+}
+spinner.succeed(chalk.green(`✓ Processed ${files.length} files`));
+```
+
+### Informative Messages
+
+```typescript
+// Good
+console.log(chalk.green("✓ Resized image from 1920x1080 to 800x600"));
+console.log(chalk.blue("ℹ Using quality: 90"));
+console.log(
+  chalk.yellow("⚠ Output file already exists, use --overwrite to replace")
+);
+
+// Avoid
+console.log("done"); // Too vague
+console.log("Error"); // No context
+console.log("Processing...Processing...Processing..."); // Repetitive
+```
+
+### Verbose Mode
+
+```typescript
+if (options.verbose) {
+  console.log(chalk.blue("\nConfiguration:"));
+  console.log(chalk.dim(`  Input: ${input}`));
+  console.log(chalk.dim(`  Output: ${output}`));
+  console.log(chalk.dim(`  Quality: ${options.quality}`));
+  console.log(chalk.dim(`  Format: ${options.format}`));
+}
+```
+
+## Performance
+
+### Efficient Processing
+
+```typescript
+// Good: Process files in parallel when safe
+await Promise.all(files.map((file) => processFile(file)));
+
+// Good: Stream large files
+const stream = fs.createReadStream(input);
+await processStream(stream);
+
+// Avoid: Loading entire file into memory
+const content = await fs.readFile(largeFile); // May cause OOM
+```
+
+### Resource Management
+
+```typescript
+// Clean up temporary files
+try {
+  await processFile(input);
+} finally {
+  await fs.unlink(tempFile).catch(() => {});
+}
+
+// Close streams
+const stream = fs.createReadStream(input);
+try {
+  await processStream(stream);
+} finally {
+  stream.close();
+}
+```
+
+## Type Safety
+
+### Strong Typing
+
+```typescript
+// Good
+interface ResizeOptions {
+  width?: number;
+  height?: number;
+  fit?: "cover" | "contain" | "fill";
+  quality?: number;
+}
+
+function resize(input: string, options: ResizeOptions): Promise<void>;
+
+// Avoid
+function resize(input: any, options: any): any;
+```
+
+### Type Guards
+
+```typescript
+function isValidFormat(format: string): format is ImageFormat {
+  return ["jpg", "png", "webp"].includes(format);
+}
+
+if (isValidFormat(options.format)) {
+  // TypeScript knows format is ImageFormat here
+  await convert(input, options.format);
+}
+```
+
+## Documentation
+
+### Command Help
+
+```typescript
+pluginCmd
+  .command("resize <input>")
+  .description("Resize image to specified dimensions")
+  .option("-w, --width <pixels>", "Target width in pixels")
+  .option("-h, --height <pixels>", "Target height in pixels")
+  .option("--fit <mode>", "Fit mode: cover, contain, fill (default: cover)")
+  .example("resize image.jpg -w 800", "Resize to 800px width")
+  .example(
+    "resize image.jpg -w 800 -h 600 --fit contain",
+    "Resize with contain fit"
+  );
+```
+
+### Code Comments
+
+```typescript
+/**
+ * Resize image to specified dimensions
+ * @param input - Path to input image
+ * @param options - Resize options
+ * @returns Promise resolving to output path
+ * @throws {ValidationError} If input is invalid
+ * @throws {ProcessingError} If resize fails
+ */
+export async function resize(
+  input: string,
+  options: ResizeOptions
+): Promise<string> {
+  // Implementation
+}
+```
+
+### README Documentation
+
+Every plugin must include:
+
+- Clear description
+- Installation instructions
+- Usage examples
+- All commands documented
+- All options explained
+- License information
+
+## Testing
+
+### Unit Tests
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { validateInput } from "../src/commands/resize.js";
+
+describe("validateInput", () => {
+  it("should accept valid input", () => {
+    expect(() => validateInput("image.jpg", {})).not.toThrow();
+  });
+
+  it("should reject empty input", () => {
+    expect(() => validateInput("", {})).toThrow("Input file is required");
+  });
+
+  it("should reject invalid quality", () => {
+    expect(() => validateInput("image.jpg", { quality: 101 })).toThrow(
+      "Quality must be between 1 and 100"
+    );
+  });
+});
+```
+
+### Integration Tests
+
+```typescript
+import { execSync } from "child_process";
+import fs from "fs";
+
+describe("resize command", () => {
+  it("should resize image", () => {
+    execSync("mediaproc image resize test.jpg -w 800");
+    expect(fs.existsSync("test-resized.jpg")).toBe(true);
+  });
+});
+```
+
+## Security
+
+### Input Validation
+
+```typescript
+// Sanitize file paths
+import path from "path";
+
+function sanitizePath(input: string): string {
+  return path.normalize(input).replace(/^(\.\.(\/|\\|$))+/, "");
+}
+
+// Validate file extensions
+const ALLOWED_EXTENSIONS = [".jpg", ".png", ".webp"];
+
+function validateExtension(file: string): void {
+  const ext = path.extname(file).toLowerCase();
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    throw new Error(`Unsupported file type: ${ext}`);
+  }
+}
+```
+
+### Safe File Operations
+
+```typescript
+// Check file existence before overwriting
+if (fs.existsSync(output) && !options.overwrite) {
+  throw new Error(`Output file exists: ${output}. Use --overwrite to replace.`);
+}
+
+// Use safe file writing
+import { writeFile } from "fs/promises";
+
+await writeFile(output, data, { mode: 0o644 });
+```
+
+## Versioning
+
+Follow [Semantic Versioning](https://semver.org/):
+
+- **Major** (1.0.0 → 2.0.0): Breaking changes
+- **Minor** (1.0.0 → 1.1.0): New features, backward compatible
+- **Patch** (1.0.0 → 1.0.1): Bug fixes
+
+### Breaking Changes
+
+Document breaking changes clearly:
+
+```markdown
+## [2.0.0] - 2024-01-15
+
+### Breaking Changes
+
+- Removed deprecated `--quality-level` option
+- Changed default fit mode from 'fill' to 'cover'
+- Minimum Node.js version now 18.0.0
+
+### Migration Guide
+
+- Replace `--quality-level high` with `--quality 95`
+- Explicitly set `--fit fill` if you need the old behavior
+```
+
+## Publishing Checklist
+
+Before publishing a plugin:
+
+- [ ] All tests pass
+- [ ] TypeScript compiles without errors
+- [ ] README is complete and accurate
+- [ ] LICENSE file is included
+- [ ] Version follows semantic versioning
+- [ ] CHANGELOG is updated
+- [ ] Examples are tested and working
+- [ ] No sensitive information in code
+- [ ] Dependencies are up to date
+- [ ] Package.json is complete
+
+## Resources
+
+- [Creating Plugins](./creating-plugins.mdx) - Plugin development guide
+- [Plugin Integration](./plugin-integration.mdx) - Integration details
+- [Contributing](./contributing.mdx) - Contribution guidelines

@@ -1,79 +1,658 @@
+---
+title: "grayscale"
+description: "Convert color images to grayscale (black and white) for artistic effects and print preparation"
+---
+
 # grayscale
 
-Convert an image to grayscale (black and white).
+Convert color images to grayscale (black and white), removing all color information while preserving luminance. Perfect for creating artistic effects, reducing file sizes, or preparing images for black and white printing.
 
 ## Usage
 
 ```bash
 mediaproc image grayscale <input> [options]
+
+# Alternative spelling (UK)
+mediaproc image greyscale <input> [options]
 ```
 
-## Description
-
-The `grayscale` command removes all color information from an image, creating a black and white version. Uses perceptual luminance calculation for natural-looking results.
-
-## Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
-
-## Examples
-
-### Basic Conversion
+### Basic Syntax
 
 ```bash
 # Convert to grayscale
-mediaproc image grayscale input.jpg -o gray.jpg
+mediaproc image grayscale photo.jpg
 
-# Grayscale with format conversion
-mediaproc image grayscale photo.png -f webp -o bw.webp
+# With custom output
+mediaproc image grayscale photo.jpg -o blackandwhite.jpg
+
+# UK spelling works too
+mediaproc image greyscale photo.jpg
 ```
 
-### Batch Processing
+## Options
+
+| Option      | Alias | Type      | Default                   | Description                          |
+| ----------- | ----- | --------- | ------------------------- | ------------------------------------ |
+| `--output`  | `-o`  | `string`  | `[input]-grayscale.[ext]` | Output file path                     |
+| `--quality` | `-q`  | `number`  | `90`                      | Output quality (1-100)               |
+| `--dry-run` |       | `boolean` | `false`                   | Preview operation without saving     |
+| `--verbose` | `-v`  | `boolean` | `false`                   | Show detailed processing information |
+
+## Examples
+
+### 1. Basic Grayscale Conversion
 
 ```bash
-# Convert all images to grayscale
+# Simple conversion
+mediaproc image grayscale photo.jpg
+
+# With custom output name
+mediaproc image grayscale color-photo.jpg -o bw-photo.jpg
+
+# Using UK spelling
+mediaproc image greyscale portrait.jpg
+```
+
+### 2. High Quality Conversion
+
+```bash
+# Maximum quality for print
+mediaproc image grayscale photo.jpg -q 100 -o print-bw.jpg
+
+# Balanced quality for web
+mediaproc image grayscale photo.jpg -q 85 -o web-bw.jpg
+
+# Lower quality for smaller file size
+mediaproc image grayscale photo.jpg -q 75 -o small-bw.jpg
+```
+
+### 3. Portrait Photography
+
+```bash
+# Classic black and white portrait
+mediaproc image grayscale portrait.jpg -o portrait-bw.jpg
+
+# High-quality studio portrait
+mediaproc image grayscale studio-shot.jpg -q 100 -o studio-bw.jpg
+
+# Batch convert portrait session
+for img in portraits/*.jpg; do
+  mediaproc image grayscale "$img" -o "bw/$(basename "$img")"
+done
+```
+
+### 4. Artistic Photography
+
+```bash
+# Street photography
+mediaproc image grayscale street-photo.jpg -o street-bw.jpg
+
+# Architectural photography
+mediaproc image grayscale building.jpg -o architecture-bw.jpg
+
+# Fine art photography
+mediaproc image grayscale landscape.jpg -q 100 -o fine-art-bw.jpg
+```
+
+### 5. Document Processing
+
+```bash
+# Convert scanned documents
+mediaproc image grayscale scan-color.jpg -o scan-bw.jpg
+
+# Reduce file size for documents
+mediaproc image grayscale document.jpg -q 80 -o document-bw.jpg
+
+# Batch process documents
+for doc in documents/*.jpg; do
+  mediaproc image grayscale "$doc" -o "bw-docs/$(basename "$doc")"
+done
+```
+
+### 6. Social Media Content
+
+```bash
+# Instagram black and white
+mediaproc image grayscale post.jpg -o instagram-bw.jpg
+
+# Twitter header
+mediaproc image grayscale header.jpg -q 90 -o twitter-header-bw.jpg
+
+# Profile picture
+mediaproc image grayscale profile.jpg -o profile-bw.jpg
+```
+
+### 7. Print Preparation
+
+```bash
+# Newspaper print
+mediaproc image grayscale photo.jpg -q 85 -o newspaper.jpg
+
+# Magazine print (high quality)
+mediaproc image grayscale photo.jpg -q 100 -o magazine-print.jpg
+
+# Poster print
+mediaproc image grayscale design.jpg -q 95 -o poster-bw.jpg
+```
+
+### 8. Batch Processing
+
+```bash
+# Convert all JPGs in directory
 for img in *.jpg; do
-  mediaproc image grayscale "$img" -o "bw-$img"
+  mediaproc image grayscale "$img" -o "bw/$(basename "$img")"
 done
 
-# Grayscale for thumbnails
-find . -name "*.png" -exec mediaproc image grayscale {} -o {}_gray.png \;
+# Convert with consistent quality
+for img in photos/*.jpg; do
+  mediaproc image grayscale "$img" -q 90 -o "grayscale/$(basename "$img")"
+done
+
+# Convert multiple formats
+for img in *.{jpg,png,webp}; do
+  [ -f "$img" ] && mediaproc image grayscale "$img" -o "bw/${img%.*}-bw.${img##*.}"
+done
 ```
 
-### High-Quality Output
+### 9. Web Optimization
 
 ```bash
-# Grayscale for print
-mediaproc image grayscale photo.jpg -q 95 -o print-bw.jpg
+# Web-friendly grayscale
+mediaproc image grayscale photo.jpg -q 80 -o web-bw.jpg
 
-# Grayscale with optimization
-mediaproc image grayscale large.png -f jpg -q 70 -o optimized-bw.jpg
+# Thumbnail grayscale
+mediaproc image grayscale photo.jpg -q 75 -o thumb-bw.jpg
+
+# Hero image grayscale
+mediaproc image grayscale hero.jpg -q 90 -o hero-bw.jpg
+```
+
+### 10. Preview Before Converting
+
+```bash
+# Preview conversion
+mediaproc image grayscale photo.jpg --dry-run
+
+# Detailed preview
+mediaproc image grayscale photo.jpg --dry-run --verbose
+
+# Check file details
+mediaproc image grayscale large-image.jpg --dry-run --verbose
+```
+
+### 11. E-commerce Product Photos
+
+```bash
+# Product photo variant
+mediaproc image grayscale product.jpg -o product-bw.jpg
+
+# Batch convert product catalog
+for img in products/*.jpg; do
+  mediaproc image grayscale "$img" -q 90 -o "catalog-bw/$(basename "$img")"
+done
+
+# Create alternate product views
+mediaproc image grayscale main-product.jpg -o alternate-view.jpg
+```
+
+### 12. Historical Photo Effects
+
+```bash
+# Vintage look (start with grayscale)
+mediaproc image grayscale modern-photo.jpg -o vintage-base.jpg
+
+# Old photo restoration base
+mediaproc image grayscale faded-color.jpg -o restoration-base.jpg
+
+# Archive preparation
+mediaproc image grayscale historical.jpg -q 100 -o archive-bw.jpg
+```
+
+### 13. Logo and Brand Elements
+
+```bash
+# Logo black and white version
+mediaproc image grayscale logo-color.png -o logo-bw.png
+
+# Brand asset variant
+mediaproc image grayscale brand-image.jpg -o brand-bw.jpg
+
+# Icon grayscale version
+mediaproc image grayscale icon-color.svg -o icon-bw.svg
+```
+
+### 14. Scientific and Medical Imaging
+
+```bash
+# X-ray style conversion
+mediaproc image grayscale medical-image.jpg -q 100 -o xray-style.jpg
+
+# Scientific documentation
+mediaproc image grayscale specimen.jpg -q 100 -o scientific-doc.jpg
+
+# Research image preparation
+mediaproc image grayscale research-photo.jpg -o research-bw.jpg
+```
+
+### 15. Combining with Other Operations
+
+```bash
+# Grayscale then contrast adjustment
+mediaproc image grayscale photo.jpg -o temp.jpg
+mediaproc image linear temp.jpg -a 1.2 -o high-contrast-bw.jpg
+rm temp.jpg
+
+# Resize then convert to grayscale
+mediaproc image resize photo.jpg -w 1920 -o temp.jpg
+mediaproc image grayscale temp.jpg -o final-bw.jpg
+rm temp.jpg
+
+# Grayscale then sharpen
+mediaproc image grayscale photo.jpg -o temp.jpg
+mediaproc image sharpen temp.jpg -o sharp-bw.jpg
+rm temp.jpg
+```
+
+## Use Cases
+
+### 1. Artistic Photography
+
+- **Black and White Art**: Classic photographic art style
+- **Street Photography**: Emphasize composition over color
+- **Portrait Photography**: Timeless, classic look
+- **Fine Art Prints**: Gallery-quality black and white
+- **Documentary Photography**: Professional documentary style
+
+### 2. Print and Publishing
+
+- **Newspaper Printing**: Reduce costs with grayscale
+- **Magazine Layouts**: Artistic editorial choices
+- **Book Publishing**: Classic book photography
+- **Brochures**: Cost-effective printing option
+- **Newsletters**: Professional appearance
+
+### 3. Web and Digital Media
+
+- **File Size Reduction**: Smaller files load faster
+- **Bandwidth Optimization**: Reduce data usage
+- **Consistent Aesthetics**: Unified look across images
+- **Professional Websites**: Sophisticated appearance
+- **Blog Content**: Artistic blog photography
+
+### 4. Social Media Content
+
+- **Instagram Aesthetic**: Consistent black and white theme
+- **Profile Pictures**: Professional, timeless look
+- **Story Content**: Dramatic effect
+- **Post Themes**: Cohesive visual identity
+- **Brand Identity**: Recognizable style
+
+### 5. Document Processing
+
+- **Scan Optimization**: Reduce scanned document size
+- **Archive Preparation**: Standardize historical documents
+- **PDF Creation**: Smaller PDF file sizes
+- **Fax Preparation**: Optimize for fax transmission
+- **OCR Preparation**: Better text recognition
+
+### 6. E-commerce
+
+- **Product Variants**: Show product in different styles
+- **Catalog Consistency**: Uniform product presentation
+- **Size Reduction**: Faster page load times
+- **Print Catalogs**: Cost-effective printing
+- **Alternate Views**: Additional product perspectives
+
+### 7. Professional Services
+
+- **Legal Documents**: Professional document imaging
+- **Medical Records**: Standardized medical imaging
+- **Real Estate**: Professional property photos
+- **Corporate Materials**: Professional corporate imaging
+- **Resume/CV Photos**: Professional headshots
+
+## Technical Details
+
+### Grayscale Conversion Method
+
+The command uses Sharp's `grayscale()` method with perceptual luminance weighting:
+
+```
+Grayscale = 0.299 × Red + 0.587 × Green + 0.114 × Blue
+```
+
+This formula accounts for human eye sensitivity to different colors:
+
+- **Green** (58.7%): Eyes most sensitive to green
+- **Red** (29.9%): Moderate sensitivity
+- **Blue** (11.4%): Least sensitive
+
+### Visual Example
+
+```
+RGB(255, 0, 0) → Grayscale(76)    # Red
+RGB(0, 255, 0) → Grayscale(150)   # Green (brightest)
+RGB(0, 0, 255) → Grayscale(29)    # Blue (darkest)
+RGB(128, 128, 128) → Grayscale(128) # Gray (unchanged)
+```
+
+### File Size Benefits
+
+**Typical File Size Reduction:**
+
+- **JPEG**: 30-40% smaller (grayscale vs color)
+- **PNG**: 40-50% smaller (single channel vs RGB)
+- **WebP**: 35-45% smaller
+- **Reason**: Single channel (grayscale) vs three channels (RGB)
+
+**Example:**
+
+```
+Color JPEG: 2.5 MB
+Grayscale JPEG: 1.7 MB (32% reduction)
+
+Color PNG: 4.0 MB
+Grayscale PNG: 2.2 MB (45% reduction)
+```
+
+### Color Space Details
+
+- **Input**: RGB or RGBA
+- **Output**: Single-channel grayscale
+- **Alpha Channel**: Preserved if present (becomes grayscale + alpha)
+- **Color Profile**: sRGB luminance conversion
+- **Bit Depth**: Maintains input bit depth
+
+### Performance Characteristics
+
+- **Speed**: Very fast (simple channel operation)
+- **Memory**: Efficient (reduces channel count)
+- **Quality**: No interpolation, direct calculation
+- **CPU**: Minimal processing per pixel
+- **Format Support**: All image formats
+
+### Quality Considerations
+
+**Quality Settings:**
+
+- **100**: Lossless/maximum quality (large files)
+- **90-95**: High quality (recommended for print)
+- **85-90**: Good quality (recommended for web)
+- **75-85**: Balanced quality (smaller files)
+- **60-75**: Lower quality (smallest files)
+
+**Format Recommendations:**
+
+- **JPEG**: Best for photographs (good compression)
+- **PNG**: Best for graphics/text (lossless)
+- **WebP**: Best for web (good compression + quality)
+
+## Common Patterns
+
+### Pattern 1: Simple Conversion
+
+```bash
+# Most common use case
+mediaproc image grayscale photo.jpg
+```
+
+### Pattern 2: High-Quality Print
+
+```bash
+# Maximum quality for printing
+mediaproc image grayscale photo.jpg -q 100 -o print.jpg
+```
+
+### Pattern 3: Web-Optimized
+
+```bash
+# Balanced quality for web
+mediaproc image grayscale photo.jpg -q 85 -o web.jpg
+```
+
+### Pattern 4: Batch Conversion
+
+```bash
+# Convert all images in folder
+for img in *.jpg; do
+  mediaproc image grayscale "$img" -o "bw/$(basename "$img")"
+done
+```
+
+### Pattern 5: File Size Reduction
+
+```bash
+# Reduce size with grayscale and quality
+mediaproc image grayscale large.jpg -q 75 -o optimized.jpg
+```
+
+## Troubleshooting
+
+### Issue: Image Already Looks Grayscale
+
+**Problem**: Converting grayscale image again
+
+**Solutions**:
+
+```bash
+# Check if image is already grayscale
+mediaproc image metadata photo.jpg
+
+# Look for: channels: 1 (grayscale) vs channels: 3 (color)
+
+# Converting grayscale to grayscale is harmless but unnecessary
+# Output will be identical to input
+```
+
+### Issue: Unexpected Brightness
+
+**Problem**: Grayscale version appears darker/lighter than expected
+
+**Solutions**:
+
+```bash
+# This is normal - colors convert to different grayscale values
+# Red: 76, Green: 150, Blue: 29
+
+# Bright colors (green) → brighter grayscale
+# Dark colors (blue) → darker grayscale
+
+# Adjust brightness after conversion if needed
+mediaproc image grayscale photo.jpg -o temp.jpg
+mediaproc image linear temp.jpg -a 1.2 -o brighter-bw.jpg
+```
+
+### Issue: File Size Not Reduced
+
+**Problem**: Grayscale file is same size as color
+
+**Solutions**:
+
+```bash
+# File size depends on format and quality
+# JPEG: Compression matters more than channels
+
+# Try lower quality for size reduction
+mediaproc image grayscale photo.jpg -q 75 -o smaller.jpg
+
+# Or use more efficient format
+mediaproc image grayscale photo.jpg -o photo.webp
+
+# PNG will show biggest size reduction
+mediaproc image grayscale photo.png -o smaller.png
+```
+
+### Issue: Quality Loss
+
+**Problem**: Grayscale image appears degraded
+
+**Solutions**:
+
+```bash
+# Increase quality setting
+mediaproc image grayscale photo.jpg -q 100 -o high-quality.jpg
+
+# Use lossless format
+mediaproc image grayscale photo.jpg -o lossless.png
+
+# Grayscale conversion itself is lossless
+# Quality loss is from output format compression
+```
+
+### Issue: Color Bleeding
+
+**Problem**: Slight color tint visible in grayscale
+
+**Solutions**:
+
+```bash
+# Ensure complete grayscale conversion
+# Convert twice if needed (shouldn't be necessary)
+mediaproc image grayscale photo.jpg -o temp.jpg
+mediaproc image grayscale temp.jpg -o final.jpg
+
+# Or save as PNG to avoid JPEG artifacts
+mediaproc image grayscale photo.jpg -o clean.png
+```
+
+### Issue: UK vs US Spelling
+
+**Problem**: Not sure which spelling to use
+
+**Solutions**:
+
+```bash
+# Both spellings work identically
+mediaproc image grayscale photo.jpg  # US spelling
+mediaproc image greyscale photo.jpg  # UK spelling
+
+# Use whichever you prefer
+# Output is identical
 ```
 
 ## Best Practices
 
-1. **Quality Matters**: Use 90+ quality for important images
-2. **Format Choice**: JPEG works well for grayscale photos
-3. **File Size**: Grayscale images are typically smaller than color
-4. **Combine Effects**: Apply grayscale before other effects
-5. **Artistic Use**: Great for dramatic, timeless looks
+1. **Choose Appropriate Quality**
 
-## Common Use Cases
+   - Print: Use quality 95-100
+   - Web: Use quality 80-90
+   - Thumbnails: Use quality 70-80
+   - Archives: Use quality 100 with PNG
 
-- **Artistic Photography**: Create classic black and white images
-- **Print Media**: Newspaper/magazine style images
-- **Accessibility**: Improve clarity for some visual conditions
-- **Thumbnails**: Reduce file size for preview images
-- **Vintage Effect**: Combine with sepia or other effects
-- **Document Processing**: Convert scans to grayscale
+2. **Consider Output Format**
+
+   - JPEG: Best for photographs
+   - PNG: Best for graphics/text
+   - WebP: Best compression for web
+   - TIFF: Best for archival
+
+3. **Preserve Originals**
+
+   - Keep color originals
+   - Create grayscale copies
+   - Use descriptive file names
+   - Organize in separate folders
+
+4. **Batch Processing Efficiency**
+
+   - Process similar images together
+   - Use consistent quality settings
+   - Create organized output structure
+   - Test with one image first
+
+5. **File Size Management**
+
+   - Lower quality for smaller files
+   - Use efficient formats (WebP)
+   - Balance quality vs size
+   - Consider use case requirements
+
+6. **Creative Workflow**
+
+   - Convert to grayscale early
+   - Easier to see composition
+   - Adjust contrast after conversion
+   - Fine-tune brightness as needed
+
+7. **Professional Output**
+   - Maximum quality for client delivery
+   - Consistent settings for series
+   - Document conversion parameters
+   - Maintain metadata when possible
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Auto-enhance then convert to grayscale
+mediaproc image auto-enhance photo.jpg -o enhanced.jpg
+mediaproc image grayscale enhanced.jpg -o final-bw.jpg
+
+# Grayscale then increase contrast
+mediaproc image grayscale photo.jpg -o temp.jpg
+mediaproc image linear temp.jpg -a 1.3 -o high-contrast.jpg
+
+# Resize then convert to grayscale
+mediaproc image resize photo.jpg -w 1920 -h 1080 -o temp.jpg
+mediaproc image grayscale temp.jpg -o final.jpg
+
+# Grayscale then apply sepia
+mediaproc image grayscale photo.jpg -o bw.jpg
+mediaproc image sepia bw.jpg -o sepia-toned.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Convert and organize photo series to black and white
+
+input_dir="originals"
+output_dir="grayscale"
+
+mkdir -p "$output_dir"
+
+for img in "$input_dir"/*.jpg; do
+  filename=$(basename "$img" .jpg)
+
+  echo "Converting: $filename"
+
+  # Convert to grayscale
+  mediaproc image grayscale "$img" -q 90 -o "$output_dir/${filename}-bw.jpg"
+
+  # Also create thumbnail
+  mediaproc image resize "$output_dir/${filename}-bw.jpg" -w 400 -h 400 --fit cover -o "$output_dir/thumbs/${filename}-thumb.jpg"
+done
+
+echo "Conversion complete!"
+```
+
+### Creating Print-Ready Files
+
+```bash
+#!/bin/bash
+# Prepare images for black and white printing
+
+input="photo.jpg"
+output_base="print-ready"
+
+# 1. Convert to high-quality grayscale
+mediaproc image grayscale "$input" -q 100 -o "${output_base}-bw.jpg"
+
+# 2. Adjust for print (slightly lighter)
+mediaproc image linear "${output_base}-bw.jpg" -a 1 -b 10 -o "${output_base}-adjusted.jpg"
+
+# 3. Sharpen for print
+mediaproc image sharpen "${output_base}-adjusted.jpg" -o "${output_base}-final.jpg"
+
+echo "Print-ready file created: ${output_base}-final.jpg"
+```
 
 ## See Also
 
-- [sepia](./sepia) - Vintage brown tone effect
-- [threshold](./threshold) - Convert to pure black and white
-- [normalize](./normalize) - Enhance contrast after grayscale
-- [modulate](./modulate) - Adjust brightness/saturation
+- [sepia](./sepia) - Apply sepia tone effect (warm vintage look)
+- [modulate](./modulate) - Adjust brightness, saturation, hue
+- [linear](./linear) - Linear brightness and contrast adjustment
+- [normalize](./normalize) - Normalize image levels
+- [threshold](./threshold) - Convert to pure black and white (no gray)

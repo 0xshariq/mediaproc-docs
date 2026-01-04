@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 
 interface TOCItem {
@@ -10,10 +10,9 @@ interface TOCItem {
 }
 
 export function TableOfContents() {
-  const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
-  useEffect(() => {
+  const headings = useMemo(() => {
     // Extract headings from the page
     const elements = Array.from(document.querySelectorAll('h1, h2, h3'));
     const items: TOCItem[] = elements
@@ -23,8 +22,12 @@ export function TableOfContents() {
         title: el.textContent || '',
         level: parseInt(el.tagName.substring(1)),
       }));
-    setHeadings(items);
+    return items;
+  }, []);
 
+  useEffect(() => {
+    const elements = Array.from(document.querySelectorAll('h1, h2, h3'));
+    
     // Set up intersection observer for active heading
     const observer = new IntersectionObserver(
       (entries) => {
@@ -65,8 +68,8 @@ export function TableOfContents() {
                 className={`
                   block text-sm py-1.5 transition-all duration-200
                   border-l-2 
-                  ${isActive 
-                    ? 'border-primary text-primary font-medium pl-4' 
+                  ${isActive
+                    ? 'border-primary text-primary font-medium pl-4'
                     : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted hover:pl-4 pl-3'
                   }
                 `}

@@ -1,6 +1,17 @@
-# normalize
+---
+title: Normalize
+description: Enhance contrast automatically using histogram stretching
+---
 
-Normalize image contrast by stretching luminance values.
+# Normalize
+
+Automatically enhance image contrast by stretching the histogram to use the full dynamic range. Normalize adjusts brightness and contrast to improve visibility and overall image quality without manual adjustments.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,120 +19,643 @@ Normalize image contrast by stretching luminance values.
 mediaproc image normalize <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `normalize` command enhances image contrast by stretching the luminance range to use the full available spectrum. Automatically adjusts brightness and contrast for optimal visual appearance.
+```bash
+# Enhance contrast automatically
+mediaproc image normalize photo.jpg
+
+# Specify output location
+mediaproc image normalize dark-image.png -o enhanced.png
+
+# High quality output
+mediaproc image normalize pic.jpg -q 95
+
+# Preview without executing
+mediaproc image normalize photo.jpg --dry-run
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
-| `--lower` | number | 1 | Lower percentile for normalization |
-| `--upper` | number | 99 | Upper percentile for normalization |
+| Option                | Alias | Type    | Default                    | Description                               |
+| --------------------- | ----- | ------- | -------------------------- | ----------------------------------------- |
+| `--output <path>`     | `-o`  | string  | `<input>-normalized.<ext>` | Output file path                          |
+| `--quality <quality>` | `-q`  | number  | `90`                       | Output quality (1-100) for lossy formats  |
+| `--dry-run`           |       | boolean | `false`                    | Show what would be done without executing |
+| `--verbose`           | `-v`  | boolean | `false`                    | Show detailed processing information      |
+| `--help`              |       | boolean | `false`                    | Display help information                  |
+
+## How Normalize Works
+
+Normalization enhances contrast through histogram stretching:
+
+1. **Analyze Histogram**: Examines the distribution of pixel values
+2. **Find Range**: Identifies darkest and brightest pixels
+3. **Stretch Histogram**: Maps darkest pixel to black (0) and brightest to white (255)
+4. **Redistribute Values**: All other pixels are proportionally adjusted
+
+### Formula
+
+For each pixel:
+
+```
+normalized_value = (original_value - min_value) × (255 / (max_value - min_value))
+```
+
+### Effect
+
+- **Darkest pixel** → Black (0)
+- **Brightest pixel** → White (255)
+- **Mid-tones** → Spread across full range
+- **Contrast** → Maximum possible for image content
 
 ## Examples
 
-### Basic Normalization
+### 1. Basic Contrast Enhancement
+
+Enhance a dull, low-contrast image:
 
 ```bash
-# Auto-enhance contrast
-mediaproc image normalize dull.jpg -o enhanced.jpg
-
-# Normalize with custom range
-mediaproc image normalize photo.png --lower 2 --upper 98 -o balanced.png
+mediaproc image normalize flat-image.jpg
 ```
 
-### Fix Underexposed Images
+**Result**: Outputs `flat-image-normalized.jpg` with improved contrast and visibility.
+
+### 2. Fix Underexposed Photo
+
+Brighten a too-dark image:
 
 ```bash
-# Recover dark image
-mediaproc image normalize dark-photo.jpg -o brightened.jpg
+mediaproc image normalize dark-photo.png
+```
 
-# Fix overexposed image
+**Effect**: Dark image is brightened and contrast is enhanced automatically.
+
+### 3. Fix Overexposed Photo
+
+Improve washed-out, too-bright image:
+
+```bash
 mediaproc image normalize washed-out.jpg -o corrected.jpg
 ```
 
-### Batch Enhancement
+**Benefit**: Recovers detail in bright areas and improves overall contrast.
+
+### 4. Enhance Scanned Document
+
+Improve scanned document readability:
 
 ```bash
-# Normalize all photos
-for img in *.jpg; do
-  mediaproc image normalize "$img" -o "enhanced-$img"
-done
-
-# Normalize scanned documents
-find scans/ -name "*.png" -exec mediaproc image normalize {} -o {} \;
+mediaproc image normalize scan.jpg -q 100
 ```
 
-### Combined with Other Effects
+**Quality**: High quality output preserves text clarity.
+
+### 5. Batch Processing
+
+Normalize multiple old photos:
 
 ```bash
-# Normalize then sharpen
-mediaproc image normalize blurry.jpg -o norm.jpg
-mediaproc image sharpen norm.jpg -s 1 -o final.jpg
-
-# Normalize grayscale
-mediaproc image grayscale photo.jpg -o gray.jpg
-mediaproc image normalize gray.jpg -o enhanced-bw.jpg
+mediaproc image normalize "old-photos/*.jpg"
 ```
 
-## Parameters Explained
+**Output**: Creates `*-normalized.jpg` for each input with consistent enhancement.
 
-### Lower/Upper Percentiles
+### 6. Poor Lighting Correction
 
-- **Default (1-99)**: Balanced normalization
-- **Aggressive (2-98)**: More dramatic enhancement
-- **Conservative (0.5-99.5)**: Subtle improvement
-- **Extreme (5-95)**: Maximum contrast boost
+Fix images with bad lighting:
+
+```bash
+mediaproc image normalize poorly-lit.png
+```
+
+**Result**: Compensates for poor lighting conditions automatically.
+
+### 7. Custom Quality
+
+Normalize with specific output quality:
+
+```bash
+mediaproc image normalize photo.jpg -q 95 -o enhanced.jpg
+```
+
+**Control**: High quality for important images.
+
+### 8. Medical Imaging
+
+Enhance medical scans:
+
+```bash
+mediaproc image normalize xray.png
+```
+
+**Application**: Improves visibility of diagnostic features.
+
+### 9. Surveillance Footage
+
+Enhance low-light surveillance images:
+
+```bash
+mediaproc image normalize security-cam.jpg
+```
+
+**Security**: Better visibility in poor lighting conditions.
+
+### 10. Product Photography
+
+Standardize product photo exposure:
+
+```bash
+mediaproc image normalize product.jpg -o web-ready.jpg
+```
+
+**Consistency**: Uniform appearance across product catalog.
+
+### 11. Preview Before Processing
+
+Check normalization effect:
+
+```bash
+mediaproc image normalize test.jpg --dry-run
+```
+
+**Safety**: Verify operation before creating output file.
+
+### 12. Artistic Photography
+
+Create high-contrast artistic look:
+
+```bash
+mediaproc image normalize artistic.jpg
+```
+
+**Style**: Maximum contrast for dramatic effect.
+
+### 13. Microscope Images
+
+Enhance microscope photography:
+
+```bash
+mediaproc image normalize microscope-sample.png -q 100
+```
+
+**Scientific**: Better visualization of specimen details.
+
+### 14. Astronomical Images
+
+Improve star field visibility:
+
+```bash
+mediaproc image normalize starfield.jpg
+```
+
+**Astronomy**: Reveal faint stars and nebulae.
+
+### 15. Verbose Processing
+
+See detailed processing information:
+
+```bash
+mediaproc image normalize photo.jpg --verbose
+```
+
+**Debugging**: Shows dimensions, format, and processing details.
+
+## When to Use Normalize
+
+### Perfect For
+
+1. **Underexposed Images**: Too dark, need brightening
+2. **Overexposed Images**: Too bright, washed out
+3. **Low Contrast**: Flat, dull appearance
+4. **Poor Lighting**: Images shot in bad lighting conditions
+5. **Scanned Documents**: Improve readability
+6. **Old Photos**: Restore faded photographs
+7. **Batch Corrections**: Consistent enhancement across multiple images
+
+### May Not Help
+
+1. **Well-Exposed Images**: Already have good contrast
+2. **Intentional Low-Key**: Dark, moody photography
+3. **Intentional High-Key**: Bright, ethereal aesthetic
+4. **Extremely Damaged**: Severe over/underexposure may lose detail
+
+## Technical Details
+
+### Histogram Stretching
+
+The algorithm:
+
+1. Find minimum pixel value (darkest): `min = 15`
+2. Find maximum pixel value (brightest): `max = 240`
+3. Calculate range: `range = 240 - 15 = 225`
+4. Stretch to full range (0-255):
+   - Old min (15) → New 0
+   - Old max (240) → New 255
+   - Mid-values proportionally adjusted
+
+### Per-Channel Processing
+
+For RGB images:
+
+- Red, Green, and Blue channels normalized independently
+- Preserves color relationships
+- Avoids color shifts
+- Maintains white balance
+
+### Alpha Channel
+
+Transparency is preserved:
+
+- Alpha channel not normalized
+- Transparent areas remain transparent
+- Only RGB channels affected
+
+### Performance
+
+Normalization is very fast:
+
+- Small image (<1MP): ~10-20ms
+- Medium image (5MP): ~30-50ms
+- Large image (20MP): ~100-150ms
+- Very efficient, single-pass algorithm
+
+## Combining with Other Commands
+
+### Normalize + Sharpen
+
+Enhance contrast then sharpen details:
+
+```bash
+# Normalize first
+mediaproc image normalize dull-photo.jpg -o normalized.jpg
+
+# Then sharpen
+mediaproc image sharpen normalized.jpg
+```
+
+**Benefit**: Improved contrast allows more effective sharpening.
+
+### Normalize + Auto-Enhance
+
+Combine automatic adjustments:
+
+```bash
+# Normalize contrast
+mediaproc image normalize photo.jpg -o step1.jpg
+
+# Auto-enhance colors
+mediaproc image auto-enhance step1.jpg
+```
+
+**Result**: Comprehensive automatic enhancement.
+
+### Grayscale + Normalize
+
+Convert to grayscale then enhance:
+
+```bash
+# Convert to grayscale
+mediaproc image grayscale color-photo.jpg -o gray.jpg
+
+# Normalize contrast
+mediaproc image normalize gray.jpg
+```
+
+**Effect**: High-contrast black and white image.
+
+### Normalize + Median Filter
+
+Remove noise then enhance:
+
+```bash
+# Remove noise first
+mediaproc image median noisy.jpg -s 5 -o clean.jpg
+
+# Then normalize
+mediaproc image normalize clean.jpg
+```
+
+**Workflow**: Clean image before enhancement for best results.
+
+## Comparison with Other Adjustments
+
+### Normalize vs Auto-Enhance
+
+**Normalize:**
+
+- Only adjusts contrast (histogram stretching)
+- No color adjustments
+- No saturation changes
+- Simple, fast algorithm
+- Predictable results
+
+**Auto-Enhance:**
+
+- Adjusts contrast
+- Adjusts colors
+- Adjusts saturation
+- More complex algorithm
+- May vary by image content
+
+### Normalize vs Manual Adjustments
+
+**Normalize:**
+
+- Automatic, no user input
+- Consistent across batch
+- Fast to apply
+- Maximum possible contrast
+
+**Manual (Linear, Modulate):**
+
+- User controls exact values
+- Customized per image
+- More time required
+- Can create subtle effects
+
+## Use Cases
+
+### 1. Old Photo Restoration
+
+Restore faded photographs:
+
+```bash
+mediaproc image normalize vintage-photo.jpg
+```
+
+**Restoration**: Recovers original contrast and visibility.
+
+### 2. Document Scanning
+
+Improve scanned document quality:
+
+```bash
+mediaproc image normalize scanned-page.png -q 100
+```
+
+**Readability**: Better text clarity and contrast.
+
+### 3. Low-Light Photography
+
+Fix dark, underexposed photos:
+
+```bash
+mediaproc image normalize night-shot.jpg
+```
+
+**Recovery**: Brighten and reveal details in shadows.
+
+### 4. Overcast Photography
+
+Enhance flat, gray-day images:
+
+```bash
+mediaproc image normalize overcast-landscape.jpg
+```
+
+**Improvement**: Add punch to dull, flat lighting.
+
+### 5. Medical Imaging
+
+Enhance diagnostic images:
+
+```bash
+mediaproc image normalize mri-scan.png
+```
+
+**Clinical**: Better visualization for diagnosis.
+
+### 6. Scientific Photography
+
+Improve microscope and lab images:
+
+```bash
+mediaproc image normalize lab-sample.jpg
+```
+
+**Research**: Enhanced detail visibility.
+
+### 7. Product Photography
+
+Standardize product image exposure:
+
+```bash
+mediaproc image normalize "products/*.jpg"
+```
+
+**E-commerce**: Consistent appearance across catalog.
+
+### 8. Real Estate Photography
+
+Enhance interior shots:
+
+```bash
+mediaproc image normalize room-photo.jpg
+```
+
+**Marketing**: Better presentation of spaces.
+
+### 9. Surveillance Enhancement
+
+Improve security camera footage:
+
+```bash
+mediaproc image normalize security-frame.jpg
+```
+
+**Security**: Better identification capabilities.
+
+### 10. Art Digitization
+
+Enhance scanned artwork:
+
+```bash
+mediaproc image normalize art-scan.jpg -q 100
+```
+
+**Preservation**: Accurate digital representation.
 
 ## Best Practices
 
-1. **Auto-Enhancement**: Quick way to improve dull images
-2. **Batch Processing**: Great for consistent enhancement
-3. **Before Other Edits**: Normalize first, then apply effects
-4. **Scanned Images**: Essential for scanned documents/photos
-5. **Quality Output**: Use high quality to preserve details
-6. **Test Range**: Adjust percentiles for different image types
+### 1. Test First
 
-## Common Use Cases
+Always test on representative image:
 
-- **Photo Recovery**: Fix poorly exposed images
-- **Scanned Documents**: Improve scan contrast
-- **Batch Enhancement**: Consistent improvements across multiple images
-- **Low-Light Photos**: Recover detail from dark images
-- **Old Photos**: Restore faded photographs
-- **Medical Imaging**: Enhance diagnostic images
-- **Surveillance Footage**: Improve visibility
+```bash
+# Test on one image
+mediaproc image normalize sample.jpg
 
-## When to Use
+# If good, process all
+mediaproc image normalize "all/*.jpg"
+```
 
-✅ **Good for**:
-- Underexposed/overexposed images
-- Flat, dull images lacking contrast
-- Scanned documents
-- Batch processing diverse images
-- Quick automatic enhancement
+### 2. Use Dry Run
 
-❌ **Avoid for**:
-- Already well-exposed images (may over-process)
-- Intentionally low-contrast artistic photos
-- Images with specific color grading
-- HDR images (may lose tonal range)
+Preview before processing:
 
-## Performance Tips
+```bash
+mediaproc image normalize photo.jpg --dry-run
+```
 
-- Fast operation suitable for batch processing
-- Combine with format conversion in one command
-- Process before resizing for better quality
-- Use consistent settings for uniform results
+Check output path and settings.
 
-## See Also
+### 3. Check Original Quality
 
-- [clahe](./clahe) - Local contrast enhancement
-- [gamma](./gamma) - Adjust brightness curve
-- [linear](./linear) - Linear contrast adjustment
-- [modulate](./modulate) - Adjust brightness/saturation
-- [sharpen](./sharpen) - Enhance details after normalization
+Normalize works best when:
+
+- Image has detail in shadows and highlights
+- Not extremely over/underexposed
+- Has some contrast to enhance
+
+### 4. Preserve Originals
+
+Always keep original files:
+
+```bash
+# Outputs to new file by default
+mediaproc image normalize original.jpg
+# Creates: original-normalized.jpg
+```
+
+### 5. Combine with Sharpening
+
+Follow enhancement with selective sharpening:
+
+```bash
+mediaproc image normalize dull.jpg -o enhanced.jpg
+mediaproc image sharpen enhanced.jpg
+```
+
+### 6. Use High Quality for Finals
+
+For final output, use high quality:
+
+```bash
+mediaproc image normalize photo.jpg -q 95
+```
+
+### 7. Batch Process Carefully
+
+Test settings on samples before batch:
+
+```bash
+# Test
+mediaproc image normalize sample.jpg
+
+# Then batch
+mediaproc image normalize "photos/*.jpg"
+```
+
+## Troubleshooting
+
+### Issue: No Visible Change
+
+**Problem**: Image looks the same after normalization
+
+**Possible Causes**:
+
+- Image already well-exposed
+- Image already uses full dynamic range
+- Very flat, uniform image content
+
+**Solution**: Check histogram or try manual adjustments:
+
+```bash
+# If normalize doesn't help, try manual contrast
+mediaproc image linear photo.jpg -a 1.2
+```
+
+### Issue: Too Much Contrast
+
+**Problem**: Result is too contrasty, looks harsh
+
+**Possible Cause**: Image had limited dynamic range
+
+**Solution**: Use subtler manual adjustments:
+
+```bash
+# Instead of normalize
+mediaproc image linear photo.jpg -a 1.1 -b 0.1
+```
+
+### Issue: Color Shifts
+
+**Problem**: Colors look different after normalization
+
+**Cause**: Channels normalized independently may affect color balance
+
+**Solution**: Use modulate for color preservation:
+
+```bash
+# Adjust brightness without normalizing
+mediaproc image modulate photo.jpg -b 1.2
+```
+
+### Issue: Lost Detail
+
+**Problem**: Highlights blown out or shadows crushed
+
+**Cause**: Extreme values stretched too far
+
+**Solution**: Use gentler adjustment:
+
+```bash
+# Manual brightness instead
+mediaproc image modulate photo.jpg -b 1.3
+```
+
+### Issue: Batch Results Inconsistent
+
+**Problem**: Different images have varying results
+
+**Cause**: Each image normalized to its own range
+
+**Solution**: This is expected - each image optimized independently. For consistency, use manual settings:
+
+```bash
+# Consistent adjustment across all
+mediaproc image linear "photos/*.jpg" -a 1.2 -b 0.1
+```
+
+## Performance Considerations
+
+### Processing Speed
+
+Normalize is very fast:
+
+- Faster than complex auto-enhance
+- Single-pass algorithm
+- Minimal computation per pixel
+- Suitable for large batches
+
+### Memory Usage
+
+Low memory requirements:
+
+- Small images: <50MB
+- Large images: <200MB
+- No significant overhead
+
+### Batch Processing
+
+```bash
+# Efficient batch processing
+mediaproc image normalize "photos/*.jpg"
+```
+
+Processes files sequentially with automatic memory management.
+
+## Related Commands
+
+- [auto-enhance](./auto-enhance.mdx) - Comprehensive automatic adjustments
+- [linear](./linear.mdx) - Manual brightness and contrast control
+- [modulate](./modulate.mdx) - Adjust brightness, saturation, hue
+- [sharpen](./sharpen.mdx) - Enhance details after normalization
+- [median](./median.mdx) - Remove noise before normalization
+
+## Further Reading
+
+- [Histogram Equalization](https://en.wikipedia.org/wiki/Histogram_equalization)
+- [Contrast Enhancement](<https://en.wikipedia.org/wiki/Contrast_(vision)#Enhancing_contrast>)
+- [Dynamic Range](https://en.wikipedia.org/wiki/Dynamic_range)

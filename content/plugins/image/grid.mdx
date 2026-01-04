@@ -1,49 +1,697 @@
+---
+title: "grid"
+description: "Create image grids and collages from multiple images with customizable layouts and spacing"
+---
+
 # grid
 
-Create a grid layout from multiple images.
+Create beautiful image grids and collages from multiple images. Perfect for social media posts, photo albums, presentations, and portfolio layouts with full control over columns, rows, cell sizes, gaps, and backgrounds.
 
 ## Usage
 
 ```bash
-mediaproc image grid <inputs...> [options]
+mediaproc image grid <images...> [options]
 ```
 
-## Description
+### Basic Syntax
 
-The `grid` command arranges multiple images into a grid layout with customizable spacing and alignment.
+```bash
+# Auto-layout grid from images
+mediaproc image grid photo1.jpg photo2.jpg photo3.jpg photo4.jpg
+
+# 3-column grid
+mediaproc image grid *.jpg -c 3
+
+# Fixed 2×2 grid
+mediaproc image grid img1.png img2.png img3.png img4.png -c 2 -r 2
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--cols` | number | 3 | Number of columns |
-| `--spacing` | number | 10 | Space between images (pixels) |
-| `--background` | string | #ffffff | Background color |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option         | Alias | Type      | Default    | Description                                          |
+| -------------- | ----- | --------- | ---------- | ---------------------------------------------------- |
+| `--columns`    | `-c`  | `number`  | `auto`     | Number of columns (auto-calculated if not specified) |
+| `--rows`       | `-r`  | `number`  | `auto`     | Number of rows (auto-calculated if not specified)    |
+| `--width`      | `-w`  | `number`  | `300`      | Cell width in pixels                                 |
+| `--height`     | `-h`  | `number`  | `300`      | Cell height in pixels                                |
+| `--gap`        | `-g`  | `number`  | `10`       | Gap between images in pixels                         |
+| `--background` | `-b`  | `string`  | `#FFFFFF`  | Background color (hex or named color)                |
+| `--output`     | `-o`  | `string`  | `grid.jpg` | Output file path                                     |
+| `--dry-run`    |       | `boolean` | `false`    | Preview operation without saving                     |
+| `--verbose`    | `-v`  | `boolean` | `false`    | Show detailed processing information                 |
+
+### Layout Calculation Rules
+
+1. **Both columns and rows specified**: Uses exact grid (may not use all images)
+2. **Only columns specified**: Calculates rows = ceil(imageCount / columns)
+3. **Only rows specified**: Calculates columns = ceil(imageCount / rows)
+4. **Neither specified**: Auto-calculates square-ish grid (columns = ceil(√imageCount))
 
 ## Examples
 
+### 1. Basic Grid Creation
+
 ```bash
-# 3x3 grid
-mediaproc image grid img1.jpg img2.jpg img3.jpg img4.jpg img5.jpg img6.jpg img7.jpg img8.jpg img9.jpg --cols 3 -o grid.jpg
+# Auto-layout (creates square-ish grid)
+mediaproc image grid photo1.jpg photo2.jpg photo3.jpg photo4.jpg
 
-# 2 column layout
-mediaproc image grid photo1.jpg photo2.jpg photo3.jpg photo4.jpg --cols 2 --spacing 20 -o collage.jpg
+# 4 images → 2×2 grid automatically
+mediaproc image grid img*.jpg
 
-# Custom background
-mediaproc image grid *.jpg --cols 4 --background "#000000" --spacing 5 -o dark-grid.jpg
+# 9 images → 3×3 grid automatically
+mediaproc image grid photo{1..9}.jpg
 ```
 
-## Common Use Cases
+### 2. Custom Column Layout
 
-- **Photo Collages**: Create photo grids
-- **Product Displays**: Show multiple products
-- **Comparisons**: Before/after grids
-- **Gallery Previews**: Thumbnail grids
+```bash
+# 3-column grid (rows auto-calculated)
+mediaproc image grid *.jpg -c 3
+
+# 4-column grid with custom output
+mediaproc image grid photo*.png -c 4 -o collage.jpg
+
+# Single column (vertical stack)
+mediaproc image grid img1.jpg img2.jpg img3.jpg -c 1
+```
+
+### 3. Custom Row Layout
+
+```bash
+# 2-row grid (columns auto-calculated)
+mediaproc image grid *.jpg -r 2
+
+# Single row (horizontal strip)
+mediaproc image grid photo1.jpg photo2.jpg photo3.jpg -r 1
+
+# 4-row grid
+mediaproc image grid img*.jpg -r 4
+```
+
+### 4. Fixed Grid Dimensions
+
+```bash
+# Exact 3×3 grid (uses up to 9 images)
+mediaproc image grid *.jpg -c 3 -r 3
+
+# 4×2 grid (8 images max)
+mediaproc image grid photo*.jpg -c 4 -r 2
+
+# 2×5 grid (10 images max)
+mediaproc image grid img*.png -c 2 -r 5
+```
+
+### 5. Custom Cell Sizes
+
+```bash
+# Large cells (500×500)
+mediaproc image grid *.jpg -c 3 -w 500 -h 500
+
+# Rectangular cells (wide)
+mediaproc image grid photos/*.jpg -c 4 -w 400 -h 300
+
+# Small thumbnail grid
+mediaproc image grid *.png -c 5 -w 200 -h 200
+
+# Portrait cells
+mediaproc image grid portraits/*.jpg -c 3 -w 300 -h 400
+```
+
+### 6. Custom Gaps and Spacing
+
+```bash
+# No gap (seamless grid)
+mediaproc image grid *.jpg -c 3 -g 0
+
+# Large gap (20px)
+mediaproc image grid photos/*.jpg -c 4 -g 20
+
+# Thin gap (5px)
+mediaproc image grid img*.png -c 3 -g 5
+
+# Extra large gap (50px) for breathing room
+mediaproc image grid *.jpg -c 2 -g 50
+```
+
+### 7. Custom Background Colors
+
+```bash
+# Black background
+mediaproc image grid *.jpg -c 3 -b "#000000"
+
+# White background (default)
+mediaproc image grid *.jpg -c 3 -b white
+
+# Gray background
+mediaproc image grid *.jpg -c 4 -b "#808080"
+
+# Custom brand color
+mediaproc image grid photos/*.jpg -c 3 -b "#FF5733"
+```
+
+### 8. Social Media Grids
+
+```bash
+# Instagram 3×3 grid (1080×1080 cells)
+mediaproc image grid photo{1..9}.jpg -c 3 -w 1080 -h 1080 -g 0 -o instagram-grid.jpg
+
+# Instagram story grid (540×960 cells)
+mediaproc image grid story*.jpg -c 2 -w 540 -h 960 -g 10 -o story-grid.jpg
+
+# Pinterest collage (500×750 cells)
+mediaproc image grid pin*.jpg -c 2 -w 500 -h 750 -g 15 -o pinterest-collage.jpg
+
+# Twitter banner grid (640×320 cells)
+mediaproc image grid *.jpg -r 1 -w 640 -h 320 -g 5 -o twitter-grid.jpg
+```
+
+### 9. Product Catalogs
+
+```bash
+# 4×3 product grid
+mediaproc image grid products/*.jpg -c 4 -r 3 -w 400 -h 400 -b white -o catalog.jpg
+
+# Product comparison (1 row, 3 columns)
+mediaproc image grid product-{a,b,c}.jpg -r 1 -w 500 -h 500 -g 20 -o comparison.jpg
+
+# Large product showcase
+mediaproc image grid items/*.png -c 5 -w 300 -h 300 -g 10 -o showcase.jpg
+```
+
+### 10. Photo Albums
+
+```bash
+# Classic photo album page (3×4)
+mediaproc image grid vacation/*.jpg -c 3 -r 4 -w 400 -h 300 -g 15 -b "#F5F5F5" -o album-page1.jpg
+
+# Portfolio grid (2×3)
+mediaproc image grid portfolio/*.jpg -c 2 -r 3 -w 600 -h 600 -g 20 -o portfolio.jpg
+
+# Family album (4×4)
+mediaproc image grid family/*.jpg -c 4 -r 4 -w 350 -h 350 -g 10 -o family-grid.jpg
+```
+
+### 11. Before/After Comparisons
+
+```bash
+# 2-column before/after
+mediaproc image grid before.jpg after.jpg -c 2 -w 800 -h 600 -g 20 -o comparison.jpg
+
+# Multiple comparisons (2×3)
+mediaproc image grid before*.jpg after*.jpg -c 2 -r 3 -w 600 -h 400 -o comparisons.jpg
+```
+
+### 12. Preview Before Creating
+
+```bash
+# Preview grid layout
+mediaproc image grid *.jpg -c 3 -r 3 --dry-run
+
+# Detailed preview
+mediaproc image grid photos/*.jpg -c 4 -w 400 -h 400 --dry-run --verbose
+
+# Check output dimensions
+mediaproc image grid img*.png -c 5 -g 20 --dry-run
+```
+
+### 13. Batch Grid Creation
+
+```bash
+# Create multiple grids from folders
+for folder in */; do
+  mediaproc image grid "$folder"/*.jpg -c 3 -o "grids/${folder%/}-grid.jpg"
+done
+
+# Create themed grids
+for theme in landscapes portraits abstracts; do
+  mediaproc image grid "$theme"/*.jpg -c 3 -r 3 -w 400 -h 400 -o "${theme}-grid.jpg"
+done
+```
+
+### 14. Professional Presentations
+
+```bash
+# Client presentation (3×2)
+mediaproc image grid work/*.jpg -c 3 -r 2 -w 800 -h 600 -g 25 -b "#F0F0F0" -o presentation.jpg
+
+# Portfolio showcase (4×3)
+mediaproc image grid best-work/*.jpg -c 4 -r 3 -w 500 -h 500 -g 20 -o showcase.jpg
+
+# Project overview (2×2)
+mediaproc image grid project/*.jpg -c 2 -r 2 -w 1000 -h 1000 -g 30 -o overview.jpg
+```
+
+### 15. Creative Layouts
+
+```bash
+# Panoramic strip (1×6)
+mediaproc image grid sequence/*.jpg -r 1 -w 400 -h 300 -g 5 -o panoramic.jpg
+
+# Tall banner (1×4 vertical)
+mediaproc image grid vertical/*.jpg -c 1 -w 600 -h 400 -g 15 -o vertical-banner.jpg
+
+# Square mega-grid (6×6)
+mediaproc image grid collection/*.jpg -c 6 -r 6 -w 250 -h 250 -g 5 -o mega-grid.jpg
+```
+
+## Use Cases
+
+### 1. Social Media Content
+
+- **Instagram Feed Planning**: Preview feed layout before posting
+- **Multi-Image Posts**: Create collages for platforms
+- **Story Templates**: Design consistent story layouts
+- **Profile Grids**: Create cohesive profile aesthetics
+- **Pinterest Pins**: Multi-image pin designs
+
+### 2. Photo Albums and Memories
+
+- **Vacation Albums**: Organize travel photos into pages
+- **Event Collections**: Wedding, birthday, graduation grids
+- **Year in Review**: Annual photo compilations
+- **Family Portraits**: Multi-generation family grids
+- **Pet Collages**: Organize pet photo collections
+
+### 3. E-commerce and Products
+
+- **Product Catalogs**: Display multiple products
+- **Variant Showcases**: Show product colors/sizes
+- **Comparison Grids**: Before/after, feature comparisons
+- **Lookbooks**: Fashion and styling collections
+- **Inventory Displays**: Organized product inventories
+
+### 4. Professional Portfolios
+
+- **Artist Portfolios**: Showcase artwork collections
+- **Photography Portfolios**: Display photo series
+- **Design Showcase**: Multiple design projects
+- **Client Presentations**: Professional project overviews
+- **Resume Attachments**: Visual work samples
+
+### 5. Marketing and Advertising
+
+- **Ad Campaigns**: Multi-product advertisements
+- **Email Templates**: Visual email content grids
+- **Banner Ads**: Composite banner designs
+- **Print Materials**: Brochure photo layouts
+- **Trade Show Displays**: Large format grids
+
+### 6. Education and Research
+
+- **Study Materials**: Visual learning aids
+- **Research Presentations**: Data visualization grids
+- **Comparison Studies**: Side-by-side comparisons
+- **Progress Tracking**: Before/during/after documentation
+- **Reference Materials**: Visual reference sheets
+
+### 7. Real Estate and Architecture
+
+- **Property Listings**: Multiple room photos
+- **Floor Plan Views**: Different angle collections
+- **Before/After Renovations**: Transformation grids
+- **Portfolio Presentations**: Project showcases
+- **Open House Materials**: Property highlights
+
+## Technical Details
+
+### Grid Layout Algorithm
+
+**Auto-calculation logic:**
+
+```javascript
+if (!columns && !rows) {
+  // Square-ish grid
+  columns = Math.ceil(√imageCount);
+  rows = Math.ceil(imageCount / columns);
+} else if (columns && !rows) {
+  rows = Math.ceil(imageCount / columns);
+} else if (rows && !columns) {
+  columns = Math.ceil(imageCount / rows);
+}
+// else: both specified, use as-is
+```
+
+**Examples:**
+
+- 4 images → 2×2
+- 9 images → 3×3
+- 12 images → 4×3
+- 16 images → 4×4
+
+### Canvas Dimensions
+
+**Total grid size calculation:**
+
+```
+gridWidth = (columns × cellWidth) + ((columns - 1) × gap)
+gridHeight = (rows × cellHeight) + ((rows - 1) × gap)
+```
+
+**Example:**
+
+- 3×3 grid, 300×300 cells, 10px gap
+- Width = (3 × 300) + (2 × 10) = 920px
+- Height = (3 × 300) + (2 × 10) = 920px
+
+### Image Processing
+
+**Each cell image is:**
+
+1. **Resized**: To fit cell dimensions exactly
+2. **Cropped**: Using `cover` fit (fills cell, crops excess)
+3. **Positioned**: Center-aligned in cell
+4. **Composited**: Onto canvas at calculated position
+
+### Cell Positioning
+
+**Position calculation for cell at row, column:**
+
+```javascript
+x = column × (cellWidth + gap)
+y = row × (cellHeight + gap)
+```
+
+**Example 2×2 grid (300×300 cells, 10px gap):**
+
+- Cell[0,0]: x=0, y=0
+- Cell[0,1]: x=310, y=0
+- Cell[1,0]: x=0, y=310
+- Cell[1,1]: x=310, y=310
+
+### Performance Considerations
+
+- **Memory**: Holds all images in memory during processing
+- **Processing Time**: Scales linearly with image count
+- **Output Size**: Large grids create large files
+- **Recommended**: Max 36-49 images per grid (6×6 or 7×7)
+- **Format**: PNG for transparency, JPEG for photos
+
+### Background Color Support
+
+- **Hex Colors**: `#RRGGBB`, `#RGB`
+- **Named Colors**: `white`, `black`, `gray`, etc.
+- **RGB**: `rgb(255,255,255)`
+- **RGBA**: `rgba(255,255,255,0.5)` (with transparency)
+
+## Common Patterns
+
+### Pattern 1: Auto-Layout Square Grid
+
+```bash
+# Let it calculate optimal layout
+mediaproc image grid photo{1..9}.jpg
+```
+
+### Pattern 2: Instagram 3×3
+
+```bash
+# Perfect for Instagram planning
+mediaproc image grid *.jpg -c 3 -r 3 -w 1080 -h 1080 -g 0
+```
+
+### Pattern 3: Product Catalog 4×3
+
+```bash
+# 12 products in professional grid
+mediaproc image grid products/*.jpg -c 4 -r 3 -w 400 -h 400 -g 15 -b white
+```
+
+### Pattern 4: Before/After Comparison
+
+```bash
+# 2-column comparison
+mediaproc image grid before.jpg after.jpg -c 2 -w 800 -h 600 -g 30
+```
+
+### Pattern 5: Panoramic Strip
+
+```bash
+# Horizontal strip of images
+mediaproc image grid seq*.jpg -r 1 -w 400 -h 300 -g 10
+```
+
+## Troubleshooting
+
+### Issue: Images Cut Off
+
+**Problem**: Parts of images missing in grid
+
+**Solutions**:
+
+```bash
+# This is expected with 'cover' fit mode
+# Images are cropped to fit cells exactly
+
+# Use square cells for least cropping
+mediaproc image grid *.jpg -c 3 -w 400 -h 400
+
+# Or pre-resize images to match cell aspect ratio
+# For 16:9 cells:
+mediaproc image grid *.jpg -c 3 -w 400 -h 225
+
+# Or pre-crop images before grid creation
+for img in *.jpg; do
+  mediaproc image crop "$img" -w 1000 -h 1000 -o "prepped/$(basename "$img")"
+done
+mediaproc image grid prepped/*.jpg -c 3
+```
+
+### Issue: Too Many/Few Images
+
+**Problem**: Grid has empty cells or extra images ignored
+
+**Solutions**:
+
+```bash
+# Check how many images you have
+ls *.jpg | wc -l
+
+# Adjust grid to match image count
+# For 10 images: 2×5, 5×2, or let auto-calculate
+
+# Preview layout first
+mediaproc image grid *.jpg -c 3 --dry-run
+
+# Fixed grid uses only what fits
+# 3×3 grid uses max 9 images, ignores rest
+```
+
+### Issue: Large File Size
+
+**Problem**: Output grid file is very large
+
+**Solutions**:
+
+```bash
+# Reduce cell sizes
+mediaproc image grid *.jpg -c 3 -w 300 -h 300  # Instead of 1000×1000
+
+# Use JPEG instead of PNG
+mediaproc image grid *.jpg -c 3 -o grid.jpg
+
+# Optimize after creation
+mediaproc image grid *.jpg -c 3 -o temp.jpg
+mediaproc image optimize temp.jpg -o final.jpg
+
+# Use WebP for best compression
+mediaproc image grid *.jpg -c 3 -o grid.webp
+```
+
+### Issue: Background Color Not Working
+
+**Problem**: Background color appears wrong or white
+
+**Solutions**:
+
+```bash
+# Use quotes for hex colors
+mediaproc image grid *.jpg -c 3 -b "#FF5733"  # ✓ Correct
+mediaproc image grid *.jpg -c 3 -b #FF5733   # ✗ May fail
+
+# Named colors work without quotes
+mediaproc image grid *.jpg -c 3 -b black     # ✓ Correct
+
+# Check color format
+mediaproc image grid *.jpg -c 3 -b "rgb(0,0,0)"  # Black
+```
+
+### Issue: Uneven Gaps
+
+**Problem**: Gaps look inconsistent
+
+**Solutions**:
+
+```bash
+# Gaps are always uniform
+# May look uneven due to image content
+
+# Use exact cell sizes
+mediaproc image grid *.jpg -c 3 -w 400 -h 400 -g 10
+
+# For seamless look, use gap=0
+mediaproc image grid *.jpg -c 3 -g 0
+
+# Add border around entire grid after creation
+mediaproc image grid *.jpg -c 3 -o temp.jpg
+mediaproc image border temp.jpg -w 20 --color black -o final.jpg
+```
+
+### Issue: Memory Errors
+
+**Problem**: Out of memory with many large images
+
+**Solutions**:
+
+```bash
+# Resize images first
+for img in *.jpg; do
+  mediaproc image resize "$img" -w 2000 -o "resized/$(basename "$img")"
+done
+mediaproc image grid resized/*.jpg -c 4
+
+# Process fewer images at once
+# Or reduce cell sizes
+mediaproc image grid *.jpg -c 5 -w 200 -h 200  # Smaller cells
+
+# Use smaller image set
+mediaproc image grid photo{1..16}.jpg  # Instead of all
+```
+
+## Best Practices
+
+1. **Plan Grid Layout**
+
+   - Decide on columns/rows based on image count
+   - Use square cells for consistency
+   - Consider target platform requirements
+   - Preview layout with --dry-run first
+
+2. **Image Preparation**
+
+   - Pre-resize very large images
+   - Use similar aspect ratios for best results
+   - Pre-crop if specific framing needed
+   - Optimize images before grid creation
+
+3. **Cell Sizing**
+
+   - 300×300: Good for thumbnails
+   - 400×400: Balanced for most uses
+   - 500×500: Larger, more detailed
+   - 1080×1080: Instagram full quality
+
+4. **Gap Selection**
+
+   - 0px: Seamless, modern look
+   - 5-10px: Subtle separation
+   - 15-20px: Clear separation
+   - 30+px: Gallery-style breathing room
+
+5. **Background Colors**
+
+   - White: Clean, professional
+   - Black: Dramatic, gallery-style
+   - Gray: Subtle, modern
+   - Brand colors: Consistent identity
+
+6. **Performance**
+
+   - Limit to 36 images per grid (6×6)
+   - Use reasonable cell sizes (200-800px)
+   - Resize large source images first
+   - Consider output file size
+
+7. **Quality Control**
+   - Check one test grid first
+   - Verify all images display correctly
+   - Test output on target platform
+   - Optimize final output if needed
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Resize images then create grid
+for img in *.jpg; do
+  mediaproc image resize "$img" -w 1000 -h 1000 --fit cover -o "prepped/$(basename "$img")"
+done
+mediaproc image grid prepped/*.jpg -c 3 -o final-grid.jpg
+
+# Create grid then add border
+mediaproc image grid photos/*.jpg -c 4 -r 3 -o temp-grid.jpg
+mediaproc image border temp-grid.jpg -w 30 --color "#333333" -o final-grid.jpg
+
+# Auto-enhance before gridding
+for img in *.jpg; do
+  mediaproc image auto-enhance "$img" -o "enhanced/$(basename "$img")"
+done
+mediaproc image grid enhanced/*.jpg -c 3 -o enhanced-grid.jpg
+
+# Create grid then add watermark
+mediaproc image grid products/*.jpg -c 4 -r 3 -o temp.jpg
+mediaproc image watermark temp.jpg --text "© 2026" -o final-catalog.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Create Instagram-ready 3×3 grids from folders
+
+for folder in */; do
+  folder_name=${folder%/}
+
+  echo "Processing $folder_name..."
+
+  # Create 3×3 grid
+  mediaproc image grid "$folder"/*.jpg -c 3 -r 3 \
+    -w 1080 -h 1080 -g 0 \
+    -o "instagram-grids/${folder_name}-grid.jpg"
+done
+
+echo "All grids created!"
+```
+
+### Advanced Workflow
+
+```bash
+#!/bin/bash
+# Professional product catalog generator
+
+products_dir="products"
+output="catalog-grid.jpg"
+
+# 1. Prepare images (square crop, white background)
+mkdir -p temp-processed
+for img in "$products_dir"/*.jpg; do
+  filename=$(basename "$img")
+
+  # Smart crop to square
+  mediaproc image smart-crop "$img" -w 1000 -h 1000 -o "temp-processed/$filename"
+done
+
+# 2. Create main grid
+mediaproc image grid temp-processed/*.jpg \
+  -c 4 -r 3 \
+  -w 400 -h 400 \
+  -g 20 \
+  -b white \
+  -o "$output"
+
+# 3. Add professional border
+mediaproc image border "$output" -w 40 --color "#EEEEEE" -o "final-$output"
+
+# 4. Clean up
+rm -rf temp-processed
+
+echo "Catalog created: final-$output"
+```
 
 ## See Also
 
-- [composite](./composite) - Layer images
-- [thumbnail](./thumbnail) - Create thumbnails first
+- [composite](./composite) - Layer images with advanced blending
+- [stack](./stack) - Stack images vertically or horizontally
+- [resize](./resize) - Resize images before gridding
+- [smart-crop](./smart-crop) - Intelligent cropping for grid cells
+- [watermark](./watermark) - Add watermarks to grids

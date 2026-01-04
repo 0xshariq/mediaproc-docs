@@ -1,0 +1,586 @@
+---
+title: Creating Plugins
+description: Complete guide to creating custom MediaProc plugins
+---
+
+# Creating Plugins
+
+Learn how to build custom plugins for MediaProc to extend its functionality with your own commands and features.
+
+## Plugin Architecture
+
+MediaProc plugins follow a standardized structure that makes them easy to create, maintain, and distribute.
+
+### Plugin Structure
+
+```
+my-plugin/
+├── package.json
+├── tsconfig.json
+├── bin/
+│   └── cli.js
+└── src/
+    ├── index.ts
+    ├── cli.ts
+    ├── register.ts
+    ├── types.ts
+    └── commands/
+        ├── command1.ts
+        ├── command2.ts
+        └── command3.ts
+```
+
+## Getting Started
+
+### 1. Initialize Plugin
+
+Create a new directory and initialize package.json:
+
+```bash
+mkdir my-plugin
+cd my-plugin
+npm init -y
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install commander chalk ora
+npm install -D typescript @types/node
+```
+
+### 3. Configure TypeScript
+
+Create `tsconfig.json`:
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+## Core Files
+
+### package.json
+
+Configure your plugin package:
+
+```json
+{
+  "name": "@mediaproc/my-plugin",
+  "version": "1.0.0",
+  "description": "My custom MediaProc plugin",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "mediaproc-my-plugin": "bin/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["mediaproc", "plugin"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
+```
+
+### src/types.ts
+
+Define plugin types:
+
+```typescript
+export interface PluginOptions {
+  dryRun?: boolean;
+  verbose?: boolean;
+  quality?: number;
+  output?: string;
+}
+
+export interface CommandResult {
+  success: boolean;
+  message?: string;
+  error?: Error;
+}
+```
+
+### src/index.ts
+
+Main plugin entry point:
+
+```typescript
+import type { Command } from "commander";
+import { myCommand } from "./commands/myCommand.js";
+
+export function registerPlugin(program: Command): void {
+  const pluginCmd = program
+    .command("my-plugin")
+    .description("My custom plugin for MediaProc");
+
+  // Register commands
+  myCommand(pluginCmd);
+}
+
+export * from "./types.js";
+```
+
+### src/cli.ts
+
+CLI initialization:
+
+```typescript
+#!/usr/bin/env node
+import { Command } from "commander";
+import { registerPlugin } from "./index.js";
+
+const program = new Command();
+
+program
+  .name("mediaproc-my-plugin")
+  .description("My custom MediaProc plugin")
+  .version("1.0.0");
+
+registerPlugin(program);
+
+program.parse(process.argv);
+```
+
+### src/register.ts
+
+Plugin registration:
+
+```typescript
+import type { Command } from "commander";
+import { registerPlugin } from "./index.js";
+
+export default function register(program: Command): void {
+  registerPlugin(program);
+}
+```
+
+### bin/cli.js
+
+Executable wrapper:
+
+```javascript
+#!/usr/bin/env node
+import("../dist/cli.js").catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
+```
+
+## Creating Commands
+
+### Basic Command Structure
+
+Create `src/commands/myCommand.ts`:
+
+```typescript
+import type { Command } from "commander";
+import chalk from "chalk";
+import ora from "ora";
+
+interface MyCommandOptions {
+  output?: string;
+  verbose?: boolean;
+  dryRun?: boolean;
+}
+
+export function myCommand(pluginCmd: Command): void {
+  pluginCmd
+    .command("process <input>")
+    .description("Process input file")
+    .option("-o, --output <path>", "Output file path")
+    .option("-v, --verbose", "Verbose output")
+    .option("--dry-run", "Preview without executing")
+    .action(async (input: string, options: MyCommandOptions) => {
+      const spinner = ora("Processing...").start();
+
+      try {
+        if (options.dryRun) {
+          spinner.info(chalk.blue("Dry run - no changes will be made"));
+          console.log(chalk.dim(`Would process: ${input}`));
+          return;
+        }
+
+        // Your processing logic here
+        await processFile(input, options);
+
+        spinner.succeed(chalk.green("Processing complete!"));
+      } catch (error) {
+        spinner.fail(chalk.red("Processing failed"));
+        if (options.verbose) {
+          console.error(chalk.red("Error details:"), error);
+        }
+        process.exit(1);
+      }
+    });
+}
+
+async function processFile(
+  input: string,
+  options: MyCommandOptions
+): Promise<void> {
+  // Implement your processing logic
+}
+```
+
+## Command Patterns
+
+### File Processing
+
+```typescript
+import fs from "node:fs/promises";
+import path from "node:path";
+
+async function processFiles(pattern: string): Promise<string[]> {
+  // Validate input paths
+  const files = await findFiles(pattern);
+
+  // Process each file
+  for (const file of files) {
+    await processFile(file);
+  }
+
+  return files;
+}
+```
+
+### Batch Operations
+
+```typescript
+async function batchProcess(files: string[], options: Options): Promise<void> {
+  let successCount = 0;
+  let failCount = 0;
+
+  for (const [index, file] of files.entries()) {
+    try {
+      spinner.start(`Processing ${index + 1}/${files.length}: ${file}`);
+      await processFile(file, options);
+      spinner.succeed();
+      successCount++;
+    } catch (error) {
+      spinner.fail(`Failed: ${file}`);
+      failCount++;
+    }
+  }
+
+  console.log(chalk.green(`Success: ${successCount}`));
+  if (failCount > 0) {
+    console.log(chalk.red(`Failed: ${failCount}`));
+  }
+}
+```
+
+### Progress Reporting
+
+```typescript
+import ora from "ora";
+import chalk from "chalk";
+
+function reportProgress(current: number, total: number, item: string): void {
+  const percentage = Math.round((current / total) * 100);
+  spinner.text = `Processing ${current}/${total} (${percentage}%): ${item}`;
+}
+```
+
+## Best Practices
+
+### 1. Error Handling
+
+Always handle errors gracefully:
+
+```typescript
+try {
+  await processFile(input);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.error(chalk.red("Invalid input:", error.message));
+  } else if (error instanceof FileNotFoundError) {
+    console.error(chalk.red("File not found:", error.path));
+  } else {
+    console.error(chalk.red("Unexpected error:", error));
+  }
+  process.exit(1);
+}
+```
+
+### 2. Input Validation
+
+Validate inputs early:
+
+```typescript
+function validateInput(input: string, options: Options): void {
+  if (!input) {
+    throw new Error("Input file is required");
+  }
+
+  if (options.quality && (options.quality < 1 || options.quality > 100)) {
+    throw new Error("Quality must be between 1 and 100");
+  }
+}
+```
+
+### 3. Verbose Logging
+
+Support verbose mode:
+
+```typescript
+if (options.verbose) {
+  console.log(chalk.blue("Configuration:"));
+  console.log(chalk.dim(`  Input: ${input}`));
+  console.log(chalk.dim(`  Output: ${output}`));
+  console.log(chalk.dim(`  Quality: ${options.quality}`));
+}
+```
+
+### 4. Dry Run Mode
+
+Always implement dry-run:
+
+```typescript
+if (options.dryRun) {
+  console.log(chalk.yellow("Dry run mode - no changes will be made"));
+  console.log(chalk.green(`Would process: ${input} → ${output}`));
+  return;
+}
+```
+
+### 5. Consistent Output
+
+Use consistent formatting:
+
+```typescript
+// Success
+spinner.succeed(chalk.green("✓ Operation completed"));
+
+// Error
+spinner.fail(chalk.red("✗ Operation failed"));
+
+// Info
+spinner.info(chalk.blue("ℹ Additional information"));
+
+// Warning
+spinner.warn(chalk.yellow("⚠ Warning message"));
+```
+
+## Testing Your Plugin
+
+### Local Testing
+
+```bash
+# Build plugin
+npm run build
+
+# Test locally
+node bin/cli.js process input.txt
+
+# Link for testing
+npm link
+mediaproc my-plugin process input.txt
+```
+
+### Integration Testing
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { processFile } from "../src/commands/myCommand.js";
+
+describe("myCommand", () => {
+  it("should process file correctly", async () => {
+    const result = await processFile("test.txt", {});
+    expect(result.success).toBe(true);
+  });
+
+  it("should handle invalid input", async () => {
+    await expect(processFile("", {})).rejects.toThrow();
+  });
+});
+```
+
+## Publishing Your Plugin
+
+### 1. Prepare for Publishing
+
+```bash
+# Build
+npm run build
+
+# Test
+npm test
+
+# Update version
+npm version patch
+```
+
+### 2. Publish to npm
+
+```bash
+npm publish --access public
+```
+
+### 3. Document Your Plugin
+
+Create a comprehensive README.md:
+
+```markdown
+# @mediaproc/my-plugin
+
+Description of your plugin
+
+## Installation
+
+\`\`\`bash
+npm install -g @mediaproc/my-plugin
+\`\`\`
+
+## Usage
+
+\`\`\`bash
+mediaproc my-plugin process input.txt
+\`\`\`
+
+## Commands
+
+### process
+
+Process input files
+
+## Options
+
+- `-o, --output <path>` - Output file
+- `-v, --verbose` - Verbose output
+```
+
+## Example Plugins
+
+### Simple Text Processor
+
+```typescript
+export function textCommand(pluginCmd: Command): void {
+  pluginCmd
+    .command("uppercase <input>")
+    .description("Convert text to uppercase")
+    .option("-o, --output <path>", "Output file")
+    .action(async (input: string, options) => {
+      const content = await fs.readFile(input, "utf-8");
+      const result = content.toUpperCase();
+
+      const output = options.output || input.replace(/\.txt$/, "-upper.txt");
+      await fs.writeFile(output, result);
+
+      console.log(chalk.green(`✓ Converted ${input} → ${output}`));
+    });
+}
+```
+
+### File Converter
+
+```typescript
+export function convertCommand(pluginCmd: Command): void {
+  pluginCmd
+    .command("convert <input>")
+    .description("Convert file format")
+    .option("-f, --format <format>", "Target format")
+    .option("-o, --output <path>", "Output file")
+    .action(async (input: string, options) => {
+      const spinner = ora("Converting...").start();
+
+      try {
+        const data = await readFile(input);
+        const converted = await convertFormat(data, options.format);
+        await writeFile(options.output, converted);
+
+        spinner.succeed(chalk.green("Conversion complete!"));
+      } catch (error) {
+        spinner.fail(chalk.red("Conversion failed"));
+        throw error;
+      }
+    });
+}
+```
+
+## Advanced Features
+
+### Custom Helpers
+
+```typescript
+// src/utils/helpers.ts
+export function formatSize(bytes: number): string {
+  const units = ["B", "KB", "MB", "GB"];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+
+  return `${size.toFixed(2)} ${units[unitIndex]}`;
+}
+
+export function formatDuration(ms: number): string {
+  if (ms < 1000) return `${ms}ms`;
+  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+  return `${(ms / 60000).toFixed(1)}m`;
+}
+```
+
+### Configuration Support
+
+```typescript
+import fs from "node:fs/promises";
+import path from "node:path";
+
+interface PluginConfig {
+  defaultQuality: number;
+  outputFormat: string;
+}
+
+export async function loadConfig(): Promise<PluginConfig> {
+  const configPath = path.join(process.cwd(), ".mypluginrc.json");
+
+  try {
+    const content = await fs.readFile(configPath, "utf-8");
+    return JSON.parse(content);
+  } catch {
+    return {
+      defaultQuality: 90,
+      outputFormat: "png",
+    };
+  }
+}
+```
+
+## Resources
+
+- [Plugin Guidelines](./plugin-guidelines.mdx) - Best practices and standards
+- [Plugin Integration](./plugin-integration.mdx) - Integrating with MediaProc
+- [Contributing](./contributing.mdx) - Contributing to MediaProc ecosystem
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Commander.js](https://github.com/tj/commander.js) - CLI framework
+- [Chalk](https://github.com/chalk/chalk) - Terminal styling
+- [Ora](https://github.com/sindresorhus/ora) - Elegant spinners
+
+## Support
+
+- [GitHub Issues](https://github.com/mediaproc/mediaproc/issues) - Report bugs
+- [Discussions](https://github.com/mediaproc/mediaproc/discussions) - Ask questions
+- [Discord](https://discord.gg/mediaproc) - Community chat

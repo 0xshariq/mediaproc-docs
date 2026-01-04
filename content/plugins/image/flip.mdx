@@ -1,0 +1,656 @@
+---
+title: "flip"
+description: "Flip images horizontally, vertically, or both directions with precise control"
+---
+
+# flip
+
+Flip images along the horizontal axis (mirror left-right), vertical axis (mirror top-bottom), or both axes simultaneously. Perfect for creating mirror effects, correcting orientations, and creative transformations.
+
+## Usage
+
+```bash
+mediaproc image flip <input> [options]
+```
+
+### Basic Syntax
+
+```bash
+# Flip horizontally (default)
+mediaproc image flip photo.jpg
+
+# Flip vertically
+mediaproc image flip photo.jpg --vertical
+
+# Flip both directions
+mediaproc image flip photo.jpg --both
+
+# Flip horizontally (explicit)
+mediaproc image flip photo.jpg --horizontal
+```
+
+## Options
+
+| Option         | Alias | Type      | Default           | Description                           |
+| -------------- | ----- | --------- | ----------------- | ------------------------------------- |
+| `--horizontal` |       | `boolean` | `false`           | Flip horizontally (mirror left-right) |
+| `--vertical`   |       | `boolean` | `false`           | Flip vertically (mirror top-bottom)   |
+| `--both`       |       | `boolean` | `false`           | Flip both horizontally and vertically |
+| `--output`     | `-o`  | `string`  | `flipped-[input]` | Output file path                      |
+| `--quality`    | `-q`  | `number`  | `90`              | Output quality (1-100)                |
+| `--dry-run`    |       | `boolean` | `false`           | Preview operation without saving      |
+| `--verbose`    | `-v`  | `boolean` | `false`           | Show detailed processing information  |
+
+### Flip Behavior
+
+- **No option specified**: Defaults to horizontal flip
+- **`--horizontal`**: Flips left-right (mirror effect)
+- **`--vertical`**: Flips top-bottom (upside down)
+- **`--both`**: Combines horizontal and vertical (180° rotation equivalent)
+
+## Examples
+
+### 1. Basic Horizontal Flip
+
+```bash
+# Default horizontal flip
+mediaproc image flip photo.jpg
+
+# Explicit horizontal flip
+mediaproc image flip photo.jpg --horizontal
+
+# Mirror selfie correction
+mediaproc image flip selfie.jpg --horizontal -o corrected-selfie.jpg
+```
+
+### 2. Vertical Flip
+
+```bash
+# Flip upside down
+mediaproc image flip photo.jpg --vertical
+
+# Correct inverted image
+mediaproc image flip upside-down.jpg --vertical -o right-side-up.jpg
+
+# Create reflection effect
+mediaproc image flip landscape.jpg --vertical -o reflection.jpg
+```
+
+### 3. Both Directions (180° Rotation)
+
+```bash
+# Flip both axes (equivalent to 180° rotation)
+mediaproc image flip photo.jpg --both
+
+# Correct completely inverted image
+mediaproc image flip inverted.jpg --both -o corrected.jpg
+
+# Create artistic effect
+mediaproc image flip design.jpg --both -o transformed.jpg
+```
+
+### 4. Selfie and Mirror Corrections
+
+```bash
+# Fix front-camera mirror effect
+mediaproc image flip front-camera.jpg --horizontal -o corrected.jpg
+
+# Correct text in mirror photos
+mediaproc image flip mirror-text.jpg --horizontal -o readable-text.jpg
+
+# Fix reversed logo
+mediaproc image flip logo.jpg --horizontal -o proper-logo.jpg
+```
+
+### 5. Create Mirror Effects
+
+```bash
+# Create kaleidoscope base
+mediaproc image flip pattern.jpg --horizontal -o mirrored.jpg
+
+# Symmetrical design
+mediaproc image flip half-design.jpg --horizontal -o symmetric.jpg
+
+# Mirror landscape for composition
+mediaproc image flip landscape.jpg --horizontal -o mirror-landscape.jpg
+```
+
+### 6. Water Reflection Simulation
+
+```bash
+# Create vertical reflection (for water effect)
+mediaproc image flip landscape.jpg --vertical -o reflection-base.jpg
+
+# Later composite with original for water reflection
+# Original on top, flipped version on bottom with transparency
+```
+
+### 7. Batch Processing
+
+```bash
+# Flip all selfies in a directory
+for img in selfies/*.jpg; do
+  mediaproc image flip "$img" --horizontal -o "corrected-$(basename "$img")"
+done
+
+# Create mirrored versions
+for img in *.jpg; do
+  mediaproc image flip "$img" --horizontal -o "mirrored-$(basename "$img")"
+done
+
+# Flip all images vertically
+for img in *.png; do
+  mediaproc image flip "$img" --vertical -o "flipped-$(basename "$img")"
+done
+```
+
+### 8. Correct Scanned Documents
+
+```bash
+# Fix upside-down scan
+mediaproc image flip scan.jpg --vertical -o corrected-scan.jpg
+
+# Fix mirror-scanned document
+mediaproc image flip document.jpg --horizontal -o readable-document.jpg
+
+# Fix completely inverted scan
+mediaproc image flip scan.jpg --both -o fixed-scan.jpg
+```
+
+### 9. Social Media Content
+
+```bash
+# Flip for platform-specific requirements
+mediaproc image flip story.jpg --horizontal -o platform-story.jpg
+
+# Create before/after comparison
+mediaproc image flip before.jpg --horizontal -o after-comparison.jpg
+
+# Mirror effect for creative posts
+mediaproc image flip creative.jpg --both -o artistic-post.jpg
+```
+
+### 10. Photography Corrections
+
+```bash
+# Fix reversed image from camera
+mediaproc image flip photo.jpg --horizontal -o corrected.jpg
+
+# Correct upside-down photo
+mediaproc image flip photo.jpg --vertical -o right-way.jpg
+
+# Fix completely wrong orientation
+mediaproc image flip photo.jpg --both -o fixed.jpg
+```
+
+### 11. Quality Control
+
+```bash
+# Maximum quality flip
+mediaproc image flip photo.jpg --horizontal -q 100 -o high-quality.jpg
+
+# Web-optimized flip
+mediaproc image flip photo.jpg --vertical -q 80 -o web-optimized.jpg
+
+# Balanced quality
+mediaproc image flip photo.jpg --both -q 90 -o balanced.jpg
+```
+
+### 12. Preview Before Processing
+
+```bash
+# Preview horizontal flip
+mediaproc image flip photo.jpg --horizontal --dry-run
+
+# Preview vertical flip with details
+mediaproc image flip photo.jpg --vertical --dry-run --verbose
+
+# Preview both directions flip
+mediaproc image flip photo.jpg --both --dry-run --verbose
+```
+
+### 13. Artistic Transformations
+
+```bash
+# Create symmetrical art
+mediaproc image flip abstract.jpg --horizontal -o symmetric-art.jpg
+
+# Mirror pattern creation
+mediaproc image flip texture.jpg --horizontal -o mirrored-texture.jpg
+
+# Kaleidoscope effect base
+mediaproc image flip pattern.jpg --both -o kaleidoscope-base.jpg
+```
+
+### 14. Text and Graphics
+
+```bash
+# Flip mirrored text to readable
+mediaproc image flip mirrored-text.jpg --horizontal -o readable.jpg
+
+# Correct reversed graphics
+mediaproc image flip graphic.png --horizontal -o corrected-graphic.png
+
+# Flip logo orientation
+mediaproc image flip logo.svg --horizontal -o flipped-logo.svg
+```
+
+### 15. Combining with Other Operations
+
+```bash
+# Flip then rotate
+mediaproc image flip photo.jpg --horizontal -o temp.jpg
+mediaproc image rotate temp.jpg -a 90 -o final.jpg
+rm temp.jpg
+
+# Flip then crop
+mediaproc image flip photo.jpg --vertical -o temp.jpg
+mediaproc image crop temp.jpg -w 800 -h 600 -o final.jpg
+rm temp.jpg
+
+# Resize then flip
+mediaproc image resize photo.jpg -w 1000 -h 800 -o temp.jpg
+mediaproc image flip temp.jpg --horizontal -o final.jpg
+rm temp.jpg
+```
+
+## Use Cases
+
+### 1. Selfie and Front Camera Corrections
+
+- **Mirror Effect Fix**: Front cameras often mirror images, flip to correct
+- **Social Media**: Prepare selfies for posting with proper orientation
+- **Profile Pictures**: Ensure text/logos appear correctly
+- **Video Thumbnails**: Fix mirrored video frame captures
+
+### 2. Photography Workflow
+
+- **Orientation Correction**: Fix images taken with camera held incorrectly
+- **Batch Processing**: Correct multiple images with wrong orientation
+- **RAW Processing**: Flip images after import if needed
+- **Archive Organization**: Standardize image orientations
+
+### 3. Graphic Design and Art
+
+- **Symmetrical Designs**: Create mirror effects for patterns
+- **Kaleidoscope Effects**: Base transformations for complex patterns
+- **Texture Creation**: Generate mirrored textures
+- **Logo Variations**: Create flipped versions for different contexts
+
+### 4. Document Processing
+
+- **Scan Corrections**: Fix upside-down or mirrored scans
+- **Text Readability**: Correct reversed text in images
+- **PDF Preparation**: Ensure all pages have correct orientation
+- **Archive Digitization**: Standardize document orientations
+
+### 5. Web Development
+
+- **Responsive Design**: Create mirrored versions for RTL layouts
+- **Icon Sets**: Generate directional variations
+- **UI Elements**: Create flipped versions for different contexts
+- **Background Patterns**: Mirror patterns for seamless tiling
+
+### 6. E-commerce and Product Photography
+
+- **Product Angles**: Show products from different perspectives
+- **Model Shots**: Correct camera mirror effects
+- **Catalog Consistency**: Ensure all products face same direction
+- **Before/After**: Create comparison images
+
+### 7. Social Media Content Creation
+
+- **Platform Requirements**: Adjust orientation for specific platforms
+- **Story Creation**: Fix selfie orientations for stories
+- **Meme Creation**: Flip images for comedic effect
+- **Brand Content**: Ensure logos/text appear correctly
+
+## Technical Details
+
+### Processing Method
+
+The flip command uses Sharp's `flip()` and `flop()` methods:
+
+- **`flip()`**: Flips vertically (mirrors top-bottom)
+- **`flop()`**: Flips horizontally (mirrors left-right)
+- **Both**: Applies both `flip()` and `flop()` in sequence
+- Fast operation (pixel position remapping only)
+- No quality loss (no resampling)
+
+### Flip Mathematics
+
+```
+Horizontal Flip (Flop):
+For image of width W:
+  new_x = W - 1 - x
+  new_y = y
+
+Vertical Flip (Flip):
+For image of height H:
+  new_x = x
+  new_y = H - 1 - y
+
+Both:
+  new_x = W - 1 - x
+  new_y = H - 1 - y
+```
+
+### Coordinate Transformation
+
+**Original Image (4×3):**
+
+```
+(0,0) (1,0) (2,0) (3,0)
+(0,1) (1,1) (2,1) (3,1)
+(0,2) (1,2) (2,2) (3,2)
+```
+
+**After Horizontal Flip:**
+
+```
+(3,0) (2,0) (1,0) (0,0)
+(3,1) (2,1) (1,1) (0,1)
+(3,2) (2,2) (1,2) (0,2)
+```
+
+**After Vertical Flip:**
+
+```
+(0,2) (1,2) (2,2) (3,2)
+(0,1) (1,1) (2,1) (3,1)
+(0,0) (1,0) (2,0) (3,0)
+```
+
+**After Both:**
+
+```
+(3,2) (2,2) (1,2) (0,2)
+(3,1) (2,1) (1,1) (0,1)
+(3,0) (2,0) (1,0) (0,0)
+```
+
+### Performance Considerations
+
+- **Very Fast**: Simple coordinate remapping
+- **Memory Efficient**: In-place transformation when possible
+- **No Quality Loss**: Direct pixel copy, no interpolation
+- **Format Agnostic**: Works with all image formats
+- **Metadata Preserved**: EXIF data maintained (except orientation tag)
+
+### Rotation vs Flip
+
+| Operation       | Result            | Use Case                            |
+| --------------- | ----------------- | ----------------------------------- |
+| Horizontal Flip | Mirror left-right | Selfie correction, symmetry         |
+| Vertical Flip   | Mirror top-bottom | Upside-down correction, reflections |
+| Both            | 180° equivalent   | Complete inversion                  |
+| Rotate 180°     | Same as flip both | Orientation fix                     |
+| Rotate 90°      | Different result  | Portrait/landscape change           |
+
+### EXIF Orientation
+
+- Flip operations update EXIF orientation tag
+- Ensures proper display in all viewers
+- Maintains other EXIF metadata
+- Compatible with auto-orient operations
+
+## Common Patterns
+
+### Pattern 1: Fix Front Camera Selfie
+
+```bash
+# Most common use case
+mediaproc image flip selfie.jpg --horizontal -o corrected.jpg
+```
+
+### Pattern 2: Create Water Reflection
+
+```bash
+# Flip vertically for reflection base
+mediaproc image flip landscape.jpg --vertical -o reflection.jpg
+# Then composite with original for full effect
+```
+
+### Pattern 3: Correct Upside Down
+
+```bash
+# Fix completely inverted image
+mediaproc image flip photo.jpg --both -o corrected.jpg
+```
+
+### Pattern 4: Mirror Pattern
+
+```bash
+# Create symmetrical design
+mediaproc image flip pattern.jpg --horizontal -o symmetric.jpg
+```
+
+### Pattern 5: Batch Selfie Correction
+
+```bash
+# Fix all front-camera photos
+for img in selfies/*.jpg; do
+  mediaproc image flip "$img" --horizontal -o "fixed/$(basename "$img")"
+done
+```
+
+## Troubleshooting
+
+### Issue: No Visible Change
+
+**Problem**: Image appears unchanged after flipping
+
+**Solutions**:
+
+```bash
+# Check if image is symmetrical
+# Symmetrical images won't show obvious changes
+
+# Try different flip direction
+mediaproc image flip input.jpg --vertical -o test-vertical.jpg
+mediaproc image flip input.jpg --horizontal -o test-horizontal.jpg
+
+# Use --dry-run to verify operation
+mediaproc image flip input.jpg --horizontal --dry-run --verbose
+```
+
+### Issue: Unexpected Result
+
+**Problem**: Flip produces unexpected orientation
+
+**Solutions**:
+
+```bash
+# Horizontal flip mirrors left-right
+mediaproc image flip input.jpg --horizontal  # ✓ Mirror effect
+
+# Vertical flip mirrors top-bottom
+mediaproc image flip input.jpg --vertical    # ✓ Upside down
+
+# For 180° rotation, use --both
+mediaproc image flip input.jpg --both        # ✓ Complete inversion
+
+# If you need 90° rotation, use rotate command instead
+mediaproc image rotate input.jpg -a 90
+```
+
+### Issue: Text Appears Backwards
+
+**Problem**: After flip, text is reversed
+
+**Solutions**:
+
+```bash
+# This is expected behavior for horizontal flip
+# Flip again to restore
+mediaproc image flip mirrored.jpg --horizontal -o restored.jpg
+
+# Or use rotation instead of flip for orientation fix
+mediaproc image rotate input.jpg -a 180
+```
+
+### Issue: Metadata Issues
+
+**Problem**: EXIF data not preserved correctly
+
+**Solutions**:
+
+```bash
+# Flip operations preserve most EXIF data
+# But update orientation tag appropriately
+
+# To preserve all metadata exactly:
+# 1. Extract metadata before flip
+mediaproc image metadata input.jpg > metadata.json
+
+# 2. Flip image
+mediaproc image flip input.jpg --horizontal -o flipped.jpg
+
+# 3. Reapply metadata if needed
+# (Most metadata is automatically preserved)
+```
+
+### Issue: Quality Degradation
+
+**Problem**: Output appears lower quality than input
+
+**Solutions**:
+
+```bash
+# Increase quality setting
+mediaproc image flip input.jpg --horizontal -q 100 -o output.jpg
+
+# Flip is lossless operation, so quality loss is from:
+# 1. Output format compression (JPEG)
+# 2. Quality setting too low
+
+# Use PNG for truly lossless
+mediaproc image flip input.jpg --horizontal -o output.png
+
+# Or maximum JPEG quality
+mediaproc image flip input.jpg --horizontal -q 100 -o output.jpg
+```
+
+### Issue: Both vs Rotate 180°
+
+**Problem**: Confusion between flip both and rotate 180°
+
+**Solutions**:
+
+```bash
+# Both produce same visual result
+mediaproc image flip input.jpg --both -o flipped.jpg
+mediaproc image rotate input.jpg -a 180 -o rotated.jpg
+# Results are identical
+
+# Use flip for:
+# - Faster processing
+# - When thinking in terms of mirroring
+
+# Use rotate for:
+# - Consistent rotation workflow
+# - When also doing 90° rotations
+```
+
+## Best Practices
+
+1. **Understand the Direction**
+
+   - Horizontal = left-right mirror (flop)
+   - Vertical = top-bottom mirror (flip)
+   - Both = complete inversion (flip + flop)
+
+2. **Selfie Corrections**
+
+   - Always use horizontal flip for front camera photos
+   - Check if text/logos need to face specific direction
+   - Preview before batch processing
+
+3. **Preserve Originals**
+
+   - Keep unflipped originals
+   - Use descriptive output names
+   - Create flipped copies, don't overwrite
+
+4. **Quality Considerations**
+
+   - Use quality 90-100 for important images
+   - PNG for lossless flipping
+   - JPEG for web-optimized output
+
+5. **Batch Operations**
+
+   - Test with one image first
+   - Use consistent naming convention
+   - Verify results before processing thousands
+
+6. **Combine with Auto-Orient**
+
+   - Use auto-orient first to fix EXIF issues
+   - Then flip if needed for specific requirements
+   - Ensures correct starting orientation
+
+7. **Document Workflow**
+   - Note which images need flipping and why
+   - Maintain consistent flip direction
+   - Use scripts for repeatable processes
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Auto-orient then flip
+mediaproc image auto-orient photo.jpg -o oriented.jpg
+mediaproc image flip oriented.jpg --horizontal -o final.jpg
+
+# Flip then rotate
+mediaproc image flip photo.jpg --horizontal -o temp.jpg
+mediaproc image rotate temp.jpg -a 45 -o final.jpg
+
+# Resize then flip
+mediaproc image resize photo.jpg -w 1000 -o temp.jpg
+mediaproc image flip temp.jpg --vertical -o final.jpg
+
+# Flip then crop
+mediaproc image flip photo.jpg --horizontal -o temp.jpg
+mediaproc image crop temp.jpg -w 800 -h 600 -o final.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Fix all selfies in a directory
+
+for img in selfies/*.jpg; do
+  filename=$(basename "$img" .jpg)
+
+  # Fix mirror effect from front camera
+  mediaproc image flip "$img" --horizontal -o "corrected/${filename}.jpg"
+
+  # Also create thumbnail
+  mediaproc image resize "corrected/${filename}.jpg" -w 400 -h 400 --fit cover -o "thumbs/${filename}.jpg"
+done
+```
+
+### Creating Mirror Compositions
+
+```bash
+#!/bin/bash
+# Create symmetrical composition
+
+# 1. Flip original horizontally
+mediaproc image flip original.jpg --horizontal -o mirrored.jpg
+
+# 2. Combine side-by-side using composite
+mediaproc image composite original.jpg --overlay mirrored.jpg --gravity east -o symmetric.jpg
+```
+
+## See Also
+
+- [flop](./flop) - Dedicated horizontal flip command
+- [rotate](./rotate) - Rotate images by degrees
+- [auto-orient](./auto-orient) - Fix EXIF orientation automatically
+- [mirror](./mirror) - Create mirror effects with compositing
+- [composite](./composite) - Combine flipped images for effects

@@ -44,11 +44,13 @@ yarn add -D @mediaproc/cli
 ## Quick Start
 
 1. **Initialize your project**:
+
    ```bash
    mediaproc init
    ```
 
 2. **Install plugins you need**:
+
    ```bash
    mediaproc install image video audio
    ```
@@ -86,6 +88,7 @@ mediaproc <plugin> <command> [input] [output] [options]
 ```
 
 Example:
+
 ```bash
 mediaproc image crop photo.jpg cropped.jpg --width 500 --height 500
 ```
@@ -99,6 +102,7 @@ Commands accept options to customize behavior. Options can be:
 - **Flags**: Boolean options (e.g., `--force`, `--verbose`)
 
 View available options with:
+
 ```bash
 mediaproc <plugin> <command> --help
 ```
@@ -270,36 +274,43 @@ mediaproc image resize --help
 ### Common Workflows
 
 **Optimize images for web:**
+
 ```bash
 mediaproc image optimize input.jpg output.jpg --quality 85 --format webp
 ```
 
 **Convert video for web:**
+
 ```bash
 mediaproc video convert input.mp4 output.webm --codec vp9 --quality good
 ```
 
 **Extract audio from video:**
+
 ```bash
 mediaproc audio extract video.mp4 audio.mp3
 ```
 
 **Create animated GIF:**
+
 ```bash
 mediaproc animation gifify video.mp4 output.gif --fps 10 --width 500
 ```
 
 **Remove background from image:**
+
 ```bash
 mediaproc ai remove-background photo.jpg output.png
 ```
 
 **Batch resize images:**
+
 ```bash
 mediaproc image batch resize "photos/*.jpg" --width 1200 --output "resized/"
 ```
 
 **Chain operations:**
+
 ```bash
 mediaproc pipeline run \
   --input image.jpg \
