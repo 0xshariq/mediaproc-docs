@@ -1,0 +1,813 @@
+---
+title: Resize
+description: Resize images to specified dimensions with advanced options and quality control
+---
+
+# Resize
+
+Resize images to specified dimensions with advanced options for fit modes, quality control, and various resampling kernels.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
+
+## Usage
+
+```bash
+mediaproc image resize <input> [options]
+```
+
+### Basic Usage
+
+```bash
+# Resize width, auto height
+mediaproc image resize photo.jpg -w 800
+
+# Resize height, auto width
+mediaproc image resize image.png -h 600
+
+# Resize both dimensions
+mediaproc image resize photo.jpg -w 1920 -h 1080
+
+# Exact dimensions (crop to fit)
+mediaproc image resize photo.jpg -w 500 -h 500 --fit cover
+
+# Fit within dimensions (add padding)
+mediaproc image resize logo.png -w 200 -h 200 --fit contain
+```
+
+## Options
+
+| Option                       | Alias | Type    | Default                 | Description                                      |
+| ---------------------------- | ----- | ------- | ----------------------- | ------------------------------------------------ |
+| `--width <pixels>`           | `-w`  | number  | -                       | Width in pixels                                  |
+| `--height <pixels>`          | `-h`  | number  | -                       | Height in pixels                                 |
+| `--output <path>`            | `-o`  | string  | `<input>-resized.<ext>` | Output file path                                 |
+| `--quality <quality>`        | `-q`  | number  | `90`                    | Output quality (1-100)                           |
+| `--fit <mode>`               |       | string  | `cover`                 | Fit mode (cover, contain, fill, inside, outside) |
+| `--maintain-aspect-ratio`    |       | boolean | `true`                  | Maintain aspect ratio (default)                  |
+| `--no-maintain-aspect-ratio` |       | boolean | -                       | Do not maintain aspect ratio (uses fill mode)    |
+| `--position <position>`      |       | string  | `center`                | Position for cover/contain                       |
+| `--background <color>`       |       | string  | `#ffffff`               | Background color for contain/outside             |
+| `--kernel <kernel>`          |       | string  | `lanczos3`              | Resampling kernel                                |
+| `--dry-run`                  |       | boolean | `false`                 | Preview without making changes                   |
+| `--verbose`                  | `-v`  | boolean | `false`                 | Show detailed output                             |
+| `--help`                     |       | boolean | `false`                 | Display help information                         |
+
+## Fit Modes
+
+### Cover (Default)
+
+**Crop to fill dimensions**, maintaining aspect ratio:
+
+```bash
+mediaproc image resize photo.jpg -w 500 -h 500 --fit cover
+```
+
+- Image fills entire area
+- Crops overflow
+- No distortion
+- **Use**: Thumbnails, profile pictures, social media
+
+### Contain
+
+**Fit within dimensions**, add padding if needed:
+
+```bash
+mediaproc image resize logo.png -w 500 -h 500 --fit contain --background transparent
+```
+
+- Entire image visible
+- May add padding
+- No cropping
+- **Use**: Logos, product images, preserve full content
+
+### Fill
+
+**Stretch to exact dimensions**, ignore aspect ratio:
+
+```bash
+mediaproc image resize image.jpg -w 500 -h 500 --fit fill
+```
+
+- Exact dimensions
+- May distort
+- No cropping or padding
+- **Use**: When exact size required regardless of distortion
+
+### Inside
+
+**Resize to fit inside dimensions**, smaller or equal:
+
+```bash
+mediaproc image resize photo.jpg -w 1000 -h 1000 --fit inside
+```
+
+- Fits within bounds
+- No enlargement
+- Maintains aspect ratio
+- **Use**: Maximum size constraints
+
+### Outside
+
+**Resize to fit outside dimensions**, larger or equal:
+
+```bash
+mediaproc image resize photo.jpg -w 500 -h 500 --fit outside --background white
+```
+
+- Covers entire area
+- May exceed dimensions
+- Maintains aspect ratio
+- **Use**: Ensure minimum size coverage
+
+## Resampling Kernels
+
+### Lanczos3 (Default)
+
+**Best quality**, slower:
+
+```bash
+mediaproc image resize photo.jpg -w 800 --kernel lanczos3
+```
+
+- Highest quality
+- Sharp results
+- Slightly slower
+- **Best for**: Final production, print, detail preservation
+
+### Lanczos2
+
+**Good quality**, faster than lanczos3:
+
+```bash
+mediaproc image resize photo.jpg -w 800 --kernel lanczos2
+```
+
+- Very good quality
+- Faster than lanczos3
+- Balanced choice
+- **Best for**: Web images, general use
+
+### Mitchell
+
+**Smooth results**, good quality:
+
+```bash
+mediaproc image resize photo.jpg -w 800 --kernel mitchell
+```
+
+- Smooth appearance
+- Less sharpening than lanczos
+- Good quality
+- **Best for**: Photos, portraits, smooth gradients
+
+### Cubic
+
+**Balanced**, moderate quality:
+
+```bash
+mediaproc image resize photo.jpg -w 800 --kernel cubic
+```
+
+- Standard cubic interpolation
+- Moderate quality
+- Fast
+- **Best for**: General purpose, batch processing
+
+### Nearest
+
+**Fastest**, lowest quality:
+
+```bash
+mediaproc image resize pixel-art.png -w 400 --kernel nearest
+```
+
+- No interpolation
+- Blocky/pixelated
+- Very fast
+- **Best for**: Pixel art, intentional pixelation, speed priority
+
+## Position Options
+
+Control where image is positioned for **cover** and **contain** modes:
+
+- `center` (default): Center alignment
+- `top`: Top alignment
+- `bottom`: Bottom alignment
+- `left`: Left alignment
+- `right`: Right alignment
+- `top left`, `top right`, `bottom left`, `bottom right`: Corner alignment
+
+```bash
+# Align to top when cropping
+mediaproc image resize portrait.jpg -w 500 -h 500 --fit cover --position top
+
+# Align to right
+mediaproc image resize landscape.jpg -w 800 -h 600 --fit cover --position right
+```
+
+## Examples
+
+### 1. Resize Width Only
+
+Auto-calculate height:
+
+```bash
+mediaproc image resize photo.jpg -w 800
+```
+
+**Result**: 800px wide, height maintains aspect ratio.
+
+### 2. Resize Height Only
+
+Auto-calculate width:
+
+```bash
+mediaproc image resize portrait.jpg -h 1200
+```
+
+**Result**: 1200px tall, width maintains aspect ratio.
+
+### 3. Full HD Resize
+
+Resize to 1920×1080:
+
+```bash
+mediaproc image resize video-thumbnail.jpg -w 1920 -h 1080
+```
+
+**Standard**: Full HD dimensions with cover mode.
+
+### 4. Square Thumbnail
+
+Create square thumbnail:
+
+```bash
+mediaproc image resize photo.jpg -w 300 -h 300 --fit cover
+```
+
+**Social Media**: Perfect square for avatars, Instagram.
+
+### 5. Logo Resize (Preserve Full Image)
+
+Fit logo in box with padding:
+
+```bash
+mediaproc image resize logo.png -w 200 -h 200 --fit contain --background transparent
+```
+
+**Branding**: Entire logo visible, no cropping.
+
+### 6. High-Quality Resize
+
+Maximum quality settings:
+
+```bash
+mediaproc image resize photo.jpg -w 2000 -q 95 --kernel lanczos3
+```
+
+**Print/Production**: Best quality for final output.
+
+### 7. Fast Batch Resize
+
+Quick processing for many images:
+
+```bash
+mediaproc image resize "photos/*.jpg" -w 1024 --kernel cubic
+```
+
+**Speed**: Faster kernel for bulk processing.
+
+### 8. Email-Optimized Size
+
+Resize for email attachments:
+
+```bash
+mediaproc image resize large-photo.jpg -w 800 -q 80
+```
+
+**Email**: Smaller file size, reasonable quality.
+
+### 9. Mobile-Optimized
+
+Resize for mobile display:
+
+```bash
+mediaproc image resize hero-image.jpg -w 1080 -q 85
+```
+
+**Mobile Web**: Mobile screen width, good quality.
+
+### 10. Contain with White Background
+
+Product image with white padding:
+
+```bash
+mediaproc image resize product.jpg -w 800 -h 800 --fit contain --background white
+```
+
+**E-commerce**: Product centered on white background.
+
+### 11. No Aspect Ratio Constraint
+
+Stretch to exact size:
+
+```bash
+mediaproc image resize image.jpg -w 400 -h 600 --no-maintain-aspect-ratio
+```
+
+**Exact**: Forces exact dimensions, may distort.
+
+### 12. Maximum Width Constraint
+
+Don't exceed width:
+
+```bash
+mediaproc image resize huge-image.jpg -w 2000 --fit inside
+```
+
+**Constraint**: Won't enlarge beyond 2000px wide.
+
+### 13. Multiple Outputs
+
+Create different sizes:
+
+```bash
+# Thumbnail
+mediaproc image resize photo.jpg -w 300 -h 300 -o thumb.jpg
+
+# Medium
+mediaproc image resize photo.jpg -w 800 -o medium.jpg
+
+# Large
+mediaproc image resize photo.jpg -w 1920 -o large.jpg
+```
+
+**Responsive**: Multiple sizes for responsive web design.
+
+### 14. Pixel Art Resize
+
+Resize pixel art without smoothing:
+
+```bash
+mediaproc image resize sprite.png -w 256 -h 256 --kernel nearest
+```
+
+**Gaming**: Preserves pixel art sharpness.
+
+### 15. Verbose Output
+
+Show detailed processing info:
+
+```bash
+mediaproc image resize photo.jpg -w 1000 -v
+```
+
+**Info**: Original size, new size, processing details.
+
+### 16. Portrait Crop (Top Alignment)
+
+Crop portrait from top:
+
+```bash
+mediaproc image resize portrait.jpg -w 400 -h 600 --fit cover --position top
+```
+
+**Photography**: Keep face/head in frame when cropping.
+
+### 17. Preview Before Resizing
+
+Dry run to check settings:
+
+```bash
+mediaproc image resize photo.jpg -w 800 -h 600 --dry-run
+```
+
+**Safety**: Verify before processing.
+
+## Use Cases
+
+### 1. Web Optimization
+
+Resize for web display:
+
+```bash
+# Hero image
+mediaproc image resize hero.jpg -w 1920 -q 85
+
+# Content images
+mediaproc image resize "content/*.jpg" -w 1200 -q 80
+
+# Thumbnails
+mediaproc image resize "gallery/*.jpg" -w 400 -h 400 --fit cover
+```
+
+**Performance**: Faster page loads.
+
+### 2. Social Media
+
+Standard social media sizes:
+
+```bash
+# Instagram square
+mediaproc image resize photo.jpg -w 1080 -h 1080 --fit cover
+
+# Facebook cover
+mediaproc image resize cover.jpg -w 820 -h 312 --fit cover
+
+# Twitter header
+mediaproc image resize header.jpg -w 1500 -h 500 --fit cover
+```
+
+**Social**: Platform-optimized dimensions.
+
+### 3. E-commerce
+
+Product image standardization:
+
+```bash
+# Product thumbnails
+mediaproc image resize "products/*.jpg" -w 300 -h 300 --fit contain --background white
+
+# Large product images
+mediaproc image resize "products/*.jpg" -w 1200 -h 1200 --fit contain --background white
+```
+
+**Retail**: Consistent product presentation.
+
+### 4. Email Campaigns
+
+Email-friendly sizes:
+
+```bash
+# Header images
+mediaproc image resize email-header.jpg -w 600 -q 75
+
+# Content images
+mediaproc image resize "email-content/*.jpg" -w 500 -q 70
+```
+
+**Email**: Fast loading, small file sizes.
+
+### 5. Mobile App Assets
+
+App-specific sizes:
+
+```bash
+# iOS retina
+mediaproc image resize icon.png -w 512 -h 512 --fit contain
+
+# Android icons
+mediaproc image resize icon.png -w 192 -h 192 --fit contain
+```
+
+**Apps**: Platform-specific asset generation.
+
+### 6. Print Preparation
+
+High-quality for print:
+
+```bash
+# 300 DPI for 8×10 inch print (2400×3000px)
+mediaproc image resize photo.jpg -w 2400 -h 3000 -q 95 --kernel lanczos3
+```
+
+**Print**: Professional print quality.
+
+### 7. Blog/CMS
+
+Blog image standards:
+
+```bash
+# Featured images
+mediaproc image resize "blog/*.jpg" -w 1200 -h 630 --fit cover
+
+# Inline images
+mediaproc image resize "inline/*.jpg" -w 800
+```
+
+**Publishing**: CMS-optimized images.
+
+### 8. Responsive Images
+
+Multiple sizes for srcset:
+
+```bash
+# Small
+mediaproc image resize image.jpg -w 640 -o image-sm.jpg
+
+# Medium
+mediaproc image resize image.jpg -w 1024 -o image-md.jpg
+
+# Large
+mediaproc image resize image.jpg -w 1920 -o image-lg.jpg
+```
+
+**Responsive**: Serve appropriate size per device.
+
+### 9. Avatar/Profile Pictures
+
+User profile images:
+
+```bash
+# Small avatar
+mediaproc image resize avatar.jpg -w 50 -h 50 --fit cover -o avatar-sm.jpg
+
+# Medium avatar
+mediaproc image resize avatar.jpg -w 150 -h 150 --fit cover -o avatar-md.jpg
+
+# Large avatar
+mediaproc image resize avatar.jpg -w 300 -h 300 --fit cover -o avatar-lg.jpg
+```
+
+**Users**: Consistent profile picture sizes.
+
+### 10. Cloud Storage Optimization
+
+Reduce storage usage:
+
+```bash
+# Resize large photos to reasonable size
+mediaproc image resize "uploads/*.jpg" -w 1920 --fit inside -q 85
+```
+
+**Storage**: Save space, maintain quality.
+
+## Combining with Other Commands
+
+### Resize + Optimize
+
+Resize and compress:
+
+```bash
+# Resize
+mediaproc image resize huge.jpg -w 1920 -o resized.jpg
+
+# Optimize
+mediaproc image optimize resized.jpg --aggressive
+```
+
+**Efficiency**: Smaller files for web.
+
+### Crop + Resize
+
+Crop area, then resize:
+
+```bash
+# Crop specific area
+mediaproc image crop photo.jpg --x 100 --y 100 --width 800 --height 600 -o cropped.jpg
+
+# Resize cropped area
+mediaproc image resize cropped.jpg -w 400 -h 300
+```
+
+**Precision**: Exact area at specific size.
+
+### Auto-Enhance + Resize
+
+Enhance then resize:
+
+```bash
+# Enhance quality
+mediaproc image auto-enhance photo.jpg -o enhanced.jpg
+
+# Resize enhanced
+mediaproc image resize enhanced.jpg -w 1200
+```
+
+**Quality**: Better looking resized images.
+
+### Resize + Watermark
+
+Resize then add watermark:
+
+```bash
+# Resize
+mediaproc image resize photo.jpg -w 1920 -o resized.jpg
+
+# Add watermark
+mediaproc image watermark resized.jpg --text "© 2024" --position bottom-right
+```
+
+**Protection**: Watermarked web-ready images.
+
+## Technical Details
+
+### Resampling Algorithms
+
+**Lanczos**: Windowed sinc function
+
+- lanczos3: 3-lobe window (default)
+- lanczos2: 2-lobe window
+
+**Mitchell**: Mitchell-Netravali filter
+
+- Balanced sharpness and smoothness
+
+**Cubic**: Cubic convolution
+
+- Standard bicubic interpolation
+
+**Nearest**: No interpolation
+
+- Pixel replication only
+
+### Performance
+
+Approximate times (per megapixel):
+
+- **nearest**: ~20-40ms
+- **cubic**: ~50-80ms
+- **mitchell**: ~60-90ms
+- **lanczos2**: ~80-120ms
+- **lanczos3**: ~100-150ms
+
+### Quality vs Speed
+
+**Best Quality**: lanczos3 (slowest)
+**Balanced**: mitchell or lanczos2
+**Fastest**: nearest (lowest quality)
+
+### File Size Impact
+
+Smaller dimensions = smaller file size:
+
+- 50% dimension reduction ≈ 75% file size reduction
+- 25% dimension reduction ≈ 44% file size reduction
+
+Example:
+
+- 4000×3000 (12MP) @ 5MB
+- 2000×1500 (3MP) @ 1.25MB (75% reduction)
+
+## Best Practices
+
+### 1. Specify At Least One Dimension
+
+Width or height required:
+
+```bash
+# Must specify at least one
+mediaproc image resize photo.jpg -w 800
+```
+
+### 2. Use Appropriate Fit Mode
+
+**Cover**: When cropping is acceptable
+**Contain**: When full image must be visible
+**Inside**: When maximum size matters
+
+### 3. Choose Correct Kernel
+
+**Final output**: lanczos3
+**Web/general**: lanczos2 or mitchell
+**Batch/speed**: cubic
+**Pixel art**: nearest
+
+### 4. Quality Settings
+
+- **95-100**: Print, professional
+- **85-90**: Web (high quality)
+- **75-85**: Web (standard)
+- **65-75**: Email, mobile
+
+### 5. Maintain Aspect Ratio
+
+Usually want to preserve aspect ratio:
+
+```bash
+# Good: auto height
+mediaproc image resize photo.jpg -w 800
+
+# Usually avoid distortion
+# mediaproc image resize photo.jpg -w 800 -h 800 --fit fill
+```
+
+### 6. Use Dry Run
+
+Test before batch processing:
+
+```bash
+mediaproc image resize "photos/*.jpg" -w 1024 --dry-run
+```
+
+### 7. Background Color for Contain
+
+Match background to use case:
+
+```bash
+# Transparent for web
+--background transparent
+
+# White for product images
+--background white
+
+# Custom color
+--background "#f0f0f0"
+```
+
+## Troubleshooting
+
+### Issue: Image Distorted
+
+**Problem**: Image stretched or squashed
+
+**Cause**: Using fill mode or --no-maintain-aspect-ratio
+
+**Solution**: Use cover or contain mode
+
+```bash
+# Distorted
+mediaproc image resize photo.jpg -w 500 -h 500 --fit fill
+
+# Better
+mediaproc image resize photo.jpg -w 500 -h 500 --fit cover
+```
+
+### Issue: Image Cropped
+
+**Problem**: Parts of image missing
+
+**Cause**: Cover mode crops to fit
+
+**Solution**: Use contain mode
+
+```bash
+# Crops image
+mediaproc image resize photo.jpg -w 500 -h 500 --fit cover
+
+# Shows full image
+mediaproc image resize photo.jpg -w 500 -h 500 --fit contain
+```
+
+### Issue: Padding/Borders
+
+**Problem**: White/black borders around image
+
+**Cause**: Contain mode adds padding
+
+**Solution**: Change background or use cover mode
+
+```bash
+# Transparent background
+mediaproc image resize logo.png -w 200 -h 200 --fit contain --background transparent
+```
+
+### Issue: Image Blurry
+
+**Problem**: Resized image looks soft/blurry
+
+**Cause**: Using cubic or mitchell kernel, or over-enlargement
+
+**Solution**: Use lanczos3, avoid extreme enlargement
+
+```bash
+# Sharper results
+mediaproc image resize photo.jpg -w 2000 --kernel lanczos3
+```
+
+### Issue: Slow Processing
+
+**Problem**: Resizing takes too long
+
+**Cause**: Using lanczos3 on many/large images
+
+**Solution**: Use faster kernel
+
+```bash
+# Faster
+mediaproc image resize "photos/*.jpg" -w 1024 --kernel cubic
+```
+
+### Issue: No Dimension Specified
+
+**Problem**: Error about missing dimension
+
+**Cause**: Must specify width or height
+
+**Solution**: Add -w or -h
+
+```bash
+# Error
+mediaproc image resize photo.jpg
+
+# Fixed
+mediaproc image resize photo.jpg -w 800
+```
+
+## Related Commands
+
+- [crop](./crop.mdx) - Crop specific area before resizing
+- [thumbnail](./thumbnail.mdx) - Quick thumbnail generation
+- [optimize](./optimize.mdx) - Further optimize file size
+- [smart-crop](./smart-crop.mdx) - Content-aware cropping
+
+## Further Reading
+
+- [Image Scaling](https://en.wikipedia.org/wiki/Image_scaling)
+- [Lanczos Resampling](https://en.wikipedia.org/wiki/Lanczos_resampling)
+- [Mitchell-Netravali Filters](https://en.wikipedia.org/wiki/Mitchell-Netravali_filters)
+- [Responsive Images](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)
