@@ -1,6 +1,12 @@
-# tint
+# Tint
 
-Apply a color tint to an image.
+Apply color tint overlay to images. Great for creating artistic effects, adjusting mood, brand color filters, and vintage looks.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,136 +14,720 @@ Apply a color tint to an image.
 mediaproc image tint <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `tint` command applies a color overlay to images, creating monochromatic or duotone effects. Perfect for creating consistent color themes or artistic looks.
+```bash
+# Blue tint (default)
+mediaproc image tint photo.jpg
+
+# Named color
+mediaproc image tint image.png -c red
+
+# Hex color
+mediaproc image tint pic.jpg -c "#ff6600"
+
+# RGB color
+mediaproc image tint photo.jpg -c "rgb(255, 0, 128)"
+
+# Batch processing
+mediaproc image tint "photos/*.jpg" -c "#704214"
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-c, --color` | string | - | Tint color (hex, rgb, or name) |
-| `--opacity` | number | 0.5 | Tint strength (0-1) |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option                | Alias | Type    | Default   | Description                                        |
+| --------------------- | ----- | ------- | --------- | -------------------------------------------------- |
+| `--color <color>`     | `-c`  | string  | `#0000ff` | Tint color (hex, RGB, or name)                     |
+| `--output <path>`     | `-o`  | string  | -         | Output file path (default: `<input>-tinted.<ext>`) |
+| `--quality <quality>` | `-q`  | number  | `90`      | Output quality (1-100)                             |
+| `--dry-run`           |       | boolean | `false`   | Preview without making changes                     |
+| `--verbose`           | `-v`  | boolean | `false`   | Show detailed output                               |
+| `--help`              |       | boolean | `false`   | Display help information                           |
+
+## Color Formats
+
+### Hex Colors
+
+Six-digit or three-digit hex codes:
+
+```bash
+# Six-digit hex
+mediaproc image tint photo.jpg -c "#ff0000"  # Red
+
+# Three-digit hex
+mediaproc image tint photo.jpg -c "#f00"     # Red (shorthand)
+
+# Without hash (also works)
+mediaproc image tint photo.jpg -c "ff0000"
+```
+
+### RGB Colors
+
+RGB format with values 0-255:
+
+```bash
+# Standard RGB
+mediaproc image tint photo.jpg -c "rgb(255, 0, 0)"  # Red
+
+# With spaces
+mediaproc image tint photo.jpg -c "rgb(255, 128, 0)"  # Orange
+```
+
+### Named Colors
+
+Common color names:
+
+```bash
+# Basic colors
+mediaproc image tint photo.jpg -c red
+mediaproc image tint photo.jpg -c blue
+mediaproc image tint photo.jpg -c green
+mediaproc image tint photo.jpg -c yellow
+
+# Extended names
+mediaproc image tint photo.jpg -c orange
+mediaproc image tint photo.jpg -c purple
+mediaproc image tint photo.jpg -c cyan
+mediaproc image tint photo.jpg -c magenta
+```
+
+## Common Tints
+
+### Sepia (Vintage)
+
+Warm vintage tone:
+
+```bash
+mediaproc image tint photo.jpg -c "#704214"
+```
+
+**Effect**: Classic vintage/antique look
+
+### Blue (Cool)
+
+Cool, calm atmosphere:
+
+```bash
+mediaproc image tint photo.jpg -c "#0066cc"
+```
+
+**Mood**: Cool, professional, calm
+
+### Orange (Warm)
+
+Warm sunset effect:
+
+```bash
+mediaproc image tint photo.jpg -c "#ff6600"
+```
+
+**Mood**: Warm, inviting, sunset
+
+### Purple (Creative)
+
+Artistic, creative vibe:
+
+```bash
+mediaproc image tint photo.jpg -c "#9933cc"
+```
+
+**Effect**: Artistic, mysterious, creative
+
+### Green (Fresh)
+
+Nature, fresh feel:
+
+```bash
+mediaproc image tint photo.jpg -c "#00cc66"
+```
+
+**Mood**: Natural, fresh, organic
+
+### Cyan (Modern)
+
+Modern, tech look:
+
+```bash
+mediaproc image tint photo.jpg -c "#00ffff"
+```
+
+**Effect**: Modern, digital, tech
+
+### Pink (Soft)
+
+Soft, romantic tone:
+
+```bash
+mediaproc image tint photo.jpg -c "#ff66cc"
+```
+
+**Mood**: Soft, romantic, dreamy
+
+### Yellow (Bright)
+
+Bright, cheerful mood:
+
+```bash
+mediaproc image tint photo.jpg -c "#ffcc00"
+```
+
+**Effect**: Bright, happy, energetic
 
 ## Examples
 
-### Basic Tints
+### 1. Default Blue Tint
+
+Apply default blue tint:
 
 ```bash
-# Blue tint
-mediaproc image tint photo.jpg -c "#3b82f6" -o blue-tint.jpg
-
-# Red tint
-mediaproc image tint image.jpg -c "#ef4444" --opacity 0.4 -o red-tint.jpg
-
-# Green tint
-mediaproc image tint photo.png -c "#10b981" -o green-tint.png
+mediaproc image tint photo.jpg
 ```
 
-### Monochrome Effects
+**Result**: Cool blue tone
+
+### 2. Vintage Sepia
+
+Classic sepia tone:
 
 ```bash
-# Sepia-like brown tint
-mediaproc image tint photo.jpg -c "#8b4513" --opacity 0.6 -o sepia-style.jpg
-
-# Cyanotype (blueprint) effect
-mediaproc image tint image.jpg -c "#0891b2" --opacity 0.7 -o cyanotype.jpg
-
-# Purple duotone
-mediaproc image tint photo.jpg -c "#8b5cf6" --opacity 0.5 -o purple-tone.jpg
+mediaproc image tint old-photo.jpg -c "#704214" -o vintage.jpg
 ```
 
-### Brand Coloring
+**Vintage**: Warm antique look
+
+### 3. Sunset Effect
+
+Warm orange glow:
 
 ```bash
-# Apply brand color
-mediaproc image tint product.jpg -c "#ff0080" --opacity 0.3 -o branded.jpg
-
-# Consistent theme color
-for img in gallery/*.jpg; do
-  mediaproc image tint "$img" -c "#3b82f6" --opacity 0.4 -o "themed-$(basename $img)"
-done
+mediaproc image tint landscape.jpg -c "#ff6600"
 ```
 
-### Seasonal Tints
+**Sunset**: Warm evening atmosphere
+
+### 4. Cool Blue Mood
+
+Professional cool tone:
 
 ```bash
-# Warm autumn tint
-mediaproc image tint summer.jpg -c "#fb923c" --opacity 0.3 -o autumn.jpg
-
-# Cool winter tint
-mediaproc image tint photo.jpg -c "#60a5fa" --opacity 0.3 -o winter.jpg
-
-# Spring green tint
-mediaproc image tint image.jpg -c "#84cc16" --opacity 0.25 -o spring.jpg
+mediaproc image tint corporate.jpg -c "#0066cc"
 ```
 
-### Instagram-Style Filters
+**Corporate**: Professional, trustworthy
+
+### 5. Creative Purple
+
+Artistic purple tint:
 
 ```bash
-# Valencia filter (warm orange)
-mediaproc image tint photo.jpg -c "#ff8c00" --opacity 0.3 -o valencia.jpg
-
-# Nashville filter (warm pink)
-mediaproc image tint image.jpg -c "#ff69b4" --opacity 0.25 -o nashville.jpg
-
-# Inkwell (cool blue-gray)
-mediaproc image tint photo.jpg -c "#708090" --opacity 0.5 -o inkwell.jpg
+mediaproc image tint art.png -c "#9933cc" -o creative.png
 ```
 
-## Opacity Guide
+**Artistic**: Creative, unique
 
-| Value | Effect | Use Case |
-|-------|--------|----------|
-| 0.1-0.2 | Very subtle | Slight color shift |
-| 0.3-0.4 | Noticeable | Standard filter |
-| 0.5-0.6 | Strong | Bold look |
-| 0.7-0.9 | Very strong | Artistic, dramatic |
-| 1.0 | Solid color | Overlay effect |
+### 6. Brand Color
 
-## Popular Tint Colors
+Apply brand color filter:
 
-### Warm Tints
-- **Orange**: `#ff8c00` - Sunset, cozy
-- **Red**: `#dc2626` - Passionate, energetic
-- **Yellow**: `#fbbf24` - Cheerful, bright
-- **Brown**: `#92400e` - Vintage, rustic
+```bash
+mediaproc image tint product.jpg -c "#ff1744"
+```
 
-### Cool Tints
-- **Blue**: `#3b82f6` - Calm, professional
-- **Cyan**: `#06b6d4` - Fresh, modern
-- **Purple**: `#8b5cf6` - Creative, luxury
-- **Teal**: `#14b8a6` - Balanced, natural
+**Branding**: Consistent brand look
 
-### Neutral Tints
-- **Gray**: `#6b7280` - Sophisticated
-- **Slate**: `#64748b` - Modern, clean
+### 7. Nature Green
+
+Fresh green tone:
+
+```bash
+mediaproc image tint outdoor.jpg -c "#00cc66"
+```
+
+**Nature**: Fresh, organic feel
+
+### 8. Romantic Pink
+
+Soft romantic tint:
+
+```bash
+mediaproc image tint wedding.jpg -c "#ff66cc"
+```
+
+**Romance**: Soft, dreamy atmosphere
+
+### 9. Cyberpunk Cyan
+
+Futuristic cyan tint:
+
+```bash
+mediaproc image tint cityscape.jpg -c "#00ffff"
+```
+
+**Futuristic**: Modern, tech vibe
+
+### 10. Warm Red
+
+Dramatic red tone:
+
+```bash
+mediaproc image tint portrait.jpg -c "#cc0000"
+```
+
+**Dramatic**: Bold, intense
+
+### 11. Batch Brand Tint
+
+Apply consistent brand color:
+
+```bash
+mediaproc image tint "products/*.jpg" -c "#ff1744"
+```
+
+**Consistency**: Uniform brand look
+
+### 12. Custom Color
+
+Specific brand hex:
+
+```bash
+mediaproc image tint image.jpg -c "#4a90e2" -o branded.jpg
+```
+
+**Custom**: Exact brand color
+
+### 13. Verbose Output
+
+See processing details:
+
+```bash
+mediaproc image tint photo.jpg -c orange --verbose
+```
+
+**Info**: Dimensions and color applied
+
+### 14. Preview Tint
+
+Check before processing:
+
+```bash
+mediaproc image tint photo.jpg -c purple --dry-run
+```
+
+**Safety**: Verify output path
+
+### 15. High Quality
+
+Maximum quality tint:
+
+```bash
+mediaproc image tint photo.jpg -c sepia -q 100
+```
+
+**Quality**: No compression loss
+
+## Use Cases
+
+### 1. Vintage/Retro Effects
+
+Create vintage photography look:
+
+```bash
+# Sepia tone
+mediaproc image tint modern-photo.jpg -c "#704214" -o vintage.jpg
+
+# Classic old photo effect
+```
+
+**Photography**: Nostalgic aesthetic
+
+### 2. Mood Adjustment
+
+Adjust emotional tone:
+
+```bash
+# Cool, calm mood
+mediaproc image tint photo.jpg -c "#0066cc"
+
+# Warm, inviting mood
+mediaproc image tint photo.jpg -c "#ff6600"
+```
+
+**Atmosphere**: Control emotional response
+
+### 3. Brand Consistency
+
+Apply brand colors to images:
+
+```bash
+# Company brand color
+mediaproc image tint "marketing/*.jpg" -c "#ff1744"
+
+# Consistent brand identity
+```
+
+**Marketing**: Unified brand look
+
+### 4. Social Media Themes
+
+Create cohesive Instagram feed:
+
+```bash
+# Consistent tint across posts
+mediaproc image tint post1.jpg -c "#ff6600" -o feed1.jpg
+mediaproc image tint post2.jpg -c "#ff6600" -o feed2.jpg
+
+# Unified aesthetic
+```
+
+**Social Media**: Cohesive visual theme
+
+### 5. Film/Cinema Effects
+
+Movie color grading looks:
+
+```bash
+# Matrix-style green
+mediaproc image tint scene.jpg -c "#00ff00"
+
+# Blade Runner blue/cyan
+mediaproc image tint scene.jpg -c "#00ffff"
+```
+
+**Cinematic**: Film color grading
+
+### 6. Time of Day Simulation
+
+Simulate different lighting:
+
+```bash
+# Golden hour (sunset)
+mediaproc image tint photo.jpg -c "#ff9900"
+
+# Blue hour (dusk)
+mediaproc image tint photo.jpg -c "#0066ff"
+```
+
+**Lighting**: Time-of-day effects
+
+### 7. Product Photography
+
+Enhance product appeal:
+
+```bash
+# Warm, inviting for food
+mediaproc image tint food.jpg -c "#ff8800"
+
+# Cool, modern for tech
+mediaproc image tint gadget.jpg -c "#0099ff"
+```
+
+**E-commerce**: Appeal enhancement
+
+### 8. Album Art
+
+Create music album aesthetics:
+
+```bash
+# Purple creative vibe
+mediaproc image tint album-photo.jpg -c "#9933cc"
+
+# Unique visual identity
+```
+
+**Music**: Distinctive album look
+
+### 9. Website Theming
+
+Match website color scheme:
+
+```bash
+# Website accent color
+mediaproc image tint hero-image.jpg -c "#4a90e2"
+
+# Consistent design
+```
+
+**Web Design**: Visual consistency
+
+### 10. Event Photography
+
+Create event-specific atmosphere:
+
+```bash
+# Wedding: soft pink
+mediaproc image tint wedding.jpg -c "#ffccdd"
+
+# Corporate: professional blue
+mediaproc image tint conference.jpg -c "#003366"
+```
+
+**Events**: Appropriate mood
+
+## Combining with Other Commands
+
+### Grayscale + Tint
+
+Create duotone effect:
+
+```bash
+# Convert to grayscale
+mediaproc image grayscale photo.jpg -o gray.jpg
+
+# Apply tint
+mediaproc image tint gray.jpg -c "#ff6600" -o duotone.jpg
+```
+
+**Duotone**: Stylized two-tone effect
+
+### Adjust + Tint
+
+Enhance then tint:
+
+```bash
+# Increase contrast
+mediaproc image linear photo.jpg -a 1.2 -o enhanced.jpg
+
+# Apply tint
+mediaproc image tint enhanced.jpg -c sepia
+```
+
+**Enhancement**: Better tint results
+
+### Tint + Vignette
+
+Tint with vignette:
+
+```bash
+# Apply tint
+mediaproc image tint photo.jpg -c "#0066cc" -o tinted.jpg
+
+# Add vignette
+mediaproc image vignette tinted.jpg
+```
+
+**Artistic**: Focus with tint
+
+### Multiple Tints
+
+Layer multiple tints (subtle):
+
+```bash
+# First tint
+mediaproc image tint photo.jpg -c "#ff9900" -o warm.jpg
+
+# Second subtle tint
+mediaproc image tint warm.jpg -c "#ffcccc" -o layered.jpg
+```
+
+**Complex**: Layered color effects
+
+### Tint + Border
+
+Tint with colored border:
+
+```bash
+# Apply tint
+mediaproc image tint photo.jpg -c sepia -o tinted.jpg
+
+# Matching border
+mediaproc image border tinted.jpg --width 20 --color "#704214"
+```
+
+**Framing**: Coordinated look
+
+## Technical Details
+
+### Tint Algorithm
+
+**Process**:
+
+1. Parse color specification (hex/RGB/name)
+2. Convert color to RGB values
+3. Apply multiplicative tint to each pixel
+4. Maintain luminosity (brightness levels)
+5. Output tinted image
+
+**Color Blending**:
+
+- Multiplies each RGB channel by tint color
+- Preserves relative brightness
+- Maintains image detail
+- Uniform tint across entire image
+
+### Color Conversion
+
+**Hex to RGB**:
+
+- #ff0000 → RGB(255, 0, 0)
+- #f00 → RGB(255, 0, 0)
+
+**Named Colors**:
+
+- Standard CSS/HTML color names
+- Converted to RGB internally
+- Case-insensitive
+
+### Performance
+
+- **Fast operation**: ~50-150ms per image
+- **Small images**: ~50-80ms
+- **Large images** (4K): ~100-200ms
+- Minimal memory overhead
+- Batch processing efficient
+
+### Color Accuracy
+
+- Accurate color reproduction
+- Maintains original luminosity
+- Consistent across image
+- No banding or artifacts
 
 ## Best Practices
 
-1. **Start Subtle**: Begin with opacity 0.3-0.4
-2. **Brand Colors**: Use for consistent theming
-3. **Monochrome**: High opacity (0.6-0.8) for bold looks
-4. **Batch Apply**: Consistent tints across galleries
-5. **Combine Effects**: Use with other adjustments
-6. **Quality**: Maintain high quality (85+)
+### 1. Subtle Tints Work Best
 
-## Common Use Cases
+Avoid overly strong tints:
 
-- **Brand Theming**: Apply brand colors consistently
-- **Artistic Filters**: Create unique looks
-- **Mood Setting**: Warm or cool atmospheric tones
-- **Social Media**: Instagram-style filter effects
-- **Photo Series**: Consistent look across albums
-- **Seasonal Themes**: Match seasonal aesthetics
-- **Duotone Effects**: Two-color artistic looks
+```bash
+# Good: Subtle sepia
+mediaproc image tint photo.jpg -c "#704214"
 
-## See Also
+# Avoid: Too strong (unless intentional)
+```
 
-- [modulate](./modulate) - Adjust color properties
-- [grayscale](./grayscale) - Remove color
-- [sepia](./sepia) - Classic sepia effect
-- [threshold](./threshold) - High contrast effects
+### 2. Match Tint to Content
+
+Choose appropriate colors:
+
+- **Portraits**: Warm tones (#ff9900, #ff6600)
+- **Landscapes**: Cool blues (#0066cc) or greens
+- **Products**: Brand colors
+- **Vintage**: Sepia (#704214)
+
+### 3. Test on Single Image First
+
+Try before batch processing:
+
+```bash
+# Test first
+mediaproc image tint test.jpg -c "#ff6600"
+
+# If good, batch process
+mediaproc image tint "all/*.jpg" -c "#ff6600"
+```
+
+### 4. Consider Original Colors
+
+Tint interacts with existing colors:
+
+- Dark images: Tint less visible
+- Light images: Tint more apparent
+- Colorful images: Complex interactions
+
+### 5. Use High Quality for Finals
+
+Preserve quality:
+
+```bash
+# Maximum quality
+mediaproc image tint final.jpg -c sepia -q 95
+```
+
+### 6. Consistent Tint for Collections
+
+Same tint for related images:
+
+```bash
+# Consistent look
+mediaproc image tint "series/*.jpg" -c "#ff6600"
+```
+
+### 7. Combine with Other Effects
+
+Layer effects for best results:
+
+```bash
+# Enhance → Tint → Vignette
+# Build up effects gradually
+```
+
+## Troubleshooting
+
+### Issue: Tint Too Strong
+
+**Problem**: Color overwhelming
+
+**Cause**: Strong tint color
+
+**Solution**: Use subtle colors or reduce in editing
+
+```bash
+# Subtle tints work better
+# Try lighter shades
+```
+
+### Issue: Tint Not Visible
+
+**Problem**: Can't see tint effect
+
+**Cause**: Dark image or subtle tint on colorful image
+
+**Solution**: Try stronger tint or lighter base image
+
+### Issue: Wrong Color
+
+**Problem**: Color doesn't match expected
+
+**Cause**: Incorrect color specification
+
+**Solution**: Verify color format
+
+```bash
+# Check hex format
+mediaproc image tint photo.jpg -c "#ff0000"  # Include #
+
+# Or use named colors
+mediaproc image tint photo.jpg -c red
+```
+
+### Issue: Muddy Colors
+
+**Problem**: Colors look dull or muddy
+
+**Cause**: Tint on already colorful image
+
+**Solution**: Convert to grayscale first for cleaner result
+
+```bash
+# Better: Grayscale then tint
+mediaproc image grayscale photo.jpg -o gray.jpg
+mediaproc image tint gray.jpg -c "#ff6600"
+```
+
+### Issue: Inconsistent Batch Results
+
+**Problem**: Tint looks different across images
+
+**Cause**: Different source image colors/brightness
+
+**Solution**: This is expected; tint interacts with source
+
+```bash
+# Normalize brightness first (optional)
+# Then apply tint
+```
+
+## Related Commands
+
+- [grayscale](./grayscale.mdx) - Convert to grayscale before tinting
+- [sepia](./sepia.mdx) - Dedicated sepia effect
+- [modulate](./modulate.mdx) - Adjust saturation/hue
+- [linear](./linear.mdx) - Adjust contrast before tinting
+- [vignette](./vignette.mdx) - Combine with vignette
+
+## Further Reading
+
+- [Color Tinting](https://en.wikipedia.org/wiki/Color_grading)
+- [Duotone Effect](https://en.wikipedia.org/wiki/Duotone)
+- [Color Theory](https://en.wikipedia.org/wiki/Color_theory)
+- [Film Color Grading](https://en.wikipedia.org/wiki/Color_grading)

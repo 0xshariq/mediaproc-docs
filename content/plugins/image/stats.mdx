@@ -1,6 +1,12 @@
-# stats
+# Stats
 
-Get color and luminance statistics.
+Analyze and display comprehensive image information including dimensions, format, color space, file size, EXIF data, and color channel statistics. Perfect for quality assessment and debugging.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,39 +14,738 @@ Get color and luminance statistics.
 mediaproc image stats <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `stats` command analyzes image color distribution, brightness, and provides detailed statistical information.
+```bash
+# Basic image information
+mediaproc image stats photo.jpg
+
+# Detailed EXIF metadata
+mediaproc image stats image.png --detailed
+
+# Color histogram statistics
+mediaproc image stats photo.jpg --histogram
+
+# Complete analysis
+mediaproc image stats image.raw --detailed --histogram
+
+# Analyze multiple images
+mediaproc image stats "photos/*.jpg" --verbose
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--json` | boolean | false | JSON output |
-| `--channels` | boolean | false | Per-channel statistics |
+| Option        | Alias | Type    | Default | Description                        |
+| ------------- | ----- | ------- | ------- | ---------------------------------- |
+| `--detailed`  | `-d`  | boolean | `false` | Show detailed EXIF and metadata    |
+| `--histogram` |       | boolean | `false` | Calculate color channel statistics |
+| `--dry-run`   |       | boolean | `false` | Preview files without analyzing    |
+| `--verbose`   | `-v`  | boolean | `false` | Show extra verbose output          |
+| `--help`      |       | boolean | `false` | Display help information           |
+
+## Information Displayed
+
+### Basic Information (Always Shown)
+
+**File Information:**
+
+- File path and name
+- File size (KB and bytes)
+- Last modified date/time
+
+**Image Properties:**
+
+- Format (JPEG, PNG, WebP, etc.)
+- Dimensions (width × height in pixels)
+- Aspect ratio
+- Number of channels (3 for RGB, 4 for RGBA)
+- Color space (sRGB, CMYK, etc.)
+- Bit depth per channel
+- DPI/Density (if available)
+- Alpha channel presence
+
+### Detailed Metadata (`--detailed` flag)
+
+**Detailed Metadata:**
+
+- Orientation (1-8, EXIF orientation tag)
+- Chroma subsampling (4:4:4, 4:2:2, 4:2:0)
+- Progressive encoding (for JPEG)
+- Number of pages/frames (for multi-page formats)
+- Page height (for multi-page)
+- Animation loop count
+- Frame delay (for GIF/WebP animations)
+
+**Embedded Data:**
+
+- EXIF data size
+- ICC color profile size
+- XMP metadata size
+- IPTC metadata size
+
+### Color Statistics (`--histogram` flag)
+
+**Per-Channel Statistics:**
+
+- Red, Green, Blue (and Alpha if present)
+- Minimum value (0-255)
+- Maximum value (0-255)
+- Mean (average) value
+- Standard deviation
+- Coordinates of min/max values
+
+**Overall Statistics:**
+
+- Dominant color (RGB values)
+- Entropy (measure of randomness)
+- Sharpness metric
 
 ## Examples
 
+### 1. Basic Image Info
+
+Quick information check:
+
 ```bash
-# Get basic stats
 mediaproc image stats photo.jpg
-
-# Detailed channel stats
-mediaproc image stats image.jpg --channels
-
-# JSON output
-mediaproc image stats photo.jpg --json > stats.json
 ```
 
-## Output Includes
+**Output**: Format, dimensions, color space, file size
 
-- Mean brightness
-- Standard deviation
-- Min/max values
-- Dominant colors
-- Channel histograms
+### 2. Camera Metadata
 
-## See Also
+Extract camera information:
 
-- [info](./info) - File information
-- [metadata](./metadata) - Metadata
+```bash
+mediaproc image stats IMG_1234.jpg --detailed
+```
+
+**Camera Info**: EXIF data including camera model, settings
+
+### 3. Color Analysis
+
+Analyze color distribution:
+
+```bash
+mediaproc image stats colorful-image.png --histogram
+```
+
+**Statistics**: Mean colors, dominant color, channel ranges
+
+### 4. Complete Analysis
+
+Full image analysis:
+
+```bash
+mediaproc image stats photo.raw --detailed --histogram --verbose
+```
+
+**Comprehensive**: All available information
+
+### 5. Batch Analysis
+
+Analyze multiple images:
+
+```bash
+mediaproc image stats "collection/*.jpg"
+```
+
+**Batch**: Separate report for each image
+
+### 6. Verify Dimensions
+
+Check image size before processing:
+
+```bash
+mediaproc image stats input.png
+```
+
+**Verification**: Confirm dimensions match requirements
+
+### 7. Check Color Space
+
+Verify color profile:
+
+```bash
+mediaproc image stats print-ready.jpg --detailed
+```
+
+**Color**: CMYK vs RGB, ICC profile info
+
+### 8. Animation Info
+
+Check GIF/WebP animation details:
+
+```bash
+mediaproc image stats animation.gif --detailed
+```
+
+**Animation**: Frame count, delay, loop setting
+
+### 9. File Integrity
+
+Verify image file is valid:
+
+```bash
+mediaproc image stats potentially-corrupt.jpg
+```
+
+**Validation**: Will fail if file is corrupted
+
+### 10. Quality Assessment
+
+Check image quality metrics:
+
+```bash
+mediaproc image stats photo.jpg --histogram
+```
+
+**Quality**: Sharpness, entropy, color distribution
+
+### 11. Preview Analysis
+
+Check what would be analyzed:
+
+```bash
+mediaproc image stats "folder/*.png" --dry-run
+```
+
+**Preview**: List files without analyzing
+
+### 12. Compare Images
+
+Analyze similar images:
+
+```bash
+mediaproc image stats original.jpg compressed.jpg --histogram
+```
+
+**Comparison**: Side-by-side statistics
+
+### 13. Web vs Print
+
+Check image suitability:
+
+```bash
+mediaproc image stats image.jpg --detailed
+```
+
+**Purpose**: 72 DPI = web, 300 DPI = print
+
+### 14. Transparency Check
+
+Verify alpha channel:
+
+```bash
+mediaproc image stats logo.png
+```
+
+**Alpha**: Shows if transparency present
+
+### 15. Format Verification
+
+Confirm actual format:
+
+```bash
+mediaproc image stats image.png
+```
+
+**Format**: True format regardless of extension
+
+## Use Cases
+
+### 1. Verify Specifications
+
+Check if image meets requirements:
+
+```bash
+# Verify web image specs
+mediaproc image stats banner.jpg
+
+# Expected: 1920×1080, sRGB, JPEG
+```
+
+**Validation**: Confirm dimensions, format, color space
+
+### 2. File Integrity Check
+
+Ensure files are not corrupted:
+
+```bash
+# Test image validity
+mediaproc image stats suspicious-file.jpg
+
+# Will error if corrupt
+```
+
+**Quality Control**: Validate downloads, transfers
+
+### 3. Extract Camera Metadata
+
+Get photography information:
+
+```bash
+# Camera settings
+mediaproc image stats photo.jpg --detailed
+
+# Shows: Camera model, ISO, aperture, shutter speed
+```
+
+**Photography**: Review camera settings used
+
+### 4. Analyze Color Distribution
+
+Understand color composition:
+
+```bash
+# Color statistics
+mediaproc image stats artwork.png --histogram
+
+# Shows: Dominant color, channel means, color range
+```
+
+**Design**: Analyze color palette
+
+### 5. Quality Assessment
+
+Evaluate image quality:
+
+```bash
+# Quality metrics
+mediaproc image stats photo.jpg --histogram
+
+# Sharpness and entropy indicate quality
+```
+
+**Quality Control**: Automated quality checks
+
+### 6. Prepare for Processing
+
+Gather info before transformations:
+
+```bash
+# Check before resizing
+mediaproc image stats huge-image.jpg
+
+# Verify dimensions to calculate scale
+```
+
+**Planning**: Inform processing decisions
+
+### 7. Color Space Verification
+
+Check color profile for output:
+
+```bash
+# Verify color space
+mediaproc image stats print-file.tif --detailed
+
+# CMYK for print, sRGB for web
+```
+
+**Print/Web**: Ensure correct color space
+
+### 8. Batch File Inspection
+
+Check entire collections:
+
+```bash
+# Analyze all images
+mediaproc image stats "portfolio/*.jpg"
+
+# Find inconsistencies
+```
+
+**Organization**: Verify consistency
+
+### 9. Animation Analysis
+
+Check animated image details:
+
+```bash
+# GIF/WebP animation info
+mediaproc image stats animation.gif --detailed
+
+# Frames, timing, loop settings
+```
+
+**Animation**: Verify animation properties
+
+### 10. Debugging Processing Issues
+
+Diagnose problems:
+
+```bash
+# Check problematic image
+mediaproc image stats failing-image.png --detailed
+
+# Unusual properties may cause issues
+```
+
+**Troubleshooting**: Identify unusual characteristics
+
+## Combining with Other Commands
+
+### Before Processing
+
+Check specifications first:
+
+```bash
+# Check dimensions
+mediaproc image stats input.jpg
+
+# Then resize appropriately
+mediaproc image resize input.jpg -w 1920 -h 1080
+```
+
+**Workflow**: Informed processing
+
+### After Compression
+
+Compare quality metrics:
+
+```bash
+# Original stats
+mediaproc image stats original.jpg --histogram
+
+# Compressed stats
+mediaproc image optimize original.jpg -q 85 -o compressed.jpg
+mediaproc image stats compressed.jpg --histogram
+
+# Compare sharpness/entropy
+```
+
+**Comparison**: Measure compression impact
+
+### Verify Conversion
+
+Check format conversion results:
+
+```bash
+# Convert
+mediaproc image convert image.png -f jpg -o converted.jpg
+
+# Verify new format
+mediaproc image stats converted.jpg --detailed
+```
+
+**Validation**: Confirm conversion success
+
+### Color Space Workflow
+
+Check before color operations:
+
+```bash
+# Check current color space
+mediaproc image stats photo.jpg --detailed
+
+# Convert if needed
+# Then apply color adjustments
+```
+
+**Color Management**: Proper color handling
+
+## Technical Details
+
+### Metadata Sources
+
+**Sharp Metadata API**:
+
+- Uses Sharp's `.metadata()` method
+- Extracts from image file headers
+- Reads embedded metadata blocks
+
+**Available Formats**:
+
+- **EXIF**: Exchangeable Image File Format (camera data)
+- **ICC**: International Color Consortium profiles
+- **XMP**: Extensible Metadata Platform
+- **IPTC**: Image metadata standard
+
+### Color Statistics
+
+**Channel Statistics**:
+
+- Calculated per RGB(A) channel
+- Range: 0 (black) to 255 (white)
+- Mean: Average pixel value
+- Std Dev: Color variation
+
+**Dominant Color**:
+
+- Most common color in image
+- Calculated from color histogram
+- Useful for palette extraction
+
+**Entropy**:
+
+- Measure of image complexity
+- Higher = more detail/randomness
+- Lower = more uniform/simple
+
+**Sharpness**:
+
+- Edge detection metric
+- Higher = sharper/more detail
+- Lower = blurry/soft
+
+### Performance
+
+- **Basic info**: ~10-50ms per image
+- **Detailed metadata**: ~20-80ms
+- **Histogram calculation**: ~100-500ms
+- **Large images**: Proportionally longer
+- No image modification (read-only)
+
+### Accuracy
+
+- Reads actual file metadata
+- Format detection independent of extension
+- EXIF data exactly as stored
+- Color statistics computed from pixel data
+
+## Interpreting Results
+
+### Dimensions
+
+```
+Dimensions: 3000 × 2000 pixels
+Aspect Ratio: 1.50
+```
+
+- **3:2 ratio** (1.50) = Common DSLR format
+- **16:9 ratio** (1.78) = Widescreen/video
+- **1:1 ratio** (1.00) = Square (Instagram)
+- **4:3 ratio** (1.33) = Traditional photo
+
+### Channels & Color Space
+
+```
+Channels: 3
+Color Space: sRGB
+Alpha Channel: No
+```
+
+- **3 channels** = RGB (no transparency)
+- **4 channels** = RGBA (has transparency)
+- **sRGB** = Standard web color space
+- **CMYK** = Print color space
+
+### Bit Depth
+
+```
+Bit Depth: 8
+```
+
+- **8-bit** = 256 levels per channel (standard)
+- **16-bit** = 65,536 levels (high-end photography)
+- Higher bit depth = better color gradation
+
+### Density/DPI
+
+```
+Density: 72 DPI
+```
+
+- **72 DPI** = Web/screen display
+- **150 DPI** = Draft print quality
+- **300 DPI** = Standard print quality
+- **600 DPI+** = High-quality print
+
+### Orientation
+
+```
+Orientation: 1
+```
+
+- **1** = Normal (no rotation)
+- **3** = 180° rotation
+- **6** = 90° CW rotation
+- **8** = 90° CCW rotation
+
+### Color Statistics
+
+```
+Red:
+  Mean: 145.32
+  Std Dev: 68.45
+```
+
+- **Mean near 128** = Balanced exposure
+- **High Std Dev** = High contrast/variation
+- **Low Std Dev** = Flat/uniform
+
+```
+Dominant Color: RGB(186, 142, 98)
+```
+
+- Main color theme of image
+- Useful for UI color matching
+
+```
+Entropy: 7.45
+```
+
+- **High (7-8)**: Complex, detailed image
+- **Medium (5-7)**: Normal photographs
+- **Low (0-5)**: Simple, uniform images
+
+```
+Sharpness: 142.67
+```
+
+- **High (150+)**: Sharp, detailed
+- **Medium (50-150)**: Normal sharpness
+- **Low (0-50)**: Blurry, soft
+
+## Best Practices
+
+### 1. Check Before Processing
+
+Always verify input:
+
+```bash
+# Understand what you're working with
+mediaproc image stats input.jpg
+```
+
+### 2. Use Detailed for EXIF
+
+Camera photos need --detailed:
+
+```bash
+# Extract camera settings
+mediaproc image stats photo.jpg --detailed
+```
+
+### 3. Histogram for Quality
+
+Check quality with histogram:
+
+```bash
+# Quality metrics
+mediaproc image stats image.jpg --histogram
+```
+
+### 4. Batch Analysis
+
+Analyze collections efficiently:
+
+```bash
+# Check entire folder
+mediaproc image stats "photos/*.jpg"
+```
+
+### 5. Dry Run for Large Sets
+
+Preview before analyzing many files:
+
+```bash
+# Check file list first
+mediaproc image stats "huge-collection/*" --dry-run
+```
+
+### 6. Verify After Operations
+
+Confirm transformations worked:
+
+```bash
+# Process
+mediaproc image resize image.jpg -w 1920 -o resized.jpg
+
+# Verify
+mediaproc image stats resized.jpg
+```
+
+### 7. Save Output for Records
+
+Redirect to file for documentation:
+
+```bash
+# Save analysis
+mediaproc image stats photo.jpg --detailed --histogram > analysis.txt
+```
+
+## Troubleshooting
+
+### Issue: No EXIF Data Shown
+
+**Problem**: Expected camera data not displayed
+
+**Cause**: EXIF stripped during editing
+
+**Solution**: Use --detailed flag, some software removes EXIF
+
+```bash
+# Check if EXIF present
+mediaproc image stats photo.jpg --detailed
+```
+
+### Issue: Wrong File Size
+
+**Problem**: Size doesn't match file manager
+
+**Cause**: File system vs actual size difference
+
+**Solution**: This is normal (OS overhead)
+
+### Issue: Can't Analyze File
+
+**Problem**: "Failed to analyze image"
+
+**Cause**: Corrupted or invalid file
+
+**Solution**: File may be damaged
+
+```bash
+# Validate file
+file image.jpg  # Use system file command
+```
+
+### Issue: Histogram Takes Long Time
+
+**Problem**: Slow color statistics
+
+**Cause**: Large image dimensions
+
+**Solution**: Expected for large images
+
+```bash
+# Skip histogram for quick check
+mediaproc image stats large.jpg  # No --histogram
+```
+
+### Issue: Missing ICC Profile
+
+**Problem**: No ICC profile shown
+
+**Cause**: Image doesn't have embedded profile
+
+**Solution**: Normal for many web images
+
+### Issue: Unexpected Format
+
+**Problem**: Shows PNG but extension is .jpg
+
+**Cause**: File extension doesn't match content
+
+**Solution**: Rename file to match actual format
+
+```bash
+# Stats shows true format
+# Rename: mv wrong.jpg correct.png
+```
+
+## Related Commands
+
+- [convert](./convert.mdx) - Convert between formats
+- [optimize](./optimize.mdx) - Reduce file size
+- [resize](./resize.mdx) - Change dimensions
+- [metadata](./metadata-cmd.mdx) - Manage metadata
+
+## Further Reading
+
+- [EXIF Standard](https://en.wikipedia.org/wiki/Exif)
+- [ICC Color Profiles](https://en.wikipedia.org/wiki/ICC_profile)
+- [Image Entropy](<https://en.wikipedia.org/wiki/Entropy_(information_theory)>)
+- [Color Spaces](https://en.wikipedia.org/wiki/Color_space)

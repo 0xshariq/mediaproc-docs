@@ -1,6 +1,12 @@
-# sepia
+# Sepia
 
-Apply a sepia tone effect for a vintage look.
+Apply sepia tone effect to create vintage, antique, or nostalgic photographs with warm brown tones.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,67 +14,621 @@ Apply a sepia tone effect for a vintage look.
 mediaproc image sepia <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `sepia` command applies a warm, brownish tone to images, creating a classic vintage or antique photograph appearance.
+```bash
+# Default sepia (80% intensity)
+mediaproc image sepia photo.jpg
+
+# Maximum sepia intensity
+mediaproc image sepia image.png -i 100
+
+# Subtle sepia tone
+mediaproc image sepia photo.jpg -i 50
+
+# Custom output
+mediaproc image sepia photo.jpg -o vintage.jpg
+
+# Preview effect
+mediaproc image sepia image.jpg --dry-run
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option                | Alias | Type    | Default               | Description                    |
+| --------------------- | ----- | ------- | --------------------- | ------------------------------ |
+| `--intensity <value>` | `-i`  | number  | `80`                  | Sepia intensity (0-100)        |
+| `--output <path>`     | `-o`  | string  | `<input>-sepia.<ext>` | Output file path               |
+| `--dry-run`           |       | boolean | `false`               | Preview without making changes |
+| `--verbose`           | `-v`  | boolean | `false`               | Show detailed output           |
+| `--help`              |       | boolean | `false`               | Display help information       |
+
+## Intensity Guide
+
+### 0-30: Subtle Warm Tint
+
+- **Effect**: Slight warm tone, colors mostly preserved
+- **Use**: Gentle warming, modern vintage look
+- **Example**: `--intensity 20`
+
+### 40-60: Moderate Vintage Look
+
+- **Effect**: Noticeable sepia, retains some color
+- **Use**: Contemporary vintage style
+- **Example**: `--intensity 50`
+
+### 70-85: Classic Sepia (Recommended)
+
+- **Effect**: Traditional antique photograph look
+- **Use**: Historical photos, heritage collections
+- **Example**: `--intensity 80` (default)
+
+### 90-100: Strong Antique Effect
+
+- **Effect**: Heavy brown tones, deep vintage
+- **Use**: Extreme vintage, aged photographs
+- **Example**: `--intensity 100`
+
+## How It Works
+
+Sepia tone uses a recombination matrix:
+
+```
+Red   = 0.393×R + 0.769×G + 0.189×B
+Green = 0.349×R + 0.686×G + 0.168×B
+Blue  = 0.272×R + 0.534×G + 0.131×B
+```
+
+Intensity parameter blends between original and sepia-toned image.
 
 ## Examples
 
-### Basic Sepia
+### 1. Default Sepia
+
+Classic sepia effect:
 
 ```bash
-# Apply sepia tone
-mediaproc image sepia photo.jpg -o vintage.jpg
-
-# Sepia with format conversion
-mediaproc image sepia modern.png -f webp -o old-style.webp
+mediaproc image sepia photo.jpg
 ```
 
-### Vintage Effects
+**Result**: 80% intensity, traditional vintage look.
+
+### 2. Maximum Intensity
+
+Full sepia tone:
 
 ```bash
-# Create vintage photo
-mediaproc image sepia family-photo.jpg -q 90 -o vintage-family.jpg
-
-# Sepia for web gallery
-mediaproc image sepia portrait.jpg -f webp -q 75 -o gallery-item.webp
+mediaproc image sepia image.png -i 100
 ```
 
-### Batch Processing
+**Effect**: Deep brown antique appearance.
+
+### 3. Subtle Sepia
+
+Gentle warm tone:
 
 ```bash
-# Apply sepia to all photos
-for img in photos/*.jpg; do
-  mediaproc image sepia "$img" -o "vintage-$(basename $img)"
-done
+mediaproc image sepia photo.jpg -i 30
 ```
+
+**Modern**: Contemporary vintage aesthetic.
+
+### 4. Moderate Effect
+
+Balanced vintage look:
+
+```bash
+mediaproc image sepia portrait.jpg -i 60 -o vintage-portrait.jpg
+```
+
+**Portraits**: Natural vintage feel.
+
+### 5. Batch Processing
+
+Apply to multiple photos:
+
+```bash
+mediaproc image sepia "photos/*.jpg" -i 80
+```
+
+**Collection**: Consistent vintage theme.
+
+### 6. Wedding Photos
+
+Classic wedding album style:
+
+```bash
+mediaproc image sepia wedding.jpg -i 75 -o wedding-vintage.jpg
+```
+
+**Weddings**: Timeless aesthetic.
+
+### 7. Historical Recreation
+
+Simulate old photographs:
+
+```bash
+mediaproc image sepia modern-photo.jpg -i 90
+```
+
+**Historical**: Age modern photos.
+
+### 8. Gentle Warmth
+
+Subtle warm filter:
+
+```bash
+mediaproc image sepia portrait.jpg -i 25
+```
+
+**Portraits**: Soft warming effect.
+
+### 9. Strong Vintage
+
+Heavy antique effect:
+
+```bash
+mediaproc image sepia photo.jpg -i 95
+```
+
+**Artistic**: Dramatic vintage look.
+
+### 10. Comparison Shots
+
+Create intensity variations:
+
+```bash
+# Light
+mediaproc image sepia photo.jpg -i 40 -o light-sepia.jpg
+
+# Medium
+mediaproc image sepia photo.jpg -i 70 -o medium-sepia.jpg
+
+# Heavy
+mediaproc image sepia photo.jpg -i 100 -o heavy-sepia.jpg
+```
+
+**Testing**: Find perfect intensity.
+
+### 11. Verbose Processing
+
+Show details:
+
+```bash
+mediaproc image sepia photo.jpg -i 80 --verbose
+```
+
+**Info**: Processing information, dimensions.
+
+### 12. Preview Effect
+
+Check before applying:
+
+```bash
+mediaproc image sepia image.jpg -i 85 --dry-run
+```
+
+**Safety**: Verify settings.
+
+### 13. Family Archives
+
+Heritage photo collection:
+
+```bash
+mediaproc image sepia "family-photos/*.jpg" -i 80
+```
+
+**Archives**: Unified vintage theme.
+
+### 14. Portrait Studio
+
+Studio vintage portraits:
+
+```bash
+mediaproc image sepia portrait.jpg -i 70 -o studio-vintage.jpg
+```
+
+**Professional**: Classic studio look.
+
+### 15. Social Media
+
+Vintage Instagram aesthetic:
+
+```bash
+mediaproc image sepia selfie.jpg -i 65
+```
+
+**Social**: Trendy vintage filter.
+
+## Use Cases
+
+### 1. Historical Photo Restoration
+
+Simulate historical photographs:
+
+```bash
+# Antique photograph look
+mediaproc image sepia modern-photo.jpg -i 85
+
+# Early photography era
+mediaproc image sepia photo.jpg -i 90
+```
+
+**History**: Historical recreation.
+
+### 2. Wedding Photography
+
+Classic wedding album style:
+
+```bash
+# Ceremony photos
+mediaproc image sepia "ceremony/*.jpg" -i 75
+
+# Reception photos
+mediaproc image sepia "reception/*.jpg" -i 70
+```
+
+**Weddings**: Timeless elegance.
+
+### 3. Heritage Collections
+
+Family and heritage photos:
+
+```bash
+# Family portraits
+mediaproc image sepia "family/*.jpg" -i 80
+
+# Old building photos
+mediaproc image sepia architecture.jpg -i 85
+```
+
+**Heritage**: Preserve history aesthetic.
+
+### 4. Artistic Photography
+
+Creative vintage effects:
+
+```bash
+# Fine art portraits
+mediaproc image sepia portrait.jpg -i 60
+
+# Landscape photography
+mediaproc image sepia landscape.jpg -i 70
+```
+
+**Art**: Artistic expression.
+
+### 5. Social Media Content
+
+Vintage Instagram/TikTok filters:
+
+```bash
+# Instagram vintage
+mediaproc image sepia post.jpg -i 65
+
+# Story aesthetic
+mediaproc image sepia story.jpg -i 55
+```
+
+**Social**: Popular vintage filters.
+
+### 6. Album Covers
+
+Music album vintage aesthetic:
+
+```bash
+# Indie album cover
+mediaproc image sepia album-photo.jpg -i 75
+
+# Folk music aesthetic
+mediaproc image sepia cover.jpg -i 80
+```
+
+**Music**: Album artwork.
+
+### 7. Book Covers
+
+Historical fiction book design:
+
+```bash
+# Period piece cover
+mediaproc image sepia book-photo.jpg -i 85
+
+# Vintage memoir
+mediaproc image sepia portrait.jpg -i 80
+```
+
+**Publishing**: Book design.
+
+### 8. Restaurant Decor
+
+Vintage restaurant photos:
+
+```bash
+# Historical establishment photos
+mediaproc image sepia "restaurant/*.jpg" -i 80
+```
+
+**Decor**: Vintage ambiance.
+
+## Combining with Other Commands
+
+### Sepia + Vignette
+
+Classic vintage with darkened edges:
+
+```bash
+# Apply sepia
+mediaproc image sepia photo.jpg -i 80 -o sepia.jpg
+
+# Add vignette
+mediaproc image vignette sepia.jpg
+```
+
+**Classic**: Complete vintage effect.
+
+### Sepia + Border
+
+Framed vintage photo:
+
+```bash
+# Apply sepia
+mediaproc image sepia photo.jpg -i 75 -o sepia.jpg
+
+# Add vintage border
+mediaproc image border sepia.jpg --width 20 --color "#8B7355"
+```
+
+**Framing**: Vintage presentation.
+
+### Sepia + Grayscale Comparison
+
+Compare effects:
+
+```bash
+# Sepia version
+mediaproc image sepia photo.jpg -i 80 -o sepia.jpg
+
+# Black & white version
+mediaproc image grayscale photo.jpg -o bw.jpg
+```
+
+**Comparison**: Different vintage styles.
+
+### Sepia + Reduce Quality
+
+Authentic old photo appearance:
+
+```bash
+# Apply sepia
+mediaproc image sepia photo.jpg -i 85 -o sepia.jpg
+
+# Reduce quality for authenticity
+mediaproc image optimize sepia.jpg -q 75
+```
+
+**Authentic**: Aged photo look.
+
+### Sepia + Resize
+
+Create vintage thumbnails:
+
+```bash
+# Resize
+mediaproc image resize photo.jpg -w 800 -o resized.jpg
+
+# Apply sepia
+mediaproc image sepia resized.jpg -i 80
+```
+
+**Thumbnails**: Vintage thumbnails.
+
+### Sepia + Pixelate
+
+Retro digital effect:
+
+```bash
+# Apply sepia
+mediaproc image sepia photo.jpg -i 80 -o sepia.jpg
+
+# Pixelate
+mediaproc image pixelate sepia.jpg -p 8
+```
+
+**Retro**: Vintage digital aesthetic.
+
+## Technical Details
+
+### Sepia Formula
+
+Standard sepia transformation matrix:
+
+- **Red channel**: 0.393R + 0.769G + 0.189B
+- **Green channel**: 0.349R + 0.686G + 0.168B
+- **Blue channel**: 0.272R + 0.534G + 0.131B
+
+### Intensity Blending
+
+Intensity controls linear blend:
+
+- **0%**: Original image (no sepia)
+- **50%**: Half sepia, half original
+- **100%**: Full sepia tone
+
+Formula: `output = intensity × sepia + (1-intensity) × original`
+
+### Color Characteristics
+
+Sepia tone produces:
+
+- **Warm brown tones**: Nostalgic feel
+- **Reduced saturation**: Muted colors
+- **Enhanced contrast**: Slightly increased
+- **Uniform tone**: Consistent warmth
+
+### Performance
+
+- **Very fast**: Matrix operation
+- **Small images (<1MP)**: ~50-100ms
+- **Medium images (5MP)**: ~100-200ms
+- **Large images (>10MP)**: ~200-400ms
+- No quality loss from operation itself
 
 ## Best Practices
 
-1. **Vintage Aesthetic**: Perfect for nostalgic, retro themes
-2. **Quality**: Use high quality for print reproduction
-3. **Combine Effects**: Use with vignette or grain for authenticity
-4. **Historical Content**: Great for period-appropriate imagery
+### 1. Start with Default Intensity
 
-## Common Use Cases
+Default 80% works well:
 
-- **Vintage Photography**: Create old-fashioned photo effects
-- **Historical Projects**: Match historical photo aesthetics
-- **Wedding Albums**: Classic, timeless look
-- **Art Projects**: Nostalgic, warm atmosphere
-- **Branding**: Retro brand aesthetics
-- **Social Media**: Vintage filter effects
+```bash
+# Classic look
+mediaproc image sepia photo.jpg
+```
 
-## See Also
+### 2. Use Lower Intensity for Modern Vintage
 
-- [grayscale](./grayscale) - Black and white conversion
-- [modulate](./modulate) - Adjust color properties
-- [tint](./tint) - Apply custom color tints
+Contemporary look uses subtler effect:
+
+```bash
+# Modern vintage (50-70%)
+mediaproc image sepia photo.jpg -i 60
+```
+
+### 3. Higher Intensity for Period Pieces
+
+Historical photos need stronger effect:
+
+```bash
+# Historical (80-95%)
+mediaproc image sepia historical.jpg -i 90
+```
+
+### 4. Test on Representative Images
+
+Find best intensity for your set:
+
+```bash
+# Test different levels
+mediaproc image sepia sample.jpg -i 60 -o test-60.jpg
+mediaproc image sepia sample.jpg -i 80 -o test-80.jpg
+mediaproc image sepia sample.jpg -i 95 -o test-95.jpg
+```
+
+### 5. Combine with Other Effects
+
+Enhance vintage feel:
+
+```bash
+# Sepia + vignette + grain
+mediaproc image sepia photo.jpg -i 80 -o sepia.jpg
+mediaproc image vignette sepia.jpg
+# Add film grain if available
+```
+
+### 6. Maintain Consistent Intensity
+
+For collections, use same intensity:
+
+```bash
+# All photos at 75%
+mediaproc image sepia "wedding/*.jpg" -i 75
+```
+
+### 7. Consider Subject Matter
+
+**Portraits**: 60-80%
+**Landscapes**: 70-85%
+**Architecture**: 75-90%
+**Historical**: 85-95%
+
+## Troubleshooting
+
+### Issue: Effect Too Strong
+
+**Problem**: Image too brown, details lost
+
+**Cause**: Intensity too high
+
+**Solution**: Reduce intensity
+
+```bash
+# Too strong
+mediaproc image sepia photo.jpg -i 100
+
+# Better
+mediaproc image sepia photo.jpg -i 70
+```
+
+### Issue: Effect Too Weak
+
+**Problem**: Barely visible sepia tone
+
+**Cause**: Intensity too low
+
+**Solution**: Increase intensity
+
+```bash
+# Too subtle
+mediaproc image sepia photo.jpg -i 20
+
+# More visible
+mediaproc image sepia photo.jpg -i 75
+```
+
+### Issue: Looks Orange Not Brown
+
+**Problem**: Image looks orange instead of brown
+
+**Cause**: This is expected at lower intensities
+
+**Solution**: Increase intensity for more brown tones
+
+```bash
+# More brown
+mediaproc image sepia photo.jpg -i 85
+```
+
+### Issue: Loss of Detail
+
+**Problem**: Details seem lost
+
+**Cause**: Sepia reduces color contrast
+
+**Solution**: This is expected. Consider sharpening after
+
+```bash
+# Apply sepia
+mediaproc image sepia photo.jpg -i 80 -o sepia.jpg
+
+# Sharpen if needed
+mediaproc image sharpen sepia.jpg
+```
+
+### Issue: Different Results on Different Photos
+
+**Problem**: Same intensity looks different on various photos
+
+**Cause**: Original photo colors affect result
+
+**Solution**: This is normal. Adjust intensity per photo
+
+```bash
+# Darker photos may need higher intensity
+mediaproc image sepia dark-photo.jpg -i 90
+
+# Lighter photos may need lower intensity
+mediaproc image sepia light-photo.jpg -i 70
+```
+
+## Related Commands
+
+- [grayscale](./grayscale.mdx) - Convert to black and white
+- [vignette](./vignette.mdx) - Add darkened edges for vintage look
+- [border](./border.mdx) - Add vintage-style borders
+- [modulate](./modulate.mdx) - Adjust brightness and saturation
+
+## Further Reading
+
+- [Sepia Tone](https://en.wikipedia.org/wiki/Sepia_tone)
+- [Photographic Toning](https://en.wikipedia.org/wiki/Photographic_print_toning)
+- [Color Grading](https://en.wikipedia.org/wiki/Color_grading)

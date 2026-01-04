@@ -1,6 +1,12 @@
-# rotate
+# Rotate
 
-Rotate an image by a specified angle.
+Rotate images by any angle clockwise or counter-clockwise with customizable background color for empty areas.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,149 +14,643 @@ Rotate an image by a specified angle.
 mediaproc image rotate <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `rotate` command rotates images by any angle. Supports 90° increments for lossless rotation and arbitrary angles with optional background fill. Works with all standard image formats.
+```bash
+# Rotate 90° clockwise (default)
+mediaproc image rotate photo.jpg
+
+# Rotate 180°
+mediaproc image rotate image.png -a 180
+
+# Rotate 90° counter-clockwise
+mediaproc image rotate photo.jpg -a -90
+
+# Rotate 45° with custom background
+mediaproc image rotate image.png -a 45 --background white
+
+# Rotate with custom output
+mediaproc image rotate photo.jpg -a 270 -o rotated.jpg
+```
 
 ## Options
 
-### Basic Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-a, --angle` | number | 90 | Rotation angle in degrees (positive = clockwise) |
-| `-b, --background` | string | #000000 | Background color for areas created by rotation |
-
-### Advanced Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
-| `--no-rotate-exif` | boolean | false | Don't apply EXIF orientation |
-
-## Examples
-
-### Basic Rotation
-
-```bash
-# Rotate 90 degrees clockwise
-mediaproc image rotate input.jpg -a 90 -o rotated.jpg
-
-# Rotate 180 degrees
-mediaproc image rotate image.png -a 180 -o flipped.png
-
-# Rotate 270 degrees (or -90)
-mediaproc image rotate photo.jpg -a 270 -o rotated.jpg
-mediaproc image rotate photo.jpg -a -90 -o rotated.jpg
-```
-
-### Arbitrary Angles
-
-```bash
-# Rotate 45 degrees
-mediaproc image rotate image.jpg -a 45 -o diagonal.jpg
-
-# Rotate 30 degrees with white background
-mediaproc image rotate photo.png -a 30 -b "#ffffff" -o tilted.png
-
-# Slight rotation correction
-mediaproc image rotate scan.jpg -a -2.5 -b "#ffffff" -o straightened.jpg
-```
-
-### Auto-Orient from EXIF
-
-```bash
-# Apply EXIF orientation (camera orientation)
-mediaproc image rotate photo.jpg -o oriented.jpg
-
-# Rotate and ignore EXIF
-mediaproc image rotate photo.jpg -a 90 --no-rotate-exif -o rotated.jpg
-```
-
-### Background Colors
-
-```bash
-# Rotate with transparent background (PNG)
-mediaproc image rotate logo.png -a 45 -b "transparent" -f png -o tilted.png
-
-# Rotate with custom color
-mediaproc image rotate banner.jpg -a 15 -b "#ff0000" -o red-bg.jpg
-
-# Rotate with white background
-mediaproc image rotate document.png -a -3 -b "#ffffff" -o corrected.png
-```
-
-### Batch Rotation
-
-```bash
-# Rotate all images 90 degrees
-for img in *.jpg; do
-  mediaproc image rotate "$img" -a 90 -o "rotated-$img"
-done
-
-# Fix portrait orientation for all images
-find . -name "*.jpg" -exec mediaproc image rotate {} -a 90 -o {} \;
-```
-
-### Format Conversion
-
-```bash
-# Rotate and convert to WebP
-mediaproc image rotate input.jpg -a 180 -f webp -q 85 -o output.webp
-
-# Rotate and optimize
-mediaproc image rotate large.png -a 90 -f jpg -q 75 -o optimized.jpg
-```
+| Option                 | Alias | Type    | Default                 | Description                      |
+| ---------------------- | ----- | ------- | ----------------------- | -------------------------------- |
+| `--angle <degrees>`    | `-a`  | number  | `90`                    | Rotation angle in degrees        |
+| `--background <color>` |       | string  | `transparent`           | Background color for empty areas |
+| `--output <path>`      | `-o`  | string  | `<input>-rotated.<ext>` | Output file path                 |
+| `--quality <quality>`  | `-q`  | number  | `90`                    | Output quality (1-100)           |
+| `--dry-run`            |       | boolean | `false`                 | Preview without making changes   |
+| `--verbose`            | `-v`  | boolean | `false`                 | Show detailed output             |
+| `--help`               |       | boolean | `false`                 | Display help information         |
 
 ## Rotation Angles
 
-### Standard Angles (Lossless for JPEG)
+### Positive Angles (Clockwise)
 
-- **90°**: Rotate clockwise (right)
-- **180°**: Flip upside down
-- **270°** or **-90°**: Rotate counter-clockwise (left)
+- **90°**: Quarter turn right (portrait → landscape)
+- **180°**: Half turn (upside down)
+- **270°**: Three-quarter turn right (same as -90°)
+- **45°, 30°, etc.**: Custom angles
 
-These angles preserve JPEG quality as they're lossless transformations.
+### Negative Angles (Counter-Clockwise)
 
-### Arbitrary Angles
+- **-90°**: Quarter turn left (landscape → portrait)
+- **-180°**: Half turn (same as 180°)
+- **-45°, -30°, etc.**: Custom angles
 
-Any angle between 0-360 degrees is supported. Negative angles rotate counter-clockwise.
+### Common Angles
 
-- **Positive**: Clockwise rotation
-- **Negative**: Counter-clockwise rotation
-- **> 360**: Wraps around (e.g., 450° = 90°)
+```bash
+# 90° clockwise
+mediaproc image rotate photo.jpg -a 90
+
+# 90° counter-clockwise
+mediaproc image rotate photo.jpg -a -90
+
+# 180° (upside down)
+mediaproc image rotate photo.jpg -a 180
+
+# 45° tilt
+mediaproc image rotate photo.jpg -a 45
+
+# 30° slight tilt
+mediaproc image rotate photo.jpg -a 30
+```
+
+## Background Colors
+
+When rotating by non-90° angles, empty corners appear. Specify background color:
+
+### Transparent (Default)
+
+```bash
+# PNG with transparency
+mediaproc image rotate logo.png -a 45 --background transparent
+```
+
+### Named Colors
+
+```bash
+# White background
+mediaproc image rotate photo.jpg -a 30 --background white
+
+# Black background
+mediaproc image rotate image.png -a 45 --background black
+
+# Red background
+mediaproc image rotate photo.jpg -a 15 --background red
+```
+
+### Hex Colors
+
+```bash
+# Custom hex color
+mediaproc image rotate photo.jpg -a 45 --background "#f0f0f0"
+
+# RGB color
+mediaproc image rotate image.png -a 30 --background "rgb(240, 240, 240)"
+```
+
+## Examples
+
+### 1. Default Rotation
+
+Rotate 90° clockwise:
+
+```bash
+mediaproc image rotate photo.jpg
+```
+
+**Result**: Portrait becomes landscape, landscape becomes portrait.
+
+### 2. Counter-Clockwise Rotation
+
+Rotate 90° counter-clockwise:
+
+```bash
+mediaproc image rotate image.png -a -90
+```
+
+**Use**: Fix orientation, create vertical layout.
+
+### 3. Upside Down
+
+Rotate 180°:
+
+```bash
+mediaproc image rotate photo.jpg -a 180
+```
+
+**Effect**: Complete flip (upside down).
+
+### 4. Slight Tilt
+
+Subtle 5° tilt for artistic effect:
+
+```bash
+mediaproc image rotate photo.jpg -a 5 --background white
+```
+
+**Creative**: Dynamic composition.
+
+### 5. Diagonal Tilt
+
+45° angle:
+
+```bash
+mediaproc image rotate image.png -a 45 --background transparent
+```
+
+**Artistic**: Diamond orientation.
+
+### 6. Batch Rotation
+
+Rotate multiple images:
+
+```bash
+mediaproc image rotate "photos/*.jpg" -a 90
+```
+
+**Batch**: All images rotated same angle.
+
+### 7. Fix Camera Orientation
+
+Correct sideways photo:
+
+```bash
+mediaproc image rotate sideways.jpg -a 90 -o corrected.jpg
+```
+
+**Photography**: Fix incorrectly rotated photos.
+
+### 8. Create Vertical Banner
+
+Rotate landscape to portrait:
+
+```bash
+mediaproc image rotate banner.jpg -a 90 -o vertical-banner.jpg
+```
+
+**Web Design**: Vertical layouts.
+
+### 9. Custom Background
+
+Rotate with matching background:
+
+```bash
+mediaproc image rotate photo.jpg -a 30 --background "#e8e8e8"
+```
+
+**Design**: Match document background.
+
+### 10. High Quality Output
+
+Maximum quality rotation:
+
+```bash
+mediaproc image rotate image.jpg -a 45 -q 100 --background white
+```
+
+**Print**: No quality loss.
+
+### 11. Verbose Output
+
+Show processing details:
+
+```bash
+mediaproc image rotate photo.jpg -a 90 --verbose
+```
+
+**Info**: Original size, processing time.
+
+### 12. Preview Operation
+
+Check before rotating:
+
+```bash
+mediaproc image rotate image.jpg -a 45 --dry-run
+```
+
+**Safety**: Verify settings.
+
+### 13. Multiple Rotations
+
+Different angles for comparison:
+
+```bash
+# Slight tilt
+mediaproc image rotate photo.jpg -a 5 -o tilt-5.jpg
+
+# Moderate tilt
+mediaproc image rotate photo.jpg -a 15 -o tilt-15.jpg
+
+# Strong tilt
+mediaproc image rotate photo.jpg -a 30 -o tilt-30.jpg
+```
+
+**Comparison**: Test different angles.
+
+### 14. Rotate Scanned Document
+
+Straighten scanned page:
+
+```bash
+mediaproc image rotate scan.jpg -a 2 --background white
+```
+
+**Documents**: Minor corrections.
+
+### 15. Create Rotated Collage Element
+
+Rotate for collage composition:
+
+```bash
+mediaproc image rotate element.png -a -15 --background transparent
+```
+
+**Design**: Dynamic collage elements.
+
+## Use Cases
+
+### 1. Fix Image Orientation
+
+Correct camera rotation:
+
+```bash
+# Portrait taken in landscape mode
+mediaproc image rotate portrait.jpg -a 90
+
+# Upside down photo
+mediaproc image rotate photo.jpg -a 180
+```
+
+**Photography**: Fix incorrect orientation.
+
+### 2. Create Artistic Tilts
+
+Dynamic compositions:
+
+```bash
+# Slight tilt for interest
+mediaproc image rotate photo.jpg -a 5 --background white
+
+# Dramatic angle
+mediaproc image rotate image.jpg -a 30 --background black
+```
+
+**Art**: Add visual interest.
+
+### 3. Document Scanning
+
+Straighten scanned documents:
+
+```bash
+# Minor rotation correction
+mediaproc image rotate scan.jpg -a -2 --background white
+
+# Fix sideways scan
+mediaproc image rotate document.jpg -a 90
+```
+
+**Documents**: Correct scanner issues.
+
+### 4. Social Media
+
+Rotate for platform requirements:
+
+```bash
+# Instagram portrait
+mediaproc image rotate landscape.jpg -a 90
+
+# Vertical story format
+mediaproc image rotate horizontal.jpg -a 90
+```
+
+**Social**: Platform-specific formats.
+
+### 5. Logo Variations
+
+Create rotated logo versions:
+
+```bash
+# Rotated logo
+mediaproc image rotate logo.png -a 45 --background transparent
+
+# Inverted logo
+mediaproc image rotate logo.png -a 180
+```
+
+**Branding**: Logo variations.
+
+### 6. Web Design
+
+Rotate elements for layouts:
+
+```bash
+# Rotated header element
+mediaproc image rotate element.png -a 15 --background transparent
+
+# Vertical sidebar graphic
+mediaproc image rotate graphic.jpg -a 90
+```
+
+**Web**: Dynamic layouts.
+
+### 7. Print Materials
+
+Rotate for print layouts:
+
+```bash
+# Rotate for spread
+mediaproc image rotate page.jpg -a 90 -q 95
+
+# Adjust for binding
+mediaproc image rotate cover.jpg -a 3 --background white
+```
+
+**Print**: Layout preparation.
+
+### 8. Product Photography
+
+Create view variations:
+
+```bash
+# Different angles
+mediaproc image rotate product.jpg -a 90 -o side-view.jpg
+mediaproc image rotate product.jpg -a 180 -o back-view.jpg
+```
+
+**E-commerce**: Multiple views.
+
+## Combining with Other Commands
+
+### Auto-Orient + Rotate
+
+Fix EXIF orientation then rotate:
+
+```bash
+# Fix EXIF orientation
+mediaproc image auto-orient photo.jpg -o oriented.jpg
+
+# Additional rotation if needed
+mediaproc image rotate oriented.jpg -a 90
+```
+
+**Photography**: Complete orientation fix.
+
+### Rotate + Crop
+
+Rotate then crop to remove empty corners:
+
+```bash
+# Rotate
+mediaproc image rotate photo.jpg -a 45 --background white -o rotated.jpg
+
+# Crop to content
+mediaproc image crop rotated.jpg --x 100 --y 100 --width 800 --height 600
+```
+
+**Composition**: Clean rotated images.
+
+### Rotate + Border
+
+Rotate then add frame:
+
+```bash
+# Rotate
+mediaproc image rotate photo.jpg -a 5 --background white -o rotated.jpg
+
+# Add border
+mediaproc image border rotated.jpg --width 10 --color black
+```
+
+**Framing**: Artistic presentation.
+
+### Rotate + Resize
+
+Rotate then resize to standard size:
+
+```bash
+# Rotate
+mediaproc image rotate photo.jpg -a 90 -o rotated.jpg
+
+# Resize
+mediaproc image resize rotated.jpg -w 1920 -h 1080
+```
+
+**Workflow**: Complete transformation.
+
+## Technical Details
+
+### Rotation Algorithm
+
+Uses high-quality interpolation:
+
+- **Bicubic**: For smooth results
+- **Anti-aliasing**: Reduces jagged edges
+- **Sub-pixel**: Accurate positioning
+
+### Background Fill
+
+For non-90° rotations:
+
+- Fills empty corners with specified color
+- Maintains image quality
+- Transparent support for PNG/WebP
+
+### Performance
+
+- **90°, 180°, 270°**: Very fast (no interpolation)
+- **Other angles**: Slower (requires interpolation)
+- **Small images (<1MP)**: ~50-100ms
+- **Medium images (5MP)**: ~150-250ms
+- **Large images (>10MP)**: ~300-500ms
+
+### Image Dimensions
+
+After rotation:
+
+- **90°, 270°**: Dimensions swap (WxH → HxW)
+- **Other angles**: Dimensions increase to fit rotated content
+
+Example:
+
+- Original: 1000x800
+- After 90°: 800x1000
+- After 45°: ~1280x1280 (includes corners)
 
 ## Best Practices
 
-1. **Use 90° Increments**: For lossless JPEG rotation
-2. **Specify Background**: Always set background color for non-90° rotations
-3. **PNG for Transparency**: Use PNG format if you need transparent background
-4. **EXIF Orientation**: Let the command auto-orient images from cameras
-5. **Slight Corrections**: Use small angles (< 5°) for document straightening
-6. **Quality Consideration**: Arbitrary rotations may reduce quality slightly
+### 1. Use Standard Angles When Possible
 
-## Common Use Cases
+90° increments are faster:
 
-- **Portrait/Landscape Switch**: Rotate 90° or 270° to change orientation
-- **Document Scanning**: Correct slight misalignments with small angles
-- **Photo Correction**: Fix incorrectly oriented photos
-- **Design Elements**: Create tilted graphics for visual interest
-- **EXIF Handling**: Auto-orient images from digital cameras
-- **Batch Processing**: Fix orientation for multiple images
+```bash
+# Fast
+mediaproc image rotate photo.jpg -a 90
 
-## Performance Tips
+# Slower
+mediaproc image rotate photo.jpg -a 89
+```
 
-- 90° increments are faster and lossless for JPEG
-- Rotate before resizing for better performance
-- Use lower quality for arbitrary angles if file size matters
-- Consider output format based on background (PNG for transparency)
+### 2. Match Background to Use Case
 
-## See Also
+**Transparent**: Logos, overlays
 
-- [flip](./flip) - Flip images horizontally
-- [flop](./flop) - Flip images vertically
-- [crop](./crop) - Crop rotated images
-- [trim](./trim) - Remove background after rotation
-- [affine](./affine) - Advanced transformations
+```bash
+mediaproc image rotate logo.png -a 45 --background transparent
+```
+
+**White/Color**: Photos, documents
+
+```bash
+mediaproc image rotate photo.jpg -a 30 --background white
+```
+
+### 3. Small Adjustments for Scanning
+
+Use small angles for scanned documents:
+
+```bash
+# Subtle correction
+mediaproc image rotate scan.jpg -a 1.5 --background white
+```
+
+### 4. Preview First
+
+Use dry run for large batches:
+
+```bash
+mediaproc image rotate "photos/*.jpg" -a 90 --dry-run
+```
+
+### 5. Quality Settings
+
+**Standard**: Default quality 90
+**High**: Use -q 95 or 100
+**Web**: Can use -q 80-85
+
+```bash
+# High quality
+mediaproc image rotate photo.jpg -a 45 -q 95
+```
+
+### 6. Consider Output Format
+
+PNG for transparency:
+
+```bash
+mediaproc image rotate logo.jpg -a 45 --background transparent -o logo.png
+```
+
+JPEG for photos:
+
+```bash
+mediaproc image rotate photo.png -a 90 -o photo.jpg
+```
+
+### 7. Batch Similar Angles
+
+Group rotations by angle:
+
+```bash
+# All 90° rotations
+mediaproc image rotate "portrait/*.jpg" -a 90
+
+# All 180° rotations
+mediaproc image rotate "upside-down/*.jpg" -a 180
+```
+
+## Troubleshooting
+
+### Issue: Image Quality Loss
+
+**Problem**: Rotated image looks blurry
+
+**Cause**: Low quality setting or multiple rotations
+
+**Solution**: Increase quality
+
+```bash
+# Low quality
+mediaproc image rotate photo.jpg -a 45 -q 70
+
+# Better quality
+mediaproc image rotate photo.jpg -a 45 -q 95
+```
+
+### Issue: Unwanted White Corners
+
+**Problem**: White corners appear after rotation
+
+**Cause**: Background not set to transparent
+
+**Solution**: Use transparent background
+
+```bash
+# White corners (JPEG)
+mediaproc image rotate image.jpg -a 45
+
+# Transparent (PNG)
+mediaproc image rotate image.jpg -a 45 --background transparent -o image.png
+```
+
+### Issue: File Size Increased
+
+**Problem**: Output larger than input
+
+**Cause**: Dimensions increased (non-90° rotation) or format change
+
+**Solution**: This is expected for diagonal rotations
+
+```bash
+# Original: 1000x800 (800KB)
+# After 45°: ~1280x1280 (larger file)
+```
+
+### Issue: Wrong Rotation Direction
+
+**Problem**: Image rotated wrong way
+
+**Cause**: Positive vs negative angle confusion
+
+**Solution**: Use opposite sign
+
+```bash
+# Wrong direction
+mediaproc image rotate photo.jpg -a 90
+
+# Correct direction
+mediaproc image rotate photo.jpg -a -90
+```
+
+### Issue: Background Color Not Showing
+
+**Problem**: Background stays transparent despite setting color
+
+**Cause**: Output format doesn't support specified background
+
+**Solution**: Ensure correct output format
+
+```bash
+# Won't work (JPEG doesn't support transparency)
+mediaproc image rotate image.png -a 45 --background transparent -o output.jpg
+
+# Works
+mediaproc image rotate image.png -a 45 --background white -o output.jpg
+```
+
+## Related Commands
+
+- [auto-orient](./auto-orient.mdx) - Fix EXIF orientation automatically
+- [flip](./flip.mdx) - Flip horizontally
+- [flop](./flop.mdx) - Flip vertically
+- [crop](./crop.mdx) - Crop after rotation
+
+## Further Reading
+
+- [Image Rotation](https://en.wikipedia.org/wiki/Image_rotation)
+- [Bicubic Interpolation](https://en.wikipedia.org/wiki/Bicubic_interpolation)
+- [EXIF Orientation](https://en.wikipedia.org/wiki/Exif#Orientation)

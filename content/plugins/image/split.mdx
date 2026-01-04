@@ -1,6 +1,12 @@
-# split
+# Split
 
-Split image into multiple parts.
+Split large images into smaller tiles or grid pieces. Perfect for Instagram carousels, large format printing, or processing huge images in manageable chunks.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,41 +14,643 @@ Split image into multiple parts.
 mediaproc image split <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `split` command divides an image into multiple tiles or sections.
+```bash
+# Split into 3x3 grid (9 tiles)
+mediaproc image split photo.jpg --tiles 3x3
+
+# Split into 4x4 grid (16 tiles)
+mediaproc image split large.png -t "4x4"
+
+# Split horizontally into 5 pieces
+mediaproc image split panorama.jpg -r 1 -c 5
+
+# Split vertically into 3 pieces
+mediaproc image split image.jpg -r 3 -c 1
+
+# Custom output directory
+mediaproc image split poster.jpg --tiles 2x3 -o ./parts
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--output-dir` | string | - | Output directory |
-| `--rows` | number | 2 | Number of rows |
-| `--cols` | number | 2 | Number of columns |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option                 | Alias | Type    | Default   | Description                                |
+| ---------------------- | ----- | ------- | --------- | ------------------------------------------ |
+| `--tiles <grid>`       | `-t`  | string  | -         | Grid pattern: "2x2", "3x3", "4x2", etc.    |
+| `--rows <number>`      | `-r`  | number  | -         | Number of rows (alternative to --tiles)    |
+| `--columns <number>`   | `-c`  | number  | -         | Number of columns (alternative to --tiles) |
+| `--output <directory>` | `-o`  | string  | `./tiles` | Output directory                           |
+| `--dry-run`            |       | boolean | `false`   | Preview without making changes             |
+| `--verbose`            | `-v`  | boolean | `false`   | Show detailed output                       |
+| `--help`               |       | boolean | `false`   | Display help information                   |
+
+## Output Format
+
+Tiles are saved with naming pattern:
+
+- **Format**: `tile_row_col.ext`
+- **Example**: `tile_0_0.jpg`, `tile_0_1.jpg`, `tile_1_0.jpg`
+- **Row/Column**: Numbers start at 0
+- **Extension**: Original format preserved
+
+### Directory Structure
+
+Single input file:
+
+```
+tiles/
+  tile_0_0.jpg
+  tile_0_1.jpg
+  tile_1_0.jpg
+  tile_1_1.jpg
+```
+
+Multiple input files:
+
+```
+tiles/
+  photo1/
+    tile_0_0.jpg
+    tile_0_1.jpg
+  photo2/
+    tile_0_0.jpg
+    tile_0_1.jpg
+```
+
+## Common Split Patterns
+
+### 2x2 Grid (Four Quadrants)
+
+```bash
+mediaproc image split photo.jpg --tiles 2x2
+```
+
+**Result**: 4 equal tiles
+**Use**: Basic grid, simple division
+
+### 3x3 Grid (Nine Tiles)
+
+```bash
+mediaproc image split image.jpg --tiles 3x3
+```
+
+**Result**: 9 equal tiles
+**Use**: Standard grid, detailed splitting
+
+### Instagram Carousel (1x10)
+
+```bash
+mediaproc image split panorama.jpg --tiles 1x10
+```
+
+**Result**: 10 horizontal slices
+**Use**: Instagram carousel posts (swipe-through)
+
+### Horizontal Strip (1xN)
+
+```bash
+# 5 horizontal pieces
+mediaproc image split banner.jpg -r 1 -c 5
+```
+
+**Result**: Horizontal slices
+**Use**: Wide panoramas, banners
+
+### Vertical Strip (Nx1)
+
+```bash
+# 3 vertical pieces
+mediaproc image split tall-image.jpg -r 3 -c 1
+```
+
+**Result**: Vertical slices
+**Use**: Tall images, vertical scrolling
+
+### Large Grid (4x4)
+
+```bash
+mediaproc image split huge-image.jpg --tiles 4x4
+```
+
+**Result**: 16 tiles
+**Use**: Very large images, detailed work
 
 ## Examples
 
+### 1. Basic 3x3 Split
+
+Split into 9 tiles:
+
 ```bash
-# Split into 4 parts (2x2)
-mediaproc image split large.jpg --output-dir parts/ --rows 2 --cols 2
-
-# Split into 9 parts (3x3)
-mediaproc image split image.jpg --output-dir tiles/ --rows 3 --cols 3
-
-# Split horizontally (1x3)
-mediaproc image split banner.jpg --output-dir sections/ --rows 1 --cols 3
+mediaproc image split photo.jpg --tiles 3x3
 ```
 
-## Common Use Cases
+**Output**: 9 files (tile_0_0.jpg through tile_2_2.jpg)
 
-- **Large Images**: Split for easier handling
-- **Instagram Carousel**: Split into multiple posts
-- **Tiled Displays**: Create image tiles
-- **Print Layouts**: Split for multi-page printing
+### 2. Instagram Carousel
 
-## See Also
+Create swipeable Instagram post:
 
-- [grid](./grid) - Combine images into grid
-- [crop](./crop) - Extract specific regions
+```bash
+mediaproc image split panorama.jpg --tiles 1x10 -o ./instagram
+```
+
+**Social Media**: 10-image carousel
+
+### 3. Large Format Printing
+
+Split for smaller printers:
+
+```bash
+mediaproc image split poster.jpg --tiles 4x3 -o ./print-tiles
+```
+
+**Printing**: Print in smaller sections, assemble later
+
+### 4. Horizontal Panorama
+
+Split wide panorama:
+
+```bash
+mediaproc image split wide-view.jpg -r 1 -c 6
+```
+
+**Photography**: 6 horizontal sections
+
+### 5. Vertical Division
+
+Split tall image vertically:
+
+```bash
+mediaproc image split tall-infographic.jpg -r 5 -c 1 -o ./sections
+```
+
+**Infographics**: 5 vertical sections
+
+### 6. Custom Grid
+
+Non-square grid:
+
+```bash
+mediaproc image split image.jpg --tiles 2x4
+```
+
+**Result**: 8 tiles (2 rows, 4 columns)
+
+### 7. Batch Splitting
+
+Split multiple images:
+
+```bash
+mediaproc image split "photos/*.jpg" --tiles 3x3
+```
+
+**Batch**: All images split with same pattern
+
+### 8. Preview Split
+
+Check tile count before splitting:
+
+```bash
+mediaproc image split photo.jpg --tiles 4x4 --dry-run
+```
+
+**Safety**: Verify grid before processing
+
+### 9. Puzzle Effect
+
+Create puzzle pieces:
+
+```bash
+mediaproc image split puzzle-image.jpg --tiles 6x6 -o ./puzzle
+```
+
+**Creative**: 36 puzzle pieces
+
+### 10. Comic Strip
+
+Split comic page into panels:
+
+```bash
+mediaproc image split comic-page.jpg --tiles 3x2 -o ./panels
+```
+
+**Comics**: 6 panels (3 rows, 2 columns)
+
+### 11. Detailed Processing
+
+Split huge image for chunk processing:
+
+```bash
+# Split 50MP image into 4 parts
+mediaproc image split huge-photo.jpg --tiles 2x2 -o ./chunks
+```
+
+**Performance**: Process in smaller chunks
+
+### 12. Social Media Grid
+
+Create grid post effect:
+
+```bash
+mediaproc image split photo.jpg --tiles 3x3 -o ./grid-post
+```
+
+**Instagram**: Post as 9-image grid
+
+### 13. Tiled Wallpaper
+
+Create multi-monitor wallpaper tiles:
+
+```bash
+mediaproc image split wallpaper.jpg -r 1 -c 3 -o ./monitors
+```
+
+**Desktop**: One tile per monitor
+
+### 14. Progress Revelation
+
+Split for animated reveal:
+
+```bash
+mediaproc image split reveal-image.jpg --tiles 4x4 -o ./reveal
+```
+
+**Animation**: Reveal tiles one by one
+
+### 15. Verbose Output
+
+Show detailed splitting info:
+
+```bash
+mediaproc image split photo.jpg --tiles 3x3 --verbose
+```
+
+**Info**: Tile dimensions, progress percentage
+
+## Use Cases
+
+### 1. Instagram Carousels
+
+Create swipeable panoramas:
+
+```bash
+# Full panorama in 10 swipes
+mediaproc image split panorama.jpg --tiles 1x10 -o ./instagram
+
+# Wide scene in 5 swipes
+mediaproc image split landscape.jpg -r 1 -c 5 -o ./carousel
+```
+
+**Social Media**: Engaging carousel posts
+
+### 2. Large Format Printing
+
+Split for smaller printers:
+
+```bash
+# Split poster into printable sections
+mediaproc image split poster.jpg --tiles 3x4 -o ./print
+
+# Print each tile, assemble physically
+```
+
+**Printing**: Create large displays from smaller prints
+
+### 3. Processing Huge Images
+
+Handle memory-intensive images:
+
+```bash
+# Split 100MP image into manageable chunks
+mediaproc image split gigantic.jpg --tiles 4x4 -o ./chunks
+
+# Process each tile separately
+# Reassemble with stack command
+```
+
+**Performance**: Process large images in chunks
+
+### 4. Grid Social Media Posts
+
+Instagram grid effect:
+
+```bash
+# Split into 9 for 3x3 Instagram grid
+mediaproc image split artwork.jpg --tiles 3x3 -o ./grid
+
+# Post in sequence for unified grid
+```
+
+**Instagram**: Cohesive feed appearance
+
+### 5. Panoramic Photography
+
+Divide panoramas:
+
+```bash
+# Horizontal panorama
+mediaproc image split panorama.jpg -r 1 -c 8 -o ./sections
+
+# Vertical panorama
+mediaproc image split vertical-pan.jpg -r 6 -c 1
+```
+
+**Photography**: Share panoramas in sections
+
+### 6. Comic Book Panels
+
+Extract comic panels:
+
+```bash
+# Split comic page into panels
+mediaproc image split comic.jpg --tiles 4x2 -o ./panels
+
+# Each panel becomes separate image
+```
+
+**Comics**: Individual panel images
+
+### 7. Puzzle Creation
+
+Make image puzzles:
+
+```bash
+# Create 24-piece puzzle
+mediaproc image split image.jpg --tiles 4x6 -o ./puzzle
+
+# Shuffle and play
+```
+
+**Games**: Puzzle game creation
+
+### 8. Multi-Screen Displays
+
+Prepare for video walls:
+
+```bash
+# 4-screen display (2x2)
+mediaproc image split content.jpg --tiles 2x2 -o ./screens
+
+# Each tile for one screen
+```
+
+**Displays**: Video wall content
+
+### 9. Infographic Sections
+
+Split long infographics:
+
+```bash
+# Split into digestible sections
+mediaproc image split infographic.jpg -r 5 -c 1 -o ./sections
+
+# Share one section at a time
+```
+
+**Content**: Easier consumption
+
+### 10. Tutorial Steps
+
+Break tutorial image into steps:
+
+```bash
+# Split tutorial into step images
+mediaproc image split tutorial.jpg --tiles 3x2 -o ./steps
+
+# Each tile shows one step
+```
+
+**Education**: Step-by-step visuals
+
+## Combining with Other Commands
+
+### Resize + Split
+
+Optimize before splitting:
+
+```bash
+# Resize to target dimensions
+mediaproc image resize huge.jpg -w 3240 -o sized.jpg
+
+# Split into Instagram carousel (1080px each)
+mediaproc image split sized.jpg --tiles 1x3
+```
+
+**Workflow**: Right-sized tiles
+
+### Split + Optimize
+
+Split then optimize each tile:
+
+```bash
+# Split first
+mediaproc image split photo.jpg --tiles 3x3 -o ./tiles
+
+# Optimize all tiles
+mediaproc image optimize "tiles/*.jpg" -q 85
+```
+
+**Efficiency**: Smaller tile file sizes
+
+### Crop + Split
+
+Crop area then split:
+
+```bash
+# Crop specific area
+mediaproc image crop large.jpg --width 3240 --height 1080 -o cropped.jpg
+
+# Split cropped area
+mediaproc image split cropped.jpg --tiles 1x3
+```
+
+**Precision**: Split specific regions
+
+### Split + Watermark
+
+Add watermark to each tile:
+
+```bash
+# Split
+mediaproc image split photo.jpg --tiles 3x3 -o ./tiles
+
+# Watermark each tile
+mediaproc image watermark "tiles/*.jpg" --text "© 2024"
+```
+
+**Protection**: Watermarked tiles
+
+## Technical Details
+
+### Tile Calculation
+
+For image dimensions W×H split into R rows and C columns:
+
+**Tile Width**: `floor(W / C)`
+**Tile Height**: `floor(H / R)`
+
+Example:
+
+- Image: 3000×2000
+- Grid: 3×2
+- Tile size: 1000×1000 pixels
+
+### Edge Handling
+
+- **Floor division**: Extra pixels discarded
+- **Right/bottom edges**: May be slightly narrower/shorter
+- **Rounding**: Always rounds down
+
+### Performance
+
+- **Very fast**: Direct pixel extraction
+- **Small tiles**: ~20-40ms per tile
+- **Large tiles**: ~50-100ms per tile
+- **Memory efficient**: Processes one tile at a time
+
+### File Sizes
+
+- Tile sizes proportional to original
+- Format preserved (JPEG, PNG, etc.)
+- No quality loss from splitting operation
+
+## Best Practices
+
+### 1. Plan Grid Before Splitting
+
+Calculate tile count:
+
+```bash
+# 3x3 = 9 tiles
+# 4x4 = 16 tiles
+# 1x10 = 10 tiles
+```
+
+### 2. Use Even Divisions
+
+Choose dimensions that divide evenly:
+
+```bash
+# 3000×2000 image
+# Good: 3×2 (1000×1000 tiles)
+# Bad: 7×5 (uneven tiles)
+```
+
+### 3. Instagram Carousels
+
+Maximum 10 images per carousel:
+
+```bash
+# 10 or fewer
+mediaproc image split panorama.jpg --tiles 1x10
+```
+
+### 4. Organize Output
+
+Use descriptive output directories:
+
+```bash
+mediaproc image split photo.jpg --tiles 3x3 -o ./photo-tiles
+```
+
+### 5. Test with Dry Run
+
+Verify before processing:
+
+```bash
+mediaproc image split image.jpg --tiles 4x4 --dry-run
+```
+
+### 6. Batch Processing
+
+Process multiple images efficiently:
+
+```bash
+# Same grid for all
+mediaproc image split "collection/*.jpg" --tiles 3x3
+```
+
+### 7. Keep Original
+
+Split doesn't modify original:
+
+- Original file preserved
+- Tiles saved in separate directory
+
+## Troubleshooting
+
+### Issue: Tiles Not Equal Size
+
+**Problem**: Last row/column tiles smaller
+
+**Cause**: Image dimensions don't divide evenly
+
+**Solution**: This is expected behavior
+
+```bash
+# 3100×2000 split 3×2
+# Most tiles: 1033×1000
+# Right column: 1034×1000 (extra pixels)
+```
+
+### Issue: Too Many Tiles
+
+**Problem**: Generated more tiles than expected
+
+**Cause**: Incorrect grid specification
+
+**Solution**: Check rows × columns calculation
+
+```bash
+# 4x4 = 16 tiles (not 8)
+mediaproc image split image.jpg --tiles 4x4
+```
+
+### Issue: Output Directory Full
+
+**Problem**: Many tiles filling directory
+
+**Cause**: High tile count from large grid
+
+**Solution**: Use subdirectories, expected behavior
+
+```bash
+# 10x10 = 100 tiles
+# Use organized structure
+```
+
+### Issue: Memory Usage
+
+**Problem**: High memory usage during splitting
+
+**Cause**: Large source image
+
+**Solution**: Split creates one tile at a time (efficient)
+
+### Issue: Wrong Tile Count
+
+**Problem**: Got different number of tiles
+
+**Cause**: Multiple input files create subdirectories
+
+**Solution**: Check directory structure
+
+```bash
+# One file: tiles in output directory
+# Multiple files: subdirectory per file
+```
+
+## Related Commands
+
+- [stack](./stack.mdx) - Reassemble split tiles
+- [crop](./crop.mdx) - Extract specific regions
+- [resize](./resize.mdx) - Resize before splitting
+- [grid](./grid.mdx) - Create image grids (opposite operation)
+
+## Further Reading
+
+- [Instagram Carousel Best Practices](https://help.instagram.com/442418472487929)
+- [Large Format Printing](https://en.wikipedia.org/wiki/Large-format_printing)
+- [Image Tiling](https://en.wikipedia.org/wiki/Tiled_rendering)

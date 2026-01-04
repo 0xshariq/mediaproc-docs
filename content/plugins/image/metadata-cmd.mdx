@@ -1,39 +1,763 @@
-# metadata-cmd
+# Image Metadata Management
 
-View and edit image metadata.
+View, export, or remove image metadata including EXIF, IPTC, XMP, and ICC profile data. Essential for privacy protection, file optimization, and metadata management.
 
-## Usage
+## Overview
+
+The metadata command provides comprehensive metadata management for images:
+
+- **View Mode**: Display detailed metadata information
+- **Remove Mode**: Strip all metadata for privacy and optimization
+- **Export Mode**: Save metadata to JSON files for archival
+
+Metadata types handled:
+
+- **EXIF**: Camera settings, GPS location, date/time
+- **IPTC**: Copyright, keywords, captions
+- **XMP**: Extended metadata standards
+- **ICC**: Color profile information
+
+## Syntax
 
 ```bash
-mediaproc image metadata-cmd <input> [options]
+# View metadata (default mode)
+mediaproc image metadata <input> [options]
+
+# Remove metadata
+mediaproc image metadata <input> --remove [options]
+
+# Export metadata
+mediaproc image metadata <input> --export <path> [options]
 ```
-
-## Description
-
-The `metadata-cmd` command provides comprehensive metadata viewing and editing capabilities.
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--show` | boolean | false | Display metadata |
-| `--strip` | boolean | false | Remove all metadata |
-| `--set` | string[] | - | Set metadata fields |
+| Option          | Alias | Type    | Default | Description                          |
+| --------------- | ----- | ------- | ------- | ------------------------------------ |
+| `--remove`      |       | boolean | false   | Remove all metadata from image       |
+| `--remove-all`  |       | boolean | false   | Alias for --remove                   |
+| `--export`      |       | string  |         | Export metadata to JSON file         |
+| `-o, --output`  |       | string  |         | Custom output path                   |
+| `--dry-run`     |       | boolean | false   | Preview without processing           |
+| `-v, --verbose` |       | boolean | false   | Show detailed processing information |
 
-## Examples
+## View Mode Examples
+
+### View Basic Metadata
+
+Display all metadata from an image:
 
 ```bash
-# View metadata
-mediaproc image metadata-cmd photo.jpg --show
-
-# Strip metadata
-mediaproc image metadata-cmd photo.jpg --strip -o clean.jpg
-
-# Set fields
-mediaproc image metadata-cmd photo.jpg --set "copyright=© 2024" --set "author=John Doe" -o tagged.jpg
+mediaproc image metadata photo.jpg
 ```
+
+Output:
+
+```
+📁 File Information:
+  Path: photo.jpg
+  Size: 2453.67 KB
+  Modified: 12/15/2024, 3:45:23 PM
+
+🖼️  Image Properties:
+  Format: JPEG
+  Dimensions: 4000 × 3000 pixels
+  Color Space: srgb
+  Channels: 3
+  Bit Depth: 8
+  Density: 72 DPI
+  Orientation: 1
+
+📋 Metadata Summary:
+  EXIF Data: 1234 bytes
+  ICC Profile: 560 bytes
+  IPTC Data: 256 bytes
+  XMP Data: 890 bytes
+  Total Metadata: 2.81 KB (0.1% of file)
+```
+
+### Check Multiple Images
+
+Analyze metadata for multiple images:
+
+```bash
+mediaproc image metadata photos/*.jpg -v
+```
+
+### View PNG Metadata
+
+Check metadata in PNG files:
+
+```bash
+mediaproc image metadata screenshot.png
+```
+
+Output for clean image:
+
+```
+🖼️  Image Properties:
+  Format: PNG
+  Dimensions: 1920 × 1080 pixels
+  Color Space: srgb
+  Channels: 4
+  Alpha Channel: Yes
+
+ℹ️  This image has no embedded metadata
+```
+
+## Remove Mode Examples
+
+### Remove for Privacy
+
+Strip GPS and camera data before sharing:
+
+```bash
+mediaproc image metadata vacation.jpg --remove
+```
+
+Creates: `vacation-clean.jpg` with all metadata removed
+
+Output:
+
+```
+✓ Metadata removed successfully!
+  Input: vacation.jpg
+  Output: vacation-clean.jpg
+  Original size: 2453.67KB
+  New size: 2450.86KB
+  Saved: 2.81KB (0.1%)
+```
+
+### Batch Privacy Protection
+
+Remove metadata from entire photo collection:
+
+```bash
+mediaproc image metadata photos/*.jpg --remove -v
+```
+
+### Custom Output Path
+
+Specify custom output location:
+
+```bash
+mediaproc image metadata photo.jpg --remove -o cleaned/photo.jpg
+```
+
+### Remove from Social Media
+
+Clean image before uploading:
+
+```bash
+mediaproc image metadata selfie.jpg --remove
+# Upload selfie-clean.jpg to social media
+```
+
+### Web Optimization
+
+Remove metadata for web performance:
+
+```bash
+mediaproc image metadata product.jpg --remove -o web/product.jpg
+```
+
+### Security Cleanup
+
+Strip device and camera information:
+
+```bash
+mediaproc image metadata confidential.jpg --remove
+```
+
+## Export Mode Examples
+
+### Export to JSON
+
+Save metadata for archival:
+
+```bash
+mediaproc image metadata photo.jpg --export metadata.json
+```
+
+Creates `metadata.json`:
+
+```json
+{
+  "file": {
+    "path": "photo.jpg",
+    "size": 2512588,
+    "modified": "2024-12-15T20:45:23.000Z"
+  },
+  "image": {
+    "format": "jpeg",
+    "width": 4000,
+    "height": 3000,
+    "space": "srgb",
+    "channels": 3,
+    "depth": "uchar",
+    "density": 72,
+    "hasAlpha": false,
+    "orientation": 1,
+    "isProgressive": false
+  },
+  "exif": "base64_encoded_data...",
+  "icc": "base64_encoded_data...",
+  "iptc": "base64_encoded_data...",
+  "xmp": "base64_encoded_data..."
+}
+```
+
+### Export Multiple Images
+
+Export metadata from batch:
+
+```bash
+mediaproc image metadata photos/*.jpg --export metadata.json
+```
+
+Creates: `metadata-1.json`, `metadata-2.json`, etc.
+
+### Photography Archive
+
+Export camera settings for reference:
+
+```bash
+mediaproc image metadata shoot/*.raw --export archive/metadata.json -v
+```
+
+### Copyright Documentation
+
+Export copyright and IPTC data:
+
+```bash
+mediaproc image metadata licensed.jpg --export copyright.json
+```
+
+### Metadata Comparison
+
+Export before and after processing:
+
+```bash
+mediaproc image metadata original.jpg --export before.json
+mediaproc image metadata edited.jpg --export after.json
+```
+
+## Use Cases
+
+### Privacy Protection
+
+Remove GPS location before sharing online:
+
+```bash
+# Check for GPS data
+mediaproc image metadata photo.jpg
+
+# Remove all metadata including GPS
+mediaproc image metadata photo.jpg --remove
+
+# Verify metadata removed
+mediaproc image metadata photo-clean.jpg
+```
+
+### File Size Optimization
+
+Reduce file size by removing metadata:
+
+```bash
+# Large metadata (camera RAW converted)
+mediaproc image metadata converted.jpg
+# Shows: Total Metadata: 45.2 KB (1.8% of file)
+
+# Remove to save space
+mediaproc image metadata converted.jpg --remove
+# Saves 45KB per file
+```
+
+### Photography Workflow
+
+Archive metadata before editing:
+
+```bash
+# Export original metadata
+mediaproc image metadata raw/*.jpg --export originals/
+
+# Edit images
+# ... your editing workflow ...
+
+# Clean metadata for web
+mediaproc image metadata edited/*.jpg --remove
+```
+
+### Social Media Preparation
+
+Prepare images for social sharing:
+
+```bash
+# Remove all metadata for privacy
+mediaproc image metadata profile-pic.jpg --remove
+
+# Upload the clean version
+mediaproc image metadata profile-pic-clean.jpg
+# Shows: ℹ️  This image has no embedded metadata
+```
+
+### Security Auditing
+
+Check and remove sensitive metadata:
+
+```bash
+# Audit image metadata
+mediaproc image metadata document-scan.jpg -v
+
+# Remove if sensitive data found
+mediaproc image metadata document-scan.jpg --remove
+```
+
+### Batch Processing
+
+Process entire directories:
+
+```bash
+# Export metadata from collection
+mediaproc image metadata archive/**/*.jpg --export metadata/
+
+# Clean all for web deployment
+mediaproc image metadata website-images/*.jpg --remove -v
+```
+
+## Common EXIF Fields
+
+When viewing metadata, you may see these common EXIF fields:
+
+### Camera Information
+
+- **Make**: Camera manufacturer (Canon, Nikon, Sony, etc.)
+- **Model**: Camera model (EOS R5, D850, A7III, etc.)
+- **Software**: Editing software used
+
+### Capture Settings
+
+- **Date/Time**: When photo was taken
+- **Aperture**: f-stop value (f/2.8, f/5.6, etc.)
+- **Shutter Speed**: Exposure time (1/500s, 1/60s, etc.)
+- **ISO**: Sensitivity (100, 400, 1600, etc.)
+- **Focal Length**: Lens zoom (24mm, 50mm, 200mm, etc.)
+- **Flash**: Flash fired or not
+
+### Location Data
+
+- **GPS Latitude**: Geographic latitude
+- **GPS Longitude**: Geographic longitude
+- **GPS Altitude**: Elevation above sea level
+- **GPS Timestamp**: When location was recorded
+
+### Copyright
+
+- **Copyright**: Copyright notice
+- **Artist**: Photographer/creator name
+- **Image Description**: Caption or description
+
+### Color Information
+
+- **Color Space**: sRGB, Adobe RGB, etc.
+- **White Balance**: Auto, daylight, etc.
+
+## Metadata Types Explained
+
+### EXIF (Exchangeable Image File Format)
+
+Standard for storing camera settings and shooting conditions:
+
+- Camera make and model
+- Date and time taken
+- Camera settings (ISO, aperture, shutter speed)
+- GPS coordinates
+- Lens information
+- Flash usage
+
+### IPTC (International Press Telecommunications Council)
+
+Journalism and copyright information:
+
+- Caption/description
+- Keywords
+- Copyright notice
+- Creator/photographer name
+- Location information
+- Usage terms
+
+### XMP (Extensible Metadata Platform)
+
+Adobe's metadata standard:
+
+- Rating and labels
+- Edit history
+- Keywords and descriptions
+- Rights management
+- Custom metadata fields
+
+### ICC (International Color Consortium)
+
+Color profile information:
+
+- Color space definition
+- Device calibration data
+- Rendering intent
+- Profile description
+
+## Privacy Considerations
+
+### GPS Location Data
+
+Photos often contain GPS coordinates revealing:
+
+- Where photo was taken
+- Home address
+- Travel patterns
+- Sensitive locations
+
+**Solution**: Always remove metadata before sharing online:
+
+```bash
+mediaproc image metadata photo.jpg --remove
+```
+
+### Camera/Device Information
+
+EXIF reveals:
+
+- Camera make and model
+- Serial number (sometimes)
+- Software used
+- Device name
+
+**Solution**: Strip metadata for anonymous posting:
+
+```bash
+mediaproc image metadata anonymous.jpg --remove
+```
+
+### Date/Time Information
+
+Timestamps can reveal:
+
+- When photo was taken
+- Time zone information
+- Activity patterns
+
+**Solution**: Remove for privacy:
+
+```bash
+mediaproc image metadata timestamped.jpg --remove
+```
+
+## File Size Impact
+
+Metadata typically adds 0.1% - 2% to file size:
+
+- **Minimal** (< 5KB): Simple phone photos
+- **Moderate** (5-20KB): DSLR camera photos
+- **Heavy** (20-100KB): Professional RAW conversions
+- **Extreme** (> 100KB): Heavily edited with history
+
+Remove to optimize:
+
+```bash
+# Check size impact
+mediaproc image metadata photo.jpg
+# Shows: Total Metadata: 45.2 KB (1.8% of file)
+
+# Remove to reduce size
+mediaproc image metadata photo.jpg --remove
+# Saves 45KB
+```
+
+## Output Naming
+
+### Remove Mode
+
+Default suffix: `-clean`
+
+```bash
+photo.jpg → photo-clean.jpg
+image.png → image-clean.png
+```
+
+Custom output:
+
+```bash
+mediaproc image metadata photo.jpg --remove -o cleaned.jpg
+```
+
+### Export Mode
+
+Default suffix: `.json`
+
+```bash
+# Single file
+photo.jpg → metadata.json
+
+# Multiple files
+photo1.jpg → metadata-1.json
+photo2.jpg → metadata-2.json
+```
+
+## Batch Processing
+
+### Remove Metadata from Directory
+
+```bash
+# Process all JPGs
+mediaproc image metadata photos/*.jpg --remove
+
+# Process all image types
+mediaproc image metadata images/*.{jpg,png,webp} --remove
+
+# Recursive processing
+find photos -name "*.jpg" -exec mediaproc image metadata {} --remove \;
+```
+
+### Export Metadata Archive
+
+```bash
+# Export all metadata
+mediaproc image metadata archive/*.jpg --export metadata/archive.json
+
+# With verbose output
+mediaproc image metadata photos/*.jpg --export metadata.json -v
+```
+
+### Parallel Processing
+
+```bash
+# Using GNU parallel for speed
+parallel mediaproc image metadata {} --remove ::: photos/*.jpg
+
+# With progress tracking
+parallel --progress mediaproc image metadata {} --remove ::: photos/*.jpg
+```
+
+## Verification
+
+### Check Removal Success
+
+```bash
+# Before
+mediaproc image metadata photo.jpg
+# Shows: EXIF Data: 1234 bytes, GPS Data: present
+
+# Remove
+mediaproc image metadata photo.jpg --remove
+
+# Verify
+mediaproc image metadata photo-clean.jpg
+# Shows: ℹ️  This image has no embedded metadata
+```
+
+### Compare Before/After
+
+```bash
+# Export original metadata
+mediaproc image metadata original.jpg --export before.json
+
+# Remove metadata
+mediaproc image metadata original.jpg --remove
+
+# Export cleaned metadata (should be minimal)
+mediaproc image metadata original-clean.jpg --export after.json
+
+# Compare files
+diff before.json after.json
+```
+
+## Tips & Best Practices
+
+### Privacy First
+
+- **Always** remove metadata before posting online
+- Check for GPS coordinates in outdoor photos
+- Strip device information from sensitive images
+- Verify removal with view mode after cleaning
+
+### File Organization
+
+- Keep originals with metadata in private storage
+- Create clean copies for public sharing
+- Use consistent naming: `photo.jpg` → `photo-clean.jpg`
+- Export metadata for archival before removing
+
+### Batch Operations
+
+- Process entire directories at once for efficiency
+- Use verbose mode to monitor progress
+- Keep original files, clean copies separately
+- Verify successful processing of all files
+
+### Web Optimization
+
+- Remove metadata for faster loading
+- Reduces bandwidth usage
+- Improves SEO (smaller files)
+- Enhances privacy for site visitors
+
+### Photography Workflow
+
+1. Import with metadata intact
+2. Export metadata for archive
+3. Edit images (metadata may be preserved)
+4. Remove metadata before web export
+5. Keep original files with metadata
+
+## Common Scenarios
+
+### Scenario 1: Social Media Upload
+
+```bash
+# Remove all metadata for privacy
+mediaproc image metadata selfie.jpg --remove
+
+# Upload the clean version
+# selfie-clean.jpg is now safe to share
+```
+
+### Scenario 2: Website Images
+
+```bash
+# Batch clean for website
+mediaproc image metadata website-images/*.jpg --remove
+
+# Verify all cleaned
+ls -la website-images/
+# Shows: *-clean.jpg files
+```
+
+### Scenario 3: Archive Photography
+
+```bash
+# Export metadata before editing
+mediaproc image metadata originals/*.jpg --export archive/metadata.json
+
+# Edit images as needed
+# ... editing workflow ...
+
+# Remove metadata for web gallery
+mediaproc image metadata gallery/*.jpg --remove
+```
+
+### Scenario 4: Privacy Audit
+
+```bash
+# Check for sensitive data
+mediaproc image metadata photo.jpg -v
+
+# If GPS or sensitive data found:
+mediaproc image metadata photo.jpg --remove
+
+# Verify clean
+mediaproc image metadata photo-clean.jpg
+```
+
+## Technical Details
+
+### Metadata Removal Method
+
+Uses Sharp's `withMetadata()` with empty configuration:
+
+```typescript
+await sharp(input)
+  .withMetadata({
+    exif: {},
+    icc: undefined,
+    xmp: undefined,
+  })
+  .toFile(output);
+```
+
+This completely strips:
+
+- All EXIF tags
+- ICC color profiles
+- XMP data
+- IPTC information
+
+### Metadata Export Format
+
+Exports to JSON with structure:
+
+- `file`: Path, size, modified date
+- `image`: Format, dimensions, color space
+- `exif`: Base64-encoded EXIF data
+- `icc`: Base64-encoded ICC profile
+- `iptc`: Base64-encoded IPTC data
+- `xmp`: Base64-encoded XMP data
+
+### Performance
+
+- View mode: ~50-100ms per image
+- Remove mode: ~200-500ms per image (re-encoding)
+- Export mode: ~100-200ms per image
+
+## Troubleshooting
+
+### Metadata Not Removed
+
+**Issue**: Image still shows metadata after removal
+
+**Solution**:
+
+```bash
+# Force re-encode with explicit quality
+mediaproc image optimize photo-clean.jpg -q 95
+
+# Verify again
+mediaproc image metadata photo-clean.jpg
+```
+
+### Export File Too Large
+
+**Issue**: JSON export file is very large
+
+**Cause**: EXIF/XMP data is base64-encoded, increasing size
+
+**Solution**: This is normal for images with extensive metadata
+
+### GPS Data Still Present
+
+**Issue**: Location data not fully removed
+
+**Solution**:
+
+```bash
+# Use --remove-all flag
+mediaproc image metadata photo.jpg --remove-all
+
+# Verify
+mediaproc image metadata photo-clean.jpg
+```
+
+### Batch Processing Fails
+
+**Issue**: Some files fail during batch removal
+
+**Solution**:
+
+```bash
+# Use verbose mode to see errors
+mediaproc image metadata photos/*.jpg --remove -v
+
+# Process failed files individually
+```
+
+## Related Commands
+
+- `stats` - View image statistics and analysis
+- `optimize` - Optimize image file size and quality
+- `convert` - Convert between image formats
+- `extract` - Extract color channels or regions
 
 ## See Also
 
-- [metadata](./metadata) - Metadata operations
+- [Image Stats](/plugins/image/stats) - Analyze image properties
+- [Optimize](/plugins/image/optimize) - Reduce file size
+- [Convert](/plugins/image/convert) - Format conversion
+- [Privacy Guide](/guides/privacy) - Best practices for image privacy

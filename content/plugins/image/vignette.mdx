@@ -1,6 +1,12 @@
-# vignette
+# Vignette
 
-Apply vignette effect (darkened corners).
+Add vignette effect by darkening or lightening the edges of an image. Creates focus on the center, adds artistic mood, and enhances portraits. Classic photography technique.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,48 +14,626 @@ Apply vignette effect (darkened corners).
 mediaproc image vignette <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `vignette` command adds a darkened edge effect to images, drawing focus to the center.
+```bash
+# Default vignette (strength 50)
+mediaproc image vignette photo.jpg
+
+# Subtle vignette
+mediaproc image vignette portrait.jpg -s 30
+
+# Strong vignette
+mediaproc image vignette landscape.png -s 80
+
+# Custom output
+mediaproc image vignette image.jpg -o artistic.jpg
+
+# Batch processing
+mediaproc image vignette "photos/*.jpg" -s 60
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--strength` | number | 0.5 | Vignette strength (0-1) |
-| `--radius` | number | 0.7 | Vignette radius (0-1) |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option               | Alias | Type    | Default | Description                                          |
+| -------------------- | ----- | ------- | ------- | ---------------------------------------------------- |
+| `--strength <value>` | `-s`  | number  | `50`    | Vignette strength (0-100)                            |
+| `--output <path>`    | `-o`  | string  | -       | Output file path (default: `<input>-vignette.<ext>`) |
+| `--dry-run`          |       | boolean | `false` | Preview without making changes                       |
+| `--verbose`          | `-v`  | boolean | `false` | Show detailed output                                 |
+| `--help`             |       | boolean | `false` | Display help information                             |
+
+## Strength Guide
+
+| Strength   | Effect       | Use Case                             |
+| ---------- | ------------ | ------------------------------------ |
+| **0-20**   | Very subtle  | Barely noticeable, natural look      |
+| **30-40**  | Subtle       | Gentle focus, professional portraits |
+| **50-60**  | Moderate     | Balanced effect (recommended)        |
+| **70-80**  | Strong       | Dramatic, artistic mood              |
+| **90-100** | Very intense | Heavy artistic effect, vintage       |
+
+### Visual Guide
+
+**Lower strength (0-40)**:
+
+- Gentle edge darkening
+- Maintains natural appearance
+- **Best for**: Professional portraits, subtle focus
+
+**Middle strength (50-70)**:
+
+- Noticeable but balanced
+- Clear focus on center
+- **Best for**: General photography, social media
+
+**Higher strength (80-100)**:
+
+- Dramatic darkening
+- Strong artistic effect
+- **Best for**: Vintage looks, creative portraits
 
 ## Examples
 
+### 1. Default Vignette
+
+Balanced vignette effect:
+
 ```bash
-# Subtle vignette
-mediaproc image vignette photo.jpg --strength 0.3 -o subtle.jpg
-
-# Strong vignette
-mediaproc image vignette portrait.jpg --strength 0.8 -o dramatic.jpg
-
-# Custom radius
-mediaproc image vignette image.jpg --strength 0.5 --radius 0.8 -o custom.jpg
+mediaproc image vignette photo.jpg
 ```
+
+**Result**: Moderate edge darkening (50%)
+
+### 2. Portrait Focus
+
+Subtle portrait vignette:
+
+```bash
+mediaproc image vignette portrait.jpg -s 35 -o focused.jpg
+```
+
+**Portraits**: Gentle focus on subject
+
+### 3. Dramatic Effect
+
+Strong artistic vignette:
+
+```bash
+mediaproc image vignette landscape.jpg -s 85
+```
+
+**Dramatic**: Heavy edge darkening
+
+### 4. Vintage Look
+
+Classic vintage vignette:
+
+```bash
+mediaproc image vignette old-photo.jpg -s 70 -o vintage.jpg
+```
+
+**Vintage**: Retro appearance
+
+### 5. Subtle Enhancement
+
+Barely noticeable vignette:
+
+```bash
+mediaproc image vignette photo.png -s 20
+```
+
+**Subtle**: Natural enhancement
+
+### 6. Wedding Photography
+
+Romantic vignette:
+
+```bash
+mediaproc image vignette wedding.jpg -s 45 -o romantic.jpg
+```
+
+**Weddings**: Romantic mood
+
+### 7. Food Photography
+
+Focus on dish:
+
+```bash
+mediaproc image vignette food.jpg -s 40
+```
+
+**Food**: Plate focus
+
+### 8. Batch Portrait Processing
+
+Consistent vignette:
+
+```bash
+mediaproc image vignette "portraits/*.jpg" -s 35
+```
+
+**Batch**: Uniform effect
+
+### 9. Social Media Post
+
+Engaging vignette:
+
+```bash
+mediaproc image vignette social.jpg -s 55 -o post.jpg
+```
+
+**Social**: Eye-catching post
+
+### 10. Artistic Photography
+
+Creative vignette:
+
+```bash
+mediaproc image vignette art.png -s 90
+```
+
+**Art**: Strong artistic statement
+
+### 11. Product Photography
+
+Subtle product focus:
+
+```bash
+mediaproc image vignette product.jpg -s 30
+```
+
+**Products**: Draw to product
+
+### 12. Landscape Mood
+
+Dramatic landscape:
+
+```bash
+mediaproc image vignette landscape.jpg -s 65
+```
+
+**Landscapes**: Mood enhancement
+
+### 13. Verbose Processing
+
+See processing details:
+
+```bash
+mediaproc image vignette photo.jpg -s 50 --verbose
+```
+
+**Info**: Strength confirmation
+
+### 14. Preview Vignette
+
+Check before processing:
+
+```bash
+mediaproc image vignette image.jpg -s 60 --dry-run
+```
+
+**Safety**: Verify output path
+
+### 15. Maximum Intensity
+
+Extreme vignette effect:
+
+```bash
+mediaproc image vignette photo.jpg -s 100 -o intense.jpg
+```
+
+**Extreme**: Maximum darkening
+
+## Use Cases
+
+### 1. Portrait Photography
+
+Focus attention on subject:
+
+```bash
+# Headshot with vignette
+mediaproc image vignette headshot.jpg -s 40 -o focused-portrait.jpg
+
+# Draws eye to face
+```
+
+**Portraits**: Professional focus
+
+### 2. Vintage/Retro Effects
+
+Classic photo look:
+
+```bash
+# Vintage vignette
+mediaproc image vignette modern-photo.jpg -s 75 -o vintage.jpg
+
+# Old photograph aesthetic
+```
+
+**Vintage**: Nostalgic appearance
+
+### 3. Wedding Photography
+
+Romantic atmosphere:
+
+```bash
+# Wedding photo
+mediaproc image vignette ceremony.jpg -s 45
+
+# Soft, romantic mood
+```
+
+**Weddings**: Romantic enhancement
+
+### 4. Artistic Mood
+
+Creative expression:
+
+```bash
+# Dramatic artistic shot
+mediaproc image vignette artistic.jpg -s 80
+
+# Strong mood
+```
+
+**Art**: Creative atmosphere
+
+### 5. Direct Viewer Attention
+
+Focus on center:
+
+```bash
+# Draw attention to subject
+mediaproc image vignette subject.jpg -s 55
+
+# Clear focal point
+```
+
+**Focus**: Visual hierarchy
+
+### 6. Social Media Posts
+
+Engaging content:
+
+```bash
+# Instagram/Facebook post
+mediaproc image vignette post.jpg -s 50
+
+# Eye-catching effect
+```
+
+**Social**: Attention-grabbing
+
+### 7. Food Photography
+
+Highlight dish:
+
+```bash
+# Food photo
+mediaproc image vignette dish.jpg -s 35
+
+# Focus on food
+```
+
+**Food**: Plate emphasis
+
+### 8. Product Photography
+
+Draw to product:
+
+```bash
+# Product focus
+mediaproc image vignette product.jpg -s 40
+
+# Subtle product highlight
+```
+
+**E-commerce**: Product attention
+
+### 9. Event Photography
+
+Atmospheric events:
+
+```bash
+# Concert/event
+mediaproc image vignette concert.jpg -s 70
+
+# Dramatic atmosphere
+```
+
+**Events**: Mood setting
+
+### 10. Landscape Drama
+
+Dramatic scenes:
+
+```bash
+# Landscape with mood
+mediaproc image vignette mountain.jpg -s 60
+
+# Enhanced atmosphere
+```
+
+**Landscapes**: Dramatic impact
+
+## Combining with Other Commands
+
+### Sepia + Vignette
+
+Classic vintage combo:
+
+```bash
+# Apply sepia
+mediaproc image sepia photo.jpg -o sepia.jpg
+
+# Add vignette
+mediaproc image vignette sepia.jpg -s 70 -o vintage.jpg
+```
+
+**Vintage**: Complete retro look
+
+### Vignette + Sharpen
+
+Focus with sharpness:
+
+```bash
+# Add vignette
+mediaproc image vignette portrait.jpg -o vignette.jpg
+
+# Sharpen subject
+mediaproc image sharpen vignette.jpg -s 0.7
+```
+
+**Enhancement**: Sharp focus
+
+### Blur + Vignette
+
+Dreamy effect:
+
+```bash
+# Slight blur
+mediaproc image blur photo.jpg -s 0.5 -o soft.jpg
+
+# Add vignette
+mediaproc image vignette soft.jpg -s 60
+```
+
+**Dreamy**: Soft, atmospheric
+
+### Tint + Vignette
+
+Colored mood:
+
+```bash
+# Apply tint
+mediaproc image tint photo.jpg -c orange -o tinted.jpg
+
+# Add vignette
+mediaproc image vignette tinted.jpg -s 50
+```
+
+**Mood**: Colored atmosphere
+
+### Vignette + Border
+
+Framed effect:
+
+```bash
+# Vignette
+mediaproc image vignette photo.jpg -o vignette.jpg
+
+# Add border
+mediaproc image border vignette.jpg --width 20 --color white
+```
+
+**Framing**: Complete presentation
+
+## Technical Details
+
+### Vignette Algorithm
+
+**Process**:
+
+1. Get image dimensions
+2. Create radial gradient overlay (SVG)
+3. Gradient: transparent center → black edges
+4. Adjust gradient opacity by strength
+5. Composite overlay using multiply blend
+6. Output vignetted image
+
+**Radial Gradient**:
+
+```svg
+<radialGradient>
+  <stop offset="40%" opacity="0" />      <!-- Center: transparent -->
+  <stop offset="100%" opacity="strength" /> <!-- Edge: dark -->
+</radialGradient>
+```
+
+**Blend Mode**:
+
+- Uses "multiply" blend mode
+- Darkens edges progressively
+- Center remains bright
+- Smooth transition
+
+### Strength Calculation
+
+**Input**: 0-100 (percentage)
+**Output**: 0-1 (opacity multiplier)
+
+```
+opacity = strength / 100
+```
+
+Example:
+
+- Strength 50 → opacity 0.5
+- Strength 80 → opacity 0.8
+- Strength 100 → opacity 1.0 (maximum darkness)
+
+### Performance
+
+- **Fast operation**: ~100-250ms per image
+- **Small images**: ~100-150ms
+- **Medium images** (1920×1080): ~150-200ms
+- **Large images** (4K+): ~200-350ms
+- SVG generation + composite operation
+
+### Quality Preservation
+
+- Non-destructive overlay
+- No detail loss in center
+- Smooth gradient transition
+- No banding artifacts
 
 ## Best Practices
 
-1. **Subtle Effect**: Start with 0.3-0.5 strength
-2. **Portraits**: Draws attention to subject
-3. **Radius**: Larger radius = softer transition
-4. **Quality**: Use high quality (85+)
+### 1. Start with 50
 
-## Common Use Cases
+Default strength usually works well:
 
-- **Portrait Photography**: Focus on subject
-- **Artistic Effects**: Vintage/dramatic look
-- **Focus Enhancement**: Direct viewer attention
-- **Instagram Filters**: Popular filter effect
+```bash
+# Try default first
+mediaproc image vignette photo.jpg
+```
 
-## See Also
+### 2. Subtle for Professional
 
-- [blur](./blur) - Blur effects
-- [modulate](./modulate) - Adjust brightness
+Lower strength for professional work:
+
+```bash
+# Professional portraits
+mediaproc image vignette portrait.jpg -s 35
+```
+
+### 3. Strong for Artistic
+
+Higher strength for creative work:
+
+```bash
+# Artistic shots
+mediaproc image vignette art.jpg -s 75
+```
+
+### 4. Match Subject Type
+
+**Portraits**: 30-50 (subtle to moderate)
+**Landscapes**: 50-70 (moderate to strong)
+**Artistic**: 70-90 (strong to dramatic)
+
+### 5. Combine with Other Effects
+
+Layer effects for best results:
+
+```bash
+# Sepia → Vignette for vintage
+# Adjust → Vignette for enhanced photos
+```
+
+### 6. Consistent Batch Processing
+
+Use same strength for series:
+
+```bash
+# Uniform look
+mediaproc image vignette "series/*.jpg" -s 45
+```
+
+### 7. Test on Sample
+
+Try different strengths:
+
+```bash
+# Test variations
+mediaproc image vignette test.jpg -s 30 -o test-30.jpg
+mediaproc image vignette test.jpg -s 50 -o test-50.jpg
+mediaproc image vignette test.jpg -s 70 -o test-70.jpg
+```
+
+## Troubleshooting
+
+### Issue: Vignette Too Strong
+
+**Problem**: Edges too dark
+
+**Cause**: Strength too high
+
+**Solution**: Lower strength value
+
+```bash
+# Reduce strength
+mediaproc image vignette photo.jpg -s 30
+```
+
+### Issue: Vignette Not Visible
+
+**Problem**: Can't see effect
+
+**Cause**: Strength too low or dark source image
+
+**Solution**: Increase strength
+
+```bash
+# Higher strength
+mediaproc image vignette photo.jpg -s 70
+```
+
+### Issue: Unnatural Look
+
+**Problem**: Effect looks artificial
+
+**Cause**: Too high strength for subject type
+
+**Solution**: Use appropriate strength
+
+```bash
+# Natural for portraits
+mediaproc image vignette portrait.jpg -s 35
+```
+
+### Issue: Center Too Bright
+
+**Problem**: Center stands out too much
+
+**Cause**: This is expected vignette behavior
+
+**Solution**: Adjust base image brightness first
+
+```bash
+# Reduce overall brightness before vignette
+mediaproc image linear photo.jpg -b -10 -o adjusted.jpg
+mediaproc image vignette adjusted.jpg -s 50
+```
+
+### Issue: Hard Edge Transition
+
+**Problem**: Visible ring around vignette
+
+**Cause**: Should have smooth gradient (check source quality)
+
+**Solution**: This shouldn't happen with proper implementation
+
+### Issue: Inconsistent Results
+
+**Problem**: Different effect on different images
+
+**Cause**: Images have different brightness/content
+
+**Solution**: This is expected; vignette interacts with source
+
+## Related Commands
+
+- [sepia](./sepia.mdx) - Combine for vintage look
+- [tint](./tint.mdx) - Add color mood
+- [blur](./blur.mdx) - Combine for dreamy effect
+- [sharpen](./sharpen.mdx) - Enhance center focus
+- [border](./border.mdx) - Frame with vignette
+
+## Further Reading
+
+- [Vignette Effect](https://en.wikipedia.org/wiki/Vignetting)
+- [Portrait Photography Techniques](https://en.wikipedia.org/wiki/Portrait_photography)
+- [Vintage Photography](https://en.wikipedia.org/wiki/Vintage_photography)
+- [Radial Gradients](https://en.wikipedia.org/wiki/Gradient)

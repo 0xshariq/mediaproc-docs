@@ -1,283 +1,700 @@
-# watermark
+# Watermark
 
-Add watermark text or image overlay to protect your images.
+Add watermarks to images for copyright protection, branding, or attribution. Supports custom positioning, opacity control, and automatic scaling.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
 ```bash
-mediaproc image watermark <input> [options]
+mediaproc image watermark <input> <watermark> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `watermark` command adds text or image watermarks to protect intellectual property. Supports positioning, opacity, tiling, and various styling options.
+```bash
+# Default watermark (bottom-right, 50% opacity)
+mediaproc image watermark photo.jpg logo.png
+
+# Center watermark
+mediaproc image watermark image.jpg mark.png --position center
+
+# Subtle watermark
+mediaproc image watermark pic.jpg logo.png --opacity 0.3
+
+# Larger watermark
+mediaproc image watermark photo.jpg brand.png --scale 0.3 --position top-right
+
+# Batch watermarking
+mediaproc image watermark "photos/*.jpg" logo.png --opacity 0.4
+```
 
 ## Options
 
-### Basic Options
+| Option                  | Alias | Type    | Default        | Description                                                      |
+| ----------------------- | ----- | ------- | -------------- | ---------------------------------------------------------------- |
+| `--position <position>` |       | string  | `bottom-right` | Position: center, top-left, top-right, bottom-left, bottom-right |
+| `--opacity <opacity>`   |       | number  | `0.5`          | Watermark opacity (0-1)                                          |
+| `--scale <scale>`       |       | number  | `0.2`          | Watermark scale (0.1-1, relative to image width)                 |
+| `--output <path>`       | `-o`  | string  | -              | Output file path (default: `<input>-watermarked.<ext>`)          |
+| `--quality <quality>`   | `-q`  | number  | `90`           | Output quality (1-100)                                           |
+| `--dry-run`             |       | boolean | `false`        | Preview without making changes                                   |
+| `--verbose`             | `-v`  | boolean | `false`        | Show detailed output                                             |
+| `--help`                |       | boolean | `false`        | Display help information                                         |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-t, --text` | string | - | Watermark text |
-| `-i, --image` | string | - | Watermark image path |
+## Positions
 
-### Position Options
+| Position         | Description                  | Best For              |
+| ---------------- | ---------------------------- | --------------------- |
+| **center**       | Middle of image              | Logos, stamps         |
+| **top-left**     | Upper left corner            | Credit attribution    |
+| **top-right**    | Upper right corner           | Brand logos           |
+| **bottom-left**  | Lower left corner            | Alternative copyright |
+| **bottom-right** | Lower right corner (default) | Copyright marks       |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-p, --position` | string | southeast | Position (center, north, south, east, west, northeast, northwest, southeast, southwest) |
-| `-x, --offset-x` | number | 20 | Horizontal offset in pixels |
-| `-y, --offset-y` | number | 20 | Vertical offset in pixels |
+### Position Visual Guide
 
-### Style Options
+```
+┌─────────────────────┐
+│ top-left  top-right │
+│                     │
+│      center         │
+│                     │
+│ bottom-left  bottom-│
+│              right  │
+└─────────────────────┘
+```
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--opacity` | number | 0.5 | Watermark opacity (0-1) |
-| `--font-size` | number | 32 | Text font size |
-| `--color` | string | #ffffff | Text color |
-| `--font` | string | Arial | Font family |
-| `--tile` | boolean | false | Tile watermark across image |
+## Opacity Guide
 
-### Output Options
+| Opacity     | Effect          | Use Case                              |
+| ----------- | --------------- | ------------------------------------- |
+| **0.1-0.3** | Very subtle     | Barely visible, non-intrusive         |
+| **0.4-0.5** | Balanced        | Recommended, visible but not dominant |
+| **0.6-0.7** | Clearly visible | Strong protection                     |
+| **0.8-0.9** | Very visible    | Maximum visibility                    |
+| **1.0**     | Fully opaque    | No transparency                       |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+### Opacity Behavior
+
+**Lower opacity (0.1-0.4)**:
+
+- Subtle presence
+- Doesn't distract from image
+- **Best for**: Professional photography, portfolios
+
+**Middle opacity (0.5-0.7)**:
+
+- Balanced visibility
+- Clear protection
+- **Best for**: General use, social media
+
+**Higher opacity (0.8-1.0)**:
+
+- Very obvious
+- Maximum protection
+- **Best for**: Preview images, strong branding
+
+## Scale Guide
+
+| Scale    | Size                   | Use Case                  |
+| -------- | ---------------------- | ------------------------- |
+| **0.1**  | 10% of width           | Small, discrete marks     |
+| **0.15** | 15% of width           | Moderate logos            |
+| **0.2**  | 20% of width (default) | Standard size             |
+| **0.3**  | 30% of width           | Larger branding           |
+| **0.5**  | 50% of width           | Very large, central marks |
+| **1.0**  | Full width             | Maximum coverage          |
 
 ## Examples
 
-### Text Watermarks
+### 1. Default Watermark
+
+Standard bottom-right placement:
 
 ```bash
-# Simple text watermark
-mediaproc image watermark photo.jpg -t "© 2024 John Doe" -o watermarked.jpg
-
-# Custom positioned watermark
-mediaproc image watermark image.png -t "CONFIDENTIAL" -p center --opacity 0.3 -o marked.png
-
-# Bottom right copyright
-mediaproc image watermark photo.jpg -t "© MyCompany" -p southeast -x 30 -y 30 -o protected.jpg
+mediaproc image watermark photo.jpg logo.png
 ```
 
-### Styled Text Watermarks
+**Copyright**: Standard copyright mark
+
+### 2. Center Logo
+
+Brand logo in center:
 
 ```bash
-# Large, visible watermark
-mediaproc image watermark photo.jpg \
-  -t "SAMPLE" \
-  -p center \
-  --font-size 72 \
-  --color "#ff0000" \
-  --opacity 0.4 \
-  -o sample.jpg
-
-# Subtle corner watermark
-mediaproc image watermark image.jpg \
-  -t "© Photographer 2024" \
-  -p southeast \
-  --font-size 24 \
-  --color "#ffffff" \
-  --opacity 0.7 \
-  -o signed.jpg
+mediaproc image watermark image.jpg brand.png --position center --opacity 0.3
 ```
 
-### Image Watermarks
+**Branding**: Central brand presence
+
+### 3. Subtle Watermark
+
+Barely visible protection:
 
 ```bash
-# Logo watermark
-mediaproc image watermark photo.jpg -i logo.png -p southeast --opacity 0.6 -o branded.jpg
-
-# Centered logo
-mediaproc image watermark banner.jpg -i watermark.png -p center --opacity 0.3 -o marked.jpg
-
-# Large logo overlay
-mediaproc image watermark hero.jpg -i brand-logo.png -p northeast -x 50 -y 50 --opacity 0.8 -o branded-hero.jpg
+mediaproc image watermark photo.png mark.png --opacity 0.25 --scale 0.15
 ```
 
-### Tiled Watermarks
+**Discrete**: Non-intrusive protection
+
+### 4. Top-Right Brand
+
+Brand in corner:
 
 ```bash
-# Tile text across image (good for protection)
-mediaproc image watermark photo.jpg \
-  -t "© Protected" \
-  --tile \
-  --opacity 0.15 \
-  --font-size 48 \
-  -o protected.jpg
-
-# Tiled logo pattern
-mediaproc image watermark image.jpg \
-  -i small-logo.png \
-  --tile \
-  --opacity 0.2 \
-  -o pattern-protected.jpg
+mediaproc image watermark pic.jpg logo.png --position top-right --scale 0.25
 ```
 
-### Batch Watermarking
+**Branding**: Corner brand mark
+
+### 5. Strong Copyright
+
+Visible copyright mark:
 
 ```bash
-# Watermark all photos
-for img in photos/*.jpg; do
-  mediaproc image watermark "$img" \
-    -t "© 2024 Studio Name" \
-    -p southeast \
-    -o "watermarked/$(basename $img)"
-done
-
-# Add logo to all images
-find images/ -name "*.png" -exec \
-  mediaproc image watermark {} -i logo.png -p northeast --opacity 0.7 -o {}_marked.png \;
+mediaproc image watermark photo.jpg copyright.png --opacity 0.7 --position bottom-right
 ```
 
-### Different Positions
+**Protection**: Clear ownership
+
+### 6. Large Center Mark
+
+Dominant watermark:
 
 ```bash
-# Top left
-mediaproc image watermark photo.jpg -t "© Copyright" -p northwest -o tl.jpg
-
-# Top center
-mediaproc image watermark photo.jpg -t "© Copyright" -p north -o tc.jpg
-
-# Top right
-mediaproc image watermark photo.jpg -t "© Copyright" -p northeast -o tr.jpg
-
-# Center
-mediaproc image watermark photo.jpg -t "PREVIEW" -p center --opacity 0.3 -o center.jpg
-
-# Bottom left
-mediaproc image watermark photo.jpg -t "© Copyright" -p southwest -o bl.jpg
-
-# Bottom center
-mediaproc image watermark photo.jpg -t "© Copyright" -p south -o bc.jpg
-
-# Bottom right (most common)
-mediaproc image watermark photo.jpg -t "© Copyright" -p southeast -o br.jpg
+mediaproc image watermark preview.jpg watermark.png --position center --scale 0.5 --opacity 0.6
 ```
 
-### Social Media Protection
+**Preview**: Prevent unauthorized use
+
+### 7. Batch Watermarking
+
+Watermark collection:
 
 ```bash
-# Instagram watermark
-mediaproc image watermark post.jpg \
-  -t "@username" \
-  -p southeast \
-  --font-size 28 \
-  --opacity 0.8 \
-  -o insta-post.jpg
+mediaproc image watermark "portfolio/*.jpg" logo.png --opacity 0.4 --position bottom-right
+```
 
+**Portfolio**: Consistent protection
+
+### 8. Top-Left Credit
+
+Attribution in corner:
+
+```bash
+mediaproc image watermark image.jpg credit.png --position top-left --opacity 0.5 --scale 0.2
+```
+
+**Attribution**: Photo credit
+
+### 9. Small Discrete Mark
+
+Tiny watermark:
+
+```bash
+mediaproc image watermark photo.jpg tiny-mark.png --scale 0.1 --opacity 0.3
+```
+
+**Discrete**: Minimal visual impact
+
+### 10. Full-Width Watermark
+
+Maximum coverage:
+
+```bash
+mediaproc image watermark preview.jpg watermark.png --scale 0.8 --position center --opacity 0.4
+```
+
+**Security**: Maximum protection
+
+### 11. Professional Portfolio
+
+Subtle professional mark:
+
+```bash
+mediaproc image watermark portfolio.jpg signature.png --position bottom-right --opacity 0.35 --scale 0.18
+```
+
+**Professional**: Elegant protection
+
+### 12. Social Media Protection
+
+Social media watermark:
+
+```bash
+mediaproc image watermark social.jpg brand.png --position bottom-left --opacity 0.5 --scale 0.22
+```
+
+**Social**: Platform protection
+
+### 13. Verbose Watermarking
+
+See processing details:
+
+```bash
+mediaproc image watermark photo.jpg logo.png --verbose
+```
+
+**Info**: Configuration details
+
+### 14. Preview Watermark
+
+Check before processing:
+
+```bash
+mediaproc image watermark image.jpg mark.png --dry-run
+```
+
+**Safety**: Verify settings
+
+### 15. High Quality Output
+
+Maximum quality watermark:
+
+```bash
+mediaproc image watermark photo.jpg logo.png -q 95 -o final.jpg
+```
+
+**Quality**: Preserve image quality
+
+## Use Cases
+
+### 1. Copyright Protection
+
+Protect your photography:
+
+```bash
+# Copyright mark
+mediaproc image watermark "photos/*.jpg" copyright.png --position bottom-right --opacity 0.5
+
+# Clear ownership
+```
+
+**Protection**: Prevent unauthorized use
+
+### 2. Brand Identity
+
+Add brand logos:
+
+```bash
+# Company logo
+mediaproc image watermark product.jpg logo.png --position top-right --scale 0.25 --opacity 0.6
+
+# Consistent branding
+```
+
+**Branding**: Brand presence
+
+### 3. Photo Attribution
+
+Credit photographers:
+
+```bash
+# Photo credit
+mediaproc image watermark image.jpg credit.png --position bottom-left --opacity 0.4
+
+# Attribution visible
+```
+
+**Attribution**: Proper credit
+
+### 4. Social Media Posts
+
+Protect social content:
+
+```bash
+# Instagram/Facebook
+mediaproc image watermark post.jpg handle.png --position bottom-right --opacity 0.5 --scale 0.2
+
+# Account watermark
+```
+
+**Social Media**: Content protection
+
+### 5. Portfolio Images
+
+Professional portfolio marks:
+
+```bash
 # Portfolio watermark
-mediaproc image watermark portfolio-shot.jpg \
-  -t "www.mysite.com" \
-  -p south \
-  --font-size 20 \
-  --color "#ffffff" \
-  --opacity 0.6 \
-  -o portfolio.jpg
+mediaproc image watermark "portfolio/*.jpg" signature.png --opacity 0.35 --scale 0.18
+
+# Elegant protection
 ```
 
-### Preview/Sample Images
+**Portfolio**: Professional presentation
+
+### 6. Preview Images
+
+Prevent misuse of previews:
 
 ```bash
-# Large "SAMPLE" watermark for previews
-mediaproc image watermark product.jpg \
-  -t "SAMPLE" \
-  -p center \
-  --font-size 120 \
-  --color "#ff0000" \
-  --opacity 0.3 \
-  -o sample-product.jpg
+# Preview watermark
+mediaproc image watermark preview.jpg "PREVIEW".png --position center --scale 0.6 --opacity 0.5
 
-# Diagonal "PREVIEW" watermark
-mediaproc image watermark design.png \
-  -t "PREVIEW - NOT FOR PRODUCTION" \
-  -p center \
-  --font-size 48 \
-  --opacity 0.4 \
-  --tile \
-  -o preview-design.png
+# Strong deterrent
 ```
 
-## Position Guide
+**Previews**: Discourage theft
 
-| Position | Description | Common Use |
-|----------|-------------|------------|
-| `southeast` | Bottom right | Copyright notices (most common) |
-| `southwest` | Bottom left | Alternative copyright position |
-| `northeast` | Top right | Logo placement |
-| `northwest` | Top left | Logo/branding |
-| `center` | Center | "SAMPLE" or "PREVIEW" marks |
-| `south` | Bottom center | Website URLs |
-| `north` | Top center | Titles |
+### 7. Stock Photography
 
-## Opacity Guidelines
+Stock image watermarks:
 
-| Value | Visibility | Use Case |
-|-------|-----------|----------|
-| 0.1-0.2 | Very subtle | Security without distraction |
-| 0.3-0.5 | Balanced | Standard watermarks |
-| 0.6-0.8 | Visible | Branding, clear protection |
-| 0.9-1.0 | Opaque | Strong protection, may distract |
+```bash
+# Stock watermark
+mediaproc image watermark stock.jpg watermark.png --position center --scale 0.4 --opacity 0.4
+
+# Clear stock marking
+```
+
+**Stock**: Identify unpurchased images
+
+### 8. Event Photography
+
+Event watermarks:
+
+```bash
+# Event photos
+mediaproc image watermark "event/*.jpg" studio-logo.png --position bottom-right --opacity 0.5
+
+# Studio branding
+```
+
+**Events**: Studio identification
+
+### 9. Product Photography
+
+E-commerce watermarks:
+
+```bash
+# Product protection
+mediaproc image watermark product.jpg store-logo.png --position top-left --opacity 0.4 --scale 0.15
+
+# Store branding
+```
+
+**E-commerce**: Product protection
+
+### 10. Real Estate
+
+Property photo watermarks:
+
+```bash
+# Listing photos
+mediaproc image watermark "property/*.jpg" agency-logo.png --position bottom-right --opacity 0.5
+
+# Agency branding
+```
+
+**Real Estate**: Agency protection
+
+## Combining with Other Commands
+
+### Resize + Watermark
+
+Size then watermark:
+
+```bash
+# Resize for web
+mediaproc image resize large.jpg -w 1920 -o web.jpg
+
+# Add watermark
+mediaproc image watermark web.jpg logo.png --opacity 0.4
+```
+
+**Workflow**: Optimized watermarking
+
+### Watermark + Border
+
+Watermark with frame:
+
+```bash
+# Add watermark
+mediaproc image watermark photo.jpg logo.png -o marked.jpg
+
+# Add border
+mediaproc image border marked.jpg --width 20 --color white
+```
+
+**Presentation**: Framed and protected
+
+### Batch Process + Watermark
+
+Enhance then watermark:
+
+```bash
+# Enhance images
+mediaproc image auto-enhance "photos/*.jpg"
+
+# Watermark enhanced
+mediaproc image watermark "*-enhanced.jpg" logo.png
+```
+
+**Pipeline**: Enhanced and protected
+
+### Watermark + Optimize
+
+Watermark then compress:
+
+```bash
+# Add watermark
+mediaproc image watermark photo.jpg logo.png -o watermarked.jpg
+
+# Optimize file size
+mediaproc image optimize watermarked.jpg -q 85
+```
+
+**Efficiency**: Protected and optimized
+
+## Technical Details
+
+### Watermark Process
+
+**Steps**:
+
+1. Load base image and watermark
+2. Calculate target watermark width (image_width × scale)
+3. Resize watermark to target size
+4. Apply opacity to watermark
+5. Position watermark using gravity
+6. Composite watermark onto base image
+7. Output watermarked image
+
+### Positioning (Gravity)
+
+**Sharp Gravity Values**:
+
+- `center` - Middle of image
+- `northwest` - Top-left
+- `northeast` - Top-right
+- `southwest` - Bottom-left
+- `southeast` - Bottom-right (default)
+
+### Opacity Application
+
+**Method**: Alpha channel manipulation
+
+```
+new_alpha = original_alpha × opacity
+```
+
+Example:
+
+- Watermark PNG with alpha
+- Opacity 0.5
+- Result: 50% of original alpha
+
+### Scale Calculation
+
+**Formula**:
+
+```
+watermark_width = base_image_width × scale
+watermark_height = scaled proportionally
+```
+
+Example:
+
+- Image: 2000px wide
+- Scale: 0.2
+- Watermark: 400px wide
+
+### Performance
+
+- **Small watermarks**: ~150-250ms per image
+- **Large watermarks**: ~200-350ms
+- **Batch processing**: ~200ms average per image
+- Includes watermark resize + composite
+
+### Format Support
+
+**Watermark Formats**:
+
+- **PNG**: Best (transparency support)
+- **WebP**: Good (smaller, transparent)
+- **JPEG**: Works (no transparency)
+
+**Base Image Formats**:
+
+- All standard formats supported
+- Output format from input or specified
 
 ## Best Practices
 
-1. **Copyright**: Include © symbol and year
-2. **Opacity**: 0.5-0.7 is usually ideal
-3. **Position**: Southeast (bottom-right) is standard
-4. **Color**: White with shadow or transparency works universally
-5. **Size**: Large enough to read, small enough to not distract
-6. **Tiling**: Use for maximum protection of valuable images
-7. **Logo**: PNG with transparency for professional look
-8. **Consistency**: Use same style across all images
+### 1. Use PNG Watermarks
 
-## Protection Levels
+PNG supports transparency:
 
-### Light Protection
-- Small text, southeast corner
-- Opacity 0.5-0.6
-- Easy to view, moderate protection
+```bash
+# PNG watermark best
+mediaproc image watermark photo.jpg logo.png
+```
 
-### Medium Protection
-- Larger text or logo
-- Opacity 0.6-0.8
-- Balanced viewing and protection
+### 2. Balance Opacity
 
-### Heavy Protection
-- Tiled watermark
-- Opacity 0.2-0.4 (subtle but everywhere)
-- Maximum protection, can affect viewing
+50% usually optimal:
 
-## Common Use Cases
+```bash
+# Balanced visibility
+mediaproc image watermark photo.jpg logo.png --opacity 0.5
+```
 
-- **Copyright Protection**: Protect your photography
-- **Brand Identity**: Add logo to promotional images
-- **Sample/Preview**: Mark images as samples or previews
-- **Social Media**: Watermark posts with username/website
-- **Stock Photography**: Protect images before purchase
-- **Client Proofs**: Send watermarked previews to clients
-- **Confidential Documents**: Mark sensitive images
+### 3. Appropriate Scale
 
-## Font Recommendations
+20% standard for logos:
 
-- **Arial**: Clean, universal, always available
-- **Helvetica**: Professional, clean
-- **Georgia**: Elegant, readable
-- **Impact**: Bold, highly visible
-- **Courier**: Technical, monospaced
+```bash
+# Standard logo size
+mediaproc image watermark photo.jpg logo.png --scale 0.2
+```
 
-## Performance Tips
+### 4. Bottom-Right for Copyright
 
-- Text watermarks process faster than images
-- PNG watermarks with transparency work best
-- Batch process for efficiency
-- Pre-resize watermark image to appropriate size
-- Use WebP format for web distribution
+Standard copyright position:
 
-## See Also
+```bash
+# Copyright standard
+mediaproc image watermark photo.jpg © logo.png --position bottom-right
+```
 
-- [text](./text) - Add custom text overlays
-- [composite](./composite) - Advanced image compositing
-- [border](./border) - Add borders
-- [batch-resize](./batch-resize) - Batch watermarking workflow
+### 5. Center for Prevention
+
+Strong protection in center:
+
+```bash
+# Prevent misuse
+mediaproc image watermark preview.jpg mark.png --position center --scale 0.4
+```
+
+### 6. Batch with Consistency
+
+Same settings for collections:
+
+```bash
+# Consistent watermarking
+mediaproc image watermark "collection/*.jpg" logo.png --opacity 0.4 --position bottom-right
+```
+
+### 7. Test on Sample
+
+Try different settings:
+
+```bash
+# Test variations
+mediaproc image watermark test.jpg logo.png --opacity 0.3 -o test-30.jpg
+mediaproc image watermark test.jpg logo.png --opacity 0.5 -o test-50.jpg
+mediaproc image watermark test.jpg logo.png --opacity 0.7 -o test-70.jpg
+```
+
+## Troubleshooting
+
+### Issue: Watermark Too Visible
+
+**Problem**: Watermark too obvious
+
+**Cause**: Opacity too high
+
+**Solution**: Lower opacity
+
+```bash
+# More subtle
+mediaproc image watermark photo.jpg logo.png --opacity 0.3
+```
+
+### Issue: Watermark Not Visible
+
+**Problem**: Can't see watermark
+
+**Cause**: Opacity too low or watermark color blends
+
+**Solution**: Increase opacity or use contrasting watermark
+
+```bash
+# More visible
+mediaproc image watermark photo.jpg logo.png --opacity 0.7
+```
+
+### Issue: Watermark Too Large
+
+**Problem**: Watermark covers too much
+
+**Cause**: Scale too high
+
+**Solution**: Reduce scale
+
+```bash
+# Smaller watermark
+mediaproc image watermark photo.jpg logo.png --scale 0.15
+```
+
+### Issue: Watermark Too Small
+
+**Problem**: Watermark tiny or unreadable
+
+**Cause**: Scale too low
+
+**Solution**: Increase scale
+
+```bash
+# Larger watermark
+mediaproc image watermark photo.jpg logo.png --scale 0.3
+```
+
+### Issue: Watermark Quality Loss
+
+**Problem**: Watermark looks pixelated
+
+**Cause**: Watermark source too small
+
+**Solution**: Use higher resolution watermark
+
+```bash
+# Use large source watermark PNG
+# Will be scaled down with good quality
+```
+
+### Issue: Watermark Not Transparent
+
+**Problem**: White/colored box around watermark
+
+**Cause**: Watermark not PNG or no transparency
+
+**Solution**: Use PNG watermark with transparency
+
+```bash
+# Convert watermark to PNG with transparency first
+```
+
+### Issue: Wrong Position
+
+**Problem**: Watermark in unexpected location
+
+**Cause**: Wrong position value
+
+**Solution**: Verify position spelling
+
+```bash
+# Valid positions:
+# center, top-left, top-right, bottom-left, bottom-right
+mediaproc image watermark photo.jpg logo.png --position bottom-right
+```
+
+## Related Commands
+
+- [composite](./composite.mdx) - Advanced image layering
+- [resize](./resize.mdx) - Resize before watermarking
+- [border](./border.mdx) - Add borders with watermark
+- [optimize](./optimize.mdx) - Optimize after watermarking
+
+## Further Reading
+
+- [Digital Watermarking](https://en.wikipedia.org/wiki/Digital_watermarking)
+- [Copyright Protection](https://en.wikipedia.org/wiki/Copyright)
+- [Image Compositing](https://en.wikipedia.org/wiki/Compositing)
+- [Alpha Compositing](https://en.wikipedia.org/wiki/Alpha_compositing)

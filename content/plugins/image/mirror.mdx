@@ -1,37 +1,749 @@
-# mirror
+# Mirror Effects
 
-Mirror image horizontally or vertically.
+Create mirror and kaleidoscope effects with horizontal, vertical, both-axis, and quadrant-based symmetry patterns. Perfect for artistic effects, symmetrical compositions, and creative designs.
 
-## Usage
+## Overview
+
+The mirror command creates symmetrical effects by mirroring image content along different axes:
+
+- **Horizontal**: Mirror left-right for lateral symmetry
+- **Vertical**: Mirror top-bottom for water reflections
+- **Both**: Mirror both axes for 4-way symmetry
+- **Quad**: Kaleidoscope effect with quadrant mirroring
+
+Creates striking symmetrical patterns ideal for:
+
+- Water reflection effects
+- Symmetrical portraits
+- Kaleidoscope and mandala art
+- Abstract symmetrical designs
+- Rorschach-style images
+- Architectural symmetry
+
+## Syntax
 
 ```bash
 mediaproc image mirror <input> [options]
 ```
 
-## Description
-
-The `mirror` command creates a mirrored reflection effect.
-
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--axis` | string | horizontal | Mirror axis (horizontal, vertical) |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option          | Alias | Type    | Default    | Description                                           |
+| --------------- | ----- | ------- | ---------- | ----------------------------------------------------- |
+| `-m, --mode`    |       | string  | horizontal | Mirror mode: horizontal, vertical, both, quad         |
+| `-o, --output`  |       | string  |            | Custom output path (default: input-mirror-{mode}.ext) |
+| `--dry-run`     |       | boolean | false      | Preview without processing                            |
+| `-v, --verbose` |       | boolean | false      | Show detailed processing information                  |
 
-## Examples
+## Mirror Modes
+
+### Horizontal Mode
+
+Mirrors image left-to-right, creating lateral symmetry.
+
+**Result**: Image width doubles, left side mirrored to right
+
+**Best for**:
+
+- Face symmetry experiments
+- Bilateral symmetry
+- Left-right balance
+- Butterfly effects
+
+### Vertical Mode
+
+Mirrors image top-to-bottom, creating vertical symmetry.
+
+**Result**: Image height doubles, top side mirrored to bottom
+
+**Best for**:
+
+- Water reflections
+- Sky/ground symmetry
+- Vertical balance
+- Lake/mirror effects
+
+### Both Mode
+
+Mirrors image on both axes simultaneously.
+
+**Result**: Image dimensions double, 4-way symmetry
+
+**Best for**:
+
+- Complete symmetry
+- Geometric patterns
+- Mandala-style designs
+- Abstract art
+
+### Quad Mode
+
+Creates kaleidoscope effect by mirroring center quadrant.
+
+**Result**: Extracts center, creates 4-way mirror kaleidoscope
+
+**Best for**:
+
+- Kaleidoscope art
+- Mandala patterns
+- Psychedelic effects
+- Abstract symmetry
+
+## Basic Examples
+
+### Horizontal Mirror
+
+Create left-right symmetry:
 
 ```bash
-# Horizontal mirror
-mediaproc image mirror photo.jpg -o mirrored.jpg
-
-# Vertical mirror
-mediaproc image mirror image.jpg --axis vertical -o v-mirror.jpg
+mediaproc image mirror photo.jpg -m horizontal
 ```
+
+Output: `photo-mirror-horizontal.jpg` (width × 2)
+
+### Vertical Mirror
+
+Create water reflection effect:
+
+```bash
+mediaproc image mirror landscape.jpg -m vertical
+```
+
+Output: `landscape-mirror-vertical.jpg` (height × 2)
+
+### Both Axes
+
+Create 4-way symmetry:
+
+```bash
+mediaproc image mirror pattern.jpg -m both
+```
+
+Output: `pattern-mirror-both.jpg` (width × 2, height × 2)
+
+### Kaleidoscope
+
+Create mandala-style effect:
+
+```bash
+mediaproc image mirror face.jpg -m quad
+```
+
+Output: `face-mirror-quad.jpg` (kaleidoscope pattern)
+
+## Creative Examples
+
+### Water Reflection
+
+Create realistic water reflection:
+
+```bash
+# Vertical mirror for water effect
+mediaproc image mirror mountain.jpg -m vertical -o mountain-reflection.jpg
+```
+
+Perfect for:
+
+- Landscape photos
+- Architecture over water
+- Sunset/sunrise scenes
+- Lake/ocean reflections
+
+### Face Symmetry
+
+Explore facial symmetry:
+
+```bash
+# Horizontal mirror for face symmetry
+mediaproc image mirror portrait.jpg -m horizontal -o face-symmetric.jpg
+```
+
+Creates:
+
+- Left side mirrored to right
+- Perfect bilateral symmetry
+- Interesting perspective on faces
+- Artistic portrait effect
+
+### Mandala Creation
+
+Create mandala-style art:
+
+```bash
+# Quad mode for kaleidoscope
+mediaproc image mirror flower.jpg -m quad -o mandala.jpg
+```
+
+Perfect for:
+
+- Flower patterns
+- Geometric designs
+- Spiritual/meditative art
+- Decorative patterns
+
+### Abstract Art
+
+Create abstract symmetrical patterns:
+
+```bash
+# Both axes for complete symmetry
+mediaproc image mirror texture.jpg -m both -o abstract.jpg
+```
+
+Great for:
+
+- Texture patterns
+- Abstract backgrounds
+- Wallpaper designs
+- Artistic compositions
+
+### Rorschach Style
+
+Create inkblot-style images:
+
+```bash
+# Horizontal or vertical for inkblot effect
+mediaproc image mirror paint-splash.jpg -m horizontal -o rorschach.jpg
+```
+
+Perfect for:
+
+- Paint splashes
+- Ink blots
+- Abstract shapes
+- Psychological art
+
+### Architectural Symmetry
+
+Emphasize architectural symmetry:
+
+```bash
+# Horizontal for building symmetry
+mediaproc image mirror building.jpg -m horizontal -o symmetric-building.jpg
+```
+
+Ideal for:
+
+- Symmetrical buildings
+- Facades
+- Monuments
+- Architectural details
+
+## Advanced Examples
+
+### Custom Output Path
+
+Specify custom output location:
+
+```bash
+mediaproc image mirror photo.jpg -m quad -o output/kaleidoscope.jpg
+```
+
+### Batch Processing
+
+Mirror multiple images:
+
+```bash
+# Mirror all images in directory
+for img in photos/*.jpg; do
+  mediaproc image mirror "$img" -m horizontal
+done
+```
+
+### Verbose Mode
+
+See detailed processing information:
+
+```bash
+mediaproc image mirror image.jpg -m both -v
+```
+
+Output:
+
+```
+Processing: image.jpg
+Mode: both
+Input dimensions: 1920 × 1080
+Output dimensions: 3840 × 2160
+✓ image.jpg mirror effect created
+
+Summary:
+  ✓ Success: 1
+```
+
+### Dry Run
+
+Preview without processing:
+
+```bash
+mediaproc image mirror photo.jpg -m quad --dry-run
+```
+
+Shows what would be processed without creating files.
+
+### Chain with Other Commands
+
+Combine mirror with other effects:
+
+```bash
+# Mirror then optimize
+mediaproc image mirror photo.jpg -m horizontal
+mediaproc image optimize photo-mirror-horizontal.jpg
+
+# Mirror then add border
+mediaproc image mirror landscape.jpg -m vertical
+mediaproc image border landscape-mirror-vertical.jpg -w 20 -c "#000000"
+
+# Create kaleidoscope then sharpen
+mediaproc image mirror flower.jpg -m quad
+mediaproc image sharpen flower-mirror-quad.jpg -a 2
+```
+
+## Use Cases
+
+### Photography
+
+#### Water Reflection Effect
+
+```bash
+# Create realistic water reflection
+mediaproc image mirror sunset.jpg -m vertical -o sunset-reflection.jpg
+```
+
+Use for:
+
+- Landscape photos without water
+- Adding dramatic reflection
+- Symmetrical compositions
+- Artistic enhancements
+
+#### Portrait Symmetry
+
+```bash
+# Explore facial symmetry
+mediaproc image mirror portrait.jpg -m horizontal
+```
+
+Reveals:
+
+- Left vs right face differences
+- Perfect symmetry perspective
+- Artistic portrait variations
+- Unique perspectives
+
+### Graphic Design
+
+#### Mandala Designs
+
+```bash
+# Create mandala from photo
+mediaproc image mirror flower.jpg -m quad -o mandala-design.jpg
+```
+
+Perfect for:
+
+- Spiritual/meditation imagery
+- Decorative patterns
+- Book covers
+- Wall art
+
+#### Symmetrical Logos
+
+```bash
+# Create symmetrical logo variations
+mediaproc image mirror logo-half.jpg -m horizontal
+```
+
+Great for:
+
+- Logo design exploration
+- Brand identity variations
+- Symmetrical branding
+- Design iterations
+
+#### Background Patterns
+
+```bash
+# Create seamless patterns
+mediaproc image mirror texture.jpg -m both -o pattern.jpg
+```
+
+Ideal for:
+
+- Website backgrounds
+- Textile designs
+- Wallpapers
+- Repeating patterns
+
+### Art & Creative
+
+#### Kaleidoscope Art
+
+```bash
+# Create psychedelic patterns
+mediaproc image mirror abstract.jpg -m quad
+```
+
+Creates:
+
+- Psychedelic effects
+- Kaleidoscope patterns
+- Abstract art
+- Visual illusions
+
+#### Rorschach Tests
+
+```bash
+# Create inkblot-style images
+mediaproc image mirror ink.jpg -m horizontal
+```
+
+Perfect for:
+
+- Psychological art
+- Abstract compositions
+- Symmetrical ink blots
+- Artistic experiments
+
+#### Abstract Compositions
+
+```bash
+# Create abstract symmetry
+mediaproc image mirror colors.jpg -m both
+```
+
+Great for:
+
+- Modern art
+- Abstract designs
+- Experimental photography
+- Visual art projects
+
+### Architecture
+
+#### Building Symmetry
+
+```bash
+# Perfect architectural symmetry
+mediaproc image mirror facade.jpg -m horizontal
+```
+
+Enhances:
+
+- Symmetrical buildings
+- Architectural details
+- Monument photography
+- Urban landscapes
+
+#### Interior Design
+
+```bash
+# Symmetrical interior views
+mediaproc image mirror room.jpg -m vertical
+```
+
+Creates:
+
+- Dramatic interior views
+- Symmetrical spaces
+- Artistic renderings
+- Design presentations
+
+## Dimension Changes
+
+### Horizontal Mode
+
+```
+Original: 1920 × 1080
+Result:   3840 × 1080 (width × 2)
+```
+
+### Vertical Mode
+
+```
+Original: 1920 × 1080
+Result:   1920 × 2160 (height × 2)
+```
+
+### Both Mode
+
+```
+Original: 1920 × 1080
+Result:   3840 × 2160 (both × 2)
+```
+
+### Quad Mode
+
+```
+Original: 1920 × 1080
+Result:   960 × 540 (center extracted, 4-way mirror)
+```
+
+## Output Naming
+
+Default naming pattern: `{basename}-mirror-{mode}.{ext}`
+
+```bash
+# Examples
+photo.jpg → photo-mirror-horizontal.jpg
+image.png → image-mirror-vertical.png
+art.jpg → art-mirror-both.jpg
+face.jpg → face-mirror-quad.jpg
+```
+
+Custom output:
+
+```bash
+mediaproc image mirror photo.jpg -m quad -o kaleidoscope.jpg
+```
+
+## Performance
+
+Processing time depends on image size and mode:
+
+| Mode       | Relative Speed | Operations                    |
+| ---------- | -------------- | ----------------------------- |
+| Horizontal | Fast           | 1 flip + composite            |
+| Vertical   | Fast           | 1 flop + composite            |
+| Both       | Medium         | 3 flips + composite           |
+| Quad       | Medium         | Extract + 3 flips + composite |
+
+Typical processing times (1920×1080 image):
+
+- Horizontal: ~50-100ms
+- Vertical: ~50-100ms
+- Both: ~100-200ms
+- Quad: ~100-200ms
+
+## Technical Implementation
+
+### Horizontal Mode
+
+1. Load original image
+2. Create horizontally flipped version (flop)
+3. Composite side-by-side: [original][flipped]
+4. Output width doubles
+
+### Vertical Mode
+
+1. Load original image
+2. Create vertically flipped version (flip)
+3. Composite top-to-bottom: [original] over [flipped]
+4. Output height doubles
+
+### Both Mode
+
+1. Load original image
+2. Create flop (horizontal flip)
+3. Create flip (vertical flip)
+4. Create both (flop + flip)
+5. Composite in 2×2 grid:
+   ```
+   [original][flop]
+   [flip]    [both]
+   ```
+6. Output dimensions double
+
+### Quad Mode
+
+1. Load original image
+2. Extract center region (half width × half height)
+3. Create flop, flip, and both versions
+4. Composite in 2×2 grid of center region
+5. Creates kaleidoscope effect
+
+## Batch Processing
+
+### Mirror Directory
+
+```bash
+# Horizontal mirror all images
+for img in photos/*.jpg; do
+  mediaproc image mirror "$img" -m horizontal
+done
+```
+
+### Multiple Modes
+
+```bash
+# Create all mirror variations
+for mode in horizontal vertical both quad; do
+  mediaproc image mirror photo.jpg -m $mode
+done
+```
+
+### Parallel Processing
+
+```bash
+# Use GNU parallel for speed
+parallel mediaproc image mirror {} -m horizontal ::: photos/*.jpg
+```
+
+### Script Example
+
+```bash
+#!/bin/bash
+# Mirror script with progress
+
+images=(photos/*.jpg)
+total=${#images[@]}
+
+for i in "${!images[@]}"; do
+  echo "Processing $((i+1))/$total: ${images[i]}"
+  mediaproc image mirror "${images[i]}" -m quad -v
+done
+
+echo "Complete! Processed $total images"
+```
+
+## Tips & Best Practices
+
+### Mode Selection
+
+- **Horizontal**: Use for face/portrait symmetry
+- **Vertical**: Perfect for water reflections
+- **Both**: Creates strong geometric patterns
+- **Quad**: Best for kaleidoscope/mandala effects
+
+### Subject Matter
+
+- Portraits work best with horizontal
+- Landscapes ideal for vertical (water effect)
+- Textures and patterns excel with both/quad
+- Abstract imagery perfect for quad mode
+
+### Composition
+
+- Center-weighted images work best
+- Symmetrical subjects create strongest effects
+- High-contrast images create dramatic results
+- Detailed images create complex kaleidoscopes
+
+### File Size
+
+- Horizontal/Vertical: Output file ~2× larger
+- Both mode: Output file ~4× larger
+- Quad mode: Output file usually smaller
+- Consider optimizing after mirroring
+
+### Creative Tips
+
+- Experiment with all modes on same image
+- Combine with color adjustments for variety
+- Try different subjects (faces, nature, abstract)
+- Use quad mode on flower/mandala subjects
+- Apply blur before mirror for softer effects
+
+## Common Scenarios
+
+### Scenario 1: Water Reflection
+
+```bash
+# Create realistic lake reflection
+mediaproc image mirror mountain.jpg -m vertical -o reflection.jpg
+
+# Optional: blend with gradient for realism
+mediaproc image composite reflection.jpg gradient.png -o final.jpg
+```
+
+### Scenario 2: Face Symmetry Analysis
+
+```bash
+# Create both sides symmetrical
+mediaproc image mirror portrait.jpg -m horizontal -o left-symmetric.jpg
+
+# Flip original and mirror again for right side
+mediaproc image flop portrait.jpg -o portrait-flipped.jpg
+mediaproc image mirror portrait-flipped.jpg -m horizontal -o right-symmetric.jpg
+```
+
+### Scenario 3: Mandala Art
+
+```bash
+# Create mandala from flower photo
+mediaproc image mirror flower.jpg -m quad -o mandala.jpg
+
+# Enhance with saturation
+mediaproc image modulate mandala.jpg -s 1.5 -o mandala-vibrant.jpg
+
+# Add border
+mediaproc image border mandala-vibrant.jpg -w 30 -c "#ffffff"
+```
+
+### Scenario 4: Pattern Creation
+
+```bash
+# Create tileable pattern
+mediaproc image mirror texture.jpg -m both -o pattern.jpg
+
+# Resize for web
+mediaproc image resize pattern.jpg -w 512 -h 512
+```
+
+## Troubleshooting
+
+### Output Too Large
+
+**Issue**: File size too large after mirroring
+
+**Solution**:
+
+```bash
+# Mirror then optimize
+mediaproc image mirror photo.jpg -m both
+mediaproc image optimize photo-mirror-both.jpg -q 85
+```
+
+### Quad Mode Crops Too Much
+
+**Issue**: Quad mode removes important content
+
+**Cause**: Extracts center region only
+
+**Solution**: Use both mode instead:
+
+```bash
+mediaproc image mirror photo.jpg -m both
+```
+
+### Seams Visible
+
+**Issue**: Visible seams in mirrored output
+
+**Cause**: Edge artifacts or misalignment
+
+**Solution**: Ensure clean edges before mirroring:
+
+```bash
+# Trim edges first
+mediaproc image trim photo.jpg
+mediaproc image mirror photo-trimmed.jpg -m horizontal
+```
+
+### Memory Issues
+
+**Issue**: Process fails with large images
+
+**Solution**: Resize before mirroring:
+
+```bash
+# Resize first
+mediaproc image resize large.jpg -w 2000
+mediaproc image mirror large-resized.jpg -m both
+```
+
+## Related Commands
+
+- `flip` - Flip image vertically
+- `flop` - Flip image horizontally
+- `rotate` - Rotate image
+- `composite` - Combine multiple images
+- `border` - Add borders to images
 
 ## See Also
 
-- [flip](./flip) - Flip horizontally
-- [flop](./flop) - Flip vertically
+- [Flip](/plugins/image/flip) - Vertical flip
+- [Flop](/plugins/image/flop) - Horizontal flip
+- [Rotate](/plugins/image/rotate) - Rotation
+- [Composite](/plugins/image/composite) - Image compositing
+- [Effects Guide](/guides/effects) - Creative effects guide

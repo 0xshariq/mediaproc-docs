@@ -1,6 +1,12 @@
-# threshold
+# Threshold
 
-Convert image to black and white based on threshold.
+Convert images to pure black and white by applying a threshold value. Pixels above the threshold become white, pixels below become black. Perfect for document scanning, OCR preprocessing, and creating binary masks.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,33 +14,662 @@ Convert image to black and white based on threshold.
 mediaproc image threshold <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `threshold` command converts images to pure black and white based on a threshold value. Pixels above threshold become white, below become black.
+```bash
+# Default threshold (128)
+mediaproc image threshold document.jpg
+
+# Custom threshold
+mediaproc image threshold scan.jpg -t 180
+
+# Lower threshold (more black)
+mediaproc image threshold image.jpg -t 80
+
+# Save as PNG
+mediaproc image threshold photo.jpg -t 128 -o binary.png
+
+# Batch processing
+mediaproc image threshold "scans/*.jpg" -t 200
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-t, --threshold` | number | 128 | Threshold value (0-255) |
-| `-f, --format` | string | - | Output format |
-| `-q, --quality` | number | 80 | Output quality |
+| Option                | Alias | Type    | Default | Description                                           |
+| --------------------- | ----- | ------- | ------- | ----------------------------------------------------- |
+| `--threshold <value>` | `-t`  | number  | `128`   | Threshold value (0-255)                               |
+| `--grayscale`         |       | boolean | `true`  | Convert to grayscale first                            |
+| `--output <path>`     | `-o`  | string  | -       | Output file path (default: `<input>-threshold.<ext>`) |
+| `--quality <quality>` | `-q`  | number  | `90`    | Output quality (1-100)                                |
+| `--dry-run`           |       | boolean | `false` | Preview without making changes                        |
+| `--verbose`           | `-v`  | boolean | `false` | Show detailed output                                  |
+
+## Threshold Values
+
+### How Threshold Works
+
+**Formula**:
+
+```
+If pixel_value > threshold: pixel = 255 (white)
+If pixel_value ≤ threshold: pixel = 0 (black)
+```
+
+### Value Guide
+
+| Threshold | Effect             | Use Case                           |
+| --------- | ------------------ | ---------------------------------- |
+| **0**     | All white          | Blank output                       |
+| **50**    | Mostly white       | Very dark text on light background |
+| **80**    | More white         | Dark text, preserve details        |
+| **128**   | Balanced (default) | General purpose, even split        |
+| **180**   | More black         | Light text, documents              |
+| **200**   | Mostly black       | Very light backgrounds             |
+| **255**   | All black          | Blank output                       |
+
+### Visual Guide
+
+**Lower values** (0-100):
+
+- More white pixels
+- Preserves darker elements
+- Good for: Dark text, strong contrast
+
+**Middle values** (100-150):
+
+- Balanced black/white
+- Standard thresholding
+- Good for: General documents, even lighting
+
+**Higher values** (150-255):
+
+- More black pixels
+- Preserves lighter elements
+- Good for: Faded documents, light backgrounds
 
 ## Examples
 
+### 1. Default Threshold
+
+Balanced black and white:
+
 ```bash
-# Basic threshold
-mediaproc image threshold scan.jpg -t 128 -o bw.jpg
-
-# High threshold (more white)
-mediaproc image threshold image.jpg -t 180 -o mostly-white.jpg
-
-# Low threshold (more black)
-mediaproc image threshold photo.jpg -t 80 -o mostly-black.jpg
+mediaproc image threshold document.jpg
 ```
 
-## See Also
+**Result**: 50/50 black and white split
 
-- [grayscale](./grayscale) - Grayscale conversion
-- [negate](./negate) - Invert colors
+### 2. Dark Text on Light Background
+
+Clean document scan:
+
+```bash
+mediaproc image threshold scan.jpg -t 200
+```
+
+**Documents**: Clear text, white background
+
+### 3. Light Text on Dark Background
+
+Inverted content:
+
+```bash
+mediaproc image threshold dark-bg.jpg -t 60
+```
+
+**Inverted**: Preserve light text
+
+### 4. OCR Preprocessing
+
+Prepare for text recognition:
+
+```bash
+mediaproc image threshold receipt.jpg -t 180 -o ocr-ready.png
+```
+
+**OCR**: Clean binary image for better recognition
+
+### 5. QR Code Cleanup
+
+Enhance QR code readability:
+
+```bash
+mediaproc image threshold qr-code.jpg -t 128
+```
+
+**Barcodes**: Clear binary for scanning
+
+### 6. Artistic Effect
+
+Create stark black/white art:
+
+```bash
+mediaproc image threshold portrait.jpg -t 100 -o art.png
+```
+
+**Creative**: High-contrast artistic effect
+
+### 7. Faded Document
+
+Recover faded text:
+
+```bash
+mediaproc image threshold old-document.jpg -t 220
+```
+
+**Restoration**: Enhance faded documents
+
+### 8. Sketch Effect
+
+Convert photo to sketch-like:
+
+```bash
+mediaproc image threshold photo.jpg -t 140
+```
+
+**Artistic**: Sketch/line art effect
+
+### 9. Text Extraction
+
+Prepare for text extraction:
+
+```bash
+mediaproc image threshold page.jpg -t 190 -q 100
+```
+
+**Processing**: Clean text for extraction
+
+### 10. Batch Document Scanning
+
+Process multiple scans:
+
+```bash
+mediaproc image threshold "scans/*.jpg" -t 180
+```
+
+**Batch**: Consistent processing
+
+### 11. High Quality Output
+
+Maximum quality binary image:
+
+```bash
+mediaproc image threshold document.jpg -t 128 -q 100 -o clean.png
+```
+
+**Quality**: No compression artifacts
+
+### 12. Verbose Processing
+
+See detailed information:
+
+```bash
+mediaproc image threshold image.jpg -t 150 --verbose
+```
+
+**Info**: Configuration and processing details
+
+### 13. Preview Threshold
+
+Check before processing:
+
+```bash
+mediaproc image threshold document.jpg -t 180 --dry-run
+```
+
+**Safety**: Verify output path
+
+### 14. Newspaper Scan
+
+Clean newsprint:
+
+```bash
+mediaproc image threshold newspaper.jpg -t 160
+```
+
+**Print**: Remove gray/noise from newsprint
+
+### 15. Mathematical Diagrams
+
+Clean diagrams for papers:
+
+```bash
+mediaproc image threshold diagram.png -t 128 -o clean-diagram.png
+```
+
+**Academic**: Clean technical diagrams
+
+## Use Cases
+
+### 1. Document Scanning
+
+Clean scanned documents:
+
+```bash
+# Scanner output cleanup
+mediaproc image threshold scan.jpg -t 200 -o clean-scan.jpg
+
+# White background, black text
+```
+
+**Scanning**: Professional document appearance
+
+### 2. OCR Preprocessing
+
+Prepare images for OCR:
+
+```bash
+# Receipt OCR
+mediaproc image threshold receipt.jpg -t 180 -o ocr-ready.png
+
+# Then use OCR tool
+# tesseract ocr-ready.png output
+```
+
+**Text Recognition**: Improve OCR accuracy
+
+### 3. Binary Image Masks
+
+Create selection masks:
+
+```bash
+# Create mask
+mediaproc image threshold alpha-channel.png -t 128 -o mask.png
+
+# Use mask in compositing
+```
+
+**Masking**: Binary alpha channels
+
+### 4. QR Code/Barcode Enhancement
+
+Improve code readability:
+
+```bash
+# Clean QR code
+mediaproc image threshold qr-scan.jpg -t 128 -o clean-qr.png
+
+# Better scanning reliability
+```
+
+**Codes**: Reliable scanning
+
+### 5. Edge Detection Preparation
+
+Prepare for edge detection:
+
+```bash
+# Pre-process for edge detection
+mediaproc image threshold image.jpg -t 100 -o binary.png
+
+# Then apply edge detection
+```
+
+**Computer Vision**: Binary input for algorithms
+
+### 6. Fax Simulation
+
+Create fax-like appearance:
+
+```bash
+# Fax effect
+mediaproc image threshold document.jpg -t 180 -o fax-style.jpg
+
+# Black and white fax look
+```
+
+**Effects**: Retro fax appearance
+
+### 7. Text Cleanup
+
+Remove background noise:
+
+```bash
+# Noisy document
+mediaproc image threshold noisy-scan.jpg -t 200
+
+# Clean text, white background
+```
+
+**Cleanup**: Remove scan artifacts
+
+### 8. Stamp/Seal Extraction
+
+Isolate stamps or seals:
+
+```bash
+# Extract stamp
+mediaproc image threshold stamped-doc.jpg -t 160 -o stamp.png
+
+# Isolate dark stamp from background
+```
+
+**Extraction**: Separate elements
+
+### 9. Sketch Conversion
+
+Convert photos to sketches:
+
+```bash
+# Photo to sketch
+mediaproc image threshold portrait.jpg -t 120 -o sketch.png
+
+# Line art effect
+```
+
+**Artistic**: Sketch-like results
+
+### 10. Print Preparation
+
+Prepare images for printing:
+
+```bash
+# Print-ready binary
+mediaproc image threshold graphic.jpg -t 128 -o print-ready.png
+
+# Clear black/white for printing
+```
+
+**Printing**: Clean binary for certain printers
+
+## Combining with Other Commands
+
+### Grayscale + Threshold
+
+Explicit grayscale conversion:
+
+```bash
+# Convert to grayscale first
+mediaproc image grayscale photo.jpg -o gray.jpg
+
+# Then threshold
+mediaproc image threshold gray.jpg -t 128
+```
+
+**Workflow**: Controlled conversion
+
+### Contrast + Threshold
+
+Enhance before thresholding:
+
+```bash
+# Increase contrast
+mediaproc image linear photo.jpg -a 1.5 -b 0 -o high-contrast.jpg
+
+# Then threshold
+mediaproc image threshold high-contrast.jpg -t 128
+```
+
+**Enhancement**: Better separation
+
+### Threshold + Invert
+
+Create negative:
+
+```bash
+# Threshold
+mediaproc image threshold document.jpg -t 180 -o binary.jpg
+
+# Invert colors
+mediaproc image negate binary.jpg -o inverted.jpg
+```
+
+**Inversion**: White text on black
+
+### Denoise + Threshold
+
+Clean then threshold:
+
+```bash
+# Remove noise
+mediaproc image median scan.jpg -s 3 -o clean.jpg
+
+# Then threshold
+mediaproc image threshold clean.jpg -t 200
+```
+
+**Quality**: Cleaner thresholding
+
+### Threshold + Dilate/Erode
+
+Morphological operations:
+
+```bash
+# Threshold
+mediaproc image threshold text.jpg -t 180 -o binary.png
+
+# Thicken text
+mediaproc image dilate binary.png
+
+# Or thin text
+mediaproc image erode binary.png
+```
+
+**Morphology**: Adjust binary features
+
+### Crop + Threshold
+
+Threshold specific area:
+
+```bash
+# Crop region
+mediaproc image crop document.jpg -x 100 -y 100 -w 800 -h 600 -o section.jpg
+
+# Threshold section
+mediaproc image threshold section.jpg -t 180
+```
+
+**Selective**: Process specific regions
+
+## Technical Details
+
+### Algorithm
+
+**Thresholding Process**:
+
+1. Convert to grayscale (if --grayscale=true)
+2. For each pixel:
+   - Read grayscale value (0-255)
+   - If value > threshold: set to 255 (white)
+   - If value ≤ threshold: set to 0 (black)
+3. Output binary image
+
+### Grayscale Conversion
+
+By default, images converted to grayscale first:
+
+- **Formula**: Gray = 0.299R + 0.587G + 0.114B
+- **Range**: 0 (black) to 255 (white)
+- **Disable**: Use `--no-grayscale` flag
+
+### Performance
+
+- **Very fast**: Simple pixel operation
+- **Small images**: ~20-50ms
+- **Medium images** (1920×1080): ~50-100ms
+- **Large images** (4K+): ~100-300ms
+- Negligible memory overhead
+
+### Output
+
+- Binary image: pure black (0) and white (255)
+- Two-level image (1-bit depth conceptually)
+- Saved as 8-bit grayscale (for compatibility)
+- Format: JPEG, PNG, WebP, etc.
+
+## Best Practices
+
+### 1. Start with Default (128)
+
+Test middle value first:
+
+```bash
+# Try default
+mediaproc image threshold document.jpg
+
+# Adjust from there
+```
+
+### 2. Adjust for Content
+
+**Dark text on light**: Higher threshold (180-220)
+**Light text on dark**: Lower threshold (50-100)
+
+```bash
+# Dark text
+mediaproc image threshold scan.jpg -t 200
+
+# Light text
+mediaproc image threshold dark-bg.jpg -t 80
+```
+
+### 3. Use PNG for Clean Results
+
+PNG avoids compression artifacts:
+
+```bash
+# Best quality
+mediaproc image threshold document.jpg -o clean.png
+```
+
+### 4. Combine with Contrast Enhancement
+
+Increase separation first:
+
+```bash
+# Enhance contrast before threshold
+mediaproc image linear low-contrast.jpg -a 1.5 -o enhanced.jpg
+mediaproc image threshold enhanced.jpg -t 128
+```
+
+### 5. Test Multiple Values
+
+Try different thresholds:
+
+```bash
+# Test range
+mediaproc image threshold doc.jpg -t 100 -o t100.jpg
+mediaproc image threshold doc.jpg -t 150 -o t150.jpg
+mediaproc image threshold doc.jpg -t 200 -o t200.jpg
+```
+
+### 6. Batch with Consistent Value
+
+Use same threshold for related images:
+
+```bash
+# Consistent processing
+mediaproc image threshold "scans/*.jpg" -t 180
+```
+
+### 7. Clean Before Thresholding
+
+Remove noise first:
+
+```bash
+# Denoise then threshold
+mediaproc image median noisy.jpg -o clean.jpg
+mediaproc image threshold clean.jpg -t 180
+```
+
+## Troubleshooting
+
+### Issue: Too Much White
+
+**Problem**: Most pixels are white
+
+**Cause**: Threshold too low
+
+**Solution**: Increase threshold value
+
+```bash
+# More black
+mediaproc image threshold image.jpg -t 180
+```
+
+### Issue: Too Much Black
+
+**Problem**: Most pixels are black
+
+**Cause**: Threshold too high
+
+**Solution**: Decrease threshold value
+
+```bash
+# More white
+mediaproc image threshold image.jpg -t 80
+```
+
+### Issue: Text Not Readable
+
+**Problem**: Text broken or unreadable
+
+**Cause**: Wrong threshold for content
+
+**Solution**: Adjust threshold
+
+```bash
+# For dark text on light background
+mediaproc image threshold scan.jpg -t 200
+
+# For light text on dark background
+mediaproc image threshold dark.jpg -t 60
+```
+
+### Issue: Noisy Output
+
+**Problem**: Many stray black/white pixels
+
+**Cause**: Source image has noise
+
+**Solution**: Denoise before thresholding
+
+```bash
+# Denoise first
+mediaproc image median noisy.jpg -o clean.jpg
+mediaproc image threshold clean.jpg -t 180
+```
+
+### Issue: Uneven Results
+
+**Problem**: Some areas good, others bad
+
+**Cause**: Uneven lighting in source
+
+**Solution**: Use adaptive threshold (alternative)
+
+```bash
+# Simple threshold has limitations with uneven lighting
+# Consider using CLAHE first
+mediaproc image clahe uneven.jpg -o balanced.jpg
+mediaproc image threshold balanced.jpg -t 128
+```
+
+### Issue: Loss of Detail
+
+**Problem**: Fine details disappear
+
+**Cause**: Binary nature of threshold
+
+**Solution**: This is expected, threshold creates binary
+
+```bash
+# Threshold removes all gray tones
+# Use lower quality setting for softer edges (not recommended)
+```
+
+## Related Commands
+
+- [grayscale](./grayscale.mdx) - Convert to grayscale first
+- [linear](./linear.mdx) - Adjust contrast before threshold
+- [median](./median.mdx) - Denoise before thresholding
+- [dilate](./dilate.mdx) - Thicken binary features
+- [erode](./erode.mdx) - Thin binary features
+- [clahe](./clahe.mdx) - Balance uneven lighting
+
+## Further Reading
+
+- [Image Thresholding](<https://en.wikipedia.org/wiki/Thresholding_(image_processing)>)
+- [Binary Image](https://en.wikipedia.org/wiki/Binary_image)
+- [OCR Preprocessing](https://en.wikipedia.org/wiki/Optical_character_recognition)
+- [Otsu's Method](https://en.wikipedia.org/wiki/Otsu%27s_method) (automatic thresholding)

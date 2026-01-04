@@ -1,6 +1,12 @@
-# trim
+# Trim
 
-Automatically remove borders by detecting edges.
+Automatically trim/remove boring border edges from images. Perfect for removing whitespace, borders, uniform backgrounds, or padding from scanned documents and screenshots.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,115 +14,651 @@ Automatically remove borders by detecting edges.
 mediaproc image trim <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `trim` command automatically detects and removes uniform-colored borders from images. Useful for cleaning up scanned documents, screenshots, or removing unwanted edges.
+```bash
+# Default trim (threshold 10)
+mediaproc image trim photo.jpg
+
+# Gentle trim (sensitive)
+mediaproc image trim image.png -t 5
+
+# Aggressive trim
+mediaproc image trim pic.jpg -t 20
+
+# Batch trim scans
+mediaproc image trim "scans/*.jpg" -t 15
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-t, --threshold` | number | 10 | Edge detection threshold (0-100) |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
-
-## Examples
-
-### Basic Trim
-
-```bash
-# Remove white borders
-mediaproc image trim scan.jpg -o trimmed.jpg
-
-# Trim with custom threshold
-mediaproc image trim image.png -t 20 -o clean.png
-```
-
-### Document Scanning
-
-```bash
-# Clean scanned document
-mediaproc image trim scan.jpg -t 15 -o document.jpg
-
-# Remove borders from multiple scans
-for scan in scan-*.jpg; do
-  mediaproc image trim "$scan" -t 10 -o "clean-$scan"
-done
-```
-
-### Screenshot Cleanup
-
-```bash
-# Remove screenshot borders
-mediaproc image trim screenshot.png -o cleaned.png
-
-# Trim and optimize
-mediaproc image trim capture.png -f webp -q 80 -o optimized.webp
-```
-
-### Photo Cleanup
-
-```bash
-# Remove photo borders
-mediaproc image trim bordered-photo.jpg -t 5 -o clean-photo.jpg
-
-# Aggressive border removal
-mediaproc image trim image.jpg -t 30 -o trimmed.jpg
-```
+| Option                | Alias | Type    | Default | Description                                         |
+| --------------------- | ----- | ------- | ------- | --------------------------------------------------- |
+| `--threshold <value>` | `-t`  | number  | `10`    | Edge detection threshold (1-100)                    |
+| `--output <path>`     | `-o`  | string  | -       | Output file path (default: `<input>-trimmed.<ext>`) |
+| `--quality <quality>` | `-q`  | number  | `90`    | Output quality (1-100)                              |
+| `--dry-run`           |       | boolean | `false` | Preview without making changes                      |
+| `--verbose`           | `-v`  | boolean | `false` | Show detailed output                                |
+| `--help`              |       | boolean | `false` | Display help information                            |
 
 ## Threshold Guide
 
-| Value | Effect | Use Case |
-|-------|--------|----------|
-| 0-5 | Very sensitive | Near-identical colors only |
-| 5-10 | Sensitive | Clean borders, slight variations |
-| 10-20 | Balanced | Most use cases (default range) |
-| 20-40 | Aggressive | Gradients, fuzzy borders |
-| 40+ | Very aggressive | Complex borders, may over-trim |
+| Threshold | Sensitivity        | Use Case                                |
+| --------- | ------------------ | --------------------------------------- |
+| **1-5**   | Very sensitive     | Subtle edges, slight color differences  |
+| **5-10**  | Sensitive          | Minor borders, light padding            |
+| **10**    | Balanced (default) | General purpose trimming                |
+| **15-20** | Aggressive         | Obvious borders, thick padding          |
+| **20-30** | Very aggressive    | Strong borders, may over-trim           |
+| **30+**   | Extreme            | Maximum trimming, risk of over-trimming |
+
+### Choosing Threshold
+
+**Lower threshold (1-10)**:
+
+- More sensitive to color differences
+- Removes subtle edges
+- Preserves more of the image
+- **Use for**: Light borders, subtle padding
+
+**Higher threshold (10-25)**:
+
+- Less sensitive, more aggressive
+- Removes obvious borders
+- May trim important content
+- **Use for**: Thick borders, screenshots
+
+## Examples
+
+### 1. Default Trim
+
+Balanced automatic trim:
+
+```bash
+mediaproc image trim document.jpg
+```
+
+**Result**: Removes obvious borders
+
+### 2. Gentle Trim
+
+Sensitive edge detection:
+
+```bash
+mediaproc image trim photo.png -t 5
+```
+
+**Subtle**: Remove slight edges
+
+### 3. Aggressive Trim
+
+Remove thick borders:
+
+```bash
+mediaproc image trim scan.jpg -t 20
+```
+
+**Strong**: Maximum border removal
+
+### 4. Screenshot Cleanup
+
+Remove screenshot padding:
+
+```bash
+mediaproc image trim screenshot.png -t 15
+```
+
+**Screenshots**: Clean padding removal
+
+### 5. Scanned Document
+
+Clean scan borders:
+
+```bash
+mediaproc image trim scanned-page.jpg -t 12 -o clean-page.jpg
+```
+
+**Documents**: Professional appearance
+
+### 6. Product Photo
+
+Remove white background edges:
+
+```bash
+mediaproc image trim product.jpg -t 8
+```
+
+**Products**: Clean product edges
+
+### 7. Batch Scan Processing
+
+Process multiple scans:
+
+```bash
+mediaproc image trim "scans/*.jpg" -t 15
+```
+
+**Batch**: Consistent trimming
+
+### 8. Whiteboard Photo
+
+Trim whiteboard edges:
+
+```bash
+mediaproc image trim whiteboard.jpg -t 18
+```
+
+**Whiteboards**: Remove wall/edges
+
+### 9. Art Scan
+
+Preserve artwork, remove borders:
+
+```bash
+mediaproc image trim artwork-scan.png -t 10 -q 100
+```
+
+**Artwork**: High-quality trim
+
+### 10. Business Card
+
+Trim business card scan:
+
+```bash
+mediaproc image trim business-card.jpg -t 12
+```
+
+**Cards**: Clean edges
+
+### 11. Verbose Trim
+
+See processing details:
+
+```bash
+mediaproc image trim document.jpg -t 10 --verbose
+```
+
+**Info**: Threshold confirmation
+
+### 12. Preview Trim
+
+Check before processing:
+
+```bash
+mediaproc image trim photo.jpg -t 15 --dry-run
+```
+
+**Safety**: Verify output path
+
+### 13. Logo Cleanup
+
+Remove logo borders:
+
+```bash
+mediaproc image trim logo.png -t 5 -o clean-logo.png
+```
+
+**Logos**: Clean transparent edges
+
+### 14. PDF Page Scan
+
+Trim PDF page scan:
+
+```bash
+mediaproc image trim pdf-page.jpg -t 20
+```
+
+**PDFs**: Remove scan margins
+
+### 15. Certificate Scan
+
+Clean certificate edges:
+
+```bash
+mediaproc image trim certificate.jpg -t 15 -q 95
+```
+
+**Certificates**: Professional presentation
+
+## Use Cases
+
+### 1. Scanned Documents
+
+Remove scan borders and margins:
+
+```bash
+# Clean document scans
+mediaproc image trim document-scan.jpg -t 15
+
+# Remove scanner bed edges
+```
+
+**Document Scanning**: Professional clean docs
+
+### 2. Screenshot Cleanup
+
+Remove desktop/browser padding:
+
+```bash
+# Screenshot with borders
+mediaproc image trim screenshot.png -t 18
+
+# Clean application view
+```
+
+**Screenshots**: Clean content capture
+
+### 3. Product Photography
+
+Remove white background edges:
+
+```bash
+# Product on white background
+mediaproc image trim product.jpg -t 10
+
+# Clean product boundaries
+```
+
+**E-commerce**: Clean product images
+
+### 4. Whiteboard/Chalkboard Photos
+
+Trim board edges:
+
+```bash
+# Whiteboard meeting notes
+mediaproc image trim whiteboard.jpg -t 20
+
+# Remove wall/board edges
+```
+
+**Meetings**: Clean notes capture
+
+### 5. Business Cards
+
+Clean business card scans:
+
+```bash
+# Scanned business card
+mediaproc image trim business-card.jpg -t 12
+
+# Remove scan background
+```
+
+**Networking**: Professional card images
+
+### 6. Art/Drawings
+
+Trim artwork scan borders:
+
+```bash
+# Drawing scan
+mediaproc image trim drawing.png -t 10 -q 100
+
+# Preserve artwork quality
+```
+
+**Art**: Clean artwork presentation
+
+### 7. Receipt Scanning
+
+Clean receipt edges:
+
+```bash
+# Receipt photo
+mediaproc image trim receipt.jpg -t 15
+
+# Remove surface/background
+```
+
+**Expenses**: Clean expense records
+
+### 8. Book Page Scanning
+
+Trim book page edges:
+
+```bash
+# Scanned book page
+mediaproc image trim book-page.jpg -t 12
+
+# Remove book edges/background
+```
+
+**Books**: Clean page capture
+
+### 9. Certificate Scanning
+
+Professional certificate presentation:
+
+```bash
+# Scanned certificate
+mediaproc image trim certificate.jpg -t 15 -q 95
+
+# Clean borders
+```
+
+**Certificates**: Presentable documents
+
+### 10. Logo Extraction
+
+Extract logos from backgrounds:
+
+```bash
+# Logo with border
+mediaproc image trim logo.png -t 8
+
+# Clean logo edges
+```
+
+**Branding**: Clean logo files
+
+## Combining with Other Commands
+
+### Trim + Crop
+
+Trim then precise crop:
+
+```bash
+# Auto-trim borders
+mediaproc image trim scan.jpg -t 15 -o trimmed.jpg
+
+# Then precise crop
+mediaproc image crop trimmed.jpg --width 2000 --height 1500
+```
+
+**Precision**: Automated then manual
+
+### Rotate + Trim
+
+Straighten then trim:
+
+```bash
+# Rotate if skewed
+mediaproc image rotate scan.jpg -a 2 -o straight.jpg
+
+# Trim rotated edges
+mediaproc image trim straight.jpg -t 15
+```
+
+**Straightening**: Clean aligned image
+
+### Trim + Threshold
+
+Trim then binarize:
+
+```bash
+# Trim borders
+mediaproc image trim document.jpg -t 15 -o trimmed.jpg
+
+# Convert to black/white
+mediaproc image threshold trimmed.jpg -t 180
+```
+
+**Documents**: Clean binary documents
+
+### Adjust + Trim
+
+Enhance then trim:
+
+```bash
+# Increase contrast
+mediaproc image linear photo.jpg -a 1.2 -o enhanced.jpg
+
+# Trim edges
+mediaproc image trim enhanced.jpg -t 10
+```
+
+**Enhancement**: Better edge detection
+
+### Trim + Border
+
+Trim then add new border:
+
+```bash
+# Remove old border
+mediaproc image trim image.jpg -t 15 -o clean.jpg
+
+# Add custom border
+mediaproc image border clean.jpg --width 10 --color black
+```
+
+**Reframing**: Replace borders
+
+### Batch Trim + Resize
+
+Clean then standardize:
+
+```bash
+# Trim all
+mediaproc image trim "scans/*.jpg" -t 15
+
+# Then resize
+mediaproc image resize "*-trimmed.jpg" -w 2000
+```
+
+**Workflow**: Consistent output
+
+## Technical Details
+
+### Trim Algorithm
+
+**Process**:
+
+1. Analyze image edges
+2. Detect uniform/boring regions
+3. Compare pixels to edge color
+4. If difference < threshold: trim
+5. Remove detected border pixels
+6. Output trimmed image
+
+**Edge Detection**:
+
+- Starts from image edges (top, bottom, left, right)
+- Compares adjacent pixels
+- Removes pixels within threshold of edge color
+- Stops when variation exceeds threshold
+
+### Threshold Behavior
+
+**Low threshold (1-10)**:
+
+- Requires very similar colors to trim
+- Stops at subtle color changes
+- Preserves more content
+
+**High threshold (15-30)**:
+
+- Tolerates larger color differences
+- Trims more aggressively
+- Risk of removing wanted content
+
+**Formula**:
+
+```
+If |pixel_color - edge_color| < threshold: trim pixel
+```
+
+### Performance
+
+- **Very fast**: ~30-100ms per image
+- **Small images**: ~30-50ms
+- **Large images** (4K): ~80-150ms
+- Minimal memory usage
+- Efficient edge detection
+
+### Precision
+
+- Pixel-perfect edge detection
+- Independent per side (top/bottom/left/right)
+- Non-destructive to image content
+- Maintains aspect ratio changes
 
 ## Best Practices
 
-1. **Start Low**: Begin with threshold 10-15
-2. **White Backgrounds**: Lower thresholds work best
-3. **Gradients**: Use higher thresholds (20-30)
-4. **Test First**: Preview before batch processing
-5. **Document Scans**: Essential for clean documents
-6. **Combine Operations**: Trim before resizing
+### 1. Start with Default
 
-## Common Use Cases
+Try default threshold first:
 
-- **Scanned Documents**: Remove scan borders automatically
-- **Screenshots**: Clean up captured images
-- **Product Photos**: Remove studio background borders
-- **Artwork Scans**: Isolate artwork from background
-- **PDF Generation**: Clean images before document creation
-- **Web Images**: Remove unnecessary borders for cleaner display
+```bash
+# Default (10) is usually good
+mediaproc image trim document.jpg
+```
 
-## When to Use
+### 2. Adjust Based on Results
 
-✅ **Perfect for**:
-- Scanned documents with white borders
-- Screenshots with solid-color borders
-- Images with uniform edges
-- Batch processing similar images
+Increase or decrease based on outcome:
 
-❌ **Not ideal for**:
-- Images without borders (no effect)
-- Intentional borders/frames (will remove)
-- Complex backgrounds
-- Images where edges matter
+```bash
+# Too much trimmed? Lower threshold
+mediaproc image trim image.jpg -t 5
 
-## Performance Tips
+# Not enough? Raise threshold
+mediaproc image trim image.jpg -t 20
+```
 
-- Fast operation, good for batch processing
-- Trim before other operations for efficiency
-- Use consistent threshold for uniform results
-- Combine with format conversion
+### 3. Consistent Threshold for Batch
 
-## See Also
+Use same threshold for similar images:
 
-- [crop](./crop) - Manual cropping with exact dimensions
-- [extend](./extend) - Add borders (opposite operation)
-- [normalize](./normalize) - Enhance after trimming
-- [background](./background) - Change background color
+```bash
+# Consistent results
+mediaproc image trim "scans/*.jpg" -t 15
+```
+
+### 4. Test on Sample First
+
+Try one image before batch:
+
+```bash
+# Test first
+mediaproc image trim sample.jpg -t 15
+
+# If good, process all
+mediaproc image trim "all/*.jpg" -t 15
+```
+
+### 5. Higher Threshold for Obvious Borders
+
+Screenshots, thick borders need higher values:
+
+```bash
+# Screenshots usually need 15-20
+mediaproc image trim screenshot.png -t 18
+```
+
+### 6. Lower Threshold for Subtle Edges
+
+Gentle trim for subtle borders:
+
+```bash
+# Subtle borders need 5-10
+mediaproc image trim photo.png -t 7
+```
+
+### 7. Preserve Quality
+
+Use high quality for important images:
+
+```bash
+# Maximum quality
+mediaproc image trim artwork.png -t 10 -q 100
+```
+
+## Troubleshooting
+
+### Issue: Trimmed Too Much
+
+**Problem**: Important content removed
+
+**Cause**: Threshold too high
+
+**Solution**: Lower threshold value
+
+```bash
+# Reduce threshold
+mediaproc image trim image.jpg -t 5
+```
+
+### Issue: Nothing Trimmed
+
+**Problem**: No visible trimming
+
+**Cause**: Threshold too low or no uniform edges
+
+**Solution**: Increase threshold or image has no borders
+
+```bash
+# Try higher threshold
+mediaproc image trim image.jpg -t 20
+
+# Or image may not have borders to trim
+```
+
+### Issue: Uneven Trim
+
+**Problem**: Some sides trimmed, others not
+
+**Cause**: Non-uniform borders
+
+**Solution**: This is correct behavior
+
+```bash
+# Trim only removes uniform edges
+# Non-uniform borders won't trim evenly
+```
+
+### Issue: Still Has Small Border
+
+**Problem**: Thin border remains
+
+**Cause**: Threshold not high enough
+
+**Solution**: Increase threshold slightly
+
+```bash
+# Slightly higher
+mediaproc image trim image.jpg -t 12
+```
+
+### Issue: Over-Trimming on One Side
+
+**Problem**: One side trimmed too aggressively
+
+**Cause**: That side has more uniform color
+
+**Solution**: This is expected; trim is per-side
+
+```bash
+# Independent per side
+# Each edge evaluated separately
+```
+
+### Issue: Content at Edges Removed
+
+**Problem**: Wanted content near edges removed
+
+**Cause**: Content too similar to border color
+
+**Solution**: Lower threshold or manually crop instead
+
+```bash
+# Lower threshold
+mediaproc image trim image.jpg -t 5
+
+# Or use manual crop
+mediaproc image crop image.jpg --width 2000 --height 1500
+```
+
+## Related Commands
+
+- [crop](./crop.mdx) - Manual precise cropping
+- [rotate](./rotate.mdx) - Straighten before trimming
+- [border](./border.mdx) - Add borders after trimming
+- [threshold](./threshold.mdx) - Binarize after trimming
+- [auto-orient](./auto-orient.mdx) - Orient before trimming
+
+## Further Reading
+
+- [Image Trimming](<https://en.wikipedia.org/wiki/Cropping_(image)>)
+- [Edge Detection](https://en.wikipedia.org/wiki/Edge_detection)
+- [Document Scanning Best Practices](https://en.wikipedia.org/wiki/Image_scanner)

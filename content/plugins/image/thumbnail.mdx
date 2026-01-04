@@ -1,6 +1,12 @@
-# thumbnail
+# Thumbnail
 
-Create optimized thumbnails with smart cropping.
+Generate square thumbnails from images with customizable size and fit modes. Perfect for creating preview images, profile pictures, gallery thumbnails, and icon sizes.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,198 +14,693 @@ Create optimized thumbnails with smart cropping.
 mediaproc image thumbnail <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `thumbnail` command creates small, optimized preview images. Combines smart resizing, cropping, and compression for fast-loading thumbnails perfect for galleries, listings, and previews.
+```bash
+# Default 150×150 thumbnail
+mediaproc image thumbnail photo.jpg
+
+# Custom size
+mediaproc image thumbnail image.png -s 200
+
+# With padding (contain mode)
+mediaproc image thumbnail pic.jpg -s 300 --fit contain
+
+# High quality
+mediaproc image thumbnail photo.jpg -s 512 -q 95
+
+# Batch processing
+mediaproc image thumbnail "photos/*.jpg" -s 200
+```
 
 ## Options
 
-### Size Options
+| Option                | Alias | Type    | Default | Description                                       |
+| --------------------- | ----- | ------- | ------- | ------------------------------------------------- |
+| `--size <pixels>`     | `-s`  | number  | `150`   | Thumbnail size (creates square)                   |
+| `--output <path>`     | `-o`  | string  | -       | Output file path (default: `<input>-thumb.<ext>`) |
+| `--quality <quality>` | `-q`  | number  | `85`    | Output quality (1-100)                            |
+| `--fit <mode>`        |       | string  | `cover` | Fit mode: cover, contain, fill, inside, outside   |
+| `--dry-run`           |       | boolean | `false` | Preview without making changes                    |
+| `--verbose`           | `-v`  | boolean | `false` | Show detailed output                              |
+| `--help`              |       | boolean | `false` | Display help information                          |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-w, --width` | number | 200 | Thumbnail width in pixels |
-| `-h, --height` | number | 200 | Thumbnail height in pixels |
-| `--size` | string | - | Preset size (sm=150, md=300, lg=500) |
+## Common Thumbnail Sizes
 
-### Quality Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-q, --quality` | number | 70 | Output quality (1-100) |
-| `-f, --format` | string | webp | Output format (jpg, png, webp, avif) |
-
-### Crop Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--fit` | string | cover | Resize fit mode (cover, contain, fill) |
-| `--gravity` | string | center | Crop position (center, north, south, etc.) |
-| `--strategy` | string | attention | Smart crop (attention, entropy) |
-
-## Examples
-
-### Basic Thumbnails
-
-```bash
-# Create 200x200 thumbnail
-mediaproc image thumbnail photo.jpg -o thumb.webp
-
-# Custom size thumbnail
-mediaproc image thumbnail image.png -w 300 -h 300 -o preview.webp
-
-# Using size presets
-mediaproc image thumbnail photo.jpg --size lg -o large-thumb.webp
-```
-
-### Gallery Thumbnails
-
-```bash
-# Batch create thumbnails
-for img in photos/*.jpg; do
-  name=$(basename "$img" .jpg)
-  mediaproc image thumbnail "$img" -w 250 -h 250 -o "thumbs/${name}-thumb.webp"
-done
-
-# Multiple sizes for responsive design
-mediaproc image thumbnail photo.jpg --size sm -o thumb-sm.webp
-mediaproc image thumbnail photo.jpg --size md -o thumb-md.webp
-mediaproc image thumbnail photo.jpg --size lg -o thumb-lg.webp
-```
-
-### Product Thumbnails
-
-```bash
-# Square product thumbnail
-mediaproc image thumbnail product.jpg -w 400 -h 400 --fit cover -o product-thumb.webp
-
-# Contain fit (show full image)
-mediaproc image thumbnail product.png -w 300 -h 300 --fit contain -o full-view.webp
-```
-
-### Smart Cropping
-
-```bash
-# Face-focused thumbnail
-mediaproc image thumbnail portrait.jpg -w 200 -h 200 --strategy attention -o face-thumb.webp
-
-# Content-aware thumbnail
-mediaproc image thumbnail landscape.jpg -w 300 -h 200 --strategy entropy -o smart-thumb.webp
-
-# Top-focused thumbnail
-mediaproc image thumbnail banner.jpg -w 400 -h 300 --gravity north -o header-thumb.webp
-```
-
-### Optimized for Web
-
-```bash
-# Ultra-optimized thumbnail
-mediaproc image thumbnail large.jpg -w 200 -h 200 -q 60 -f webp -o tiny-thumb.webp
-
-# AVIF for maximum compression
-mediaproc image thumbnail photo.jpg -w 300 -h 300 -q 65 -f avif -o modern-thumb.avif
-
-# JPEG for compatibility
-mediaproc image thumbnail image.png -w 250 -h 250 -q 75 -f jpg -o compat-thumb.jpg
-```
-
-### Blog Post Thumbnails
-
-```bash
-# Featured image thumbnail (16:9)
-mediaproc image thumbnail article.jpg -w 640 -h 360 --gravity center -o featured.webp
-
-# Card thumbnail (4:3)
-mediaproc image thumbnail post.jpg -w 400 -h 300 -o card.webp
-
-# List thumbnail (21:9)
-mediaproc image thumbnail hero.jpg -w 420 -h 180 -o list-thumb.webp
-```
-
-### Social Media Previews
-
-```bash
-# Open Graph image
-mediaproc image thumbnail cover.jpg -w 1200 -h 630 -q 75 -o og-image.jpg
-
-# Twitter card
-mediaproc image thumbnail hero.jpg -w 800 -h 418 -o twitter-card.jpg
-
-# Instagram preview
-mediaproc image thumbnail photo.jpg -w 640 -h 640 -o insta-preview.webp
-```
-
-## Size Presets
-
-| Preset | Dimensions | Use Case |
-|--------|------------|----------|
-| `sm` | 150x150 | Small icons, avatars |
-| `md` | 300x300 | Standard thumbnails |
-| `lg` | 500x500 | Large previews |
+| Size          | Use Case                         |
+| ------------- | -------------------------------- |
+| **32×32**     | Tiny icons, favicons             |
+| **64×64**     | Small icons, list views          |
+| **100×100**   | Small thumbnails                 |
+| **150×150**   | Default thumbnail size           |
+| **200×200**   | Medium thumbnails, profiles      |
+| **256×256**   | Large thumbnails                 |
+| **300×300**   | Gallery previews                 |
+| **512×512**   | High-resolution icons, app icons |
+| **1024×1024** | Extra large previews             |
 
 ## Fit Modes
 
-- **cover**: Fill dimensions, crop excess (default for thumbnails)
-- **contain**: Fit within dimensions, add padding if needed
-- **fill**: Stretch to fit (may distort)
+### cover (Default)
+
+Fills entire thumbnail, crops if necessary:
+
+```bash
+mediaproc image thumbnail photo.jpg -s 200 --fit cover
+```
+
+**Behavior**:
+
+- Fills entire 200×200 area
+- Maintains aspect ratio
+- Crops overflow
+- **Best for**: Profile pictures, avatars, grid layouts
+
+### contain
+
+Fits entire image with padding:
+
+```bash
+mediaproc image thumbnail landscape.jpg -s 200 --fit contain
+```
+
+**Behavior**:
+
+- Shows complete image
+- Adds padding if needed
+- Maintains aspect ratio
+- **Best for**: Product images, artwork, preserving full image
+
+### fill
+
+Stretches to fill (may distort):
+
+```bash
+mediaproc image thumbnail image.jpg -s 200 --fit fill
+```
+
+**Behavior**:
+
+- Fills entire area
+- Ignores aspect ratio
+- May distort image
+- **Best for**: Rarely used (causes distortion)
+
+### inside
+
+Shrinks if larger, never enlarges:
+
+```bash
+mediaproc image thumbnail big-image.jpg -s 200 --fit inside
+```
+
+**Behavior**:
+
+- Shrinks large images
+- Never enlarges small images
+- Maintains aspect ratio
+- **Best for**: Don't upscale small images
+
+### outside
+
+Ensures minimum dimensions:
+
+```bash
+mediaproc image thumbnail photo.jpg -s 200 --fit outside
+```
+
+**Behavior**:
+
+- Minimum 200×200 dimensions
+- May exceed if aspect ratio requires
+- **Best for**: Ensure minimum size
+
+## Examples
+
+### 1. Default Thumbnail
+
+Standard 150×150 thumbnail:
+
+```bash
+mediaproc image thumbnail photo.jpg
+```
+
+**Output**: photo-thumb.jpg (150×150)
+
+### 2. Profile Picture
+
+Avatar-sized thumbnail:
+
+```bash
+mediaproc image thumbnail profile.jpg -s 200 -o avatar.jpg
+```
+
+**Social**: 200×200 profile picture
+
+### 3. Gallery Thumbnail
+
+Medium-sized preview:
+
+```bash
+mediaproc image thumbnail artwork.png -s 300 -q 90
+```
+
+**Gallery**: 300×300 high-quality preview
+
+### 4. Small Icon
+
+Tiny icon size:
+
+```bash
+mediaproc image thumbnail logo.png -s 64 -o icon.png
+```
+
+**Icon**: 64×64 small icon
+
+### 5. Large Preview
+
+High-resolution thumbnail:
+
+```bash
+mediaproc image thumbnail photo.jpg -s 512 -q 95
+```
+
+**Preview**: 512×512 detailed preview
+
+### 6. Product Thumbnail with Padding
+
+Show complete product:
+
+```bash
+mediaproc image thumbnail product.jpg -s 300 --fit contain -o product-thumb.jpg
+```
+
+**E-commerce**: Full product visible with padding
+
+### 7. Batch Gallery Thumbnails
+
+Process entire gallery:
+
+```bash
+mediaproc image thumbnail "gallery/*.jpg" -s 250
+```
+
+**Batch**: Consistent gallery thumbnails
+
+### 8. App Icon
+
+iOS/Android app icon:
+
+```bash
+mediaproc image thumbnail app-icon.png -s 1024 -q 100 -o icon-1024.png
+```
+
+**Apps**: High-res app store icon
+
+### 9. Favicon
+
+Website favicon:
+
+```bash
+mediaproc image thumbnail logo.png -s 32 -o favicon.ico
+```
+
+**Web**: 32×32 favicon
+
+### 10. Video Thumbnail
+
+Video preview thumbnail:
+
+```bash
+mediaproc image thumbnail video-frame.jpg -s 320 --fit cover
+```
+
+**Video**: Video preview image
+
+### 11. Preserve Small Images
+
+Don't upscale small images:
+
+```bash
+mediaproc image thumbnail small-icon.png -s 200 --fit inside
+```
+
+**Smart**: Won't enlarge if already smaller
+
+### 12. Social Media Profile
+
+Instagram/Twitter profile size:
+
+```bash
+mediaproc image thumbnail profile.jpg -s 400 -q 90 -o social-profile.jpg
+```
+
+**Social**: Platform-ready profile picture
+
+### 13. Verbose Processing
+
+See dimensions change:
+
+```bash
+mediaproc image thumbnail photo.jpg -s 200 --verbose
+```
+
+**Info**: Shows original → thumbnail dimensions
+
+### 14. Preview Batch
+
+Check files before processing:
+
+```bash
+mediaproc image thumbnail "photos/*.jpg" -s 150 --dry-run
+```
+
+**Safety**: Verify file list
+
+### 15. Contact Photo
+
+Address book photo size:
+
+```bash
+mediaproc image thumbnail contact.jpg -s 180 --fit cover
+```
+
+**Contacts**: Contact card photo
+
+## Use Cases
+
+### 1. Profile Pictures
+
+Social media avatars:
+
+```bash
+# Standard profile picture
+mediaproc image thumbnail profile.jpg -s 200 --fit cover -o avatar.jpg
+
+# Multiple sizes
+mediaproc image thumbnail profile.jpg -s 100 -o avatar-small.jpg
+mediaproc image thumbnail profile.jpg -s 300 -o avatar-large.jpg
+```
+
+**Social Media**: Platform profile pictures
+
+### 2. Gallery Previews
+
+Image gallery thumbnails:
+
+```bash
+# Gallery thumbnails
+mediaproc image thumbnail "gallery/*.jpg" -s 250 -q 85
+
+# Consistent preview size
+```
+
+**Galleries**: Fast-loading previews
+
+### 3. Product Images
+
+E-commerce thumbnails:
+
+```bash
+# Product thumbnail with padding
+mediaproc image thumbnail product.jpg -s 300 --fit contain
+
+# Shows complete product
+```
+
+**E-commerce**: Product catalog thumbnails
+
+### 4. Blog Post Previews
+
+Article featured images:
+
+```bash
+# Blog preview
+mediaproc image thumbnail article-image.jpg -s 400 --fit cover
+
+# Consistent blog layout
+```
+
+**Blogging**: Article preview images
+
+### 5. File Managers
+
+File preview icons:
+
+```bash
+# File manager preview
+mediaproc image thumbnail document.pdf -s 128
+
+# Quick visual reference
+```
+
+**File Systems**: Visual file browsing
+
+### 6. App Icons
+
+Mobile/desktop app icons:
+
+```bash
+# iOS App Store icon
+mediaproc image thumbnail app-icon.png -s 1024 -q 100
+
+# Android icon sizes
+mediaproc image thumbnail app-icon.png -s 512
+```
+
+**Apps**: Platform-specific icons
+
+### 7. User Avatars
+
+Forum/chat avatars:
+
+```bash
+# Chat avatar
+mediaproc image thumbnail user.jpg -s 80 --fit cover
+
+# Small, fast-loading
+```
+
+**Communities**: User identification
+
+### 8. Video Thumbnails
+
+Video preview images:
+
+```bash
+# YouTube-style thumbnail
+mediaproc image thumbnail frame.jpg -s 320 --fit cover
+
+# Video preview
+```
+
+**Video**: Video selection previews
+
+### 9. Real Estate Listings
+
+Property thumbnails:
+
+```bash
+# Property preview
+mediaproc image thumbnail house.jpg -s 400 --fit cover
+
+# Listing thumbnail
+```
+
+**Real Estate**: Property browsing
+
+### 10. Portfolio Thumbnails
+
+Artist/photographer portfolios:
+
+```bash
+# Portfolio grid
+mediaproc image thumbnail "portfolio/*.jpg" -s 350
+
+# Uniform grid layout
+```
+
+**Portfolios**: Professional presentations
+
+## Combining with Other Commands
+
+### Crop + Thumbnail
+
+Smart crop before thumbnail:
+
+```bash
+# Smart crop to square
+mediaproc image smart-crop photo.jpg -w 1000 -h 1000 -o square.jpg
+
+# Then thumbnail
+mediaproc image thumbnail square.jpg -s 300
+```
+
+**Better Composition**: Intelligent cropping
+
+### Optimize + Thumbnail
+
+Create then optimize:
+
+```bash
+# Create thumbnail
+mediaproc image thumbnail photo.jpg -s 200 -o thumb.jpg
+
+# Further optimize
+mediaproc image optimize thumb.jpg -q 80
+```
+
+**Smaller Files**: Extra compression
+
+### Batch Resize + Thumbnail
+
+Multiple sizes from one source:
+
+```bash
+# Large version
+mediaproc image resize photo.jpg -w 1920 -o large.jpg
+
+# Medium version
+mediaproc image resize photo.jpg -w 800 -o medium.jpg
+
+# Thumbnail
+mediaproc image thumbnail photo.jpg -s 200 -o thumb.jpg
+```
+
+**Responsive**: Multiple sizes for responsive design
+
+### Watermark + Thumbnail
+
+Watermark before thumbnail:
+
+```bash
+# Add watermark
+mediaproc image watermark photo.jpg --text "© 2024" -o marked.jpg
+
+# Create thumbnail
+mediaproc image thumbnail marked.jpg -s 300
+```
+
+**Protection**: Watermarked previews
+
+### Border + Thumbnail
+
+Add border to thumbnails:
+
+```bash
+# Create thumbnail
+mediaproc image thumbnail photo.jpg -s 200 -o thumb.jpg
+
+# Add border
+mediaproc image border thumb.jpg --width 2 --color white
+```
+
+**Styling**: Framed thumbnails
+
+## Technical Details
+
+### Thumbnail Generation
+
+**Process**:
+
+1. Load source image
+2. Resize to size×size with specified fit mode
+3. Center position for cover mode
+4. Apply quality setting
+5. Save to output format
+
+**Fit Mode Behavior**:
+
+- **cover**: Resize to fill, crop excess (default)
+- **contain**: Resize to fit, add padding
+- **fill**: Stretch/squash to exact size
+- **inside**: Shrink only, never enlarge
+- **outside**: Ensure minimum dimensions
+
+### Performance
+
+- **Small thumbnails** (64-150): ~30-60ms
+- **Medium thumbnails** (200-300): ~50-100ms
+- **Large thumbnails** (512+): ~100-200ms
+- Batch processing: ~50-150ms per image
+
+### Quality vs Size
+
+| Quality   | File Size | Use Case                              |
+| --------- | --------- | ------------------------------------- |
+| **70-75** | Smallest  | Small thumbnails, file size critical  |
+| **80-85** | Small     | Standard web thumbnails (default: 85) |
+| **90-95** | Medium    | High-quality previews                 |
+| **100**   | Largest   | App icons, no compression             |
+
+### Output Formats
+
+- **JPEG**: Photos, default for .jpg
+- **PNG**: Logos, transparency, default for .png
+- **WebP**: Modern web, smaller sizes
+- Format determined by output extension
 
 ## Best Practices
 
-1. **WebP Format**: Best balance of size/quality for thumbnails
-2. **Lower Quality**: 60-75 quality is fine for small thumbnails
-3. **Smart Cropping**: Use attention strategy for portraits
-4. **Consistent Sizes**: Use same dimensions for uniform galleries
-5. **Lazy Loading**: Generate thumbnails for progressive loading
-6. **Multiple Sizes**: Create several sizes for responsive images
-7. **Batch Process**: Generate all thumbnails at once
+### 1. Use Cover for Most Cases
 
-## Quality Guidelines
-
-| Thumbnail Size | Recommended Quality | Format |
-|----------------|-------------------|---------|
-| < 150px | 60-65 | WebP/AVIF |
-| 150-300px | 65-75 | WebP |
-| 300-500px | 75-80 | WebP/JPEG |
-| > 500px | 80-85 | WebP/JPEG |
-
-## Common Use Cases
-
-- **Image Galleries**: Fast-loading preview images
-- **E-commerce**: Product listing thumbnails
-- **Blog Posts**: Article preview images
-- **User Avatars**: Profile picture thumbnails
-- **Video Previews**: Video thumbnail images
-- **Search Results**: Quick preview of images
-- **Social Media**: Share preview images
-- **Mobile Optimization**: Smaller images for mobile devices
-
-## Performance Optimization
+Cover mode works best for uniform layouts:
 
 ```bash
-# Ultra-fast loading thumbnails
-mediaproc image thumbnail photo.jpg -w 200 -h 200 -q 60 -f webp -o fast-thumb.webp
-
-# Progressive loading setup
-# Generate multiple sizes
-mediaproc image thumbnail image.jpg -w 50 -h 50 -q 50 -o placeholder.webp    # Blur placeholder
-mediaproc image thumbnail image.jpg -w 200 -h 200 -q 70 -o thumb.webp        # Standard
-mediaproc image thumbnail image.jpg -w 400 -h 400 -q 80 -o thumb-2x.webp     # Retina
+# Default is best
+mediaproc image thumbnail photo.jpg -s 200
 ```
 
-## Performance Tips
+### 2. Contain for Full Product Views
 
-- WebP reduces file size by 25-35% vs JPEG
-- AVIF reduces size by 40-50% but slower to generate
-- Quality 60-70 is visually acceptable for thumbnails
-- Square thumbnails process faster
-- Smart cropping adds minimal overhead
-- Batch process for efficiency
+Show complete image for products:
 
-## See Also
+```bash
+# Full product visible
+mediaproc image thumbnail product.jpg -s 300 --fit contain
+```
 
-- [resize](./resize) - Full-featured resizing
-- [crop](./crop) - Manual cropping
-- [optimize](./optimize) - Further optimize thumbnails
-- [batch-resize](./batch-resize) - Batch thumbnail generation
-- [webp](./webp) - WebP-specific optimization
+### 3. Quality 85 is Optimal
+
+Balance quality and size:
+
+```bash
+# Default quality is good
+mediaproc image thumbnail photo.jpg -s 200 -q 85
+```
+
+### 4. Consistent Sizes in Batch
+
+Use same size for related images:
+
+```bash
+# Uniform gallery
+mediaproc image thumbnail "gallery/*.jpg" -s 250
+```
+
+### 5. Larger Source Images
+
+Start with high-quality source:
+
+```bash
+# Better downscaling from large sources
+# Original: 4000×3000
+# Thumbnail: 300×300 (good quality)
+```
+
+### 6. Use PNG for Transparency
+
+Preserve transparency:
+
+```bash
+# PNG preserves alpha
+mediaproc image thumbnail logo.png -s 200 -o logo-thumb.png
+```
+
+### 7. Test Fit Modes
+
+Compare cover vs contain:
+
+```bash
+# Try both
+mediaproc image thumbnail image.jpg -s 200 --fit cover -o cover.jpg
+mediaproc image thumbnail image.jpg -s 200 --fit contain -o contain.jpg
+```
+
+## Troubleshooting
+
+### Issue: Image Cropped Too Much
+
+**Problem**: Important parts cut off
+
+**Cause**: Cover mode crops to fill
+
+**Solution**: Use contain mode or smart-crop first
+
+```bash
+# Show full image
+mediaproc image thumbnail photo.jpg -s 200 --fit contain
+```
+
+### Issue: Image Has Padding
+
+**Problem**: Unwanted borders around image
+
+**Cause**: Contain mode with non-square source
+
+**Solution**: Use cover mode or crop first
+
+```bash
+# Fill frame
+mediaproc image thumbnail photo.jpg -s 200 --fit cover
+```
+
+### Issue: Image Looks Distorted
+
+**Problem**: Stretched or squashed
+
+**Cause**: Using fill mode
+
+**Solution**: Use cover or contain mode
+
+```bash
+# Proper aspect ratio
+mediaproc image thumbnail photo.jpg -s 200 --fit cover
+```
+
+### Issue: Thumbnail Too Large
+
+**Problem**: File size too big
+
+**Cause**: High quality setting or large size
+
+**Solution**: Reduce quality or size
+
+```bash
+# Smaller file
+mediaproc image thumbnail photo.jpg -s 200 -q 75
+```
+
+### Issue: Small Image Upscaled
+
+**Problem**: Small source image enlarged and pixelated
+
+**Cause**: Default behavior enlarges
+
+**Solution**: Use inside fit mode
+
+```bash
+# Don't upscale
+mediaproc image thumbnail small.jpg -s 200 --fit inside
+```
+
+### Issue: Blurry Thumbnail
+
+**Problem**: Thumbnail lacks sharpness
+
+**Cause**: Too much downscaling or low quality
+
+**Solution**: Increase quality or sharpen after
+
+```bash
+# Higher quality
+mediaproc image thumbnail photo.jpg -s 200 -q 95
+
+# Or sharpen after
+mediaproc image thumbnail photo.jpg -s 200 -o thumb.jpg
+mediaproc image sharpen thumb.jpg -s 0.7
+```
+
+## Related Commands
+
+- [resize](./resize.mdx) - Resize to specific dimensions
+- [crop](./crop.mdx) - Crop to specific area
+- [smart-crop](./smart-crop.mdx) - Content-aware cropping
+- [optimize](./optimize.mdx) - Further optimize thumbnails
+- [border](./border.mdx) - Add borders to thumbnails
+
+## Further Reading
+
+- [Image Thumbnails](https://en.wikipedia.org/wiki/Thumbnail)
+- [Responsive Images](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)
+- [Image Optimization](https://web.dev/fast/#optimize-your-images)

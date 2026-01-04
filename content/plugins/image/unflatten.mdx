@@ -1,6 +1,12 @@
-# unflatten
+# Unflatten
 
-Split multi-page image into separate files.
+Add alpha channel to images, converting RGB to RGBA. Opposite of the flatten command. Prepares images for compositing operations and transparency manipulations.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
@@ -8,32 +14,697 @@ Split multi-page image into separate files.
 mediaproc image unflatten <input> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `unflatten` command extracts individual pages/frames from multi-page images (TIFF, PDF, animated GIF).
+```bash
+# Add alpha channel
+mediaproc image unflatten image.jpg
+
+# Save as PNG
+mediaproc image unflatten photo.jpg -o with-alpha.png
+
+# High quality
+mediaproc image unflatten pic.jpg -q 100
+
+# Batch processing
+mediaproc image unflatten "images/*.jpg"
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output-pattern` | string | - | Output pattern (e.g., page-%d.jpg) |
-| `-f, --format` | string | - | Output format |
-| `-q, --quality` | number | 80 | Output quality |
+| Option                | Alias | Type    | Default | Description                                      |
+| --------------------- | ----- | ------- | ------- | ------------------------------------------------ |
+| `--output <path>`     | `-o`  | string  | -       | Output file path (default: `<input>-unflat.png`) |
+| `--quality <quality>` | `-q`  | number  | `90`    | Output quality (1-100)                           |
+| `--dry-run`           |       | boolean | `false` | Preview without making changes                   |
+| `--verbose`           | `-v`  | boolean | `false` | Show detailed output                             |
+
+## What is Unflatten?
+
+### Before Unflatten (RGB)
+
+- **3 channels**: Red, Green, Blue
+- **No transparency**: Cannot have transparent pixels
+- **Typical formats**: JPEG, JPG
+- **Use**: Photos, images without transparency
+
+### After Unflatten (RGBA)
+
+- **4 channels**: Red, Green, Blue, Alpha
+- **Transparency support**: Can have transparent pixels
+- **All pixels opaque**: Alpha = 255 (fully opaque) initially
+- **Typical formats**: PNG, WebP
+- **Use**: Ready for compositing, transparency operations
+
+### Key Points
+
+- **Unflatten doesn't make pixels transparent**
+- **Adds alpha channel capability**
+- **All pixels start fully opaque**
+- **Prepares for future transparency operations**
+
+## Why Unflatten?
+
+### 1. Prepare for Compositing
+
+Required before some composite operations:
+
+```bash
+# Add alpha channel
+mediaproc image unflatten background.jpg -o bg.png
+
+# Now can composite with transparency
+mediaproc image composite bg.png foreground.png -o result.png
+```
+
+### 2. Before Transparency Operations
+
+Enable transparency manipulations:
+
+```bash
+# Add alpha channel
+mediaproc image unflatten image.jpg -o prepared.png
+
+# Now can manipulate transparency
+# (with other tools or further processing)
+```
+
+### 3. Convert JPEG to PNG
+
+Prepare JPEG for PNG features:
+
+```bash
+# JPEG → PNG with alpha support
+mediaproc image unflatten photo.jpg -o photo.png
+```
+
+### 4. Alpha Channel Requirement
+
+Some operations require alpha channel:
+
+```bash
+# Ensure alpha channel exists
+mediaproc image unflatten rgb-image.png -o rgba-image.png
+```
 
 ## Examples
 
+### 1. Basic Unflatten
+
+Add alpha channel to JPEG:
+
 ```bash
-# Extract PDF pages
-mediaproc image unflatten document.pdf -o "page-%03d.jpg"
-
-# Extract GIF frames
-mediaproc image unflatten animation.gif -o "frame-%d.png"
-
-# Extract TIFF pages
-mediaproc image unflatten scan.tiff -o "scan-page-%d.jpg"
+mediaproc image unflatten photo.jpg
 ```
 
-## See Also
+**Output**: photo-unflat.png (with alpha channel)
 
-- [animated](./animated) - Create animations
-- [join](./join) - Combine images
+### 2. Explicit PNG Output
+
+Convert with specific output:
+
+```bash
+mediaproc image unflatten image.jpg -o ready.png
+```
+
+**Result**: PNG with alpha channel
+
+### 3. Prepare for Compositing
+
+Ready image for layering:
+
+```bash
+# Add alpha
+mediaproc image unflatten background.jpg -o bg.png
+
+# Now composite
+mediaproc image composite bg.png overlay.png
+```
+
+**Compositing**: Alpha-enabled background
+
+### 4. High Quality Conversion
+
+Maximum quality unflatten:
+
+```bash
+mediaproc image unflatten photo.jpg -q 100 -o high-quality.png
+```
+
+**Quality**: Lossless preparation
+
+### 5. Batch Conversion
+
+Add alpha to multiple JPEGs:
+
+```bash
+mediaproc image unflatten "photos/*.jpg"
+```
+
+**Batch**: All get alpha channel
+
+### 6. Prepare RGB PNG
+
+Add alpha to RGB PNG:
+
+```bash
+# RGB PNG → RGBA PNG
+mediaproc image unflatten rgb-image.png -o rgba-image.png
+```
+
+**PNG Conversion**: RGB to RGBA
+
+### 7. Before Remove Background
+
+Prepare for background removal:
+
+```bash
+# Add alpha channel
+mediaproc image unflatten photo.jpg -o prepared.png
+
+# Then remove background (creates transparency)
+# mediaproc ai remove-background prepared.png
+```
+
+**AI Processing**: Alpha channel required
+
+### 8. WebP with Alpha
+
+Convert to WebP with alpha:
+
+```bash
+mediaproc image unflatten image.jpg -o image.webp
+```
+
+**WebP**: Alpha-enabled WebP
+
+### 9. Verbose Output
+
+See processing details:
+
+```bash
+mediaproc image unflatten photo.jpg --verbose
+```
+
+**Info**: Confirmation of alpha addition
+
+### 10. Preview Unflatten
+
+Check output path:
+
+```bash
+mediaproc image unflatten image.jpg --dry-run
+```
+
+**Safety**: Verify before processing
+
+### 11. Prepare for Watermark
+
+Ready for transparent watermark:
+
+```bash
+# Unflatten base image
+mediaproc image unflatten photo.jpg -o base.png
+
+# Add transparent watermark
+# mediaproc image watermark base.png logo.png
+```
+
+**Watermarking**: Alpha support
+
+### 12. Layer Preparation
+
+Prepare images for layering:
+
+```bash
+# Unflatten all layers
+mediaproc image unflatten layer1.jpg -o layer1.png
+mediaproc image unflatten layer2.jpg -o layer2.png
+
+# Then composite layers
+```
+
+**Layers**: Ready for composition
+
+### 13. Format Migration
+
+Migrate to alpha-supporting format:
+
+```bash
+# JPEG collection → PNG with alpha
+mediaproc image unflatten "collection/*.jpg"
+```
+
+**Migration**: Format upgrade
+
+### 14. Transparency Workflow Start
+
+First step in transparency workflow:
+
+```bash
+# 1. Unflatten
+mediaproc image unflatten image.jpg -o step1.png
+
+# 2. Then apply transparency operations
+```
+
+**Workflow**: Enable transparency pipeline
+
+### 15. Ensure Alpha Channel
+
+Guarantee alpha presence:
+
+```bash
+# Add alpha if missing, no change if present
+mediaproc image unflatten image.png -o alpha-ready.png
+```
+
+**Safety**: Ensure alpha exists
+
+## Use Cases
+
+### 1. Prepare for Compositing
+
+Enable image layering:
+
+```bash
+# Background layer needs alpha
+mediaproc image unflatten background.jpg -o bg.png
+
+# Composite with other layers
+mediaproc image composite bg.png layer1.png layer2.png
+```
+
+**Compositing**: Layer-ready images
+
+### 2. JPEG to PNG Conversion
+
+Convert to transparency-capable format:
+
+```bash
+# Migrate to PNG
+mediaproc image unflatten photo.jpg -o photo.png
+
+# Now PNG with alpha support
+```
+
+**Format Conversion**: Enable PNG features
+
+### 3. Before Background Removal
+
+Prepare for AI background removal:
+
+```bash
+# Add alpha channel first
+mediaproc image unflatten portrait.jpg -o prepared.png
+
+# Then remove background
+# AI tools create transparent background
+```
+
+**AI Processing**: Alpha prerequisite
+
+### 4. Alpha Channel Initialization
+
+Start with alpha channel:
+
+```bash
+# Initialize alpha channel
+mediaproc image unflatten rgb.png -o rgba.png
+
+# Ready for transparency manipulation
+```
+
+**Initialization**: Alpha channel creation
+
+### 5. Watermark Preparation
+
+Prepare base for watermarking:
+
+```bash
+# Base image with alpha
+mediaproc image unflatten photo.jpg -o base.png
+
+# Add transparent watermark
+# Watermark can have partial transparency
+```
+
+**Watermarking**: Support transparent watermarks
+
+### 6. Batch JPEG Migration
+
+Convert JPEG library to PNG:
+
+```bash
+# Add alpha to entire collection
+mediaproc image unflatten "photos/*.jpg"
+
+# All JPEGs → PNGs with alpha
+```
+
+**Library Migration**: Bulk conversion
+
+### 7. Graphic Design Pipeline
+
+Start of transparent design workflow:
+
+```bash
+# Prepare design elements
+mediaproc image unflatten element1.jpg -o element1.png
+mediaproc image unflatten element2.jpg -o element2.png
+
+# Then layer and composite
+```
+
+**Design**: Multi-layer workflows
+
+### 8. Video Thumbnail Processing
+
+Prepare thumbnails for overlays:
+
+```bash
+# Video frame with alpha
+mediaproc image unflatten frame.jpg -o frame.png
+
+# Ready for overlay graphics
+```
+
+**Video**: Thumbnail composition
+
+### 9. Product Photography
+
+Prepare products for compositing:
+
+```bash
+# Product shot
+mediaproc image unflatten product.jpg -o product.png
+
+# Later: composite on different backgrounds
+```
+
+**E-commerce**: Flexible backgrounds
+
+### 10. Icon Generation
+
+Create icon with alpha:
+
+```bash
+# Start from JPEG
+mediaproc image unflatten logo.jpg -o logo.png
+
+# Then resize to icon sizes
+```
+
+**Icons**: Alpha-enabled icons
+
+## Combining with Other Commands
+
+### Unflatten + Composite
+
+Layer images with transparency:
+
+```bash
+# Prepare base
+mediaproc image unflatten background.jpg -o bg.png
+
+# Composite layers
+mediaproc image composite bg.png layer.png -o result.png
+```
+
+**Layering**: Proper compositing
+
+### Convert + Unflatten
+
+Format then add alpha:
+
+```bash
+# Convert format first (if needed)
+mediaproc image convert image.bmp -f jpg -o converted.jpg
+
+# Add alpha channel
+mediaproc image unflatten converted.jpg -o final.png
+```
+
+**Conversion**: Format pipeline
+
+### Resize + Unflatten
+
+Size then add alpha:
+
+```bash
+# Resize first
+mediaproc image resize large.jpg -w 2000 -o sized.jpg
+
+# Add alpha
+mediaproc image unflatten sized.jpg -o ready.png
+```
+
+**Sizing**: Efficient workflow
+
+### Unflatten + Remove Background
+
+Prepare for background removal:
+
+```bash
+# Add alpha channel
+mediaproc image unflatten photo.jpg -o prepared.png
+
+# Remove background (creates transparency)
+# AI tools make background transparent
+```
+
+**AI Tools**: Transparency workflow
+
+### Unflatten + Flatten
+
+Round-trip test:
+
+```bash
+# Add alpha
+mediaproc image unflatten image.jpg -o with-alpha.png
+
+# Remove alpha (opposite)
+mediaproc image flatten with-alpha.png -o no-alpha.jpg
+```
+
+**Testing**: Verify operations
+
+## Technical Details
+
+### Unflatten Operation
+
+**Process**:
+
+1. Read source image (RGB or RGBA)
+2. If RGB: Add alpha channel (all 255)
+3. If RGBA: No change (already has alpha)
+4. Output RGBA image
+
+**Alpha Initialization**:
+
+- All pixels: alpha = 255 (fully opaque)
+- No transparency created
+- Just adds channel capability
+
+### Channel Structure
+
+**Before (RGB)**:
+
+```
+Pixel: [R, G, B]
+Example: [255, 128, 64]
+3 channels × 8 bits = 24 bits per pixel
+```
+
+**After (RGBA)**:
+
+```
+Pixel: [R, G, B, A]
+Example: [255, 128, 64, 255]
+4 channels × 8 bits = 32 bits per pixel
+```
+
+### File Size Impact
+
+**Increase**:
+
+- ~33% larger (4 channels vs 3)
+- PNG files larger than JPEG
+- Additional alpha data storage
+
+**Example**:
+
+- RGB: 1920×1080 = ~6MB JPEG
+- RGBA: 1920×1080 = ~8-10MB PNG
+
+### Performance
+
+- **Fast operation**: ~50-150ms
+- **Small images**: ~50-80ms
+- **Large images** (4K): ~100-200ms
+- Minimal processing overhead
+- Main time: File I/O
+
+### Format Compatibility
+
+**Best Formats for Alpha**:
+
+- **PNG**: Native alpha support, lossless
+- **WebP**: Alpha support, smaller than PNG
+- **TIFF**: Professional workflows
+
+**Not Recommended**:
+
+- **JPEG**: No alpha support (will lose alpha)
+- **BMP**: Limited alpha support
+
+## Best Practices
+
+### 1. Output to PNG
+
+Always use PNG for alpha:
+
+```bash
+# PNG preserves alpha
+mediaproc image unflatten image.jpg -o image.png
+```
+
+### 2. High Quality for Final Output
+
+Use maximum quality when needed:
+
+```bash
+# Lossless preparation
+mediaproc image unflatten source.jpg -q 100 -o ready.png
+```
+
+### 3. Batch JPEG to PNG
+
+Convert collections efficiently:
+
+```bash
+# Entire folder
+mediaproc image unflatten "photos/*.jpg"
+```
+
+### 4. Unflatten Before Compositing
+
+Always prepare before layering:
+
+```bash
+# Prepare first
+mediaproc image unflatten bg.jpg -o bg.png
+
+# Then composite
+mediaproc image composite bg.png fg.png
+```
+
+### 5. Check Source Format
+
+Know your source:
+
+- **JPEG**: Needs unflatten for alpha
+- **RGB PNG**: Needs unflatten for alpha
+- **RGBA PNG**: Already has alpha (unflatten safe but unnecessary)
+
+### 6. Consider File Size
+
+Alpha increases size:
+
+- Use when transparency needed
+- Keep JPEG if no transparency required
+- WebP for smaller alpha images
+
+### 7. Preserve Quality
+
+Don't compress unnecessarily:
+
+```bash
+# High quality preservation
+mediaproc image unflatten important.jpg -q 95 -o important.png
+```
+
+## Troubleshooting
+
+### Issue: File Size Increased
+
+**Problem**: Output much larger than input
+
+**Cause**: PNG + alpha channel vs JPEG
+
+**Solution**: This is expected
+
+```bash
+# JPEG (no alpha): ~6MB
+# PNG (with alpha): ~10MB
+# Normal behavior
+```
+
+### Issue: No Visual Change
+
+**Problem**: Image looks identical
+
+**Cause**: Unflatten doesn't change appearance
+
+**Solution**: This is correct
+
+```bash
+# Unflatten adds capability, not transparency
+# All pixels still opaque (alpha=255)
+```
+
+### Issue: Still No Transparency
+
+**Problem**: Expected transparent areas
+
+**Cause**: Unflatten doesn't create transparency
+
+**Solution**: Use remove-background or other tools
+
+```bash
+# Unflatten prepares
+mediaproc image unflatten photo.jpg -o ready.png
+
+# Then remove background
+# Other tools create actual transparency
+```
+
+### Issue: Output Format Wrong
+
+**Problem**: Output not PNG
+
+**Cause**: Specified non-PNG format
+
+**Solution**: Use PNG explicitly
+
+```bash
+# Explicit PNG
+mediaproc image unflatten image.jpg -o image.png
+```
+
+### Issue: Already Has Alpha
+
+**Problem**: Source already RGBA
+
+**Cause**: Input already has alpha channel
+
+**Solution**: Unflatten is safe but unnecessary
+
+```bash
+# Safe to run on RGBA images
+# No change if alpha already exists
+```
+
+## Related Commands
+
+- [flatten](./flatten.mdx) - Opposite: remove alpha channel
+- [composite](./composite.mdx) - Combine images with alpha
+- [convert](./convert.mdx) - Format conversion
+- [remove-background](../ai/remove-background.mdx) - Create actual transparency
+
+## Further Reading
+
+- [Alpha Compositing](https://en.wikipedia.org/wiki/Alpha_compositing)
+- [PNG Format](https://en.wikipedia.org/wiki/PNG)
+- [RGBA Color Space](https://en.wikipedia.org/wiki/RGBA_color_model)
+- [Alpha Channel](https://en.wikipedia.org/wiki/Alpha_channel)

@@ -1,49 +1,699 @@
-# stack
+# Stack
 
-Stack multiple images vertically or horizontally.
+Stack multiple images horizontally or vertically with customizable alignment, spacing, and background. Perfect for before/after comparisons, image sequences, and panorama creation.
+
+## Installation
+
+```bash
+npm install -g @mediaproc/image
+```
 
 ## Usage
 
 ```bash
-mediaproc image stack <inputs...> [options]
+mediaproc image stack <images...> [options]
 ```
 
-## Description
+### Basic Usage
 
-The `stack` command combines multiple images by stacking them in a specified direction.
+```bash
+# Stack horizontally (default)
+mediaproc image stack image1.jpg image2.jpg
+
+# Stack vertically
+mediaproc image stack img1.png img2.png img3.png --direction vertical
+
+# Stack with gaps
+mediaproc image stack photo1.jpg photo2.jpg -g 20 -b white
+
+# Custom alignment
+mediaproc image stack *.jpg -d horizontal -a end -o result.png
+
+# Create panorama
+mediaproc image stack panorama*.jpg -o complete-panorama.jpg
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--direction` | string | vertical | Stack direction (vertical, horizontal) |
-| `--spacing` | number | 0 | Space between images (pixels) |
-| `--background` | string | #ffffff | Background color |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option                    | Alias | Type    | Default       | Description                             |
+| ------------------------- | ----- | ------- | ------------- | --------------------------------------- |
+| `--direction <direction>` | `-d`  | string  | `horizontal`  | Stack direction: horizontal or vertical |
+| `--align <alignment>`     | `-a`  | string  | `center`      | Alignment: start, center, or end        |
+| `--gap <pixels>`          | `-g`  | number  | `0`           | Gap between images in pixels            |
+| `--background <color>`    | `-b`  | string  | `transparent` | Background color for gaps               |
+| `--output <path>`         | `-o`  | string  | `stacked.png` | Output file path                        |
+| `--dry-run`               |       | boolean | `false`       | Preview without making changes          |
+| `--verbose`               | `-v`  | boolean | `false`       | Show detailed output                    |
+| `--help`                  |       | boolean | `false`       | Display help information                |
+
+## Direction & Alignment
+
+### Horizontal Stacking
+
+Images placed left to right:
+
+**start (top)**: All images aligned to top edge
+
+```bash
+mediaproc image stack img1.jpg img2.jpg -d horizontal -a start
+```
+
+**center**: Images centered vertically (default)
+
+```bash
+mediaproc image stack img1.jpg img2.jpg -d horizontal -a center
+```
+
+**end (bottom)**: All images aligned to bottom edge
+
+```bash
+mediaproc image stack img1.jpg img2.jpg -d horizontal -a end
+```
+
+### Vertical Stacking
+
+Images placed top to bottom:
+
+**start (left)**: All images aligned to left edge
+
+```bash
+mediaproc image stack img1.jpg img2.jpg -d vertical -a start
+```
+
+**center**: Images centered horizontally (default)
+
+```bash
+mediaproc image stack img1.jpg img2.jpg -d vertical -a center
+```
+
+**end (right)**: All images aligned to right edge
+
+```bash
+mediaproc image stack img1.jpg img2.jpg -d vertical -a end
+```
+
+## Background Colors
+
+### Transparent (Default)
+
+Best for PNGs:
+
+```bash
+mediaproc image stack logo1.png logo2.png -g 10 --background transparent
+```
+
+### Named Colors
+
+```bash
+# White background
+mediaproc image stack photo1.jpg photo2.jpg -g 20 -b white
+
+# Black background
+mediaproc image stack img1.png img2.png -b black
+
+# Gray background
+mediaproc image stack images*.jpg -b gray
+```
+
+### Custom Colors
+
+```bash
+# Hex color
+mediaproc image stack photo1.jpg photo2.jpg -g 15 -b "#f0f0f0"
+
+# RGB color
+mediaproc image stack img1.png img2.png -b "rgb(240, 240, 240)"
+
+# RGBA (with transparency)
+mediaproc image stack photos*.jpg -b "rgba(255, 255, 255, 0.5)"
+```
 
 ## Examples
 
+### 1. Basic Horizontal Stack
+
+Stack two images side by side:
+
 ```bash
-# Vertical stack
-mediaproc image stack img1.jpg img2.jpg img3.jpg -o stacked.jpg
-
-# Horizontal stack
-mediaproc image stack photo1.jpg photo2.jpg --direction horizontal -o horizontal.jpg
-
-# With spacing
-mediaproc image stack img1.jpg img2.jpg img3.jpg --spacing 20 --background "#000000" -o spaced.jpg
+mediaproc image stack before.jpg after.jpg
 ```
 
-## Common Use Cases
+**Result**: Before/after comparison
 
-- **Before/After**: Stack comparison images
-- **Step-by-Step**: Show process steps
-- **Panoramas**: Combine landscape photos
-- **Infographics**: Stack information sections
+### 2. Vertical Stack
 
-## See Also
+Stack images top to bottom:
 
-- [grid](./grid) - Create grid layouts
-- [composite](./composite) - Layer images
+```bash
+mediaproc image stack img1.jpg img2.jpg img3.jpg --direction vertical
+```
+
+**Result**: Three images stacked vertically
+
+### 3. With Gaps and Background
+
+Add spacing between images:
+
+```bash
+mediaproc image stack photo1.jpg photo2.jpg -g 30 -b white -o comparison.png
+```
+
+**Visual**: Clear separation between images
+
+### 4. Before/After Comparison
+
+Classic comparison layout:
+
+```bash
+mediaproc image stack before.jpg after.jpg -d horizontal -a center -o comparison.jpg
+```
+
+**Use**: Show transformations
+
+### 5. Multiple Images Horizontal
+
+Create wide collage:
+
+```bash
+mediaproc image stack img1.jpg img2.jpg img3.jpg img4.jpg -g 10 -b "#eeeeee"
+```
+
+**Gallery**: Multi-image display
+
+### 6. Vertical Timeline
+
+Create timeline effect:
+
+```bash
+mediaproc image stack step1.jpg step2.jpg step3.jpg -d vertical -g 20 -b white
+```
+
+**Timeline**: Sequential steps
+
+### 7. Panorama Creation
+
+Stitch panorama sections:
+
+```bash
+mediaproc image stack left.jpg center.jpg right.jpg -d horizontal -o panorama.jpg
+```
+
+**Photography**: Wide panoramic view
+
+### 8. Product Variations
+
+Show product options:
+
+```bash
+mediaproc image stack color1.jpg color2.jpg color3.jpg -g 15 -b white
+```
+
+**E-commerce**: Color/variation comparisons
+
+### 9. Comic Strip
+
+Create horizontal comic:
+
+```bash
+mediaproc image stack panel1.jpg panel2.jpg panel3.jpg -g 5 -b black
+```
+
+**Comics**: Sequential panels
+
+### 10. End Alignment
+
+Align to bottom:
+
+```bash
+mediaproc image stack img1.jpg img2.jpg -d horizontal -a end -b gray
+```
+
+**Layout**: Bottom-aligned composition
+
+### 11. Verbose Output
+
+Show detailed processing:
+
+```bash
+mediaproc image stack photo1.jpg photo2.jpg --verbose
+```
+
+**Info**: Canvas size, positions, file size
+
+### 12. Preview Stack
+
+Check dimensions before stacking:
+
+```bash
+mediaproc image stack img1.jpg img2.jpg img3.jpg --dry-run
+```
+
+**Safety**: Verify output size
+
+### 13. Instagram Story Sequence
+
+Stack story frames:
+
+```bash
+mediaproc image stack story*.jpg -d vertical -o full-story.jpg
+```
+
+**Social**: Complete story sequence
+
+### 14. Portfolio Showcase
+
+Create portfolio layout:
+
+```bash
+mediaproc image stack work1.jpg work2.jpg work3.jpg -g 25 -b "#ffffff" -o portfolio.png
+```
+
+**Portfolio**: Professional presentation
+
+### 15. Tutorial Steps
+
+Stack tutorial images:
+
+```bash
+mediaproc image stack step*.png -d vertical -g 30 -b white -o tutorial.png
+```
+
+**Education**: Step-by-step guide
+
+## Use Cases
+
+### 1. Before/After Comparisons
+
+Show transformations:
+
+```bash
+# Horizontal comparison
+mediaproc image stack before.jpg after.jpg -o comparison.jpg
+
+# With label gap
+mediaproc image stack before.jpg after.jpg -g 40 -b white
+```
+
+**Photography**: Edit comparisons
+
+### 2. Image Sequences
+
+Create timelines:
+
+```bash
+# Horizontal sequence
+mediaproc image stack frame1.jpg frame2.jpg frame3.jpg -g 10
+
+# Vertical timeline
+mediaproc image stack event*.jpg -d vertical -g 20 -b "#f5f5f5"
+```
+
+**Storytelling**: Chronological sequences
+
+### 3. Panorama Stitching
+
+Combine panorama sections:
+
+```bash
+# Simple panorama
+mediaproc image stack left.jpg center.jpg right.jpg -o panorama.jpg
+
+# No gaps for seamless join
+mediaproc image stack section*.jpg -g 0 -o seamless-pan.jpg
+```
+
+**Photography**: Wide-angle views
+
+### 4. Portfolio Layouts
+
+Professional presentations:
+
+```bash
+# Horizontal showcase
+mediaproc image stack project1.jpg project2.jpg project3.jpg -g 30 -b white
+
+# Vertical gallery
+mediaproc image stack artwork*.jpg -d vertical -g 50
+```
+
+**Portfolio**: Work display
+
+### 5. Tutorial Steps
+
+Educational content:
+
+```bash
+# Step-by-step tutorial
+mediaproc image stack step1.png step2.png step3.png -d vertical -g 40 -b white
+
+# Horizontal instructions
+mediaproc image stack instruction*.jpg -g 20
+```
+
+**Education**: Clear instructions
+
+### 6. Product Comparisons
+
+E-commerce comparisons:
+
+```bash
+# Product variations
+mediaproc image stack red.jpg blue.jpg green.jpg -g 15 -b "#f0f0f0"
+
+# Size comparison
+mediaproc image stack small.jpg medium.jpg large.jpg -a end
+```
+
+**E-commerce**: Product options
+
+### 7. Social Media Content
+
+Create engaging posts:
+
+```bash
+# Instagram carousel alternative
+mediaproc image stack slide1.jpg slide2.jpg slide3.jpg -d vertical
+
+# Twitter thread visual
+mediaproc image stack tweet1.png tweet2.png -d vertical -g 10 -b white
+```
+
+**Social Media**: Multi-image posts
+
+### 8. Comparison Charts
+
+Visual comparisons:
+
+```bash
+# Option comparison
+mediaproc image stack option-a.jpg option-b.jpg option-c.jpg -g 25 -b gray
+
+# Results comparison
+mediaproc image stack method1.jpg method2.jpg -a center
+```
+
+**Analysis**: Visual data comparison
+
+### 9. Architecture Plans
+
+Show multiple views:
+
+```bash
+# Floor plans
+mediaproc image stack floor1.jpg floor2.jpg floor3.jpg -d vertical -g 30
+
+# Elevations
+mediaproc image stack north.jpg south.jpg east.jpg west.jpg
+```
+
+**Architecture**: Comprehensive views
+
+### 10. Comic Strips
+
+Create comic panels:
+
+```bash
+# Horizontal comic strip
+mediaproc image stack panel*.jpg -g 5 -b black -o comic.jpg
+
+# Vertical comic page
+mediaproc image stack page*.jpg -d vertical
+```
+
+**Comics**: Panel sequences
+
+## Combining with Other Commands
+
+### Resize + Stack
+
+Ensure uniform sizes:
+
+```bash
+# Resize all to same height
+mediaproc image resize img1.jpg -h 1000 -o r1.jpg
+mediaproc image resize img2.jpg -h 1000 -o r2.jpg
+mediaproc image resize img3.jpg -h 1000 -o r3.jpg
+
+# Stack resized images
+mediaproc image stack r1.jpg r2.jpg r3.jpg
+```
+
+**Consistency**: Uniform appearance
+
+### Crop + Stack
+
+Crop then combine:
+
+```bash
+# Crop specific areas
+mediaproc image crop photo1.jpg --width 500 --height 500 -o crop1.jpg
+mediaproc image crop photo2.jpg --width 500 --height 500 -o crop2.jpg
+
+# Stack cropped images
+mediaproc image stack crop1.jpg crop2.jpg
+```
+
+**Precision**: Specific regions combined
+
+### Stack + Border
+
+Add frame after stacking:
+
+```bash
+# Stack images
+mediaproc image stack img1.jpg img2.jpg -o stacked.jpg
+
+# Add border to result
+mediaproc image border stacked.jpg --width 20 --color black
+```
+
+**Framing**: Professional finish
+
+### Stack + Watermark
+
+Watermark stacked result:
+
+```bash
+# Stack
+mediaproc image stack before.jpg after.jpg -o comparison.jpg
+
+# Add watermark
+mediaproc image watermark comparison.jpg --text "© 2024"
+```
+
+**Protection**: Watermarked comparison
+
+## Technical Details
+
+### Canvas Calculation
+
+**Horizontal stacking**:
+
+- Width: Sum of all image widths + gaps
+- Height: Maximum image height
+
+**Vertical stacking**:
+
+- Width: Maximum image width
+- Height: Sum of all image heights + gaps
+
+Example (horizontal, 3 images, 10px gap):
+
+- Image 1: 800×600
+- Image 2: 1000×500
+- Image 3: 900×700
+- Canvas: 2720×700 (800+1000+900+20 gap, max height 700)
+
+### Alignment Logic
+
+Images positioned based on alignment:
+
+**Horizontal + center**:
+
+- Each image vertically centered in canvas
+- Canvas height = tallest image
+
+**Vertical + start**:
+
+- All images aligned to left edge
+- Canvas width = widest image
+
+### Gaps
+
+Gap pixels added between images:
+
+- N images = (N-1) gaps
+- Gap filled with background color
+- Total gap pixels = gap × (N-1)
+
+### Performance
+
+- **Fast**: Composite operation
+- **2 images**: ~100-200ms
+- **5 images**: ~200-400ms
+- **10+ images**: ~400ms-1s
+- Memory proportional to output size
+
+### File Formats
+
+- **Output**: Defaults to PNG
+- **Transparency**: Preserved with transparent background
+- **Quality**: Determined by output format
+
+## Best Practices
+
+### 1. Resize Images First
+
+Ensure consistent dimensions:
+
+```bash
+# Resize to same height for horizontal stack
+mediaproc image resize *.jpg -h 1000
+mediaproc image stack *-resized.jpg
+```
+
+### 2. Use Appropriate Background
+
+**Transparent**: For PNGs, overlays
+**White/Gray**: For clean professional look
+**Black**: For dramatic effect
+
+```bash
+# Professional
+mediaproc image stack *.jpg -b white -g 20
+```
+
+### 3. Choose Right Direction
+
+**Horizontal**: Side-by-side comparisons, wide displays
+**Vertical**: Timelines, step-by-step, mobile-friendly
+
+### 4. Add Gaps for Clarity
+
+Gaps improve visual separation:
+
+```bash
+# Clear separation
+mediaproc image stack img1.jpg img2.jpg -g 30
+```
+
+### 5. Test Alignment
+
+Preview different alignments:
+
+```bash
+# Test with dry-run
+mediaproc image stack *.jpg -a center --dry-run
+mediaproc image stack *.jpg -a start --dry-run
+mediaproc image stack *.jpg -a end --dry-run
+```
+
+### 6. Mind Output Size
+
+Large stacks create large files:
+
+```bash
+# 10 images at 2000×1500 each
+# Horizontal: 20000×1500 (30MP)
+# Consider resizing first
+```
+
+### 7. Use Verbose for Verification
+
+Check output dimensions:
+
+```bash
+mediaproc image stack *.jpg --verbose
+```
+
+## Troubleshooting
+
+### Issue: Images Different Sizes
+
+**Problem**: Images have different dimensions
+
+**Cause**: Source images varied sizes
+
+**Solution**: This is expected. Alignment handles size differences
+
+```bash
+# Center alignment handles varying heights
+mediaproc image stack img1.jpg img2.jpg -a center
+```
+
+### Issue: Output Too Large
+
+**Problem**: Stacked image very large
+
+**Cause**: Many images or large source images
+
+**Solution**: Resize images before stacking
+
+```bash
+# Resize first
+mediaproc image resize *.jpg -w 1000
+mediaproc image stack *-resized.jpg
+```
+
+### Issue: Gaps Not Visible
+
+**Problem**: Gap specified but not visible
+
+**Cause**: Gap color same as image content
+
+**Solution**: Use contrasting background color
+
+```bash
+# Visible gap
+mediaproc image stack *.jpg -g 20 -b white
+```
+
+### Issue: Wrong Alignment
+
+**Problem**: Images not aligned as expected
+
+**Cause**: Alignment confusion (start/center/end)
+
+**Solution**: Verify alignment option
+
+```bash
+# Horizontal: start=top, end=bottom
+# Vertical: start=left, end=right
+```
+
+### Issue: Transparency Lost
+
+**Problem**: Transparent areas become colored
+
+**Cause**: Background color specified
+
+**Solution**: Use transparent background explicitly
+
+```bash
+# Preserve transparency
+mediaproc image stack *.png --background transparent
+```
+
+### Issue: Need More Than 2 Images
+
+**Problem**: Only combining 2 images
+
+**Solution**: List all images as arguments
+
+```bash
+# Multiple images
+mediaproc image stack img1.jpg img2.jpg img3.jpg img4.jpg
+```
+
+## Related Commands
+
+- [split](./split.mdx) - Opposite operation (split into tiles)
+- [composite](./composite.mdx) - Overlay images
+- [grid](./grid.mdx) - Create image grids
+- [resize](./resize.mdx) - Resize before stacking
+
+## Further Reading
+
+- [Image Compositing](https://en.wikipedia.org/wiki/Compositing)
+- [Panoramic Photography](https://en.wikipedia.org/wiki/Panoramic_photography)
+- [Image Stitching](https://en.wikipedia.org/wiki/Image_stitching)
