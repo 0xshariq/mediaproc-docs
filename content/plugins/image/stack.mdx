@@ -1,0 +1,49 @@
+# stack
+
+Stack multiple images vertically or horizontally.
+
+## Usage
+
+```bash
+mediaproc image stack <inputs...> [options]
+```
+
+## Description
+
+The `stack` command combines multiple images by stacking them in a specified direction.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--direction` | string | vertical | Stack direction (vertical, horizontal) |
+| `--spacing` | number | 0 | Space between images (pixels) |
+| `--background` | string | #ffffff | Background color |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# Vertical stack
+mediaproc image stack img1.jpg img2.jpg img3.jpg -o stacked.jpg
+
+# Horizontal stack
+mediaproc image stack photo1.jpg photo2.jpg --direction horizontal -o horizontal.jpg
+
+# With spacing
+mediaproc image stack img1.jpg img2.jpg img3.jpg --spacing 20 --background "#000000" -o spaced.jpg
+```
+
+## Common Use Cases
+
+- **Before/After**: Stack comparison images
+- **Step-by-Step**: Show process steps
+- **Panoramas**: Combine landscape photos
+- **Infographics**: Stack information sections
+
+## See Also
+
+- [grid](./grid) - Create grid layouts
+- [composite](./composite) - Layer images

@@ -1,0 +1,721 @@
+# Universal Commands
+
+Universal commands work across the entire MediaProc CLI, regardless of which plugins you have installed. These commands manage the CLI itself, handle configuration, and provide essential utilities.
+
+## Command Overview
+
+| Command | Description |
+|---------|-------------|
+| `init` | Initialize a new MediaProc project |
+| `install` | Install one or more plugins |
+| `uninstall` | Remove installed plugins |
+| `list` | List installed or available plugins |
+| `update` | Update plugins to latest versions |
+| `delete` | Remove generated files or cache |
+| `config` | Manage configuration settings |
+| `validate` | Validate configuration and installations |
+| `help` | Display help information |
+| `info` | Get detailed plugin information |
+| `search` | Search for available plugins |
+| `login` | Authenticate with MediaProc services |
+| `create` | Create a new plugin from template |
+
+## init
+
+Initialize a new MediaProc project with default configuration and structure.
+
+### Usage
+
+```bash
+mediaproc init [directory]
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--template` | Project template to use | `default` |
+| `--plugins` | Comma-separated list of plugins to install | None |
+| `--no-git` | Skip Git initialization | `false` |
+| `--force` | Overwrite existing configuration | `false` |
+
+### Examples
+
+**Initialize in current directory:**
+```bash
+mediaproc init
+```
+
+**Initialize with specific plugins:**
+```bash
+mediaproc init --plugins image,video,audio
+```
+
+**Initialize from template:**
+```bash
+mediaproc init my-project --template web-optimization
+```
+
+**Force initialization in existing project:**
+```bash
+mediaproc init --force
+```
+
+### What it Does
+
+1. Creates `.mediaprocrc.json` configuration file
+2. Sets up `.mediaproc/` directory for cache and temp files
+3. Initializes Git repository (unless `--no-git`)
+4. Installs specified plugins (if `--plugins` provided)
+5. Creates example workflows and documentation
+
+### Example Output
+
+```
+✓ Created .mediaprocrc.json
+✓ Created .mediaproc/ directory
+✓ Initialized Git repository
+✓ Installed plugins: image, video
+✓ Created example workflows
+
+Project initialized successfully!
+
+Next steps:
+  1. Install additional plugins: mediaproc install <plugin>
+  2. Configure settings: mediaproc config set <key> <value>
+  3. Start processing: mediaproc image resize input.jpg output.jpg --width 800
+```
+
+## install
+
+Install one or more MediaProc plugins.
+
+### Usage
+
+```bash
+mediaproc install <plugin-names...>
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--all` | Install all available plugins | `false` |
+| `--save` | Save to project configuration | `true` |
+| `--verbose` | Show detailed installation logs | `false` |
+| `--no-deps` | Skip dependency installation | `false` |
+
+### Examples
+
+**Install single plugin:**
+```bash
+mediaproc install image
+```
+
+**Install multiple plugins:**
+```bash
+mediaproc install image video audio
+```
+
+**Install all plugins:**
+```bash
+mediaproc install --all
+```
+
+**Install with verbose output:**
+```bash
+mediaproc install video --verbose
+```
+
+## uninstall
+
+Remove installed plugins from your system.
+
+### Usage
+
+```bash
+mediaproc uninstall <plugin-names...>
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--clean` | Remove cache and temp files | `false` |
+| `--yes` | Skip confirmation prompt | `false` |
+
+### Examples
+
+**Uninstall single plugin:**
+```bash
+mediaproc uninstall image
+```
+
+**Uninstall with cleanup:**
+```bash
+mediaproc uninstall image --clean
+```
+
+**Uninstall without confirmation:**
+```bash
+mediaproc uninstall video --yes
+```
+
+## list
+
+List installed plugins or available plugins.
+
+### Usage
+
+```bash
+mediaproc list [plugin-name]
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--available` | Show available plugins instead of installed | `false` |
+| `--json` | Output in JSON format | `false` |
+| `--commands` | Show commands for each plugin | `false` |
+
+### Examples
+
+**List installed plugins:**
+```bash
+mediaproc list
+```
+
+**List available plugins:**
+```bash
+mediaproc list --available
+```
+
+**List with commands:**
+```bash
+mediaproc list --commands
+```
+
+**List specific plugin commands:**
+```bash
+mediaproc list image
+```
+
+**JSON output:**
+```bash
+mediaproc list --json
+```
+
+## update
+
+Update plugins to their latest versions.
+
+### Usage
+
+```bash
+mediaproc update [plugin-names...]
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--all` | Update all installed plugins | `false` |
+| `--check` | Check for updates without installing | `false` |
+| `--force` | Force update even if up-to-date | `false` |
+
+### Examples
+
+**Update single plugin:**
+```bash
+mediaproc update image
+```
+
+**Update all plugins:**
+```bash
+mediaproc update --all
+```
+
+**Check for updates:**
+```bash
+mediaproc update --check
+```
+
+**Force update:**
+```bash
+mediaproc update image --force
+```
+
+## delete
+
+Remove generated files, cache, or temporary data.
+
+### Usage
+
+```bash
+mediaproc delete <target>
+```
+
+### Targets
+
+| Target | Description |
+|--------|-------------|
+| `cache` | Clear plugin cache |
+| `temp` | Remove temporary files |
+| `logs` | Delete log files |
+| `all` | Remove all generated data |
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--plugin` | Target specific plugin | All plugins |
+| `--yes` | Skip confirmation prompt | `false` |
+
+### Examples
+
+**Clear cache:**
+```bash
+mediaproc delete cache
+```
+
+**Clear specific plugin cache:**
+```bash
+mediaproc delete cache --plugin image
+```
+
+**Remove all generated data:**
+```bash
+mediaproc delete all --yes
+```
+
+## config
+
+Manage MediaProc configuration settings.
+
+### Usage
+
+```bash
+mediaproc config <subcommand> [key] [value]
+```
+
+### Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `get` | Display configuration value |
+| `set` | Set configuration value |
+| `unset` | Remove configuration value |
+| `list` | List all configuration |
+| `reset` | Reset to default configuration |
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--global` | Use global configuration | `false` |
+| `--json` | Output in JSON format | `false` |
+
+### Examples
+
+**Get configuration value:**
+```bash
+mediaproc config get defaultQuality
+```
+
+**Set configuration value:**
+```bash
+mediaproc config set defaultQuality 90
+```
+
+**Set plugin-specific config:**
+```bash
+mediaproc config set image.defaultFormat webp
+```
+
+**List all configuration:**
+```bash
+mediaproc config list
+```
+
+**Reset configuration:**
+```bash
+mediaproc config reset
+```
+
+**Global configuration:**
+```bash
+mediaproc config set defaultQuality 85 --global
+```
+
+### Configuration Keys
+
+Common configuration keys:
+
+| Key | Type | Description | Default |
+|-----|------|-------------|---------|
+| `defaultQuality` | number | Default quality for optimizations | `85` |
+| `concurrency` | number | Number of parallel operations | `4` |
+| `cache` | boolean | Enable caching | `true` |
+| `verbose` | boolean | Enable verbose logging | `false` |
+| `stripMetadata` | boolean | Remove metadata by default | `false` |
+
+Plugin-specific keys:
+
+```bash
+# Image plugin
+mediaproc config set image.defaultFormat webp
+mediaproc config set image.defaultQuality 90
+
+# Video plugin
+mediaproc config set video.defaultCodec h264
+mediaproc config set video.preset medium
+```
+
+## validate
+
+Validate configuration files, plugin installations, and project setup.
+
+### Usage
+
+```bash
+mediaproc validate [target]
+```
+
+### Targets
+
+| Target | Description |
+|--------|-------------|
+| (none) | Validate entire configuration |
+| `config` | Validate configuration file only |
+| `plugins` | Validate plugin installations |
+| `project` | Validate project structure |
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--plugin` | Validate specific plugin | All plugins |
+| `--fix` | Attempt to fix issues | `false` |
+| `--json` | Output in JSON format | `false` |
+
+### Examples
+
+**Validate everything:**
+```bash
+mediaproc validate
+```
+
+**Validate configuration only:**
+```bash
+mediaproc validate config
+```
+
+**Validate specific plugin:**
+```bash
+mediaproc validate --plugin image
+```
+
+**Validate and fix issues:**
+```bash
+mediaproc validate --fix
+```
+
+### Example Output
+
+```
+Validating MediaProc configuration...
+
+✓ Configuration file is valid
+✓ All required plugins are installed
+✓ Plugin dependencies are satisfied
+✗ Cache directory has excessive size (512 MB)
+
+Issues found: 1
+Run with --fix to attempt automatic repairs.
+```
+
+## help
+
+Display help information for commands and plugins.
+
+### Usage
+
+```bash
+mediaproc help [command]
+mediaproc <plugin> help [command]
+```
+
+### Examples
+
+**General help:**
+```bash
+mediaproc help
+mediaproc --help
+```
+
+**Command help:**
+```bash
+mediaproc help install
+mediaproc install --help
+```
+
+**Plugin help:**
+```bash
+mediaproc image help
+mediaproc image --help
+```
+
+**Plugin command help:**
+```bash
+mediaproc image resize --help
+```
+
+## info
+
+Get detailed information about a plugin, including version, dependencies, and commands.
+
+### Usage
+
+```bash
+mediaproc info <plugin-name>
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--deps` | Show dependencies | `false` |
+| `--commands` | List all commands | `false` |
+| `--changelog` | Show recent changes | `false` |
+| `--compat` | Check system compatibility | `false` |
+| `--json` | Output in JSON format | `false` |
+
+### Examples
+
+**Basic plugin info:**
+```bash
+mediaproc info image
+```
+
+**Show dependencies:**
+```bash
+mediaproc info image --deps
+```
+
+**Show commands:**
+```bash
+mediaproc info image --commands
+```
+
+**Check compatibility:**
+```bash
+mediaproc info video --compat
+```
+
+## search
+
+Search for available plugins by name, description, or tags.
+
+### Usage
+
+```bash
+mediaproc search <query>
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--tag` | Filter by tag | None |
+| `--community` | Include community plugins | `false` |
+| `--json` | Output in JSON format | `false` |
+
+### Examples
+
+**Search by keyword:**
+```bash
+mediaproc search video
+```
+
+**Search by tag:**
+```bash
+mediaproc search --tag optimization
+```
+
+**Include community plugins:**
+```bash
+mediaproc search image --community
+```
+
+## login
+
+Authenticate with MediaProc services for premium features, cloud storage, or private plugins.
+
+### Usage
+
+```bash
+mediaproc login
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--token` | Use authentication token | None |
+| `--account` | Specify account name | None |
+
+### Examples
+
+**Interactive login:**
+```bash
+mediaproc login
+```
+
+**Login with token:**
+```bash
+mediaproc login --token YOUR_TOKEN
+```
+
+**Login to specific account:**
+```bash
+mediaproc login --account mycompany
+```
+
+## create
+
+Create a new plugin from a template.
+
+### Usage
+
+```bash
+mediaproc create <plugin-name>
+```
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--template` | Plugin template to use | `basic` |
+| `--directory` | Output directory | Current directory |
+| `--language` | Programming language | `typescript` |
+
+### Examples
+
+**Create basic plugin:**
+```bash
+mediaproc create my-plugin
+```
+
+**Create from template:**
+```bash
+mediaproc create my-plugin --template advanced
+```
+
+**Specify output directory:**
+```bash
+mediaproc create my-plugin --directory ./plugins/
+```
+
+### Available Templates
+
+- `basic` - Simple plugin structure
+- `advanced` - Full-featured plugin with examples
+- `cli` - CLI-focused plugin
+- `api` - API-focused plugin
+
+## Environment Variables
+
+Control MediaProc behavior with environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MEDIAPROC_CONFIG` | Path to config file | `.mediaprocrc.json` |
+| `MEDIAPROC_CACHE_DIR` | Cache directory | `.mediaproc/cache` |
+| `MEDIAPROC_LOG_LEVEL` | Logging level (`debug`, `info`, `warn`, `error`) | `info` |
+| `MEDIAPROC_NO_COLOR` | Disable colored output | `false` |
+| `MEDIAPROC_CONCURRENCY` | Number of parallel operations | `4` |
+
+### Examples
+
+```bash
+# Use custom config file
+MEDIAPROC_CONFIG=./custom-config.json mediaproc list
+
+# Enable debug logging
+MEDIAPROC_LOG_LEVEL=debug mediaproc image resize input.jpg output.jpg --width 800
+
+# Disable colors
+MEDIAPROC_NO_COLOR=1 mediaproc list
+```
+
+## Exit Codes
+
+MediaProc uses standard exit codes:
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | General error |
+| `2` | Invalid arguments |
+| `3` | Plugin not found |
+| `4` | File not found |
+| `5` | Permission denied |
+| `6` | Configuration error |
+| `7` | Network error |
+
+## Best Practices
+
+### 1. Use Configuration Files
+
+Store settings in `.mediaprocrc.json` instead of passing options every time:
+
+```json
+{
+  "defaultQuality": 90,
+  "cache": true,
+  "image": {
+    "defaultFormat": "webp"
+  }
+}
+```
+
+### 2. Validate Regularly
+
+Run validation after changes:
+
+```bash
+mediaproc validate
+```
+
+### 3. Keep Plugins Updated
+
+Check for updates weekly:
+
+```bash
+mediaproc update --check
+```
+
+### 4. Clean Up Periodically
+
+Clear cache to free disk space:
+
+```bash
+mediaproc delete cache
+```
+
+### 5. Use Help Commands
+
+Don't memorize everything - use built-in help:
+
+```bash
+mediaproc help
+mediaproc image resize --help
+```
+
+## See Also
+
+- [CLI Overview](/docs/cli/overview) - General CLI introduction
+- [Plugin Management](/docs/cli/plugin-management) - Managing plugins
+- [Configuration](/docs/configuration) - Advanced configuration
+- [Creating Plugins](/docs/community/creating-plugins) - Build custom plugins

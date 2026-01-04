@@ -1,0 +1,441 @@
+# batch
+
+Process multiple images at once with any operation - perfect for bulk processing and automated workflows.
+
+## Usage
+
+```bash
+mediaproc image batch <directory> --operation <operation> [options]
+```
+
+## Description
+
+The `batch` command processes multiple images in a directory with a single operation. It automatically finds all image files, applies the specified operation, and saves results to an output directory while preserving the folder structure.
+
+Perfect for:
+- Bulk image conversion
+- Mass resizing for web galleries  
+- Batch format optimization
+- Automated photo workflows
+- Directory-wide transformations
+- Recursive folder processing
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--operation` | string | *required* | Operation to perform (see list below) |
+| `-o, --output` | path | `./output` | Output directory |
+| `-p, --pattern` | glob | `*.{jpg,jpeg,png,webp,gif}` | File pattern to match |
+| `-r, --recursive` | flag | - | Process subdirectories recursively |
+| `--width` | number | - | Width in pixels (for resize/thumbnail) |
+| `--height` | number | - | Height in pixels (for resize/thumbnail) |
+| `-f, --format` | string | - | Output format (for convert operation) |
+| `-q, --quality` | number | varies | Output quality (1-100) |
+| `--sigma` | number | 5 | Blur sigma (for blur operation) |
+| `--dry-run` | flag | - | Preview changes without executing |
+| `-v, --verbose` | flag | - | Show detailed output |
+
+## Supported Operations
+
+| Operation | Description | Required Options | Example |
+|-----------|-------------|------------------|---------|
+| `resize` | Resize images | `--width` and/or `--height` | Resize to 1920px wide |
+| `convert` | Convert format | `--format` | Convert to WebP |
+| `optimize` | Optimize file size | `--quality` (optional) | Reduce file size |
+| `grayscale` | Convert to grayscale | None | Black and white |
+| `blur` | Apply blur effect | `--sigma` (optional) | Blur with sigma 5 |
+| `sharpen` | Sharpen images | None | Enhance edges |
+| `thumbnail` | Generate thumbnails | `--width`, `--height` (optional) | Create 200x200 thumbs |
+| `sepia` | Apply sepia tone | None | Vintage brown tone |
+| `normalize` | Auto-normalize colors | None | Balance histogram |
+
+## Examples
+
+### Basic Batch Operations
+
+```bash
+# Resize all images to 1920px wide
+mediaproc image batch ./photos --operation resize --width 1920
+
+# Convert all images to WebP
+mediaproc image batch ./images --operation convert --format webp
+
+# Optimize all JPGs to 85% quality
+mediaproc image batch ./gallery --operation optimize --quality 85
+
+# Convert all to grayscale
+mediaproc image batch ./pics --operation grayscale
+```
+
+### Custom Output Directory
+
+```bash
+# Save to specific folder
+mediaproc image batch ./originals --operation resize --width 800 --output ./web
+
+# Preserve structure in output
+mediaproc image batch ./source --operation convert --format webp -o ./converted
+```
+
+### Recursive Processing
+
+```bash
+# Process all subdirectories
+mediaproc image batch ./photos --operation resize --width 1920 --recursive
+
+# Convert entire folder tree to PNG
+mediaproc image batch ./images --operation convert --format png -r -o ./pngs
+```
+
+### Thumbnail Generation
+
+```bash
+# Create 200x200 square thumbnails
+mediaproc image batch ./photos --operation thumbnail --width 200 --height 200 -o ./thumbs
+
+# Create 150px wide thumbnails (maintaining aspect ratio)
+mediaproc image batch ./gallery --operation thumbnail --width 150
+```
+
+### Format Conversion
+
+```bash
+# Convert all to WebP with 90% quality
+mediaproc image batch ./jpgs --operation convert --format webp --quality 90
+
+# Convert PNGs to JPG
+mediaproc image batch ./pngs --operation convert --format jpg --quality 85
+
+# Convert to AVIF (modern format)
+mediaproc image batch ./images --operation convert --format avif --quality 80
+```
+
+### Image Enhancement
+
+```bash
+# Sharpen all images
+mediaproc image batch ./photos --operation sharpen
+
+# Apply sepia tone to collection
+mediaproc image batch ./vintage --operation sepia -o ./sepia-toned
+
+# Normalize color balance
+mediaproc image batch ./scans --operation normalize
+```
+
+### Effects Processing
+
+```bash
+# Apply blur to all images
+mediaproc image batch ./photos --operation blur --sigma 5
+
+# Strong blur for backgrounds
+mediaproc image batch ./backgrounds --operation blur --sigma 10
+```
+
+### Dry Run (Preview)
+
+```bash
+# Preview what would be processed
+mediaproc image batch ./photos --operation resize --width 1920 --dry-run
+
+# Check file count before processing
+mediaproc image batch ./large-folder --operation optimize --dry-run -v
+```
+
+### Verbose Mode
+
+```bash
+# See detailed processing info
+mediaproc image batch ./photos --operation convert --format webp -v
+
+# Monitor progress with errors
+mediaproc image batch ./mixed --operation optimize -q 85 -v
+```
+
+## Output Structure
+
+The batch command preserves your directory structure:
+
+```
+Input:
+photos/
+  ├── vacation/
+  │   ├── beach.jpg
+  │   └── sunset.jpg
+  └── family/
+      └── reunion.jpg
+
+Output (after batch resize):
+output/
+  ├── vacation/
+  │   ├── beach-resize.jpg
+  │   └── sunset-resize.jpg
+  └── family/
+      └── reunion-resize.jpg
+```
+
+Features:
+- Maintains folder hierarchy
+- Creates subdirectories automatically
+- Adds operation suffix to filenames
+- Never overwrites originals (unless output = input)
+
+## Operation-Specific Details
+
+### resize Operation
+
+Resizes images while maintaining aspect ratio:
+
+```bash
+# Width only (height auto-calculated)
+mediaproc image batch ./photos --operation resize --width 1920
+
+# Height only (width auto-calculated)
+mediaproc image batch ./photos --operation resize --height 1080
+
+# Both dimensions (fit inside bounds)
+mediaproc image batch ./photos --operation resize --width 1920 --height 1080
+```
+
+Uses `fit: 'inside'` mode - ensures images don't exceed specified dimensions.
+
+### convert Operation
+
+Changes image format:
+
+```bash
+# To WebP with quality
+mediaproc image batch ./jpgs --operation convert --format webp --quality 90
+
+# To PNG (lossless)
+mediaproc image batch ./images --operation convert --format png
+
+# To AVIF (modern, smaller)
+mediaproc image batch ./photos --operation convert --format avif --quality 80
+```
+
+Supported formats: jpg, png, webp, avif, tiff, gif
+
+### optimize Operation
+
+Reduces file size by re-encoding with quality setting:
+
+```bash
+# Optimize with 85% quality (good balance)
+mediaproc image batch ./photos --operation optimize --quality 85
+
+# High quality optimization
+mediaproc image batch ./important --operation optimize --quality 95
+
+# Aggressive compression
+mediaproc image batch ./thumbnails --operation optimize --quality 70
+```
+
+Maintains original format.
+
+### thumbnail Operation
+
+Creates small versions of images:
+
+```bash
+# Square thumbnails (cropped)
+mediaproc image batch ./photos --operation thumbnail --width 200 --height 200
+
+# Width-only thumbnails (aspect ratio preserved)
+mediaproc image batch ./gallery --operation thumbnail --width 150
+
+# Default 200x200 thumbnails
+mediaproc image batch ./images --operation thumbnail
+```
+
+Uses `fit: 'cover'` mode for square thumbnails (crops to exact dimensions).
+
+### grayscale Operation
+
+Converts to black and white:
+
+```bash
+# Simple grayscale conversion
+mediaproc image batch ./photos --operation grayscale
+
+# Artistic black and white
+mediaproc image batch ./portraits --operation grayscale -o ./bw
+```
+
+No additional options needed.
+
+### blur Operation
+
+Applies Gaussian blur:
+
+```bash
+# Default blur (sigma 5)
+mediaproc image batch ./backgrounds --operation blur
+
+# Light blur (sigma 2)
+mediaproc image batch ./photos --operation blur --sigma 2
+
+# Strong blur (sigma 10)
+mediaproc image batch ./images --operation blur --sigma 10
+```
+
+Higher sigma = more blur.
+
+### sharpen Operation
+
+Enhances edge definition:
+
+```bash
+# Standard sharpening
+mediaproc image batch ./photos --operation sharpen
+
+# Sharpen scanned documents
+mediaproc image batch ./scans --operation sharpen
+```
+
+Uses default Sharp.js sharpening algorithm.
+
+### sepia Operation
+
+Applies vintage brown tone:
+
+```bash
+# Sepia tone effect
+mediaproc image batch ./vintage --operation sepia
+
+# Old photo look
+mediaproc image batch ./modern --operation sepia -o ./vintage-style
+```
+
+Fixed intensity (80%). Future versions may support custom intensity.
+
+### normalize Operation
+
+Auto-balances colors and contrast:
+
+```bash
+# Normalize histogram
+mediaproc image batch ./photos --operation normalize
+
+# Fix color casts in scans
+mediaproc image batch ./scans --operation normalize
+```
+
+Equivalent to running `normalize` command on each file.
+
+## Best Practices
+
+1. **Use --dry-run First**: Preview before processing large batches
+2. **Backup Originals**: Keep copies before batch operations
+3. **Separate Output**: Use custom output directory to preserve originals
+4. **Check Quality**: Test quality settings on few files first
+5. **Monitor Progress**: Use -v for large batches
+6. **Recursive Carefully**: Ensure you want all subdirectories processed
+
+## Performance Tips
+
+- Process hundreds of images efficiently
+- Operations run sequentially (one at a time)
+- Recursive mode scans all subdirectories
+- Use appropriate quality settings to balance speed/size
+- Consider parallel processing for thousands of files (future feature)
+
+## Common Workflows
+
+### Web Gallery Preparation
+
+```bash
+# 1. Create web-sized images
+mediaproc image batch ./originals --operation resize --width 1920 -o ./web-full
+
+# 2. Generate thumbnails
+mediaproc image batch ./originals --operation thumbnail --width 300 --height 300 -o ./web-thumbs
+
+# 3. Optimize both
+mediaproc image batch ./web-full --operation optimize --quality 85
+mediaproc image batch ./web-thumbs --operation optimize --quality 80
+```
+
+### Format Migration
+
+```bash
+# Convert entire library to WebP
+mediaproc image batch ./photo-library --operation convert --format webp --quality 90 -r -o ./webp-library
+```
+
+### Photo Organization
+
+```bash
+# Normalize all scans
+mediaproc image batch ./scans --operation normalize -r -o ./normalized
+
+# Then sharpen
+mediaproc image batch ./normalized --operation sharpen -o ./final
+```
+
+### Social Media Prep
+
+```bash
+# Resize for Instagram (1080px)
+mediaproc image batch ./photos --operation resize --width 1080 -o ./instagram
+
+# Add sepia filter for vintage aesthetic
+mediaproc image batch ./instagram --operation sepia -o ./vintage-posts
+```
+
+## Limitations
+
+Current limitations (may be addressed in future versions):
+
+- **Sequential Processing**: Processes one file at a time (no parallel)
+- **Single Operation**: Can't chain operations in one command
+- **Fixed Naming**: Output names always have operation suffix
+- **No Filtering**: Processes all matching files (can't skip some)
+
+## Future Enhancements
+
+*These features are planned but not yet implemented:*
+
+- **Parallel processing**: Process multiple images simultaneously (FUTURE)
+- **Operation chaining**: Apply multiple operations in sequence (FUTURE)
+- **Custom naming**: Template-based output filenames (FUTURE)
+- **Conditional processing**: Skip files based on criteria (FUTURE)
+- **Progress bar**: Visual progress indicator (FUTURE)
+- **Resume capability**: Continue interrupted batch jobs (FUTURE)
+
+## Troubleshooting
+
+**No files found:**
+- Check directory path is correct
+- Verify images have supported extensions
+- Try --verbose to see what's happening
+
+**Some files failed:**
+- Use --verbose to see specific errors
+- Check file permissions
+- Verify files aren't corrupted
+
+**Output structure unexpected:**
+- Check if --recursive is needed
+- Verify output directory setting
+- Review directory structure with --dry-run
+
+**Taking too long:**
+- Normal for large batches (sequential processing)
+- Consider processing subsets separately
+- Check file sizes (large files take longer)
+
+**Quality issues:**
+- Adjust --quality setting
+- Test on small batch first
+- Consider using lossless formats (PNG)
+
+## See Also
+
+- [resize](./resize) - Individual image resizing
+- [convert](./convert) - Format conversion
+- [optimize](./optimize) - File size optimization
+- [thumbnail](./thumbnail) - Thumbnail generation (single)
+- [grayscale](./grayscale) - Grayscale conversion (single)

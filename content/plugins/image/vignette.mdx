@@ -1,0 +1,55 @@
+# vignette
+
+Apply vignette effect (darkened corners).
+
+## Usage
+
+```bash
+mediaproc image vignette <input> [options]
+```
+
+## Description
+
+The `vignette` command adds a darkened edge effect to images, drawing focus to the center.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--strength` | number | 0.5 | Vignette strength (0-1) |
+| `--radius` | number | 0.7 | Vignette radius (0-1) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# Subtle vignette
+mediaproc image vignette photo.jpg --strength 0.3 -o subtle.jpg
+
+# Strong vignette
+mediaproc image vignette portrait.jpg --strength 0.8 -o dramatic.jpg
+
+# Custom radius
+mediaproc image vignette image.jpg --strength 0.5 --radius 0.8 -o custom.jpg
+```
+
+## Best Practices
+
+1. **Subtle Effect**: Start with 0.3-0.5 strength
+2. **Portraits**: Draws attention to subject
+3. **Radius**: Larger radius = softer transition
+4. **Quality**: Use high quality (85+)
+
+## Common Use Cases
+
+- **Portrait Photography**: Focus on subject
+- **Artistic Effects**: Vintage/dramatic look
+- **Focus Enhancement**: Direct viewer attention
+- **Instagram Filters**: Popular filter effect
+
+## See Also
+
+- [blur](./blur) - Blur effects
+- [modulate](./modulate) - Adjust brightness

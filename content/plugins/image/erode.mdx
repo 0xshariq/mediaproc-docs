@@ -1,0 +1,428 @@
+---
+title: "erode"
+description: "Apply morphological erosion to shrink bright regions and remove noise"
+---
+
+# erode
+
+Apply morphological erosion to expand dark regions and shrink bright areas.
+
+## Usage
+
+```bash
+mediaproc image erode <input> [options]
+```
+
+## Description
+
+The `erode` command applies morphological erosion, a fundamental operation in image processing that expands dark (low-value) regions while shrinking bright (high-value) regions. This is the opposite of dilation. Erosion is useful for:
+- **Noise removal**: Remove small bright spots and noise
+- **Object separation**: Separate touching or connected objects
+- **Thinning**: Thin bright features like text or lines
+- **Border creation**: Create borders around objects
+- **Mask refinement**: Clean up binary masks for segmentation
+
+Uses a 3×3 kernel that examines each pixel and its 8 neighbors, replacing the center pixel with the minimum value in the neighborhood.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `<input>` | string | *required* | Input image file path |
+| `-o, --output` | string | `<input>_eroded.<ext>` | Output file path |
+| `-q, --quality` | number | `90` | Output quality 1-100 |
+| `--dry-run` | boolean | `false` | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false` | Enable verbose logging |
+
+## Examples
+
+### Basic Erosion
+
+Apply erosion to shrink bright regions:
+
+```bash
+# Erode binary mask
+mediaproc image erode mask.png -o eroded_mask.png
+
+# Remove bright noise
+mediaproc image erode noisy.jpg -o clean.jpg
+
+# Thin text or lines
+mediaproc image erode text.png -o thinned.png
+
+# Shrink white regions
+mediaproc image erode binary.jpg -o shrunk.jpg
+```
+
+### Quality Control
+
+```bash
+# High quality output
+mediaproc image erode mask.png -q 95 -o high_quality.png
+
+# Standard quality
+mediaproc image erode image.jpg -q 90 -o eroded.jpg
+
+# Lower quality for previews
+mediaproc image erode binary.png -q 80 -o preview.png
+```
+
+### Multiple Erosions
+
+Apply erosion multiple times for stronger effect:
+
+```bash
+# Single erosion
+mediaproc image erode mask.png -o eroded1.png
+
+# Double erosion (stronger effect)
+mediaproc image erode mask.png -o temp.png
+mediaproc image erode temp.png -o eroded2.png
+rm temp.png
+
+# Triple erosion
+mediaproc image erode mask.png -o temp1.png
+mediaproc image erode temp1.png -o temp2.png
+mediaproc image erode temp2.png -o eroded3.png
+rm temp1.png temp2.png
+```
+
+### Morphological Opening
+
+Combine erosion then dilation to remove noise:
+
+```bash
+# Opening operation: erode → dilate
+# Removes small bright spots while preserving size
+mediaproc image erode noisy.png -o temp_eroded.png
+mediaproc image dilate temp_eroded.png -o opened.png
+rm temp_eroded.png
+
+# Stronger opening (multiple iterations)
+mediaproc image erode noisy.png -o temp1.png
+mediaproc image erode temp1.png -o temp2.png
+mediaproc image dilate temp2.png -o temp3.png
+mediaproc image dilate temp3.png -o opened_strong.png
+rm temp1.png temp2.png temp3.png
+```
+
+### Separating Connected Objects
+
+Break apart touching objects:
+
+```bash
+# Separate touching characters
+mediaproc image erode text_blob.png -o separated_text.png
+
+# Split merged objects
+mediaproc image erode connected.jpg -o split.jpg
+
+# Break connected components
+mediaproc image erode merged.png -o individual.png
+```
+
+### Batch Processing
+
+Apply erosion to multiple images:
+
+```bash
+# Erode all masks
+for file in masks/*.png; do
+  mediaproc image erode "$file" -o "eroded/${file##*/}"
+done
+
+# Process binary images
+for img in binary/*.jpg; do
+  mediaproc image erode "$img" -o "processed/${img##*/}"
+done
+
+# Erode with quality setting
+for file in *.png; do
+  mediaproc image erode "$file" -q 95 -o "output/${file}"
+done
+```
+
+### Edge Detection
+
+Detect edges by subtracting eroded from original:
+
+```bash
+# Edge detection workflow
+mediaproc image erode image.jpg -o eroded.jpg
+# Then use external tool to subtract eroded from original
+# Result shows object boundaries
+```
+
+### Text Processing
+
+Process text in images:
+
+```bash
+# Thin bold text
+mediaproc image erode bold_text.png -o thin_text.png
+
+# Separate touching characters
+mediaproc image erode connected_text.jpg -o readable.jpg
+
+# Remove text artifacts
+mediaproc image erode noisy_text.png -o clean_text.png
+```
+
+### Document Cleanup
+
+Clean scanned documents:
+
+```bash
+# Remove scanning noise
+mediaproc image erode scan.jpg -o clean_scan.jpg
+
+# Thin thick text
+mediaproc image erode thick_document.png -o readable.png
+
+# Remove dust and spots
+mediaproc image erode dusty.jpg -o cleaned.jpg
+```
+
+### Dry Run Testing
+
+Test erosion before processing:
+
+```bash
+# Preview erosion
+mediaproc image erode mask.png --dry-run
+
+# Test batch operation
+for file in *.png; do
+  mediaproc image erode "$file" --dry-run
+done
+```
+
+### Verbose Processing
+
+Monitor erosion operations:
+
+```bash
+# See processing details
+mediaproc image erode mask.png -v -o eroded.png
+
+# Debug batch processing
+for file in *.jpg; do
+  mediaproc image erode "$file" -v -o "output/${file}"
+done
+```
+
+## How Erosion Works
+
+### Morphological Operation
+
+Erosion examines each pixel and its 8 neighbors in a 3×3 grid:
+
+```
+Kernel:
+-1 -1 -1
+-1  8 -1
+-1 -1 -1
+
+Operation:
+For each pixel, replace with MINIMUM value in 3×3 neighborhood
+```
+
+**Effect**:
+- Dark pixels expand into neighboring bright pixels
+- Bright regions shrink
+- Small bright spots disappear
+- Objects decrease in size
+
+### Visual Example
+
+```
+Before (binary):           After erosion:
+0 0 0 0 0                 0 0 0 0 0
+0 1 1 0 0                 0 0 0 0 0
+0 1 1 1 0    →           0 0 1 0 0
+0 0 1 1 0                 0 0 0 0 0
+0 0 0 0 0                 0 0 0 0 0
+
+Notice: Size decreased, small features removed
+```
+
+## Common Use Cases
+
+### Noise Removal
+
+```bash
+# Remove small bright spots (salt noise)
+mediaproc image erode noisy.png -o denoised.png
+
+# Clean up scanning artifacts
+mediaproc image erode scan.jpg -o clean.jpg
+```
+
+### Object Separation
+
+```bash
+# Separate touching components
+mediaproc image erode connected_objects.png -o separated.png
+
+# Break apart merged regions
+mediaproc image erode merged.jpg -o individual_objects.jpg
+```
+
+### Text Processing
+
+```bash
+# Thin thick text lines
+mediaproc image erode bold_text.png -o thin.png
+
+# Separate connected characters
+mediaproc image erode touching_chars.jpg -o readable.jpg
+```
+
+### Medical Imaging
+
+```bash
+# Remove noise from medical scan
+mediaproc image erode xray.png -o clean_xray.png
+
+# Separate connected tissue regions
+mediaproc image erode tissue.jpg -o separated_tissue.jpg
+```
+
+## Best Practices
+
+1. **Work with Binary/Grayscale**: Erosion works best on high-contrast or binary images
+2. **Multiple Iterations**: Apply multiple times for stronger effects
+3. **Combine with Dilation**: Use opening (erode→dilate) to remove noise without size change
+4. **Quality for Masks**: Use PNG format for binary masks to preserve sharp edges
+5. **Test First**: Use dry-run to verify operation before batch processing
+6. **Preserve Originals**: Always keep original files for comparison
+7. **Monitor Results**: Use verbose mode for troubleshooting
+
+## Morphological Workflows
+
+### Opening (Remove Noise)
+
+```bash
+# Remove small bright noise while preserving size
+mediaproc image erode input.png -o temp_eroded.png
+mediaproc image dilate temp_eroded.png -o opened.png
+rm temp_eroded.png
+```
+
+### Morphological Gradient
+
+```bash
+# Gradient = dilated - eroded
+# Highlights object boundaries
+mediaproc image dilate input.png -o dilated.png
+mediaproc image erode input.png -o eroded.png
+# Subtract eroded from dilated using external tool
+```
+
+### Black Top-Hat
+
+```bash
+# Black top-hat = closed - original
+# Extracts small dark features
+# (closing = dilate then erode)
+mediaproc image dilate input.png -o temp1.png
+mediaproc image erode temp1.png -o closed.png
+# Subtract original from closed
+```
+
+## Performance Tips
+
+1. **Format Selection**: PNG for binary masks, JPEG for grayscale
+2. **Quality Settings**: Use lower quality for intermediate results
+3. **Batch Efficiency**: Process similar images together
+4. **Iteration Control**: More iterations = more processing time
+5. **File Size**: Erosion doesn't significantly increase file size
+
+## Troubleshooting
+
+### Objects Too Small After Erosion
+
+**Problem**: Eroded objects are too small or disappeared.
+
+**Solutions**:
+```bash
+# Use single erosion instead of multiple
+mediaproc image erode mask.png -o eroded.png
+
+# Apply dilation after to grow back
+mediaproc image erode mask.png -o temp.png
+mediaproc image dilate temp.png -o balanced.png
+rm temp.png
+```
+
+### Objects Still Connected
+
+**Problem**: Touching objects still not separated.
+
+**Solutions**:
+```bash
+# Apply multiple erosions
+mediaproc image erode mask.png -o temp1.png
+mediaproc image erode temp1.png -o temp2.png
+mediaproc image erode temp2.png -o separated.png
+rm temp1.png temp2.png
+
+# Then dilate back to restore size
+mediaproc image dilate separated.png -o restored.png
+```
+
+### Not Enough Effect
+
+**Problem**: Noise still visible after erosion.
+
+**Solutions**:
+```bash
+# Apply multiple erosions
+mediaproc image erode noisy.png -o temp1.png
+mediaproc image erode temp1.png -o temp2.png
+mediaproc image erode temp2.png -o clean.png
+rm temp1.png temp2.png
+
+# Use morphological opening
+mediaproc image erode noisy.png -o temp_e.png
+mediaproc image dilate temp_e.png -o opened.png
+rm temp_e.png
+```
+
+### Quality Loss
+
+**Problem**: Output looks pixelated.
+
+**Solutions**:
+```bash
+# Increase quality
+mediaproc image erode mask.png -q 95 -o high_quality.png
+
+# Use PNG for binary images
+mediaproc image erode binary.jpg -o eroded.png
+
+# Ensure source is high resolution
+```
+
+### Too Much Erosion
+
+**Problem**: Important features removed.
+
+**Solutions**:
+```bash
+# Use single pass only
+mediaproc image erode mask.png -o eroded.png
+
+# Apply gentler erosion then dilate
+mediaproc image erode mask.png -o temp.png
+mediaproc image dilate temp.png -o balanced.png
+rm temp.png
+```
+
+## See Also
+
+- [dilate](./dilate) - Opposite operation (expand bright regions)
+- [blur](./blur) - Similar smoothing effect but not morphological
+- [threshold](./threshold) - Convert to binary before erosion
+- [boolean](./boolean) - Combine eroded masks with other operations
+- [convolve](./convolve) - Custom kernel operations

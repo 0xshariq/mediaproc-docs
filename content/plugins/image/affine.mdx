@@ -1,6 +1,6 @@
 # affine
 
-Apply affine transformations (rotate, scale, shear).
+Apply affine transformation matrix for custom scaling, rotation, shearing, and reflection.
 
 ## Usage
 
@@ -10,29 +10,159 @@ mediaproc image affine <input> [options]
 
 ## Description
 
-The `affine` command applies complex affine transformations including rotation, scaling, and shearing in one operation.
+The `affine` command applies a 2x2 or 2x3 affine transformation matrix to an image, enabling precise control over scaling, rotation, shearing, and reflection transformations. This is a low-level transformation tool for advanced use cases where the built-in rotate, resize, or flip commands don't provide enough control.
 
 ## Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--matrix` | string | - | Affine transformation matrix |
-| `-b, --background` | string | #000000 | Background color |
-| `-f, --format` | string | - | Output format |
-| `-q, --quality` | number | 80 | Output quality |
+| `-o, --output` | path | `<input>-affine.<ext>` | Output file path |
+| `--matrix` | string | `[1,0,0,1]` | Affine matrix as JSON array: [a,b,c,d] or [a,b,c,d,e,f] |
+| `--background` | color | `transparent` | Background color for empty areas (hex, rgb, or name) |
+| `--interpolator` | string | `bilinear` | Interpolation: nearest, bilinear, bicubic, nohalo, lbb, vsqbs |
+| `-q, --quality` | number | 90 | Output quality (1-100) |
+| `--dry-run` | flag | - | Preview changes without executing |
+| `-v, --verbose` | flag | - | Show detailed output |
+
+## Matrix Format
+
+The matrix defines how pixels are transformed:
+
+**2x2 Matrix [a, b, c, d]:**
+- `a`: horizontal scaling
+- `b`: horizontal shearing
+- `c`: vertical shearing  
+- `d`: vertical scaling
+
+**Identity matrix [1,0,0,1]** = no change (original image)
 
 ## Examples
 
-```bash
-# Rotate and scale
-mediaproc image affine photo.jpg --matrix "1.2,0,0,0,1.2,0" -o transformed.jpg
+### Basic Transformations
 
-# Complex transformation
-mediaproc image affine image.jpg --matrix "0.9,0.2,-50,0.2,0.9,-50" -o complex.jpg
+```bash
+# Scale 2x in both directions
+mediaproc image affine image.jpg --matrix "[2,0,0,2]"
+
+# Scale 0.5x (downscale)
+mediaproc image affine photo.jpg --matrix "[0.5,0,0,0.5]"
+
+# Horizontal flip
+mediaproc image affine pic.jpg --matrix "[-1,0,0,1]"
+
+# Vertical flip
+mediaproc image affine image.jpg --matrix "[1,0,0,-1]"
 ```
+
+### Shearing Transformations
+
+```bash
+# Horizontal shear (slant right)
+mediaproc image affine photo.jpg --matrix "[1,0.5,0,1]"
+
+# Vertical shear (slant down)
+mediaproc image affine image.jpg --matrix "[1,0,0.5,1]"
+
+# Both horizontal and vertical shear
+mediaproc image affine pic.jpg --matrix "[1,0.3,0.2,1]"
+```
+
+### Advanced Transformations
+
+```bash
+# Downscale with high-quality interpolation
+mediaproc image affine image.jpg --matrix "[0.5,0,0,0.5]" --interpolator bicubic
+
+# Transform with custom background color
+mediaproc image affine photo.jpg --matrix "[1,0.5,0,1]" --background "#ff0000"
+
+# Upscale with best quality interpolator
+mediaproc image affine pic.jpg --matrix "[3,0,0,3]" --interpolator vsqbs
+
+# Preview transformation without saving
+mediaproc image affine image.jpg --matrix "[2,0.5,0.5,2]" --dry-run
+```
+
+### Combined Scaling and Shearing
+
+```bash
+# Scale 1.5x with slight shear
+mediaproc image affine photo.jpg --matrix "[1.5,0.2,0.1,1.5]"
+
+# Artistic distortion
+mediaproc image affine image.jpg --matrix "[0.8,0.4,-0.2,1.2]"
+```
+
+## Interpolators
+
+Different interpolation methods affect quality and speed:
+
+| Interpolator | Quality | Speed | Best For |
+|--------------|---------|-------|----------|
+| `nearest` | Lowest | Fastest | Pixel art, no antialiasing needed |
+| `bilinear` | Good | Fast | General use (default) |
+| `bicubic` | Better | Medium | Photographic images |
+| `nohalo` | Excellent | Slow | High-quality downscaling |
+| `lbb` | Best | Slowest | Professional work, best quality |
+| `vsqbs` | Excellent | Very Slow | Maximum quality requirements |
+
+## Common Transformation Matrices
+
+| Transformation | Matrix | Description |
+|----------------|--------|-------------|
+| Identity | `[1,0,0,1]` | No change |
+| Scale 2x | `[2,0,0,2]` | Double size |
+| Scale 0.5x | `[0.5,0,0,0.5]` | Half size |
+| Horizontal flip | `[-1,0,0,1]` | Mirror horizontally |
+| Vertical flip | `[1,0,0,-1]` | Mirror vertically |
+| Horizontal shear | `[1,0.5,0,1]` | Slant right |
+| Vertical shear | `[1,0,0.5,1]` | Slant down |
+
+## Best Practices
+
+1. **Use Specialized Commands First**: For simple operations, use `rotate`, `resize`, or `flip` commands instead
+2. **Test with --dry-run**: Preview transformations before processing
+3. **Choose Right Interpolator**: Use `bicubic` or higher for quality, `bilinear` for speed
+4. **Set Background Color**: Important for shearing/rotation that creates empty areas
+5. **Validate Matrix Values**: Invalid matrices will fail - test with small images first
+6. **Quality Setting**: Use 90+ for minimal quality loss
+
+## Performance Tips
+
+- Nearest interpolator is fastest for non-photographic images
+- Bilinear provides best speed/quality balance for most cases
+- Batch process with same matrix for consistency
+- Use lower quality interpolators for thumbnails
+
+## Common Use Cases
+
+- **Perspective Correction**: Subtle shearing for document straightening
+- **Artistic Effects**: Creative distortions and skewing
+- **Batch Consistency**: Apply same transform to multiple images
+- **Custom Scaling**: Non-uniform scaling in different dimensions
+- **Mirror Effects**: Precise flipping and reflection
+- **Image Warping**: Controlled distortion effects
+
+## Troubleshooting
+
+**Matrix produces unexpected results:**
+- Verify JSON format: `[a,b,c,d]` with proper commas
+- Check matrix values are numbers, not strings
+- Test with identity matrix `[1,0,0,1]` first
+
+**Image quality degraded:**
+- Use higher quality interpolator (bicubic, nohalo, lbb)
+- Increase --quality setting to 95+
+- Avoid multiple transforms (combine into one matrix)
+
+**Empty/transparent areas:**
+- Set --background to desired color
+- Use solid color for JPG output (JPG doesn't support transparency)
 
 ## See Also
 
-- [rotate](./rotate) - Simple rotation
-- [resize](./resize) - Scaling
+- [rotate](./rotate) - Simple rotation by angle
+- [resize](./resize) - Scale images with various fit modes
+- [flip](./flip) - Flip horizontally
+- [flop](./flop) - Flip vertically
+- [linear](./linear) - Apply linear transformations

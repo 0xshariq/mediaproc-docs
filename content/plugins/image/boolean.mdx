@@ -1,40 +1,360 @@
 # boolean
 
-Perform boolean operations on images.
+Perform bitwise boolean operations between two images for masking, compositing, and change detection.
 
 ## Usage
 
 ```bash
-mediaproc image boolean <input1> <input2> [options]
+mediaproc image boolean <input> --operation <op> --operand <image> [options]
 ```
 
 ## Description
 
-The `boolean` command performs boolean operations (AND, OR, XOR) between two images.
+The `boolean` command performs bitwise boolean operations between two images at the pixel level. It combines images using AND, OR, or XOR (EOR) logic operations. This is useful for masking, pattern detection, image differencing, and creative compositing effects.
 
 ## Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--operation` | string | and | Operation (and, or, xor, not) |
-| `-f, --format` | string | - | Output format |
-| `-q, --quality` | number | 80 | Output quality |
+| `--operation` | string | *required* | Operation: `and`, `or`, `eor` (XOR) |
+| `--operand` | path | *required* | Second image for operation |
+| `-o, --output` | path | `<input>-boolean.<ext>` | Output file path |
+| `-q, --quality` | number | 90 | Output quality (1-100) |
+| `--dry-run` | flag | - | Preview changes without executing |
+| `-v, --verbose` | flag | - | Show detailed output |
+
+## Operations
+
+### AND Operation
+
+**Bitwise AND** - Keeps pixels present in both images.
+
+**Logic**: `output = input AND operand`
+
+**Effect**:
+- Black pixel (0) + Any pixel = Black (0)
+- White pixel (255) + White pixel (255) = White (255)
+- Removes areas where operand is black
+- Preserves areas where both are bright
+
+**Use cases:**
+- Apply masks to extract regions
+- Remove backgrounds
+- Intersection of two images
+- Selective area extraction
+
+### OR Operation
+
+**Bitwise OR** - Combines pixels from both images.
+
+**Logic**: `output = input OR operand`
+
+**Effect**:
+- Black pixel (0) + Black pixel (0) = Black (0)
+- Any bright pixel results in bright output
+- Adds brightness from both images
+- Combines patterns
+
+**Use cases:**
+- Merge patterns
+- Combine multiple exposures
+- Add watermarks/overlays
+- Union of two images
+
+### EOR Operation (XOR)
+
+**Exclusive OR** - Highlights differences between images.
+
+**Logic**: `output = input XOR operand`
+
+**Effect**:
+- Same pixels (0,0 or 255,255) = Black (0)
+- Different pixels = Bright
+- Shows where images differ
+- Creates pattern effects
+
+**Use cases:**
+- Change detection
+- Find differences between versions
+- Create symmetric patterns
+- Image comparison
 
 ## Examples
 
+### Masking with AND
+
 ```bash
-# AND operation
-mediaproc image boolean mask1.png mask2.png --operation and -o result.png
+# Apply black/white mask to extract region
+mediaproc image boolean photo.jpg --operation and --operand mask.png -o masked.jpg
 
-# OR operation  
-mediaproc image boolean layer1.png layer2.png --operation or -o combined.png
+# Extract only masked area
+mediaproc image boolean image.png --operation and --operand alpha-mask.png
 
-# XOR operation
-mediaproc image boolean img1.png img2.png --operation xor -o difference.png
+# Remove background using inverse mask
+mediaproc image boolean portrait.jpg --operation and --operand foreground-mask.png -o no-bg.jpg
+```
+
+### Combining with OR
+
+```bash
+# Combine two patterns
+mediaproc image boolean pattern1.png --operation or --operand pattern2.png -o combined.png
+
+# Add watermark overlay
+mediaproc image boolean photo.jpg --operation or --operand watermark.png -o marked.jpg
+
+# Merge light sources
+mediaproc image boolean base.jpg --operation or --operand light-effect.png -o bright.jpg
+```
+
+### Change Detection with XOR
+
+```bash
+# Find differences between two versions
+mediaproc image boolean before.jpg --operation eor --operand after.jpg -o diff.jpg
+
+# Detect changes in scene
+mediaproc image boolean frame1.png --operation eor --operand frame2.png -o changes.png
+
+# Compare image versions
+mediaproc image boolean original.jpg --operation eor --operand edited.jpg -o differences.jpg
+```
+
+### Creative Effects
+
+```bash
+# Create symmetric patterns
+mediaproc image boolean texture.png --operation eor --operand flipped-texture.png -o pattern.png
+
+# Artistic compositing
+mediaproc image boolean photo.jpg --operation or --operand artistic-overlay.png -o art.jpg
+
+# Pattern generation
+mediaproc image boolean grid1.png --operation eor --operand grid2.png -o geometric.png
+```
+
+### Batch Processing
+
+```bash
+# Apply same mask to multiple images
+mediaproc image boolean "photos/*.jpg" --operation and --operand common-mask.png
+
+# Combine each with overlay
+mediaproc image boolean "images/*.png" --operation or --operand overlay.png -v
+```
+
+## Requirements
+
+### Image Dimensions
+
+**Important**: Both input and operand images should ideally have the same dimensions.
+
+- Mismatched sizes may cause cropping or errors
+- Sharp.js will try to handle size differences
+- Best results with exact dimension matches
+
+### Format Compatibility
+
+Works with all image formats:
+- **JPEG/JPG**: Good for photos
+- **PNG**: Best for masks (transparency)
+- **WebP**: Modern format support
+- **GIF, TIFF**: Also supported
+
+### Color Depth
+
+- Operations work on all channels (R, G, B, Alpha)
+- Results are more predictable with grayscale
+- Consider converting to grayscale first for clarity
+
+## Practical Use Cases
+
+### Masking and Extraction
+
+**Remove Background:**
+```bash
+# Create white background where subject is, black elsewhere
+# Then use AND to keep only subject
+mediaproc image boolean photo.jpg --operation and --operand subject-mask.png
+```
+
+**Extract Region:**
+```bash
+# Use white mask for area of interest
+mediaproc image boolean image.jpg --operation and --operand roi-mask.png -o extracted.jpg
+```
+
+### Pattern Creation
+
+**Symmetric Designs:**
+```bash
+# XOR with flipped version creates symmetry
+mediaproc image flip texture.png -o flipped.png
+mediaproc image boolean texture.png --operation eor --operand flipped.png -o symmetric.png
+```
+
+### Change Detection
+
+**Security Monitoring:**
+```bash
+# Detect changes in surveillance images
+mediaproc image boolean cam-before.jpg --operation eor --operand cam-after.jpg -o motion-detected.jpg
+```
+
+**Version Comparison:**
+```bash
+# See what changed between edits
+mediaproc image boolean draft1.png --operation eor --operand draft2.png -o changes.png
+```
+
+### Watermarking
+
+**Invisible Watermark (Steganography):**
+```bash
+# Embed pattern using OR
+mediaproc image boolean original.jpg --operation or --operand subtle-watermark.png -o protected.jpg
+```
+
+## Operation Examples
+
+### AND: Masking
+
+Input 1 (photo.jpg):
+```
+Full color photo
+```
+
+Operand (mask.png):
+```
+White where you want to keep
+Black where you want to remove
+```
+
+Result:
+```
+Photo visible only in white mask areas
+Black everywhere else
+```
+
+### OR: Combining
+
+Input 1 (base.jpg):
+```
+Base image
+```
+
+Operand (pattern.png):
+```
+Pattern to add
+```
+
+Result:
+```
+Base image with pattern added
+Brighter where both have bright pixels
+```
+
+### XOR: Difference
+
+Input 1 (before.jpg):
+```
+Scene at time 1
+```
+
+Operand (after.jpg):
+```
+Scene at time 2
+```
+
+Result:
+```
+Black where unchanged
+Bright where different
+```
+
+## Best Practices
+
+1. **Match Dimensions**: Ensure both images are same size
+2. **Use Grayscale Masks**: Simpler and more predictable
+3. **Test First**: Use --dry-run before batch operations
+4. **High Quality**: Use -q 95+ to avoid compression artifacts
+5. **PNG for Masks**: Use PNG format for masks (supports transparency)
+6. **Convert First**: Consider converting both to same format first
+
+## Performance Tips
+
+- Operand is loaded once and reused for batch operations
+- Works quickly even on large images
+- Minimal memory overhead
+- Fast bitwise operations at hardware level
+
+## Common Patterns
+
+**Create Mask from Image:**
+```bash
+# Convert to grayscale, threshold, then use as mask
+mediaproc image grayscale photo.jpg -o gray.jpg
+mediaproc image threshold gray.jpg --level 128 -o mask.png
+mediaproc image boolean original.jpg --operation and --operand mask.png
+```
+
+**Combine Multiple Overlays:**
+```bash
+# OR multiple patterns together
+mediaproc image boolean base.jpg --operation or --operand overlay1.png -o temp.jpg
+mediaproc image boolean temp.jpg --operation or --operand overlay2.png -o final.jpg
+```
+
+**Detect Motion:**
+```bash
+# XOR consecutive frames
+mediaproc image boolean frame-t0.jpg --operation eor --operand frame-t1.jpg -o motion.jpg
+```
+
+## Troubleshooting
+
+**Dimension mismatch error:**
+- Resize both images to same dimensions first
+- Use `mediaproc image resize` to match sizes
+
+**Unexpected all-black output:**
+- Check if operand mask is inverted (black/white swapped)
+- Verify AND operation is appropriate for use case
+
+**Unexpected all-white output:**
+- Check if using OR with bright images
+- May need to use AND or XOR instead
+
+**Results not visible:**
+- Try adjusting brightness/contrast of output
+- XOR results may be very dark - use normalize command
+
+**Operation not recognized:**
+- Use lowercase: `and`, `or`, `eor` (not `AND`, `OR`, `XOR`)
+- XOR is called `eor` in this command
+
+## Advanced Techniques
+
+### Multi-step Masking
+
+```bash
+# Complex mask creation
+mediaproc image boolean img.jpg --operation and --operand mask1.png -o step1.jpg
+mediaproc image boolean step1.jpg --operation or --operand mask2.png -o final.jpg
+```
+
+### Pattern Generation
+
+```bash
+# Create kaleidoscope effect with XOR
+mediaproc image rotate pattern.png --angle 90 -o rot90.png
+mediaproc image boolean pattern.png --operation eor --operand rot90.png -o kaleidoscope.png
 ```
 
 ## See Also
 
-- [composite](./composite) - Layer images
-- [negate](./negate) - Invert image
+- [composite](./composite) - Layer images with blend modes
+- [extract](./extract) - Extract channels or regions
+- [threshold](./threshold) - Create binary masks
+- [grayscale](./grayscale) - Convert for simpler boolean operations
+- [normalize](./normalize) - Adjust boolean operation results

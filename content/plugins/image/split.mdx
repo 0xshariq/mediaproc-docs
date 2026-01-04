@@ -1,0 +1,48 @@
+# split
+
+Split image into multiple parts.
+
+## Usage
+
+```bash
+mediaproc image split <input> [options]
+```
+
+## Description
+
+The `split` command divides an image into multiple tiles or sections.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--output-dir` | string | - | Output directory |
+| `--rows` | number | 2 | Number of rows |
+| `--cols` | number | 2 | Number of columns |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# Split into 4 parts (2x2)
+mediaproc image split large.jpg --output-dir parts/ --rows 2 --cols 2
+
+# Split into 9 parts (3x3)
+mediaproc image split image.jpg --output-dir tiles/ --rows 3 --cols 3
+
+# Split horizontally (1x3)
+mediaproc image split banner.jpg --output-dir sections/ --rows 1 --cols 3
+```
+
+## Common Use Cases
+
+- **Large Images**: Split for easier handling
+- **Instagram Carousel**: Split into multiple posts
+- **Tiled Displays**: Create image tiles
+- **Print Layouts**: Split for multi-page printing
+
+## See Also
+
+- [grid](./grid) - Combine images into grid
+- [crop](./crop) - Extract specific regions

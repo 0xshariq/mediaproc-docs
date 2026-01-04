@@ -1,0 +1,49 @@
+# grid
+
+Create a grid layout from multiple images.
+
+## Usage
+
+```bash
+mediaproc image grid <inputs...> [options]
+```
+
+## Description
+
+The `grid` command arranges multiple images into a grid layout with customizable spacing and alignment.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--cols` | number | 3 | Number of columns |
+| `--spacing` | number | 10 | Space between images (pixels) |
+| `--background` | string | #ffffff | Background color |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# 3x3 grid
+mediaproc image grid img1.jpg img2.jpg img3.jpg img4.jpg img5.jpg img6.jpg img7.jpg img8.jpg img9.jpg --cols 3 -o grid.jpg
+
+# 2 column layout
+mediaproc image grid photo1.jpg photo2.jpg photo3.jpg photo4.jpg --cols 2 --spacing 20 -o collage.jpg
+
+# Custom background
+mediaproc image grid *.jpg --cols 4 --background "#000000" --spacing 5 -o dark-grid.jpg
+```
+
+## Common Use Cases
+
+- **Photo Collages**: Create photo grids
+- **Product Displays**: Show multiple products
+- **Comparisons**: Before/after grids
+- **Gallery Previews**: Thumbnail grids
+
+## See Also
+
+- [composite](./composite) - Layer images
+- [thumbnail](./thumbnail) - Create thumbnails first

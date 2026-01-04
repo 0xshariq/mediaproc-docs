@@ -27,20 +27,17 @@ export const imageCommands: Command[] = [
   { name: 'resize', slug: 'resize', description: 'Resize images to specified dimensions' },
   { name: 'crop', slug: 'crop', description: 'Crop images to a specific region' },
   { name: 'rotate', slug: 'rotate', description: 'Rotate images by degrees' },
-  { name: 'flip', slug: 'flip', description: 'Flip images horizontally or vertically' },
-  { name: 'flop', slug: 'flop', description: 'Flop image (mirror horizontally)' },
+  { name: 'flip', slug: 'flip', description: 'Flip images horizontally' },
+  { name: 'flop', slug: 'flop', description: 'Flip images vertically' },
   { name: 'trim', slug: 'trim', description: 'Trim edges of images' },
   { name: 'extend', slug: 'extend', description: 'Extend image canvas with background' },
-  { name: 'extract', slug: 'extract', description: 'Extract a region from image' },
+  { name: 'extract', slug: 'extract', description: 'Extract a region or channel from image' },
   { name: 'affine', slug: 'affine', description: 'Apply affine transformation' },
   { name: 'composite', slug: 'composite', description: 'Composite images together' },
 
   // Format & Conversion
   { name: 'convert', slug: 'convert', description: 'Convert images between formats' },
   { name: 'optimize', slug: 'optimize', description: 'Optimize images for web' },
-  { name: 'compress', slug: 'compress', description: 'Compress images with quality control' },
-  { name: 'webp', slug: 'webp', description: 'Convert images to WebP format' },
-  { name: 'avif', slug: 'avif', description: 'Convert images to AVIF format' },
 
   // Effects & Filters
   { name: 'blur', slug: 'blur', description: 'Apply blur effect' },
@@ -61,32 +58,37 @@ export const imageCommands: Command[] = [
   { name: 'linear', slug: 'linear', description: 'Apply linear adjustment' },
   { name: 'threshold', slug: 'threshold', description: 'Apply threshold effect' },
 
-  // Overlays & Compositing
+  // Overlays & Borders
   { name: 'watermark', slug: 'watermark', description: 'Add watermark to images' },
-  { name: 'text', slug: 'text', description: 'Add text overlay' },
   { name: 'border', slug: 'border', description: 'Add border to images' },
-  { name: 'background', slug: 'background', description: 'Set background color' },
 
   // Metadata & Info
-  { name: 'info', slug: 'info', description: 'Display image information' },
-  { name: 'metadata', slug: 'metadata', description: 'View image metadata' },
-  { name: 'exif', slug: 'exif', description: 'Extract EXIF data' },
+  { name: 'metadata-cmd', slug: 'metadata-cmd', description: 'View and edit image metadata' },
   { name: 'stats', slug: 'stats', description: 'Show image statistics' },
 
-  // Batch Operations
-  { name: 'batch-resize', slug: 'batch-resize', description: 'Batch resize multiple images' },
-  { name: 'batch-convert', slug: 'batch-convert', description: 'Batch convert image formats' },
-  { name: 'batch-compress', slug: 'batch-compress', description: 'Batch compress images' },
+  // Batch & Smart Operations
+  { name: 'batch', slug: 'batch', description: 'Batch process multiple images' },
   { name: 'thumbnail', slug: 'thumbnail', description: 'Generate thumbnails' },
+  { name: 'smart-crop', slug: 'smart-crop', description: 'Smart crop with AI' },
+  { name: 'auto-enhance', slug: 'auto-enhance', description: 'Auto enhance image quality' },
+  { name: 'auto-orient', slug: 'auto-orient', description: 'Auto orient based on EXIF' },
 
-  // Advanced
-  { name: 'pipeline', slug: 'pipeline', description: 'Execute image processing pipeline' },
-  { name: 'animated', slug: 'animated', description: 'Create animated images' },
-  { name: 'tile', slug: 'tile', description: 'Create image tiles' },
-  { name: 'join', slug: 'join', description: 'Join multiple images' },
+  // Image Manipulation
+  { name: 'flatten', slug: 'flatten', description: 'Flatten image layers' },
   { name: 'unflatten', slug: 'unflatten', description: 'Unflatten image' },
   { name: 'boolean', slug: 'boolean', description: 'Boolean operations on images' },
-  { name: 'bandbool', slug: 'bandbool', description: 'Boolean operations on bands' },
+  { name: 'mirror', slug: 'mirror', description: 'Mirror image' },
+  { name: 'pixelate', slug: 'pixelate', description: 'Apply pixelation effect' },
+  { name: 'vignette', slug: 'vignette', description: 'Apply vignette effect' },
+
+  // Advanced Operations
+  { name: 'grid', slug: 'grid', description: 'Create image grid' },
+  { name: 'stack', slug: 'stack', description: 'Stack images together' },
+  { name: 'split', slug: 'split', description: 'Split image into parts' },
+  { name: 'palette', slug: 'palette', description: 'Extract color palette' },
+  { name: 'dominant-color', slug: 'dominant-color', description: 'Get dominant color' },
+  { name: 'dilate', slug: 'dilate', description: 'Dilate image regions' },
+  { name: 'erode', slug: 'erode', description: 'Erode image regions' },
 ];
 
 export const plugins: Plugin[] = [

@@ -1,294 +1,674 @@
-# image convert
+---
+title: "convert"
+description: "Convert images between different formats (JPG, PNG, WebP, AVIF, TIFF, GIF)"
+---
 
-Convert images between different formats (JPEG, PNG, WebP, AVIF, GIF, TIFF).
+# convert
+
+Convert images between different formats with quality and compression control.
 
 ## Usage
 
 ```bash
-mediaproc image convert <input> [options]
+mediaproc image convert <input> -f <format> [options]
 ```
 
 ## Description
 
-Convert images from one format to another while maintaining or improving quality. Supports modern formats like WebP and AVIF for better compression.
+The `convert` command transforms images between different file formats, including modern formats like WebP and AVIF that offer superior compression and quality. This is essential for:
+- **Web optimization**: Convert to WebP/AVIF for smaller file sizes
+- **Compatibility**: Convert modern formats to legacy formats (JPG/PNG)
+- **Workflow requirements**: Match format to specific use cases
+- **Print preparation**: Convert to TIFF for professional printing
+- **Format migration**: Batch convert image libraries
+
+Supports intelligent format-specific options like progressive rendering, compression levels, and quality settings tailored to each format's capabilities.
 
 ## Options
 
-### Format
-
-| Option | Alias | Type | Description |
-|--------|-------|------|-------------|
-| `--format` | `-f` | string | Target format: `jpg`, `png`, `webp`, `avif`, `gif`, `tiff` |
-| `--output` | `-o` | string | Output file or directory |
-
-### Quality
-
-| Option | Alias | Type | Default | Description |
-|--------|-------|------|---------|-------------|
-| `--quality` | `-q` | number | 80 | Output quality (1-100) |
-| `--compression` | `-c` | number | 6 | PNG compression level (0-9) |
-
-### Format-Specific Options
-
-#### JPEG Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `--progressive` | boolean | Use progressive JPEG |
-| `--mozjpeg` | boolean | Use mozjpeg encoder (better compression) |
-| `--chromaSubsampling` | string | Chroma subsampling: `4:4:4`, `4:2:2`, `4:2:0` |
-
-#### PNG Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `--compressionLevel` | number | PNG compression (0-9, default 6) |
-| `--palette` | boolean | Use 8-bit palette |
-| `--colors` | number | Max colors for palette |
-
-#### WebP Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `--lossless` | boolean | Use lossless compression |
-| `--alphaQuality` | number | Alpha channel quality (0-100) |
-| `--effort` | number | CPU effort (0-6, higher is slower but better) |
-
-#### AVIF Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `--lossless` | boolean | Use lossless compression |
-| `--effort` | number | CPU effort (0-9) |
-| `--chromaSubsampling` | string | Chroma subsampling |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `<input>` | string | *required* | Input image file path or glob pattern |
+| `-f, --format` | string | `webp` | Output format: jpg, jpeg, png, webp, avif, tiff, gif |
+| `-o, --output` | string | `<input>.<format>` | Output file path |
+| `-q, --quality` | number | `90` | Output quality 1-100 |
+| `--compression` | number | `9` | PNG compression level 0-9 (0=none, 9=max) |
+| `--progressive` | boolean | `false` | Use progressive/interlaced format |
+| `--dry-run` | boolean | `false` | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false` | Enable verbose logging |
 
 ## Examples
 
-### Basic Conversion
+### Basic Format Conversion
 
-JPEG to PNG:
+Convert between formats:
 
 ```bash
-mediaproc image convert photo.jpg --format png -o photo.png
+# Convert JPG to WebP (default, recommended for web)
+mediaproc image convert photo.jpg
+
+# Convert PNG to AVIF (best compression)
+mediaproc image convert image.png -f avif -o image.avif
+
+# Convert WebP to JPG (for compatibility)
+mediaproc image convert modern.webp -f jpg -o legacy.jpg
+
+# Convert to PNG for transparency
+mediaproc image convert photo.jpg -f png -o photo.png
+
+# Convert to TIFF for print
+mediaproc image convert image.jpg -f tiff -o print_ready.tiff
+
+# Convert to GIF
+mediaproc image convert image.png -f gif -o animation.gif
 ```
 
-PNG to JPEG:
+### Quality Control
+
+Adjust output quality:
 
 ```bash
-mediaproc image convert image.png --format jpg --quality 90 -o image.jpg
+# High quality (larger file)
+mediaproc image convert photo.jpg -f webp -q 95 -o high_quality.webp
+
+# Standard quality (balanced)
+mediaproc image convert image.png -f jpg -q 90 -o standard.jpg
+
+# Medium quality (smaller file)
+mediaproc image convert photo.jpg -f avif -q 80 -o medium.avif
+
+# Lower quality (much smaller)
+mediaproc image convert image.jpg -f webp -q 70 -o compressed.webp
+
+# Minimal quality (maximum compression)
+mediaproc image convert photo.png -f jpg -q 60 -o low_quality.jpg
 ```
 
-### Convert to Modern Formats
+### PNG Compression
 
-To WebP (better compression):
+Control PNG compression levels:
 
 ```bash
-mediaproc image convert photo.jpg --format webp --quality 85 -o photo.webp
+# Maximum compression (slowest, smallest file)
+mediaproc image convert image.jpg -f png --compression 9 -o max_compressed.png
+
+# Standard compression
+mediaproc image convert photo.jpg -f png --compression 6 -o compressed.png
+
+# Fast compression (larger file)
+mediaproc image convert image.jpg -f png --compression 3 -o fast.png
+
+# No compression (fastest, largest file)
+mediaproc image convert photo.jpg -f png --compression 0 -o uncompressed.png
 ```
 
-To AVIF (best compression):
+### Progressive Formats
+
+Create progressive/interlaced images:
 
 ```bash
-mediaproc image convert photo.jpg --format avif --quality 80 -o photo.avif
+# Progressive JPEG (loads gradually)
+mediaproc image convert image.jpg -f jpg --progressive -o progressive.jpg
+
+# Interlaced PNG
+mediaproc image convert photo.png -f png --progressive -o interlaced.png
+
+# Progressive JPEG with quality
+mediaproc image convert large.jpg -f jpg --progressive -q 85 -o web_optimized.jpg
+```
+
+### Web Optimization
+
+Optimize images for web:
+
+```bash
+# Convert to WebP for modern browsers
+mediaproc image convert photo.jpg -f webp -q 85 -o web.webp
+
+# Convert to AVIF for maximum compression
+mediaproc image convert image.png -f avif -q 80 -o ultra_compressed.avif
+
+# Progressive JPEG for better UX
+mediaproc image convert large_photo.jpg -f jpg --progressive -q 85 -o optimized.jpg
+
+# WebP with high quality for hero images
+mediaproc image convert hero.jpg -f webp -q 95 -o hero.webp
 ```
 
 ### Batch Conversion
 
-Convert all JPEGs to WebP:
+Convert multiple images:
 
 ```bash
-mediaproc image convert *.jpg --format webp -o webp/
+# Convert all JPGs to WebP
+for file in *.jpg; do
+  mediaproc image convert "$file" -f webp -o "webp/${file%.jpg}.webp"
+done
+
+# Convert all PNGs to AVIF
+for file in *.png; do
+  mediaproc image convert "$file" -f avif -q 85 -o "avif/${file%.png}.avif"
+done
+
+# Convert all WebP to JPG (legacy support)
+for file in *.webp; do
+  mediaproc image convert "$file" -f jpg -q 90 -o "jpg/${file%.webp}.jpg"
+done
+
+# Convert photos to multiple formats
+for photo in photos/*.jpg; do
+  filename="${photo##*/}"
+  basename="${filename%.jpg}"
+  mediaproc image convert "$photo" -f webp -q 85 -o "output/${basename}.webp"
+  mediaproc image convert "$photo" -f avif -q 80 -o "output/${basename}.avif"
+done
 ```
 
-Convert directory:
+### Format Migration
+
+Migrate entire image library:
 
 ```bash
-mediaproc image convert photos/ --format png -o png-images/
+# Migrate to WebP for web
+find . -name "*.jpg" -o -name "*.png" | while read file; do
+  dir="$(dirname "$file")"
+  basename="$(basename "$file" | sed 's/\.[^.]*$//')"
+  mediaproc image convert "$file" -f webp -q 85 -o "${dir}/${basename}.webp"
+done
+
+# Convert old formats to modern
+for file in images/*.{jpg,png,gif}; do
+  [ -f "$file" ] || continue
+  mediaproc image convert "$file" -f avif -q 80 -o "modern/${file##*/}"
+done
 ```
 
-### High-Quality Conversion
+### Combining Quality and Compression
 
-Maximum quality JPEG:
+Fine-tune output:
 
 ```bash
-mediaproc image convert image.png --format jpg --quality 100 --progressive -o high-quality.jpg
+# High quality WebP
+mediaproc image convert photo.jpg -f webp -q 95 -o high_webp.webp
+
+# Balanced AVIF
+mediaproc image convert image.png -f avif -q 85 -o balanced.avif
+
+# Maximum PNG compression with quality
+mediaproc image convert photo.jpg -f png --compression 9 -q 90 -o high_quality.png
+
+# Progressive JPEG with custom quality
+mediaproc image convert large.jpg -f jpg --progressive -q 85 -o progressive_optimized.jpg
 ```
 
-Lossless WebP:
+### Print Preparation
+
+Prepare images for print:
 
 ```bash
-mediaproc image convert photo.png --format webp --lossless -o lossless.webp
+# Convert to TIFF for professional print
+mediaproc image convert photo.jpg -f tiff -q 100 -o print.tiff
+
+# High-quality TIFF
+mediaproc image convert image.png -f tiff -q 100 -o high_res_print.tiff
+
+# Convert all photos for print
+for file in photos/*.jpg; do
+  mediaproc image convert "$file" -f tiff -q 100 -o "print_ready/${file##*/}"
+done
 ```
 
-### Optimized for Web
+### Legacy Browser Support
 
-WebP with specific quality:
+Create fallback images:
 
 ```bash
-mediaproc image convert photo.jpg --format webp --quality 85 --effort 6 -o optimized.webp
+# WebP with JPG fallback
+mediaproc image convert photo.jpg -f webp -q 85 -o modern.webp
+mediaproc image convert photo.jpg -f jpg -q 90 -o fallback.jpg
+
+# Create both formats for <picture> element
+for file in *.jpg; do
+  basename="${file%.jpg}"
+  mediaproc image convert "$file" -f webp -q 85 -o "webp/${basename}.webp"
+  mediaproc image convert "$file" -f jpg -q 90 -o "jpg/${basename}.jpg"
+done
 ```
 
-AVIF with high effort:
+### Dry Run Testing
+
+Test conversions before executing:
 
 ```bash
-mediaproc image convert photo.jpg --format avif --quality 80 --effort 9 -o optimized.avif
+# Test WebP conversion
+mediaproc image convert photo.jpg -f webp --dry-run
+
+# Test AVIF with quality
+mediaproc image convert image.png -f avif -q 80 --dry-run
+
+# Test PNG compression
+mediaproc image convert photo.jpg -f png --compression 9 --dry-run
+
+# Test progressive JPEG
+mediaproc image convert large.jpg -f jpg --progressive -q 85 --dry-run
 ```
 
-### PNG Optimization
+### Verbose Processing
 
-High compression PNG:
+Monitor conversion details:
 
 ```bash
-mediaproc image convert image.png --format png --compressionLevel 9 -o compressed.png
+# See format details
+mediaproc image convert photo.jpg -f webp -v -o converted.webp
+
+# Debug quality settings
+mediaproc image convert image.png -f avif -q 80 -v -o compressed.avif
+
+# Monitor batch conversion
+for file in *.jpg; do
+  mediaproc image convert "$file" -f webp -v -o "webp/${file##*/}"
+done
 ```
 
-8-bit PNG with palette:
+## Format Guide
 
+### WebP
+**Best for**: Modern web, balanced quality/size
+
+**Advantages**:
+- 25-35% smaller than JPG/PNG
+- Supports transparency (like PNG)
+- Supports animation (like GIF)
+- Widely supported in modern browsers
+
+**Disadvantages**:
+- Not supported in older browsers (IE, old Safari)
+- May show artifacts at very low quality
+
+**Recommended Quality**: 80-90
+
+**Example**:
 ```bash
-mediaproc image convert photo.png --format png --palette --colors 256 -o 8bit.png
+mediaproc image convert photo.jpg -f webp -q 85 -o optimized.webp
 ```
 
-### Progressive JPEG
+### AVIF
+**Best for**: Maximum compression, next-gen web
 
+**Advantages**:
+- 40-50% smaller than JPG
+- Superior quality at same file size
+- Supports HDR and wide color gamut
+- Excellent detail preservation
+
+**Disadvantages**:
+- Limited browser support (newer browsers only)
+- Slower encoding than WebP
+- Not all image tools support it
+
+**Recommended Quality**: 75-85
+
+**Example**:
 ```bash
-mediaproc image convert photo.jpg --format jpg --progressive --quality 85 -o progressive.jpg
+mediaproc image convert image.png -f avif -q 80 -o ultra_compressed.avif
 ```
 
-### Using mozjpeg
+### JPG/JPEG
+**Best for**: Photos, legacy compatibility
 
-Better JPEG compression:
+**Advantages**:
+- Universal browser/device support
+- Good compression for photos
+- Fast encoding/decoding
+- Industry standard
 
+**Disadvantages**:
+- Lossy compression (quality loss)
+- No transparency support
+- Larger than WebP/AVIF
+
+**Recommended Quality**: 85-95 (photos), 90+ (high detail)
+
+**Example**:
 ```bash
-mediaproc image convert photo.png --format jpg --mozjpeg --quality 85 -o mozjpeg.jpg
+mediaproc image convert image.png -f jpg -q 90 --progressive -o photo.jpg
 ```
 
-## Format Comparison
+### PNG
+**Best for**: Graphics, transparency, lossless
 
-### File Size (approximate)
+**Advantages**:
+- Lossless compression
+- Supports full transparency
+- Good for graphics, text, screenshots
+- Universal support
 
-For a typical 1920x1080 photo:
+**Disadvantages**:
+- Larger file sizes than JPG
+- Not ideal for photos
+- Slower encoding at high compression
 
-- **PNG**: 2-5 MB (lossless)
-- **JPEG (q85)**: 200-400 KB
-- **WebP (q85)**: 150-300 KB (25% smaller than JPEG)
-- **AVIF (q80)**: 100-200 KB (50% smaller than JPEG)
+**Recommended Compression**: 6-9
 
-### When to Use Each Format
+**Example**:
+```bash
+mediaproc image convert graphic.jpg -f png --compression 9 -o graphic.png
+```
 
-#### JPEG
-- ✅ Photos and complex images
-- ✅ Wide browser support
-- ✅ Small file size
-- ❌ No transparency
-- ❌ Lossy compression
+### TIFF
+**Best for**: Print, professional workflows
 
-#### PNG
-- ✅ Graphics, logos, text
-- ✅ Transparency support
-- ✅ Lossless compression
-- ❌ Large file size
-- ❌ Not ideal for photos
+**Advantages**:
+- Lossless or lossy options
+- Industry standard for print
+- Supports layers, high bit depth
+- Excellent quality preservation
 
-#### WebP
-- ✅ 25-35% smaller than JPEG
-- ✅ Transparency support
-- ✅ Both lossy and lossless
-- ✅ Good browser support (95%+)
-- ❌ Not supported in IE
+**Disadvantages**:
+- Very large file sizes
+- Not suitable for web
+- Overkill for most uses
 
-#### AVIF
-- ✅ 50% smaller than JPEG
-- ✅ Better quality at same size
-- ✅ HDR support
-- ❌ Limited browser support (85%+)
-- ❌ Slower encoding
+**Recommended Quality**: 95-100
 
-#### GIF
-- ✅ Animation support
-- ✅ Universal support
-- ❌ Limited to 256 colors
-- ❌ Large file size
-- ⚠️ Use MP4/WebM for video instead
+**Example**:
+```bash
+mediaproc image convert photo.jpg -f tiff -q 100 -o print_ready.tiff
+```
 
-#### TIFF
-- ✅ Professional/print work
-- ✅ High quality
-- ✅ Lossless
-- ❌ Not for web
-- ❌ Very large files
+### GIF
+**Best for**: Simple animations (use video formats for complex animations)
+
+**Advantages**:
+- Universal support for animation
+- Simple format
+- Transparency support (1-bit)
+
+**Disadvantages**:
+- Limited to 256 colors
+- Large file sizes for animations
+- Inferior to modern video formats
+- Not ideal for photos
+
+**Use Cases**: Simple animations, legacy support
+
+**Example**:
+```bash
+mediaproc image convert frame.png -f gif -o animation.gif
+```
+
+## Quality Guidelines
+
+### Quality Values
+
+**95-100**: Near lossless
+- Use for: Master files, archival, print
+- File size: Very large
+- Visual: No visible compression
+
+**85-95**: High quality
+- Use for: Professional web, hero images
+- File size: Large to medium
+- Visual: Excellent, minimal artifacts
+
+**75-85**: Good quality (recommended for most web)
+- Use for: Standard web images, galleries
+- File size: Medium
+- Visual: Good, minor artifacts on close inspection
+
+**65-75**: Medium quality
+- Use for: Thumbnails, large quantity images
+- File size: Small
+- Visual: Noticeable artifacts under scrutiny
+
+**50-65**: Low quality
+- Use for: Extreme compression needs, previews
+- File size: Very small
+- Visual: Visible artifacts, acceptable for previews
+
+### Format-Specific Recommendations
+
+**WebP**:
+- Photos: quality 80-90
+- Graphics: quality 90-95
+- Thumbnails: quality 70-80
+
+**AVIF**:
+- Photos: quality 75-85
+- Graphics: quality 85-90
+- Thumbnails: quality 65-75
+
+**JPG**:
+- Photos: quality 85-95
+- Web: quality 80-90 with progressive
+- Thumbnails: quality 70-80
+
+**PNG**:
+- Graphics/screenshots: compression 9
+- Photos: compression 6-9 (consider JPG instead)
+- Transparency: compression 9, quality 90+
 
 ## Best Practices
 
-### Web Images
+1. **Choose the Right Format**:
+   - Photos → WebP or AVIF for web, JPG for legacy
+   - Graphics/logos → PNG or WebP
+   - Transparency needed → PNG or WebP
+   - Print → TIFF or high-quality JPG
 
-1. **Use WebP as primary**, JPEG as fallback
-2. Use AVIF for cutting-edge sites
-3. Quality 80-85 is usually optimal
-4. Enable progressive for JPEG
+2. **Quality Selection**:
+   - Start with quality 85 and adjust
+   - Use higher quality (90-95) for important images
+   - Use lower quality (70-80) for thumbnails
+   - Test visually to find acceptable quality level
 
-### Logos & Graphics
+3. **Web Optimization Strategy**:
+   - Primary: WebP or AVIF
+   - Fallback: JPG or PNG
+   - Use `<picture>` element for format support detection
+   - Serve format based on browser capabilities
 
-1. Use PNG for transparency
-2. Use SVG when possible
-3. Optimize with palette if many colors not needed
+4. **Batch Processing**:
+   - Convert similar images with same parameters
+   - Test on sample images first
+   - Preserve originals in separate folder
+   - Use consistent naming convention
 
-### Photography
+5. **Progressive Images**:
+   - Use for images >100KB
+   - Better perceived performance
+   - Especially important for hero images
+   - Works with JPG and PNG
 
-1. JPEG for compatibility
-2. WebP for better compression
-3. Keep originals in lossless format
+6. **Compression Levels**:
+   - PNG: Use 9 for final outputs, 6 for faster processing
+   - Higher compression = smaller files but slower encoding
+   - Balance speed vs. file size based on needs
 
-### E-commerce
+## Common Use Cases
 
-1. PNG for product images with transparency
-2. WebP for faster loading
-3. Multiple sizes for responsive design
-
-## Common Workflows
-
-### Create Web-Optimized Images
-
-```bash
-# Original
-mediaproc image convert photo.jpg --format jpg --quality 85 --progressive -o web.jpg
-
-# WebP version
-mediaproc image convert photo.jpg --format webp --quality 85 -o web.webp
-
-# AVIF for modern browsers  
-mediaproc image convert photo.jpg --format avif --quality 80 -o web.avif
-```
-
-### Convert and Resize
+### Website Image Optimization
 
 ```bash
-mediaproc image convert large-photo.jpg --format webp --quality 85 -o temp.webp
-mediaproc image resize temp.webp --width 1920 -o final.webp
+# Convert all images for modern website
+for img in images/*.{jpg,png}; do
+  [ -f "$img" ] || continue
+  basename="${img##*/}"
+  name="${basename%.*}"
+  
+  # WebP for modern browsers
+  mediaproc image convert "$img" -f webp -q 85 -o "optimized/${name}.webp"
+  
+  # AVIF for bleeding edge
+  mediaproc image convert "$img" -f avif -q 80 -o "optimized/${name}.avif"
+  
+  # JPG fallback
+  mediaproc image convert "$img" -f jpg -q 90 --progressive -o "optimized/${name}.jpg"
+done
 ```
 
-Or use pipeline:
+### Photography Portfolio
 
 ```bash
-mediaproc image convert large-photo.jpg --format webp | mediaproc image resize --width 1920 -o final.webp
+# Convert RAW exports to multiple web formats
+for photo in exports/*.jpg; do
+  name="$(basename "$photo" .jpg)"
+  
+  # High-quality WebP for display
+  mediaproc image convert "$photo" -f webp -q 90 -o "web/${name}.webp"
+  
+  # Progressive JPG fallback
+  mediaproc image convert "$photo" -f jpg -q 88 --progressive -o "web/${name}.jpg"
+done
 ```
 
-## Performance
+### E-commerce Product Images
 
-### Encoding Speed
+```bash
+# Product photos to optimized formats
+for product in products/*.png; do
+  name="$(basename "$product" .png)"
+  
+  # WebP for product display
+  mediaproc image convert "$product" -f webp -q 90 -o "optimized/${name}.webp"
+  
+  # JPG fallback
+  mediaproc image convert "$product" -f jpg -q 90 -o "optimized/${name}.jpg"
+done
+```
 
-Fastest to slowest:
-1. JPEG (fast)
-2. PNG (fast)
-3. WebP (medium)
-4. AVIF (slow)
+### Blog Post Images
 
-### Decoding Speed
+```bash
+# Optimize blog images
+for img in blog/*.jpg; do
+  basename="${img##*/}"
+  
+  # WebP for modern browsers
+  mediaproc image convert "$img" -f webp -q 85 -o "blog/webp/${basename%.jpg}.webp"
+  
+  # Progressive JPG
+  mediaproc image convert "$img" -f jpg -q 85 --progressive -o "blog/optimized/${basename}"
+done
+```
 
-All modern formats decode quickly in browsers.
+## Performance Tips
+
+1. **Encoding Speed**: AVIF is slower than WebP, WebP slower than JPG
+2. **Batch Efficiency**: Process similar images together with same parameters
+3. **Quality Trade-offs**: Higher quality = larger files and slower encoding
+4. **Format Selection**: Choose format based on content type (photos vs graphics)
+5. **PNG Compression**: Level 9 much slower than 6; test if difference matters
+6. **Progressive**: Minimal performance impact, significant UX benefit for large images
+
+## Troubleshooting
+
+### File Size Too Large
+
+**Problem**: Converted file is larger than expected.
+
+**Solutions**:
+```bash
+# Lower quality
+mediaproc image convert image.jpg -f webp -q 75 -o smaller.webp
+
+# Try different format
+mediaproc image convert image.png -f avif -q 80 -o much_smaller.avif
+
+# Use maximum PNG compression
+mediaproc image convert image.jpg -f png --compression 9 -o compressed.png
+
+# For JPG, use progressive
+mediaproc image convert image.jpg -f jpg -q 80 --progressive -o optimized.jpg
+```
+
+### Quality Loss Too Visible
+
+**Problem**: Output shows too many compression artifacts.
+
+**Solutions**:
+```bash
+# Increase quality
+mediaproc image convert photo.jpg -f webp -q 95 -o high_quality.webp
+
+# Try lossless PNG
+mediaproc image convert image.jpg -f png --compression 9 -o lossless.png
+
+# Use TIFF for no loss
+mediaproc image convert photo.jpg -f tiff -q 100 -o no_loss.tiff
+```
+
+### Browser Compatibility Issues
+
+**Problem**: Format not supported in target browsers.
+
+**Solutions**:
+```bash
+# Create JPG fallback
+mediaproc image convert image.webp -f jpg -q 90 -o fallback.jpg
+
+# Use universal format
+mediaproc image convert modern.avif -f png -o compatible.png
+
+# Create multiple formats for <picture> element
+mediaproc image convert photo.jpg -f webp -o modern.webp
+mediaproc image convert photo.jpg -f jpg --progressive -o fallback.jpg
+```
+
+### Conversion Takes Too Long
+
+**Problem**: Conversion is very slow.
+
+**Solutions**:
+```bash
+# Use faster format (JPG instead of AVIF)
+mediaproc image convert image.png -f jpg -q 90 -o faster.jpg
+
+# Lower PNG compression
+mediaproc image convert photo.jpg -f png --compression 6 -o faster_png.png
+
+# Skip progressive for faster encoding
+mediaproc image convert image.jpg -f jpg -q 85 -o no_progressive.jpg
+
+# Process in parallel
+ls *.jpg | parallel mediaproc image convert {} -f webp -o webp/{/.}.webp
+```
+
+### Transparency Lost
+
+**Problem**: Transparent areas become solid color.
+
+**Solutions**:
+```bash
+# Use format that supports transparency (PNG or WebP)
+mediaproc image convert image.png -f webp -o transparent.webp
+
+# Keep as PNG
+mediaproc image convert image.png -f png --compression 9 -o preserved.png
+
+# Don't convert to JPG (doesn't support transparency)
+```
+
+### Color Profile Issues
+
+**Problem**: Colors look different after conversion.
+
+**Solutions**:
+```bash
+# Use verbose mode to check profiles
+mediaproc image convert image.jpg -f webp -v -o check_profile.webp
+
+# Convert to sRGB first (use external tool)
+# Then convert format
+
+# Use higher quality to preserve color depth
+mediaproc image convert image.jpg -f webp -q 95 -o color_accurate.webp
+```
 
 ## See Also
 
-- [optimize](/docs/plugins/image/optimize) - Optimize without changing format
-- [compress](/docs/plugins/image/compress) - Compress with advanced options
-- [webp](/docs/plugins/image/webp) - WebP-specific conversion
-- [avif](/docs/plugins/image/avif) - AVIF-specific conversion
+- [optimize](./optimize) - Optimize images without format conversion
+- [resize](./resize) - Resize images during conversion
+- [thumbnail](./thumbnail) - Create thumbnails in different formats
+- [batch](./batch) - Batch process with conversion
+- [metadata-cmd](./metadata) - View format metadata

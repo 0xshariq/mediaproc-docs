@@ -3,24 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { navigationConfig, type NavItem } from '@/config/docs-config';
-import { useState } from 'react';
-import { ChevronRight, Terminal } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    'Official Plugins': true,
-  });
-
-  const toggleSection = (title: string) => {
-    setOpenSections((prev) => ({
-      ...prev,
-      [title]: !prev[title],
-    }));
-  };
 
   const isActive = (slug: string) => {
     const docPath = `/docs/${slug}`;
@@ -29,47 +21,39 @@ export function Sidebar() {
 
   const renderNavItem = (item: NavItem, level: number = 0) => {
     const hasChildren = item.children && item.children.length > 0;
-    const isOpen = openSections[item.title] !== false;
     const active = isActive(item.slug);
 
-    return (
-      <div key={item.slug}>
-        <div className="flex items-center group">
-          {hasChildren && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => toggleSection(item.title)}
-              className="p-0 h-6 w-6 hover:bg-muted/50"
-            >
-              <ChevronRight
-                className={`h-4 w-4 transition-transform duration-200 ${
-                  isOpen ? 'rotate-90' : ''
-                }`}
-              />
-            </Button>
-          )}
-          <Link
-            href={`/docs/${item.slug}`}
-            className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative ${
-              active
-                ? 'bg-primary/10 text-primary font-semibold'
-                : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:pl-4'
-            }`}
-            style={{ paddingLeft: `${level * 16 + (hasChildren ? 4 : 12)}px` }}
-          >
-            {active && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
-            )}
+    if (hasChildren) {
+      return (
+        <AccordionItem key={item.slug} value={item.slug} className="border-none">
+          <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             {item.title}
-          </Link>
-        </div>
-        {hasChildren && isOpen && (
-          <div className="mt-1 space-y-1">
-            {item.children!.map((child) => renderNavItem(child, level + 1))}
-          </div>
+          </AccordionTrigger>
+          <AccordionContent className="pb-2">
+            <div className="space-y-0.5 mt-1 pl-3">
+              {item.children!.map((child) => renderNavItem(child, level + 1))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      );
+    }
+
+    return (
+      <Link
+        key={item.slug}
+        href={`/docs/${item.slug}`}
+        className={`block px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative ${
+          active
+            ? 'bg-primary/10 text-primary font-semibold'
+            : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:translate-x-1'
+        }`}
+        style={{ paddingLeft: `${level * 12 + 12}px` }}
+      >
+        {active && (
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
         )}
-      </div>
+        {item.title}
+      </Link>
     );
   };
 
@@ -82,9 +66,9 @@ export function Sidebar() {
               <h3 className="px-3 mb-3 text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider">
                 {section.title}
               </h3>
-              <div className="space-y-0.5">
+              <Accordion type="single" collapsible className="space-y-0.5">
                 {section.items.map((item) => renderNavItem(item))}
-              </div>
+              </Accordion>
             </div>
           ))}
         </nav>

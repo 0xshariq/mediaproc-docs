@@ -1,0 +1,54 @@
+# smart-crop
+
+Intelligently crop images to focus on subject.
+
+## Usage
+
+```bash
+mediaproc image smart-crop <input> [options]
+```
+
+## Description
+
+The `smart-crop` command uses AI to detect important regions and crop accordingly.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-w, --width` | number | - | Target width (required) |
+| `-h, --height` | number | - | Target height (required) |
+| `--strategy` | string | attention | Crop strategy (attention, entropy) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# Smart crop to square
+mediaproc image smart-crop photo.jpg -w 800 -h 800 -o cropped.jpg
+
+# Attention-based crop (face detection)
+mediaproc image smart-crop portrait.jpg -w 400 -h 600 --strategy attention -o face-focused.jpg
+
+# Entropy-based crop (edge detection)
+mediaproc image smart-crop landscape.jpg -w 1920 -h 1080 --strategy entropy -o smart.jpg
+```
+
+## Strategies
+
+- **attention**: Focuses on faces and subjects
+- **entropy**: Focuses on areas with most detail/edges
+
+## Common Use Cases
+
+- **Profile Photos**: Auto-crop to faces
+- **Product Photos**: Focus on products
+- **Thumbnails**: Create smart thumbnails
+- **Social Media**: Crop for different platforms
+
+## See Also
+
+- [crop](./crop) - Manual cropping
+- [thumbnail](./thumbnail) - Create thumbnails

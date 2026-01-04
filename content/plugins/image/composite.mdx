@@ -1,134 +1,706 @@
+---
+title: "composite"
+description: "Overlay/composite one image on top of another with precise positioning and blend modes"
+---
+
 # composite
 
-Composite (overlay) images together.
+Overlay/composite one image on top of another with precise positioning and blend modes.
 
 ## Usage
 
 ```bash
-mediaproc image composite <input> [options]
+mediaproc image composite <input> --overlay <overlay> [options]
 ```
 
 ## Description
 
-The `composite` command overlays one image on top of another with control over positioning, blending modes, and opacity. Perfect for watermarks, logos, borders, and creative compositions.
+The `composite` command layers one image (overlay) on top of another (base image) with precise control over positioning, blend modes, opacity, and tiling. This is perfect for:
+- **Watermarking**: Add copyright or brand logos
+- **Overlays**: Layer graphics, badges, or icons
+- **Textures**: Apply texture overlays with blend modes
+- **Creative compositions**: Combine multiple images artistically
+- **Branding**: Add consistent visual elements across images
+
+The command supports various positioning strategies (gravity-based or exact coordinates), multiple blend modes for different effects, and can tile patterns across the entire image.
 
 ## Options
 
-### Basic Options
-
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--overlay` | string | - | Image to overlay (required) |
-| `-p, --position` | string | center | Position (center, north, south, east, west, northeast, northwest, southeast, southwest) |
-
-### Position Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-x, --left` | number | 0 | Horizontal offset in pixels |
-| `-y, --top` | number | 0 | Vertical offset in pixels |
-
-### Style Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--blend` | string | over | Blend mode (over, multiply, screen, overlay, darken, lighten) |
-| `--opacity` | number | 1.0 | Overlay opacity (0-1) |
-
-### Output Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| `<input>` | string | *required* | Base input image file path |
+| `--overlay` | string | *required* | Overlay image file path to composite on top |
+| `-o, --output` | string | `<input>_composite.<ext>` | Output file path |
+| `--gravity` | string | `center` | Position: center, north, south, east, west, northeast, northwest, southeast, southwest |
+| `--blend` | string | `over` | Blend mode: over, multiply, screen, overlay, darken, lighten, add, saturate, etc. |
+| `--left` | number | (none) | X position in pixels (overrides gravity) |
+| `--top` | number | (none) | Y position in pixels (overrides gravity) |
+| `--opacity` | number | `1` | Overlay opacity 0-1 (0 = transparent, 1 = opaque) |
+| `--tile` | boolean | `false` | Tile the overlay across the entire image |
+| `--dry-run` | boolean | `false` | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false` | Enable verbose logging |
 
 ## Examples
 
-### Basic Compositing
+### Basic Watermarking
+
+Add watermarks to images:
 
 ```bash
-# Overlay logo on photo
-mediaproc image composite photo.jpg --overlay logo.png -o branded.jpg
+# Add watermark to bottom-right
+mediaproc image composite photo.jpg --overlay watermark.png --gravity southeast -o watermarked.jpg
 
-# Centered overlay
-mediaproc image composite background.jpg --overlay watermark.png -p center -o marked.jpg
-```
+# Center watermark
+mediaproc image composite image.jpg --overlay logo.png --gravity center -o branded.jpg
 
-### Logo Placement
+# Top-left watermark
+mediaproc image composite photo.jpg --overlay logo.png --gravity northwest -o marked.jpg
 
-```bash
-# Logo in corner
-mediaproc image composite banner.jpg --overlay logo.png -p northeast -x 20 -y 20 -o branded.jpg
-
-# Multiple positions
-mediaproc image composite photo.jpg --overlay logo.png -p southeast -x 30 -y 30 -o bottom-right.jpg
+# Bottom-center watermark
+mediaproc image composite picture.jpg --overlay copyright.png --gravity south -o protected.jpg
 ```
 
 ### Opacity Control
 
-```bash
-# Semi-transparent overlay
-mediaproc image composite bg.jpg --overlay pattern.png --opacity 0.3 -o subtle.jpg
+Create semi-transparent overlays:
 
-# Watermark with 50% opacity
-mediaproc image composite photo.jpg --overlay watermark.png --opacity 0.5 -p center -o protected.jpg
+```bash
+# 50% transparent watermark
+mediaproc image composite photo.jpg --overlay watermark.png --opacity 0.5 -o subtle.jpg
+
+# Very subtle overlay (20%)
+mediaproc image composite image.jpg --overlay logo.png --opacity 0.2 -o light_brand.jpg
+
+# 70% transparent
+mediaproc image composite photo.jpg --overlay overlay.png --opacity 0.3 -o semi_visible.jpg
+
+# Nearly opaque (90%)
+mediaproc image composite image.jpg --overlay badge.png --opacity 0.9 -o strong.jpg
+```
+
+### Exact Positioning
+
+Position overlays at precise coordinates:
+
+```bash
+# Position at 50,50 pixels from top-left
+mediaproc image composite image.jpg --overlay badge.png --left 50 --top 50 -o positioned.jpg
+
+# Bottom-right corner with 20px padding
+mediaproc image composite photo.jpg --overlay logo.png --left -70 --top -70 -o corner.jpg
+
+# Center-left side
+mediaproc image composite image.jpg --overlay icon.png --left 20 --top 300 -o sidebar.jpg
+
+# Custom grid position
+mediaproc image composite photo.jpg --overlay element.png --left 200 --top 150 -o custom.jpg
 ```
 
 ### Blend Modes
 
-```bash
-# Multiply blend (darken)
-mediaproc image composite base.jpg --overlay texture.png --blend multiply -o textured.jpg
+Apply different blend modes for creative effects:
 
-# Screen blend (lighten)
+```bash
+# Multiply blend (darkens, great for textures)
+mediaproc image composite bg.jpg --overlay texture.png --blend multiply -o textured.jpg
+
+# Screen blend (lightens, great for glow effects)
 mediaproc image composite dark.jpg --overlay light.png --blend screen -o brightened.jpg
 
-# Overlay blend
-mediaproc image composite photo.jpg --overlay effect.png --blend overlay -o artistic.jpg
+# Overlay blend (combination of multiply and screen)
+mediaproc image composite image.jpg --overlay pattern.png --blend overlay -o blended.jpg
+
+# Darken (keep darker of two colors)
+mediaproc image composite photo.jpg --overlay shadow.png --blend darken -o darkened.jpg
+
+# Lighten (keep lighter of two colors)
+mediaproc image composite image.jpg --overlay highlight.png --blend lighten -o lightened.jpg
+
+# Add (adds pixel values together)
+mediaproc image composite base.jpg --overlay glow.png --blend add -o glowing.jpg
+
+# Saturate (increase color intensity)
+mediaproc image composite photo.jpg --overlay color.png --blend saturate -o vibrant.jpg
+```
+
+### Tiling Patterns
+
+Tile overlays across entire image:
+
+```bash
+# Tile pattern across image
+mediaproc image composite photo.jpg --overlay pattern.png --tile -o patterned.jpg
+
+# Tile with opacity for subtle effect
+mediaproc image composite image.jpg --overlay texture.png --tile --opacity 0.3 -o textured.jpg
+
+# Tile with multiply blend
+mediaproc image composite bg.jpg --overlay tile.png --tile --blend multiply -o tiled_dark.jpg
+
+# Tile watermark pattern
+mediaproc image composite photo.jpg --overlay watermark_tile.png --tile --opacity 0.1 -o protected.jpg
+```
+
+### Combining Options
+
+Use multiple options together:
+
+```bash
+# Semi-transparent watermark at bottom-right
+mediaproc image composite photo.jpg \
+  --overlay watermark.png \
+  --gravity southeast \
+  --opacity 0.5 \
+  -o watermarked.jpg
+
+# Multiply blend texture with opacity
+mediaproc image composite image.jpg \
+  --overlay texture.png \
+  --blend multiply \
+  --opacity 0.6 \
+  -o textured.jpg
+
+# Precise position with custom opacity
+mediaproc image composite photo.jpg \
+  --overlay badge.png \
+  --left 100 \
+  --top 100 \
+  --opacity 0.8 \
+  -o badge_added.jpg
+
+# Tiled pattern with screen blend
+mediaproc image composite dark_bg.jpg \
+  --overlay light_pattern.png \
+  --tile \
+  --blend screen \
+  --opacity 0.4 \
+  -o glowing_pattern.jpg
+```
+
+### Batch Processing
+
+Watermark multiple images:
+
+```bash
+# Watermark entire photo collection
+for file in photos/*.jpg; do
+  mediaproc image composite "$file" \
+    --overlay watermark.png \
+    --gravity southeast \
+    --opacity 0.5 \
+    -o "watermarked/${file##*/}"
+done
+
+# Add logo to all images
+for file in images/*.png; do
+  mediaproc image composite "$file" \
+    --overlay logo.png \
+    --gravity northwest \
+    -o "branded/${file##*/}"
+done
+
+# Apply texture to multiple images
+for file in photos/*.jpg; do
+  mediaproc image composite "$file" \
+    --overlay texture.png \
+    --blend multiply \
+    --opacity 0.3 \
+    -o "textured/${file##*/}"
+done
 ```
 
 ### Creative Effects
 
+Advanced creative compositions:
+
 ```bash
-# Add texture overlay
-mediaproc image composite photo.jpg --overlay grain.png --blend overlay --opacity 0.2 -o textured.jpg
+# Vintage film grain effect
+mediaproc image composite photo.jpg \
+  --overlay film_grain.png \
+  --tile \
+  --blend overlay \
+  --opacity 0.15 \
+  -o vintage.jpg
 
 # Light leak effect
-mediaproc image composite image.jpg --overlay light-leak.png --blend screen --opacity 0.7 -o vintage.jpg
+mediaproc image composite image.jpg \
+  --overlay light_leak.png \
+  --blend screen \
+  --opacity 0.6 \
+  --gravity northeast \
+  -o light_leak_effect.jpg
 
-# Vignette effect
-mediaproc image composite photo.jpg --overlay vignette.png --blend multiply -o vignette.jpg
+# Dust and scratches overlay
+mediaproc image composite photo.jpg \
+  --overlay dust.png \
+  --blend darken \
+  --opacity 0.2 \
+  -o aged.jpg
+
+# Bokeh overlay
+mediaproc image composite portrait.jpg \
+  --overlay bokeh.png \
+  --blend screen \
+  --opacity 0.4 \
+  -o dreamy.jpg
+```
+
+### Logo Placement Variations
+
+Different logo positioning strategies:
+
+```bash
+# Top-left corner
+mediaproc image composite image.jpg --overlay logo.png --gravity northwest -o tl_logo.jpg
+
+# Top-right corner
+mediaproc image composite image.jpg --overlay logo.png --gravity northeast -o tr_logo.jpg
+
+# Bottom-left corner
+mediaproc image composite image.jpg --overlay logo.png --gravity southwest -o bl_logo.jpg
+
+# Bottom-right corner
+mediaproc image composite image.jpg --overlay logo.png --gravity southeast -o br_logo.jpg
+
+# Centered
+mediaproc image composite image.jpg --overlay logo.png --gravity center -o centered_logo.jpg
+
+# Top center
+mediaproc image composite image.jpg --overlay logo.png --gravity north -o tc_logo.jpg
+```
+
+### Professional Watermarking
+
+Professional watermark strategies:
+
+```bash
+# Diagonal tiled watermark
+mediaproc image composite photo.jpg \
+  --overlay watermark_diagonal.png \
+  --tile \
+  --opacity 0.08 \
+  -o protected.jpg
+
+# Corner watermark with high opacity
+mediaproc image composite image.jpg \
+  --overlay copyright.png \
+  --gravity southeast \
+  --opacity 0.7 \
+  -o copyrighted.jpg
+
+# Center watermark with low opacity (for proofs)
+mediaproc image composite photo.jpg \
+  --overlay proof.png \
+  --gravity center \
+  --opacity 0.3 \
+  -o proof.jpg
+```
+
+### Dry Run Testing
+
+Test composite operations:
+
+```bash
+# Test gravity positioning
+mediaproc image composite image.jpg --overlay logo.png --gravity southeast --dry-run
+
+# Test exact positioning
+mediaproc image composite image.jpg --overlay badge.png --left 100 --top 100 --dry-run
+
+# Test blend mode and opacity
+mediaproc image composite image.jpg --overlay texture.png --blend multiply --opacity 0.5 --dry-run
+
+# Test tiling
+mediaproc image composite image.jpg --overlay pattern.png --tile --dry-run
+```
+
+### Verbose Processing
+
+Monitor composite operations:
+
+```bash
+# See detailed processing information
+mediaproc image composite photo.jpg \
+  --overlay watermark.png \
+  --gravity southeast \
+  --opacity 0.5 \
+  -v \
+  -o watermarked.jpg
+
+# Debug positioning and blend mode
+mediaproc image composite image.jpg \
+  --overlay texture.png \
+  --blend multiply \
+  -v \
+  -o textured.jpg
 ```
 
 ## Blend Modes Explained
 
-- **over**: Default, simple overlay
-- **multiply**: Darkens, good for shadows/textures
-- **screen**: Lightens, good for light effects
-- **overlay**: Combines multiply and screen
-- **darken**: Shows darker of the two
-- **lighten**: Shows lighter of the two
+### over (default)
+Standard overlay - places overlay image on top of base image.
+
+**Use for**:
+- Watermarks
+- Logos
+- Standard overlays
+- PNG images with transparency
+
+**Example**:
+```bash
+mediaproc image composite photo.jpg --overlay watermark.png --blend over -o standard.jpg
+```
+
+### multiply
+Multiplies pixel values - darkens the image.
+
+**Use for**:
+- Adding textures
+- Creating shadow effects
+- Darkening specific areas
+- Vintage looks
+
+**Example**:
+```bash
+mediaproc image composite image.jpg --overlay texture.png --blend multiply --opacity 0.4 -o textured.jpg
+```
+
+### screen
+Inverts, multiplies, inverts again - lightens the image.
+
+**Use for**:
+- Glow effects
+- Light leaks
+- Brightening
+- Dreamy effects
+
+**Example**:
+```bash
+mediaproc image composite dark.jpg --overlay light.png --blend screen --opacity 0.6 -o brightened.jpg
+```
+
+### overlay
+Combination of multiply and screen based on base color.
+
+**Use for**:
+- Balanced blending
+- Preserving highlights and shadows
+- General compositing
+- Color grading
+
+**Example**:
+```bash
+mediaproc image composite photo.jpg --overlay color_grade.png --blend overlay --opacity 0.5 -o graded.jpg
+```
+
+### darken
+Keeps the darker of the two colors.
+
+**Use for**:
+- Shadow overlays
+- Darkening effects
+- Preserving dark details
+
+**Example**:
+```bash
+mediaproc image composite image.jpg --overlay shadow.png --blend darken -o darkened.jpg
+```
+
+### lighten
+Keeps the lighter of the two colors.
+
+**Use for**:
+- Highlight overlays
+- Lightening effects
+- Preserving bright details
+
+**Example**:
+```bash
+mediaproc image composite photo.jpg --overlay highlight.png --blend lighten -o lightened.jpg
+```
+
+### add
+Adds pixel values together (may clip at maximum).
+
+**Use for**:
+- Glow effects
+- Light addition
+- Bright overlays
+- Special effects
+
+**Example**:
+```bash
+mediaproc image composite dark_scene.jpg --overlay glow.png --blend add --opacity 0.7 -o glowing.jpg
+```
+
+### saturate
+Increases color intensity where overlay and base overlap.
+
+**Use for**:
+- Color enhancement
+- Vibrant effects
+- Selective saturation
+
+**Example**:
+```bash
+mediaproc image composite photo.jpg --overlay color_boost.png --blend saturate --opacity 0.4 -o vibrant.jpg
+```
+
+## Gravity Positions Reference
+
+### Gravity Options
+
+- **center**: Center of image (default)
+- **north**: Top center
+- **south**: Bottom center
+- **east**: Right center
+- **west**: Left center
+- **northeast**: Top-right corner
+- **northwest**: Top-left corner
+- **southeast**: Bottom-right corner
+- **southwest**: Bottom-left corner
+
+### Visual Guide
+
+```
+northwest    north    northeast
+    ┌──────────────┐
+west│    center    │east
+    └──────────────┘
+southwest    south    southeast
+```
 
 ## Best Practices
 
-1. **PNG Overlays**: Use PNG with transparency
-2. **Size Matching**: Overlay should be proportional to base
-3. **Opacity**: Start with 0.5 and adjust
-4. **Blend Modes**: Experiment for creative effects
-5. **Quality**: Use high quality for final output
+1. **Watermarking**:
+   - Use PNG overlays with transparency
+   - Position in corners (southeast common)
+   - Use 0.3-0.7 opacity for subtlety
+   - Consider --tile with low opacity for full protection
+
+2. **Blend Mode Selection**:
+   - Start with `over` for standard overlays
+   - Use `multiply` for textures and darkening
+   - Use `screen` for glows and lightening
+   - `overlay` for balanced blending
+
+3. **Opacity Guidelines**:
+   - 0.1-0.3: Very subtle, background effects
+   - 0.3-0.5: Watermarks, subtle overlays
+   - 0.5-0.7: Visible but not dominant
+   - 0.7-1.0: Strong, prominent overlays
+
+4. **Performance**:
+   - Overlay image is loaded once for batch processing
+   - Use appropriate overlay sizes (don't use massive files)
+   - PNG format best for transparency preservation
+
+5. **Quality Preservation**:
+   - Use high-quality overlay images
+   - Match overlay and base image quality levels
+   - Save in appropriate format (PNG for transparency)
+
+6. **Positioning**:
+   - Use gravity for dynamic positioning
+   - Use --left/--top for precise pixel placement
+   - Consider different screen sizes for web watermarks
+
+7. **Batch Consistency**:
+   - Use same overlay and parameters for consistency
+   - Maintain watermark quality across all images
+   - Test on sample images first
 
 ## Common Use Cases
 
-- **Branding**: Add logos to images
-- **Watermarking**: Protect content
-- **Texture Overlays**: Add film grain, paper texture
-- **Light Effects**: Add light leaks, bokeh
-- **Borders**: Composite decorative borders
-- **Photo Editing**: Layer adjustments
+### Brand Watermarking
+
+```bash
+# Add company logo to all product photos
+for photo in products/*.jpg; do
+  mediaproc image composite "$photo" \
+    --overlay company_logo.png \
+    --gravity southeast \
+    --opacity 0.6 \
+    -o "branded/${photo##*/}"
+done
+```
+
+### Photography Portfolio Protection
+
+```bash
+# Add copyright to portfolio images
+for image in portfolio/*.jpg; do
+  mediaproc image composite "$image" \
+    --overlay copyright.png \
+    --gravity south \
+    --opacity 0.5 \
+    -o "watermarked/${image##*/}"
+done
+```
+
+### Texture Overlay for Artistic Effect
+
+```bash
+# Apply film grain texture
+mediaproc image composite photo.jpg \
+  --overlay film_grain.png \
+  --tile \
+  --blend overlay \
+  --opacity 0.2 \
+  -o vintage_film.jpg
+```
+
+### Social Media Branding
+
+```bash
+# Add profile logo to social media images
+mediaproc image composite post.jpg \
+  --overlay profile_badge.png \
+  --gravity northwest \
+  --left 20 \
+  --top 20 \
+  --opacity 0.9 \
+  -o branded_post.jpg
+```
+
+### Real Estate Watermarking
+
+```bash
+# Add agency branding to property photos
+for listing in listings/*.jpg; do
+  mediaproc image composite "$listing" \
+    --overlay agency_watermark.png \
+    --gravity southeast \
+    --opacity 0.4 \
+    -o "watermarked/${listing##*/}"
+done
+```
+
+## Performance Tips
+
+1. **Overlay Optimization**: The overlay image is loaded and prepared once, then applied to all base images in batch mode
+2. **Size Matching**: Resize overlay to appropriate size before compositing for better performance
+3. **Format Selection**: PNG best for overlays with transparency; JPEG for opaque overlays
+4. **Batch Efficiency**: Process similar images together with same overlay parameters
+5. **Memory Usage**: Large overlay images consume more memory; optimize overlay size first
+
+## Troubleshooting
+
+### Overlay Not Visible
+
+**Problem**: Overlay doesn't appear on output.
+
+**Solutions**:
+```bash
+# Check if overlay file exists
+ls -lh watermark.png
+
+# Increase opacity
+mediaproc image composite image.jpg --overlay logo.png --opacity 1 -o visible.jpg
+
+# Try different blend mode
+mediaproc image composite image.jpg --overlay logo.png --blend over -o standard.jpg
+
+# Check with verbose mode
+mediaproc image composite image.jpg --overlay logo.png -v -o test.jpg
+```
+
+### Overlay in Wrong Position
+
+**Problem**: Overlay positioned incorrectly.
+
+**Solutions**:
+```bash
+# Use different gravity
+mediaproc image composite image.jpg --overlay logo.png --gravity southeast -o corner.jpg
+
+# Use exact coordinates
+mediaproc image composite image.jpg --overlay logo.png --left 50 --top 50 -o positioned.jpg
+
+# Test with dry-run first
+mediaproc image composite image.jpg --overlay logo.png --gravity center --dry-run
+```
+
+### Overlay Too Prominent
+
+**Problem**: Overlay dominates the image.
+
+**Solutions**:
+```bash
+# Reduce opacity
+mediaproc image composite photo.jpg --overlay watermark.png --opacity 0.3 -o subtle.jpg
+
+# Use different blend mode
+mediaproc image composite photo.jpg --overlay texture.png --blend multiply --opacity 0.4 -o soft.jpg
+
+# Reduce overlay image size/contrast before compositing
+```
+
+### Overlay Quality Loss
+
+**Problem**: Overlay looks pixelated or low quality.
+
+**Solutions**:
+```bash
+# Use PNG format for overlay (not JPEG)
+# Ensure overlay is high resolution
+# Avoid scaling up small overlays
+
+# Use high-quality overlay image
+mediaproc image composite image.jpg --overlay high_res_logo.png -o quality.jpg
+```
+
+### Batch Processing Inconsistencies
+
+**Problem**: Overlays look different across batch.
+
+**Solutions**:
+```bash
+# Use consistent parameters
+OVERLAY_PARAMS="--overlay logo.png --gravity southeast --opacity 0.5"
+for file in *.jpg; do
+  mediaproc image composite "$file" $OVERLAY_PARAMS -o "processed/${file}"
+done
+
+# Ensure all base images are similar dimensions
+# Normalize images first if needed
+```
+
+### Tiling Creates Seams
+
+**Problem**: Visible seams when tiling overlay.
+
+**Solutions**:
+```bash
+# Use seamless tiling pattern
+# Reduce opacity to minimize visibility
+mediaproc image composite image.jpg --overlay pattern.png --tile --opacity 0.2 -o subtle_tile.jpg
+
+# Create seamless overlay pattern first (in external tool)
+```
+
+### Overlay File Not Found
+
+**Problem**: Error: "Overlay file not found".
+
+**Solutions**:
+```bash
+# Check file path
+ls -lh path/to/overlay.png
+
+# Use absolute path
+mediaproc image composite image.jpg --overlay /full/path/to/watermark.png -o output.jpg
+
+# Verify file exists and is readable
+file overlay.png
+```
 
 ## See Also
 
-- [watermark](./watermark) - Simplified watermarking
-- [border](./border) - Add borders
-- [blend](./blend) - Advanced blending
+- [watermark](./watermark) - Specialized watermarking command
+- [flatten](./flatten) - Flatten alpha channel before compositing
+- [extend](./extend) - Add padding/borders before overlays
+- [crop](./crop) - Crop before/after compositing
+- [resize](./resize) - Resize base or overlay images
+- [rotate](./rotate) - Rotate overlay before compositing
+- [flip](./flip) - Flip overlay before compositing

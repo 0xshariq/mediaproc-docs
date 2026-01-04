@@ -1,6 +1,6 @@
 # border
 
-Add decorative borders to images.
+Add solid color borders or decorative frames around images.
 
 ## Usage
 
@@ -10,84 +10,369 @@ mediaproc image border <input> [options]
 
 ## Description
 
-The `border` command adds styled borders around images with customizable width, color, and style options.
+The `border` command adds a uniform solid color border around all sides of an image. The border extends the image dimensions by adding padding on all edges. Perfect for framing photos, creating gallery layouts, adding white space for presentations, or creating Instagram-style bordered posts.
 
 ## Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-w, --width` | number | 10 | Border width in pixels |
-| `-c, --color` | string | #000000 | Border color |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| `-w, --width` | number | 10 | Border width in pixels (applied to all sides) |
+| `--color` | color | `#000000` | Border color (hex, rgb, or color name) |
+| `-o, --output` | path | `<input>-border.<ext>` | Output file path |
+| `--dry-run` | flag | - | Preview changes without executing |
+| `-v, --verbose` | flag | - | Show detailed output |
+
+## Color Formats
+
+The command supports multiple color specification formats:
+
+### Hexadecimal
+
+```bash
+# Short form (3 digits)
+--color "#F00"      # Red
+--color "#0F0"      # Green
+--color "#00F"      # Blue
+
+# Full form (6 digits)
+--color "#FF0000"   # Red
+--color "#00FF00"   # Green
+--color "#0000FF"   # Blue
+
+# With alpha transparency (8 digits)
+--color "#FF000080" # Semi-transparent red
+```
+
+### RGB/RGBA
+
+```bash
+# RGB format
+--color "rgb(255, 0, 0)"          # Red
+--color "rgb(255, 255, 255)"      # White
+--color "rgb(0, 0, 0)"            # Black
+
+# RGBA with transparency
+--color "rgba(255, 0, 0, 0.5)"    # Semi-transparent red
+--color "rgba(0, 0, 0, 0)"        # Fully transparent
+```
+
+### Named Colors
+
+```bash
+# Common names
+--color white
+--color black
+--color red
+--color blue
+--color green
+--color yellow
+--color gray
+--color gold
+--color silver
+--color transparent
+```
 
 ## Examples
 
 ### Basic Borders
 
 ```bash
-# Simple black border
-mediaproc image border photo.jpg -w 20 -o framed.jpg
+# Default 10px black border
+mediaproc image border photo.jpg
 
-# White border
-mediaproc image border image.jpg -w 15 -c "#ffffff" -o white-frame.jpg
+# 20px white border
+mediaproc image border image.png --width 20 --color white
 
-# Thin border
-mediaproc image border photo.png -w 5 -c "#333333" -o subtle.png
+# 5px red border
+mediaproc image border pic.jpg -w 5 --color red
+
+# 30px custom color border
+mediaproc image border photo.jpg --width 30 --color "#FF5733"
+```
+
+### Presentation Borders
+
+```bash
+# Clean white border for slides
+mediaproc image border slide-image.jpg --width 40 --color white -o presentation-ready.jpg
+
+# Gray border for professional look
+mediaproc image border chart.png -w 25 --color "#E0E0E0" -o framed-chart.png
+
+# Black border for contrast
+mediaproc image border diagram.jpg --width 15 --color black
+```
+
+### Social Media Borders
+
+```bash
+# Instagram-style white border
+mediaproc image border selfie.jpg --width 50 --color white -o insta-post.jpg
+
+# Colored border matching brand
+mediaproc image border product.jpg -w 30 --color "#0066CC" -o branded.jpg
+
+# Minimalist thin border
+mediaproc image border photo.jpg --width 2 --color white
+```
+
+### Gallery Borders
+
+```bash
+# Uniform gallery frames
+mediaproc image border "gallery/*.jpg" --width 15 --color white
+
+# Black mat for art prints
+mediaproc image border artwork.png --width 80 --color black -o matted.png
+
+# Consistent framing for collection
+mediaproc image border "photos/*.jpg" -w 20 --color "#F5F5F5"
+```
+
+### Custom Colors
+
+```bash
+# RGB color specification
+mediaproc image border photo.jpg --width 25 --color "rgb(100, 150, 200)"
+
+# Hexadecimal custom color
+mediaproc image border image.png -w 30 --color "#8B4513" -o sepia-border.png
+
+# Named color for simplicity
+mediaproc image border pic.jpg --width 15 --color gold
+```
+
+### Batch Processing
+
+```bash
+# Add borders to all images
+mediaproc image border "photos/*.jpg" --width 20 --color white -v
+
+# Different width for thumbnails
+mediaproc image border "thumbs/*.png" -w 5 --color black
+
+# Preview before processing
+mediaproc image border "images/*.jpg" --width 30 --color white --dry-run
+```
+
+## How It Works
+
+The border extends the image canvas in all directions:
+
+**Original image**: 800x600px  
+**Border width**: 20px  
+**Result**: 840x640px (800+20+20 by 600+20+20)
+
+Border is applied equally to:
+- **Top**: 20px
+- **Bottom**: 20px  
+- **Left**: 20px
+- **Right**: 20px
+
+Total dimension increase = 2 × border width
+
+## Common Use Cases
+
+### Professional Photo Finishing
+
+```bash
+# White border for print preparation
+mediaproc image border portrait.jpg --width 50 --color white -o print-ready.jpg
+
+# Black border for gallery display
+mediaproc image border photo.jpg --width 40 --color black -o gallery.jpg
+```
+
+### Web Design
+
+```bash
+# Add padding for better layout
+mediaproc image border hero-image.jpg --width 30 --color white -o padded-hero.jpg
+
+# Border to separate sections
+mediaproc image border section-img.png -w 10 --color "#E0E0E0"
+```
+
+### Social Media
+
+```bash
+# Instagram square post with border
+mediaproc image border photo.jpg --width 60 --color white -o instagram.jpg
+
+# Twitter header with margin
+mediaproc image border header.jpg --width 20 --color "#1DA1F2" -o twitter-header.jpg
+```
+
+### Product Photography
+
+```bash
+# White background extension
+mediaproc image border product.png --width 100 --color white -o marketplace.png
+
+# Branded border color
+mediaproc image border item.jpg --width 40 --color "#FF6600" -o branded-product.jpg
+```
+
+### Document/Presentation
+
+```bash
+# Frame screenshots for presentation
+mediaproc image border screenshot.png --width 15 --color "#333333" -o slide.png
+
+# Add space around diagrams
+mediaproc image border diagram.jpg --width 35 --color white -o document-ready.jpg
+```
+
+## Border Width Guide
+
+| Width | Effect | Best For |
+|-------|--------|----------|
+| 2-5px | Minimal | Subtle separation, web thumbnails |
+| 5-15px | Small | Gallery thumbnails, icons |
+| 15-30px | Medium | Standard photo frames, presentations |
+| 30-60px | Large | Instagram posts, emphasis |
+| 60-100px | Extra Large | Art prints, poster effects |
+| 100+px | Massive | Special effects, canvas extensions |
+
+## Color Recommendations
+
+### Classic Borders
+
+```bash
+# Pure white (clean, modern)
+--color white  # or #FFFFFF
+
+# Pure black (gallery, contrast)
+--color black  # or #000000
+
+# Off-white (warm, less harsh)
+--color "#F8F8F8"
+
+# Dark gray (professional)
+--color "#333333"
 ```
 
 ### Colored Borders
 
 ```bash
-# Blue border
-mediaproc image border photo.jpg -w 25 -c "#3b82f6" -o blue-border.jpg
+# Gold (elegant, premium)
+--color gold  # or #FFD700
 
-# Gold border for certificates
-mediaproc image border certificate.jpg -w 30 -c "#fbbf24" -o gold-frame.jpg
+# Navy blue (corporate)
+--color "#003366"
 
-# Custom brand color
-mediaproc image border product.png -w 20 -c "#ff0080" -o branded.png
-```
+# Warm gray (neutral)
+--color "#999999"
 
-### Thick Borders
-
-```bash
-# Gallery-style thick border
-mediaproc image border artwork.jpg -w 50 -c "#ffffff" -o gallery-frame.jpg
-
-# Mat effect
-mediaproc image border photo.jpg -w 80 -c "#f5f5f5" -o matted.jpg
-```
-
-### Batch Bordering
-
-```bash
-# Add borders to all images
-for img in *.jpg; do
-  mediaproc image border "$img" -w 20 -c "#ffffff" -o "framed-$img"
-done
+# Cream (vintage)
+--color "#FFFDD0"
 ```
 
 ## Best Practices
 
-1. **Proportional Width**: Border should be 2-5% of image dimension
-2. **High Contrast**: Use contrasting colors for visibility
-3. **White/Black**: Classic choices for most images
-4. **Quality**: Use high quality for bordered images
-5. **Format**: PNG preserves borders better
+1. **Choose Width Proportional to Image Size**: Larger images can handle wider borders
+2. **White Borders for Clean Look**: Most versatile and modern
+3. **Black for Gallery/Art**: Traditional framing aesthetic
+4. **Match Brand Colors**: Use branded colors for marketing materials
+5. **Test with --dry-run**: Preview before processing multiple images
+6. **Consistent Borders for Series**: Use same settings for photo collections
 
-## Common Use Cases
+## Performance Tips
 
-- **Photo Galleries**: Uniform framed appearance
-- **Certificates**: Professional border styling
-- **Product Photos**: Clean, bordered presentation
-- **Social Media**: Stand-out posts
-- **Print Preparation**: Add bleed area
-- **Thumbnails**: Define image boundaries
+- Border operation is very fast (simple canvas extension)
+- No quality loss (pixels aren't resampled)
+- Minimal memory overhead
+- Process hundreds of images quickly
+
+## Dimension Changes
+
+Remember that borders increase image dimensions:
+
+```bash
+# Original: 1000x1000px
+# Border: 50px
+# Result: 1100x1100px (1000 + 50 + 50)
+
+# Original: 1920x1080px
+# Border: 30px
+# Result: 1980x1140px (1920 + 60, 1080 + 60)
+```
+
+If you need specific output dimensions, resize before or after bordering.
+
+## Combining with Other Commands
+
+### Resize Then Border
+
+```bash
+# First resize to target size
+mediaproc image resize photo.jpg --width 800 -o resized.jpg
+
+# Then add border
+mediaproc image border resized.jpg --width 30 --color white -o final.jpg
+```
+
+### Border Then Optimize
+
+```bash
+# Add border
+mediaproc image border photo.jpg --width 40 --color white -o bordered.jpg
+
+# Optimize file size
+mediaproc image optimize bordered.jpg --quality 85 -o final.jpg
+```
+
+### Crop Then Border
+
+```bash
+# Crop to desired composition
+mediaproc image crop photo.jpg -w 800 -h 800 -o cropped.jpg
+
+# Frame it
+mediaproc image border cropped.jpg --width 50 --color white -o framed.jpg
+```
+
+## Troubleshooting
+
+**Border color not showing:**
+- Check color format is correct
+- Use quotes around color values: `--color "rgb(255,0,0)"`
+- Verify hex colors start with #
+
+**Unexpected output size:**
+- Remember: output = input + (2 × border width)
+- Border is added to all four sides
+
+**Color appears different than expected:**
+- Monitor calibration may affect perception
+- Some formats (JPEG) don't support transparency
+- Use PNG for transparent borders
+
+**Large file size after border:**
+- Larger dimensions = larger file
+- Optimize after adding border if needed
+- Consider using compressed formats (WebP)
+
+## Limitations
+
+- Border width is uniform (same on all sides)
+- No gradient or pattern borders
+- No rounded corners (use separate command)
+- Cannot add different colors per side
+
+## Future Enhancements
+
+*These features are planned but not yet implemented:*
+
+- **Individual side widths**: Different width per side (FUTURE)
+- **Gradient borders**: Color gradients instead of solid (FUTURE)
+- **Pattern borders**: Textured or patterned borders (FUTURE)
+- **Rounded corners**: Border with corner radius (FUTURE)
+- **Shadow effects**: Drop shadow with border (FUTURE)
 
 ## See Also
 
-- [extend](./extend) - Add padding
-- [composite](./composite) - Custom border overlays
-- [background](./background) - Colored backgrounds
+- [extend](./extend) - More flexible canvas extension
+- [composite](./composite) - Layer images for complex frames
+- [crop](./crop) - Remove edges (opposite of border)
+- [trim](./trim) - Remove uniform borders automatically

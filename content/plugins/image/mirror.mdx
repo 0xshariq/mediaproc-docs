@@ -1,0 +1,37 @@
+# mirror
+
+Mirror image horizontally or vertically.
+
+## Usage
+
+```bash
+mediaproc image mirror <input> [options]
+```
+
+## Description
+
+The `mirror` command creates a mirrored reflection effect.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--axis` | string | horizontal | Mirror axis (horizontal, vertical) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# Horizontal mirror
+mediaproc image mirror photo.jpg -o mirrored.jpg
+
+# Vertical mirror
+mediaproc image mirror image.jpg --axis vertical -o v-mirror.jpg
+```
+
+## See Also
+
+- [flip](./flip) - Flip horizontally
+- [flop](./flop) - Flip vertically

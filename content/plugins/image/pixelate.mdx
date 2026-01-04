@@ -1,0 +1,47 @@
+# pixelate
+
+Apply pixelation effect to images.
+
+## Usage
+
+```bash
+mediaproc image pixelate <input> [options]
+```
+
+## Description
+
+The `pixelate` command creates a pixelated/mosaic effect by reducing image resolution in blocks.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--size` | number | 10 | Pixel block size |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# Light pixelation
+mediaproc image pixelate photo.jpg --size 5 -o pixelated.jpg
+
+# Heavy pixelation
+mediaproc image pixelate image.jpg --size 20 -o mosaic.jpg
+
+# Privacy protection
+mediaproc image pixelate face.jpg --size 15 -o censored.jpg
+```
+
+## Common Use Cases
+
+- **Privacy**: Blur sensitive information
+- **Artistic Effects**: Retro pixel art look
+- **Censorship**: Hide faces or information
+- **Thumbnails**: Create pixelated previews
+
+## See Also
+
+- [blur](./blur) - Blur effect
+- [mosaic](./mosaic) - Mosaic patterns

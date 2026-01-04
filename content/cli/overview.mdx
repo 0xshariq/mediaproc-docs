@@ -1,0 +1,308 @@
+# CLI Overview
+
+MediaProc CLI is a powerful, extensible command-line tool for processing and manipulating various media types including images, videos, audio, animations, 3D models, and documents.
+
+## What is MediaProc?
+
+MediaProc is designed to be your all-in-one media processing toolkit. Instead of juggling multiple tools and libraries, MediaProc provides a unified interface for common (and not-so-common) media manipulation tasks.
+
+### Key Features
+
+- **Plugin-Based Architecture**: Modular design allows you to install only the plugins you need
+- **Consistent Interface**: All plugins follow the same command structure and patterns
+- **High Performance**: Built on top of industry-standard libraries (Sharp, FFmpeg, etc.)
+- **Type Safety**: Written in TypeScript for robust development and tooling
+- **Extensive Documentation**: Comprehensive docs for every command and option
+- **Cross-Platform**: Works on Linux, macOS, and Windows
+
+## Installation
+
+### Global Installation
+
+Install MediaProc globally to use it anywhere on your system:
+
+```bash
+npm install -g @mediaproc/cli
+# or
+pnpm add -g @mediaproc/cli
+# or
+yarn global add @mediaproc/cli
+```
+
+### Project Installation
+
+Install as a development dependency for project-specific workflows:
+
+```bash
+npm install --save-dev @mediaproc/cli
+# or
+pnpm add -D @mediaproc/cli
+# or
+yarn add -D @mediaproc/cli
+```
+
+## Quick Start
+
+1. **Initialize your project**:
+   ```bash
+   mediaproc init
+   ```
+
+2. **Install plugins you need**:
+   ```bash
+   mediaproc install image video audio
+   ```
+
+3. **Start processing media**:
+   ```bash
+   mediaproc image resize input.jpg output.jpg --width 800 --height 600
+   mediaproc video convert input.mp4 output.webm --codec vp9
+   mediaproc audio normalize input.mp3 output.mp3
+   ```
+
+## Core Concepts
+
+### Plugins
+
+MediaProc's functionality is organized into plugins. Each plugin focuses on a specific media type or workflow:
+
+- **image**: Image processing and manipulation
+- **video**: Video conversion, editing, and optimization
+- **audio**: Audio processing and format conversion
+- **animation**: GIF and animation creation
+- **3d**: 3D model processing and optimization
+- **ai**: AI-powered media operations
+- **document**: Document conversion and manipulation
+- **metadata**: Media metadata extraction and editing
+- **pipeline**: Chain multiple operations together
+- **stream**: Real-time media streaming
+
+### Commands
+
+Each plugin provides multiple commands. Commands follow this pattern:
+
+```bash
+mediaproc <plugin> <command> [input] [output] [options]
+```
+
+Example:
+```bash
+mediaproc image crop photo.jpg cropped.jpg --width 500 --height 500
+```
+
+### Options
+
+Commands accept options to customize behavior. Options can be:
+
+- **Required**: Must be provided for the command to work
+- **Optional**: Have sensible defaults
+- **Flags**: Boolean options (e.g., `--force`, `--verbose`)
+
+View available options with:
+```bash
+mediaproc <plugin> <command> --help
+```
+
+## Configuration
+
+MediaProc can be configured at multiple levels:
+
+### Global Configuration
+
+Store settings in `~/.mediaprocrc.json`:
+
+```json
+{
+  "defaultQuality": 85,
+  "concurrency": 4,
+  "cache": true
+}
+```
+
+### Project Configuration
+
+Create `.mediaprocrc.json` in your project root:
+
+```json
+{
+  "plugins": ["image", "video"],
+  "image": {
+    "defaultFormat": "webp",
+    "quality": 90
+  },
+  "video": {
+    "defaultCodec": "h264",
+    "preset": "medium"
+  }
+}
+```
+
+Use `mediaproc config` to manage configurations:
+
+```bash
+# View current config
+mediaproc config get
+
+# Set a value
+mediaproc config set defaultQuality 90
+
+# Reset to defaults
+mediaproc config reset
+```
+
+## Command Structure
+
+### Universal Commands
+
+These work across all contexts:
+
+- `mediaproc init` - Initialize a new project
+- `mediaproc install <plugin>` - Install a plugin
+- `mediaproc uninstall <plugin>` - Remove a plugin
+- `mediaproc list` - List installed plugins
+- `mediaproc update [plugin]` - Update plugins
+- `mediaproc config` - Manage configuration
+- `mediaproc help` - Show help information
+- `mediaproc validate` - Validate configuration
+
+### Plugin Commands
+
+Format: `mediaproc <plugin> <command> [args] [options]`
+
+Each plugin provides its own set of commands. Common patterns:
+
+- **Convert**: Change format (e.g., `image convert`, `video convert`)
+- **Optimize**: Reduce file size (e.g., `image optimize`, `video optimize`)
+- **Extract**: Get specific data (e.g., `audio extract`, `metadata extract`)
+- **Merge**: Combine files (e.g., `audio merge`, `video merge`)
+
+## Working with Files
+
+### Input/Output
+
+Most commands accept input and output file paths:
+
+```bash
+mediaproc image resize input.jpg output.jpg --width 800
+```
+
+### Stdin/Stdout
+
+Some commands support piping:
+
+```bash
+cat input.jpg | mediaproc image resize - - --width 800 > output.jpg
+```
+
+### Batch Processing
+
+Process multiple files with glob patterns:
+
+```bash
+mediaproc image optimize "photos/*.jpg" --quality 85
+```
+
+Or use the batch command:
+
+```bash
+mediaproc image batch resize "photos/*.jpg" --width 1200 --output "resized/"
+```
+
+## Error Handling
+
+MediaProc provides clear error messages:
+
+```bash
+mediaproc image resize input.jpg output.jpg --width abc
+# Error: Option --width must be a number
+```
+
+Enable verbose mode for detailed debugging:
+
+```bash
+mediaproc image resize input.jpg output.jpg --width 800 --verbose
+```
+
+## Performance Tips
+
+1. **Use appropriate quality settings**: Higher quality = larger files
+2. **Enable caching**: Speed up repeated operations
+3. **Adjust concurrency**: Process multiple files in parallel
+4. **Choose the right format**: WebP for images, WebM for video
+5. **Optimize first**: Run optimize commands before distribution
+
+## Getting Help
+
+### Command Help
+
+```bash
+# General help
+mediaproc --help
+
+# Plugin help
+mediaproc image --help
+
+# Command help
+mediaproc image resize --help
+```
+
+### Documentation
+
+- Full documentation: [https://mediaproc.dev/docs](https://mediaproc.dev/docs)
+- Plugin guides: [https://mediaproc.dev/docs/plugins](https://mediaproc.dev/docs/plugins)
+- API reference: [https://mediaproc.dev/docs/api](https://mediaproc.dev/docs/api)
+
+### Community
+
+- GitHub: [https://github.com/0xshariq/mediaproc-cli](https://github.com/0xshariq/mediaproc-cli)
+- Issues: [https://github.com/0xshariq/mediaproc-cli/issues](https://github.com/0xshariq/mediaproc-cli/issues)
+- Discussions: [https://github.com/0xshariq/mediaproc-cli/discussions](https://github.com/0xshariq/mediaproc-cli/discussions)
+
+## Next Steps
+
+- [Plugin Management](/docs/cli/plugin-management) - Learn how to manage plugins
+- [Universal Commands](/docs/cli/universal-commands) - Explore core CLI commands
+- [Image Plugin](/docs/plugins/image/overview) - Start with image processing
+- [Creating Plugins](/docs/community/creating-plugins) - Build your own plugins
+
+## Examples
+
+### Common Workflows
+
+**Optimize images for web:**
+```bash
+mediaproc image optimize input.jpg output.jpg --quality 85 --format webp
+```
+
+**Convert video for web:**
+```bash
+mediaproc video convert input.mp4 output.webm --codec vp9 --quality good
+```
+
+**Extract audio from video:**
+```bash
+mediaproc audio extract video.mp4 audio.mp3
+```
+
+**Create animated GIF:**
+```bash
+mediaproc animation gifify video.mp4 output.gif --fps 10 --width 500
+```
+
+**Remove background from image:**
+```bash
+mediaproc ai remove-background photo.jpg output.png
+```
+
+**Batch resize images:**
+```bash
+mediaproc image batch resize "photos/*.jpg" --width 1200 --output "resized/"
+```
+
+**Chain operations:**
+```bash
+mediaproc pipeline run \
+  --input image.jpg \
+  --steps "resize:width=800,optimize:quality=85,convert:format=webp" \
+  --output optimized.webp
+```

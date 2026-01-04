@@ -1,0 +1,46 @@
+# flatten
+
+Flatten image by merging alpha channel.
+
+## Usage
+
+```bash
+mediaproc image flatten <input> [options]
+```
+
+## Description
+
+The `flatten` command removes the alpha channel by compositing it against a background color.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-b, --background` | string | #ffffff | Background color |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+```bash
+# Flatten on white
+mediaproc image flatten transparent.png -o flat.jpg
+
+# Flatten on black
+mediaproc image flatten logo.png -b "#000000" -o dark-bg.jpg
+
+# Custom color
+mediaproc image flatten image.png -b "#3b82f6" -o blue-bg.jpg
+```
+
+## Best Practices
+
+1. **JPEG Export**: Flatten before saving as JPEG
+2. **Background Color**: Choose appropriate background
+3. **Preview**: Check result with different backgrounds
+
+## See Also
+
+- [extend](./extend) - Add borders
+- [composite](./composite) - Layer images

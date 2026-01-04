@@ -1,0 +1,433 @@
+---
+title: "dilate"
+description: "Apply morphological dilation to expand bright regions and fill gaps"
+---
+
+# dilate
+
+Apply morphological dilation to expand bright regions and fill small gaps.
+
+## Usage
+
+```bash
+mediaproc image dilate <input> [options]
+```
+
+## Description
+
+The `dilate` command applies morphological dilation, a fundamental operation in image processing that expands bright (high-value) regions while shrinking dark (low-value) regions. This is the opposite of erosion. Dilation is useful for:
+
+- **Filling holes**: Close small gaps and holes in objects
+- **Connecting components**: Join nearby objects or features
+- **Expanding boundaries**: Enlarge object boundaries
+- **Noise removal**: Remove small dark noise spots
+- **Strengthening edges**: Make weak edges more prominent
+
+Uses a 3×3 kernel that examines each pixel and its 8 neighbors, replacing the center pixel with the maximum value in the neighborhood.
+
+## Options
+
+| Option          | Type    | Default                 | Description                                |
+| --------------- | ------- | ----------------------- | ------------------------------------------ |
+| `<input>`       | string  | _required_              | Input image file path                      |
+| `-o, --output`  | string  | `<input>_dilated.<ext>` | Output file path                           |
+| `-q, --quality` | number  | `90`                    | Output quality 1-100                       |
+| `--dry-run`     | boolean | `false`                 | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false`                 | Enable verbose logging                     |
+
+## Examples
+
+### Basic Dilation
+
+Apply dilation to expand bright regions:
+
+```bash
+# Dilate binary mask
+mediaproc image dilate mask.png -o dilated_mask.png
+
+# Expand white regions
+mediaproc image dilate binary.jpg -o expanded.jpg
+
+# Fill small gaps
+mediaproc image dilate document.png -o filled.png
+
+# Strengthen edges
+mediaproc image dilate edges.jpg -o strong_edges.jpg
+```
+
+### Quality Control
+
+```bash
+# High quality output
+mediaproc image dilate mask.png -q 95 -o high_quality.png
+
+# Standard quality
+mediaproc image dilate image.jpg -q 90 -o dilated.jpg
+
+# Lower quality for previews
+mediaproc image dilate binary.png -q 80 -o preview.png
+```
+
+### Multiple Dilations
+
+Apply dilation multiple times for stronger effect:
+
+```bash
+# Single dilation
+mediaproc image dilate mask.png -o dilated1.png
+
+# Double dilation (stronger effect)
+mediaproc image dilate mask.png -o temp.png
+mediaproc image dilate temp.png -o dilated2.png
+rm temp.png
+
+# Triple dilation
+mediaproc image dilate mask.png -o temp1.png
+mediaproc image dilate temp1.png -o temp2.png
+mediaproc image dilate temp2.png -o dilated3.png
+rm temp1.png temp2.png
+```
+
+### Morphological Closing
+
+Combine dilation then erosion to close holes:
+
+```bash
+# Closing operation: dilate → erode
+# Fills small holes while preserving size
+mediaproc image dilate mask.png -o temp_dilated.png
+mediaproc image erode temp_dilated.png -o closed.png
+rm temp_dilated.png
+
+# Stronger closing (multiple iterations)
+mediaproc image dilate noisy.png -o temp1.png
+mediaproc image dilate temp1.png -o temp2.png
+mediaproc image erode temp2.png -o temp3.png
+mediaproc image erode temp3.png -o closed_strong.png
+rm temp1.png temp2.png temp3.png
+```
+
+### Connecting Nearby Objects
+
+Join components that are close together:
+
+```bash
+# Connect nearby text characters
+mediaproc image dilate text.png -o connected_text.png
+
+# Join fragmented objects
+mediaproc image dilate fragments.jpg -o joined.jpg
+
+# Connect broken lines
+mediaproc image dilate lines.png -o continuous_lines.png
+```
+
+### Batch Processing
+
+Apply dilation to multiple images:
+
+```bash
+# Dilate all masks
+for file in masks/*.png; do
+  mediaproc image dilate "$file" -o "dilated/${file##*/}"
+done
+
+# Process binary images
+for img in binary/*.jpg; do
+  mediaproc image dilate "$img" -o "processed/${img##*/}"
+done
+
+# Dilate with quality setting
+for file in *.png; do
+  mediaproc image dilate "$file" -q 95 -o "output/${file}"
+done
+```
+
+### Edge Enhancement
+
+Detect edges by subtracting original from dilated:
+
+```bash
+# Edge detection workflow
+mediaproc image dilate image.jpg -o dilated.jpg
+# Then use external tool to subtract original from dilated
+# Result shows object boundaries
+```
+
+### Mask Expansion
+
+Expand selection masks:
+
+```bash
+# Expand mask for compositing
+mediaproc image dilate selection_mask.png -o expanded_mask.png
+
+# Grow selection area
+mediaproc image dilate region.png -o larger_region.png
+
+# Expand alpha channel mask
+mediaproc image dilate alpha_mask.png -o expanded_alpha.png
+```
+
+### Document Processing
+
+Process scanned documents:
+
+```bash
+# Fill gaps in scanned text
+mediaproc image dilate scan.jpg -o filled_text.jpg
+
+# Connect broken characters
+mediaproc image dilate old_document.png -o restored.png
+
+# Strengthen faded text
+mediaproc image dilate faded.jpg -o strengthened.jpg
+```
+
+### Dry Run Testing
+
+Test dilation before processing:
+
+```bash
+# Preview dilation
+mediaproc image dilate mask.png --dry-run
+
+# Test batch operation
+for file in *.png; do
+  mediaproc image dilate "$file" --dry-run
+done
+```
+
+### Verbose Processing
+
+Monitor dilation operations:
+
+```bash
+# See processing details
+mediaproc image dilate mask.png -v -o dilated.png
+
+# Debug batch processing
+for file in *.jpg; do
+  mediaproc image dilate "$file" -v -o "output/${file}"
+done
+```
+
+## How Dilation Works
+
+### Morphological Operation
+
+Dilation examines each pixel and its 8 neighbors in a 3×3 grid:
+
+```
+Kernel:
+1  1  1
+1  1  1
+1  1  1
+
+Operation:
+For each pixel, replace with MAXIMUM value in 3×3 neighborhood
+```
+
+**Effect**:
+
+- Bright pixels expand into neighboring dark pixels
+- Dark regions shrink
+- Small gaps and holes get filled
+- Objects grow in size
+
+### Visual Example
+
+```
+Before (binary):           After dilation:
+0 0 0 0 0                 0 0 0 0 0
+0 1 1 0 0                 1 1 1 1 0
+0 1 0 1 0    →           1 1 1 1 1
+0 0 1 1 0                 0 1 1 1 1
+0 0 0 0 0                 0 0 1 1 0
+
+Notice: Gap filled, regions connected, size increased
+```
+
+## Common Use Cases
+
+### Hole Filling
+
+```bash
+# Fill small holes in binary mask
+mediaproc image dilate mask_with_holes.png -o filled.png
+
+# Close gaps in object
+mediaproc image dilate broken_object.jpg -o complete_object.jpg
+```
+
+### Text Processing
+
+```bash
+# Connect broken text characters
+mediaproc image dilate degraded_text.png -o readable.png
+
+# Thicken thin text
+mediaproc image dilate thin_text.jpg -o bold_text.jpg
+```
+
+### Medical Imaging
+
+```bash
+# Connect tissue regions
+mediaproc image dilate tissue_scan.png -o connected_tissue.png
+
+# Fill gaps in vessel detection
+mediaproc image dilate vessels.jpg -o continuous_vessels.jpg
+```
+
+### Object Detection Preparation
+
+```bash
+# Expand objects before detection
+mediaproc image dilate objects.png -o expanded_objects.png
+
+# Connect nearby features
+mediaproc image dilate features.jpg -o connected_features.jpg
+```
+
+## Best Practices
+
+1. **Work with Binary/Grayscale**: Dilation works best on high-contrast or binary images
+2. **Multiple Iterations**: Apply multiple times for stronger effects
+3. **Combine with Erosion**: Use closing (dilate→erode) to fill holes without size change
+4. **Quality for Masks**: Use PNG format for binary masks to preserve sharp edges
+5. **Test First**: Use dry-run to verify operation before batch processing
+6. **Preserve Originals**: Always keep original files for comparison
+7. **Monitor Results**: Use verbose mode for troubleshooting
+
+## Morphological Workflows
+
+### Closing (Fill Holes)
+
+```bash
+# Remove small holes while preserving size
+mediaproc image dilate input.png -o temp_dilated.png
+mediaproc image erode temp_dilated.png -o closed.png
+rm temp_dilated.png
+```
+
+### Gradient (Edge Detection)
+
+```bash
+# Morphological gradient = dilated - eroded
+# Highlights object boundaries
+mediaproc image dilate input.png -o dilated.png
+mediaproc image erode input.png -o eroded.png
+# Subtract eroded from dilated using external tool
+```
+
+### Top-Hat Transform
+
+```bash
+# Morphological top-hat = original - opened
+# Extracts small bright features
+# (opening = erode then dilate)
+mediaproc image erode input.png -o temp1.png
+mediaproc image dilate temp1.png -o opened.png
+# Subtract opened from original
+```
+
+## Performance Tips
+
+1. **Format Selection**: PNG for binary masks, JPEG for grayscale
+2. **Quality Settings**: Use lower quality for intermediate results
+3. **Batch Efficiency**: Process similar images together
+4. **Iteration Control**: More iterations = more processing time
+5. **File Size**: Dilation doesn't significantly increase file size
+
+## Troubleshooting
+
+### Objects Too Large After Dilation
+
+**Problem**: Dilated objects are too big.
+
+**Solutions**:
+
+```bash
+# Use single dilation instead of multiple
+mediaproc image dilate mask.png -o dilated.png
+
+# Apply erosion after to shrink back
+mediaproc image dilate mask.png -o temp.png
+mediaproc image erode temp.png -o balanced.png
+rm temp.png
+```
+
+### Unwanted Regions Connected
+
+**Problem**: Separate objects merged together.
+
+**Solutions**:
+
+```bash
+# Use erosion to separate first
+mediaproc image erode mask.png -o separated.png
+
+# Apply weaker dilation (single pass only)
+mediaproc image dilate separated.png -o result.png
+```
+
+### Not Enough Effect
+
+**Problem**: Gaps still visible after dilation.
+
+**Solutions**:
+
+```bash
+# Apply multiple dilations
+mediaproc image dilate mask.png -o temp1.png
+mediaproc image dilate temp1.png -o temp2.png
+mediaproc image dilate temp2.png -o strong_dilated.png
+rm temp1.png temp2.png
+
+# Use morphological closing
+mediaproc image dilate mask.png -o temp_d.png
+mediaproc image erode temp_d.png -o closed.png
+rm temp_d.png
+```
+
+### Quality Loss
+
+**Problem**: Output looks pixelated.
+
+**Solutions**:
+
+```bash
+# Increase quality
+mediaproc image dilate mask.png -q 95 -o high_quality.png
+
+# Use PNG for binary images
+mediaproc image dilate binary.jpg -o dilated.png
+
+# Ensure source is high resolution
+```
+
+### Processing Grayscale Images
+
+**Problem**: Dilation effect unclear on grayscale.
+
+**Solutions**:
+
+```bash
+# Convert to binary first (use external tool for threshold)
+# Then apply dilation
+mediaproc image dilate binary.png -o dilated.png
+
+# Or apply multiple dilations for stronger effect
+mediaproc image dilate grayscale.jpg -o temp.jpg
+mediaproc image dilate temp.jpg -o stronger.jpg
+rm temp.jpg
+```
+
+## See Also
+
+- [erode](./erode) - Opposite operation (shrink bright regions)
+- [blur](./blur) - Similar smoothing effect but not morphological
+- [threshold](./threshold) - Convert to binary before dilation
+- [boolean](./boolean) - Combine dilated masks with other operations
+- [convolve](./convolve) - Custom kernel operations

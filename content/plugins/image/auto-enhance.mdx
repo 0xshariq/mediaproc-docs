@@ -1,0 +1,277 @@
+# auto-enhance
+
+Automatically enhance images with intelligent adjustments including normalization, sharpening, and contrast optimization.
+
+## Usage
+
+```bash
+mediaproc image auto-enhance <input> [options]
+```
+
+## Description
+
+The `auto-enhance` command automatically improves image quality by applying a combination of adjustments: histogram normalization, intelligent sharpening, contrast optimization, and brightness/saturation enhancements. It's designed to fix common issues in photos with minimal effort.
+
+Perfect for:
+- Quick photo fixes for social media
+- Old or faded photo restoration
+- Low-light image improvement
+- Batch processing automation
+- Smartphone photo enhancement
+- Scan cleanup
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-l, --level` | string | `medium` | Enhancement level: `low`, `medium`, `high` |
+| `-o, --output` | path | `<input>-enhanced.<ext>` | Output file path |
+| `--dry-run` | flag | - | Preview changes without executing |
+| `-v, --verbose` | flag | - | Show detailed output |
+
+## Enhancement Levels
+
+### Low - Subtle Enhancement
+Applied operations:
+- **Histogram normalization**: Balance color distribution
+- **Light sharpening** (sigma: 0.5): Gentle edge enhancement
+
+Best for: Already decent photos that need a subtle polish
+
+### Medium - Balanced Enhancement (Recommended)
+Applied operations:
+- **Histogram normalization**: Balance color distribution
+- **Brightness boost** (+5%): Improve overall exposure
+- **Saturation enhancement** (+10%): Make colors more vibrant
+- **Moderate sharpening** (sigma: 1.0): Clear edge definition
+
+Best for: Most everyday photos, general purpose use
+
+### High - Aggressive Enhancement
+Applied operations:
+- **Histogram normalization**: Balance color distribution
+- **CLAHE** (Contrast Limited Adaptive Histogram Equalization): Local contrast improvement
+- **Brightness boost** (+10%): Significant exposure lift
+- **Saturation enhancement** (+20%): Vivid color boost
+- **Strong sharpening** (sigma: 1.5): Maximum edge clarity
+
+Best for: Dark, dull, or faded images that need significant improvement
+
+## Examples
+
+### Basic Enhancement
+
+```bash
+# Apply medium enhancement (default)
+mediaproc image auto-enhance photo.jpg
+
+# Subtle enhancement for good photos
+mediaproc image auto-enhance portrait.jpg --level low
+
+# Strong enhancement for dark images
+mediaproc image auto-enhance dark-photo.jpg --level high
+```
+
+### Custom Output
+
+```bash
+# Save with custom name
+mediaproc image auto-enhance old-photo.jpg -o restored.jpg
+
+# Save in different directory
+mediaproc image auto-enhance pic.jpg -o ./enhanced/better.jpg
+
+# Short form with level
+mediaproc image auto-enhance image.jpg -l high -o improved.jpg
+```
+
+### Batch Processing
+
+```bash
+# Enhance all JPGs in directory
+mediaproc image auto-enhance "photos/*.jpg" -l medium
+
+# Process with verbose output
+mediaproc image auto-enhance "images/*.png" -l high -v
+
+# Preview before processing
+mediaproc image auto-enhance "batch/*.jpg" --dry-run
+```
+
+### Specific Use Cases
+
+```bash
+# Fix smartphone photos for Instagram
+mediaproc image auto-enhance selfie.jpg -l medium -o instagram.jpg
+
+# Restore old scanned photos
+mediaproc image auto-enhance vintage-scan.jpg -l high -o restored.jpg
+
+# Enhance product photos
+mediaproc image auto-enhance product.png -l low -o enhanced-product.png
+
+# Improve low-light photos
+mediaproc image auto-enhance night-shot.jpg -l high -o brightened.jpg
+```
+
+## What Gets Enhanced
+
+The command intelligently applies these improvements:
+
+| Adjustment | Low | Medium | High |
+|------------|-----|--------|------|
+| Histogram Normalization | ✓ | ✓ | ✓ |
+| Brightness Boost | - | +5% | +10% |
+| Saturation Enhancement | - | +10% | +20% |
+| Sharpening | Sigma 0.5 | Sigma 1.0 | Sigma 1.5 |
+| CLAHE (Local Contrast) | - | - | ✓ |
+
+### Histogram Normalization
+- Balances color distribution across the image
+- Expands tonal range to use full spectrum
+- Improves overall contrast automatically
+
+### Sharpening
+- Enhances edge definition and detail
+- Makes images appear crisper and clearer
+- Strength varies by level
+
+### Contrast Optimization (High level)
+- CLAHE improves local contrast
+- Preserves detail in shadows and highlights
+- Reduces flat, dull appearance
+
+### Brightness & Saturation
+- Makes images more vibrant and appealing
+- Corrects underexposure
+- Enhances color depth
+
+## Choosing the Right Level
+
+### Use Low When:
+- Image is already well-exposed and sharp
+- You want minimal intervention
+- Processing professional/high-quality photos
+- Subtle polish is all that's needed
+
+### Use Medium When:
+- General-purpose enhancement needed
+- Typical smartphone/camera photos
+- Social media posting
+- Unsure which level to choose (default for a reason!)
+
+### Use High When:
+- Image is dark, dull, or faded
+- Old photos need restoration
+- Low-light photos need brightening
+- Maximum improvement desired
+- Scanned documents/photos
+
+## Best Practices
+
+1. **Start with Medium**: It works well for 80% of cases
+2. **Compare Results**: Use --dry-run to test before committing
+3. **Don't Over-Process**: High level on good photos can look unnatural
+4. **Batch Consistently**: Use same level for photo series
+5. **Check Quality**: View output before deleting originals
+6. **Combine Commands**: Use with other commands for custom workflows
+
+## Performance Tips
+
+- Auto-enhance is relatively fast (single pass processing)
+- Process in batches for efficiency
+- Use low level for quick processing
+- High level is slower due to CLAHE computation
+
+## Common Use Cases
+
+**Social Media Prep:**
+```bash
+mediaproc image auto-enhance selfie.jpg -l medium -o post.jpg
+```
+
+**Old Photo Restoration:**
+```bash
+mediaproc image auto-enhance "scans/*.jpg" -l high
+```
+
+**Product Photography:**
+```bash
+mediaproc image auto-enhance product.png -l low -o enhanced.png
+```
+
+**Event Photo Batch:**
+```bash
+mediaproc image auto-enhance "event/*.jpg" -l medium -v
+```
+
+**Low-Light Fix:**
+```bash
+mediaproc image auto-enhance concert.jpg -l high -o bright.jpg
+```
+
+## Comparison with Manual Enhancement
+
+Auto-enhance is equivalent to manually running:
+
+**Low level:**
+```bash
+mediaproc image normalize input.jpg
+mediaproc image sharpen input-normalized.jpg --sigma 0.5
+```
+
+**Medium level:**
+```bash
+mediaproc image normalize input.jpg
+mediaproc image modulate input-normalized.jpg --brightness 1.05 --saturation 1.1
+mediaproc image sharpen input-modulated.jpg --sigma 1.0
+```
+
+**High level:**
+```bash
+mediaproc image normalize input.jpg
+mediaproc image clahe input-normalized.jpg --width 3 --height 3
+mediaproc image modulate input-clahe.jpg --brightness 1.1 --saturation 1.2
+mediaproc image sharpen input-modulated.jpg --sigma 1.5
+```
+
+## Limitations
+
+- Not suitable for artistic photography that needs specific look
+- May over-process already-enhanced images
+- Cannot fix severely corrupted images
+- Works best with standard RGB images
+
+## Future Enhancements
+
+*These features are planned but not yet implemented:*
+
+- **Auto-level**: Automatic exposure correction (FUTURE)
+- **Red-eye removal**: Detect and fix red-eye automatically (FUTURE)
+- **Noise reduction**: Intelligent noise removal for high-ISO images (FUTURE)
+- **Custom profiles**: Save and reuse enhancement presets (FUTURE)
+- **AI enhancement**: Machine learning based improvements (FUTURE)
+
+## Troubleshooting
+
+**Image looks over-processed:**
+- Try lower level (medium → low)
+- Use other commands individually for fine control
+
+**Not enough improvement:**
+- Try higher level (medium → high)
+- Check if original image is already optimal
+- Consider using specific commands (clahe, normalize, etc.)
+
+**Colors look unnatural:**
+- High level might be too aggressive
+- Use medium or low instead
+- Manually adjust with modulate command
+
+## See Also
+
+- [normalize](./normalize) - Histogram normalization only
+- [sharpen](./sharpen) - Sharpening control
+- [clahe](./clahe) - Local contrast enhancement
+- [modulate](./modulate) - Brightness/saturation/hue adjustment
+- [optimize](./optimize) - File size optimization

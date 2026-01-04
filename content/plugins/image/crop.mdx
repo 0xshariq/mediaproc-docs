@@ -1,205 +1,626 @@
-# crop {#crop}
+---
+title: "crop"
+description: "Crop images to specific dimensions and position with pixel-perfect precision"
+---
 
-Crop an image to a specified region or dimensions.
+# crop
 
-## Usage {#usage}
+Crop images to a specified region with precise control over position and dimensions.
+
+## Usage
 
 ```bash
-mediaproc image crop <input> [options]
+mediaproc image crop <input> -w <width> -h <height> [options]
 ```
 
-## Description {#description}
+## Description
 
-The `crop` command extracts a rectangular region from an image. You can specify the exact position and size, or use gravity-based cropping for smart positioning. Sup+ports all common image formats.
+The `crop` command extracts a rectangular region from an image using pixel-perfect positioning. This is essential for:
+- **Removing unwanted areas**: Eliminate distractions or unwanted elements
+- **Aspect ratio adjustment**: Convert images to specific aspect ratios
+- **Focus on subject**: Highlight the main subject by removing background
+- **Creating thumbnails**: Extract specific regions for previews
+- **Image composition**: Prepare images for layouts
+- **Batch cropping**: Apply consistent crops across multiple images
 
-## Options {#options}
+The command uses Sharp's `extract()` method for efficient, high-quality cropping without loading the entire image into memory.
 
-### Basic Options {#basic-options}
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-w, --width` | number | - | Crop width in pixels (required) |
-| `-h, --height` | number | - | Crop height in pixels (required) |
-| `-x, --left` | number | 0 | Left offset in pixels |
-| `-y, --top` | number | 0 | Top offset in pixels |
-
-### Advanced Options
+## Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `-g, --gravity` | string | - | Smart crop position (center, north, south, east, west, northeast, northwest, southeast, southwest) |
-| `--strategy` | string | attention | Crop strategy (entropy, attention) |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif, tiff) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| `<input>` | string | *required* | Input image file path or glob pattern |
+| `-x, --x` | number | `0` | X position (left offset in pixels) |
+| `-y, --y` | number | `0` | Y position (top offset in pixels) |
+| `-w, --width` | number | *required* | Crop width in pixels |
+| `-h, --height` | number | *required* | Crop height in pixels |
+| `-o, --output` | string | `<input>_cropped.<ext>` | Output file path |
+| `-q, --quality` | number | `90` | Output quality 1-100 |
+| `--dry-run` | boolean | `false` | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false` | Enable verbose logging |
 
 ## Examples
 
-### Basic Crop
+### Basic Cropping
+
+Crop from top-left corner:
 
 ```bash
-# Crop 500x500px from top-left corner
-mediaproc image crop input.jpg -w 500 -h 500 -o cropped.jpg
+# Crop 800x600 from top-left (0,0)
+mediaproc image crop photo.jpg -w 800 -h 600 -o cropped.jpg
 
-# Crop with specific offset
-mediaproc image crop photo.png -w 800 -h 600 -x 100 -y 50 -o cropped.png
+# Crop square 500x500
+mediaproc image crop image.png -w 500 -h 500 -o square.png
+
+# Crop to specific dimensions
+mediaproc image crop picture.jpg -w 1920 -h 1080 -o hd.jpg
+
+# Crop to 4:3 aspect ratio
+mediaproc image crop photo.jpg -w 1600 -h 1200 -o standard.jpg
 ```
 
-### Gravity-Based Cropping
+### Position-Based Cropping
+
+Crop from specific coordinates:
 
 ```bash
-# Crop from center
-mediaproc image crop image.jpg -w 400 -h 400 -g center -o centered.jpg
+# Crop 500x500 starting at (100, 100)
+mediaproc image crop image.jpg -x 100 -y 100 -w 500 -h 500 -o region.jpg
 
-# Crop from top center
-mediaproc image crop banner.jpg -w 1920 -h 400 -g north -o top.jpg
+# Crop from center-right area
+mediaproc image crop photo.png -x 800 -y 200 -w 400 -h 600 -o sidebar.png
 
-# Crop from bottom right
-mediaproc image crop photo.jpg -w 500 -h 500 -g southeast -o corner.jpg
+# Extract specific region
+mediaproc image crop picture.jpg -x 250 -y 150 -w 800 -h 800 -o extracted.jpg
+
+# Crop bottom-right corner
+mediaproc image crop image.jpg -x 1000 -y 800 -w 920 -h 280 -o corner.jpg
 ```
 
-### Smart Cropping
+### Aspect Ratio Crops
+
+Crop to standard aspect ratios:
 
 ```bash
-# Use entropy (edge detection) for smart crop
-mediaproc image crop image.jpg -w 800 -h 600 --strategy entropy -o smart.jpg
+# 16:9 aspect ratio (Full HD)
+mediaproc image crop photo.jpg -w 1920 -h 1080 -o widescreen.jpg
 
-# Use attention (face/subject detection) for smart crop
-mediaproc image crop portrait.jpg -w 400 -h 400 --strategy attention -o face-crop.jpg
+# 4:3 aspect ratio (standard)
+mediaproc image crop image.jpg -w 1600 -h 1200 -o standard.jpg
+
+# 1:1 square (Instagram)
+mediaproc image crop picture.jpg -w 1080 -h 1080 -o square_insta.jpg
+
+# 9:16 portrait (stories)
+mediaproc image crop photo.jpg -w 1080 -h 1920 -o story.jpg
+
+# 21:9 ultrawide
+mediaproc image crop landscape.jpg -w 2560 -h 1080 -o ultrawide.jpg
+
+# 5:4 medium format
+mediaproc image crop photo.jpg -w 1600 -h 1280 -o medium_format.jpg
 ```
 
-### Format Conversion During Crop
+### Social Media Crops
+
+Crop for different platforms:
 
 ```bash
-# Crop and convert to WebP
-mediaproc image crop input.png -w 600 -h 400 -f webp -q 85 -o cropped.webp
+# Instagram post (square)
+mediaproc image crop photo.jpg -w 1080 -h 1080 -o instagram.jpg
 
-# Crop and convert to AVIF
-mediaproc image crop photo.jpg -w 800 -h 600 -f avif -q 75 -o cropped.avif
+# Instagram story
+mediaproc image crop photo.jpg -w 1080 -h 1920 -o story.jpg
+
+# Facebook cover
+mediaproc image crop banner.jpg -w 820 -h 312 -o fb_cover.jpg
+
+# Twitter header
+mediaproc image crop header.jpg -w 1500 -h 500 -o twitter_header.jpg
+
+# YouTube thumbnail
+mediaproc image crop video_frame.jpg -w 1280 -h 720 -o youtube_thumb.jpg
+
+# LinkedIn banner
+mediaproc image crop banner.jpg -w 1584 -h 396 -o linkedin_banner.jpg
+```
+
+### Center Cropping
+
+Calculate center position for cropping:
+
+```bash
+# For a 2000x1500 image, center crop 800x600:
+# x = (2000 - 800) / 2 = 600
+# y = (1500 - 600) / 2 = 450
+mediaproc image crop photo.jpg -x 600 -y 450 -w 800 -h 600 -o centered.jpg
+
+# Center crop to square 1000x1000 from 3000x2000 image:
+# x = (3000 - 1000) / 2 = 1000
+# y = (2000 - 1000) / 2 = 500
+mediaproc image crop large.jpg -x 1000 -y 500 -w 1000 -h 1000 -o square_centered.jpg
+```
+
+### Quality Control
+
+Adjust output quality:
+
+```bash
+# High quality crop
+mediaproc image crop photo.jpg -w 1920 -h 1080 -q 95 -o high_quality.jpg
+
+# Standard quality
+mediaproc image crop image.png -w 800 -h 600 -q 90 -o standard.png
+
+# Lower quality for web
+mediaproc image crop picture.jpg -w 1200 -h 800 -q 80 -o web_optimized.jpg
+
+# Minimum quality for previews
+mediaproc image crop photo.jpg -w 400 -h 300 -q 70 -o preview.jpg
 ```
 
 ### Batch Cropping
 
+Crop multiple images consistently:
+
 ```bash
-# Crop multiple images with same dimensions
-for img in *.jpg; do
-  mediaproc image crop "$img" -w 1000 -h 1000 -g center -o "cropped-$img"
+# Crop all photos to same dimensions
+for file in photos/*.jpg; do
+  mediaproc image crop "$file" -w 1920 -h 1080 -o "cropped/${file##*/}"
 done
 
-# Create square thumbnails from center
-find . -name "*.png" -exec mediaproc image crop {} -w 300 -h 300 -g center -o {}_thumb.png \;
+# Center crop all images to square
+for file in images/*.png; do
+  # Calculate center position (assuming 2000x1500 source)
+  mediaproc image crop "$file" -x 460 -y 210 -w 1080 -h 1080 -o "square/${file##*/}"
+done
+
+# Crop product photos to consistent size
+for product in products/*.jpg; do
+  mediaproc image crop "$product" -x 100 -y 100 -w 800 -h 800 -o "cropped/${product##*/}"
+done
+
+# Extract specific region from all images
+for img in *.jpg; do
+  mediaproc image crop "$img" -x 200 -y 150 -w 600 -h 400 -o "regions/${img}"
+done
 ```
 
-### Profile Photos
+### Header/Banner Creation
+
+Create headers from larger images:
 
 ```bash
-# Create circular profile crop area (square first)
-mediaproc image crop avatar.jpg -w 400 -h 400 -g center --strategy attention -o profile.jpg
+# Website header banner
+mediaproc image crop hero.jpg -w 1920 -h 400 -o header.jpg
 
-# Multiple profile sizes
-mediaproc image crop photo.jpg -w 200 -h 200 -g center -o profile-lg.jpg
-mediaproc image crop photo.jpg -w 100 -h 100 -g center -o profile-md.jpg
-mediaproc image crop photo.jpg -w 50 -h 50 -g center -o profile-sm.jpg
+# Email header
+mediaproc image crop banner.jpg -w 600 -h 200 -o email_header.jpg
+
+# Blog header
+mediaproc image crop photo.jpg -w 1200 -h 300 -o blog_header.jpg
+
+# Mobile app header
+mediaproc image crop image.jpg -w 750 -h 250 -o mobile_header.jpg
 ```
 
-### Banner Cropping
+### Face/Subject Cropping
+
+Manually extract faces or subjects:
 
 ```bash
-# Create website banner
-mediaproc image crop header.jpg -w 1920 -h 400 -g north -o banner.jpg
+# Extract face region (adjust x,y based on face position)
+mediaproc image crop portrait.jpg -x 400 -y 200 -w 600 -h 600 -o face.jpg
 
-# Social media covers
-mediaproc image crop cover.jpg -w 1200 -h 628 -g center -o facebook.jpg  # Facebook
-mediaproc image crop cover.jpg -w 1500 -h 500 -g center -o twitter.jpg    # Twitter
-mediaproc image crop cover.jpg -w 1128 -h 191 -g center -o linkedin.jpg   # LinkedIn
+# Crop to subject area
+mediaproc image crop group_photo.jpg -x 500 -y 300 -w 800 -h 1000 -o subject.jpg
+
+# Extract product from photo
+mediaproc image crop product_shot.jpg -x 300 -y 400 -w 1000 -h 800 -o product.jpg
 ```
 
-### Content-Aware Cropping
+### Creating Thumbnails
+
+Extract regions for thumbnails:
 
 ```bash
-# Let the algorithm find the best crop
-mediaproc image crop landscape.jpg -w 800 -h 600 --strategy attention -o best-crop.jpg
+# Small thumbnail
+mediaproc image crop photo.jpg -w 150 -h 150 -o thumb_small.jpg
 
-# For images with text, use entropy
-mediaproc image crop infographic.png -w 1000 -h 800 --strategy entropy -o cropped.png
+# Medium thumbnail
+mediaproc image crop image.jpg -w 300 -h 300 -o thumb_medium.jpg
+
+# Large thumbnail
+mediaproc image crop picture.jpg -w 600 -h 600 -o thumb_large.jpg
+
+# Thumbnail from specific area
+mediaproc image crop photo.jpg -x 200 -y 200 -w 400 -h 400 -o thumb_region.jpg
 ```
 
-### Aspect Ratio Cropping
+### Removing Watermarks/Elements
+
+Crop to remove unwanted areas:
 
 ```bash
-# 16:9 aspect ratio
-mediaproc image crop video-poster.jpg -w 1920 -h 1080 -g center -o 16-9.jpg
+# Remove bottom watermark (crop top portion)
+mediaproc image crop watermarked.jpg -w 1920 -h 1000 -o clean.jpg
 
-# 4:3 aspect ratio
-mediaproc image crop photo.jpg -w 1024 -h 768 -g center -o 4-3.jpg
+# Remove side elements
+mediaproc image crop wide.jpg -x 100 -w 1720 -h 1080 -o centered_content.jpg
 
-# 1:1 square
-mediaproc image crop image.jpg -w 1000 -h 1000 -g center -o square.jpg
-
-# 21:9 ultrawide
-mediaproc image crop panorama.jpg -w 2560 -h 1080 -g center -o ultrawide.jpg
+# Remove top and bottom bars
+mediaproc image crop video_frame.jpg -y 60 -w 1920 -h 960 -o no_bars.jpg
 ```
 
-## Gravity Options
+### Multi-Step Workflows
 
-The `--gravity` option determines which part of the image to crop:
+Combine crop with other operations:
 
-- **center**: Crop from the center (default behavior)
-- **north**: Crop from top center
-- **south**: Crop from bottom center
-- **east**: Crop from middle right
-- **west**: Crop from middle left
-- **northeast**: Crop from top right
-- **northwest**: Crop from top left
-- **southeast**: Crop from bottom right
-- **southwest**: Crop from bottom left
+```bash
+# Crop then resize
+mediaproc image crop large.jpg -w 2000 -h 1500 -o temp.jpg && \
+mediaproc image resize temp.jpg --width 1000 -o final.jpg && rm temp.jpg
 
-## Crop Strategies
+# Crop then convert format
+mediaproc image crop photo.jpg -w 1920 -h 1080 -o temp.jpg && \
+mediaproc image convert temp.jpg -f webp -o optimized.webp && rm temp.jpg
 
-### Entropy Strategy
-Uses edge detection to find the most interesting part of the image. Best for:
-- Images with clear subjects
-- Architectural photos
-- Graphics and illustrations
-- Images with strong lines/patterns
+# Crop then sharpen
+mediaproc image crop blurry.jpg -w 800 -h 600 -o temp.jpg && \
+mediaproc image sharpen temp.jpg -s 2 -o sharp.jpg && rm temp.jpg
 
-### Attention Strategy
-Uses face and subject detection to focus on people or main subjects. Best for:
-- Portrait photos
-- Group photos
-- Product photography
-- Any image with a clear focal point
+# Crop multiple regions from same image
+mediaproc image crop photo.jpg -x 0 -y 0 -w 800 -h 600 -o region1.jpg
+mediaproc image crop photo.jpg -x 800 -y 0 -w 800 -h 600 -o region2.jpg
+mediaproc image crop photo.jpg -x 0 -y 600 -w 800 -h 600 -o region3.jpg
+```
+
+### Dry Run Testing
+
+Test crop parameters:
+
+```bash
+# Verify crop dimensions
+mediaproc image crop image.jpg -w 1920 -h 1080 --dry-run
+
+# Test specific position
+mediaproc image crop photo.png -x 100 -y 100 -w 800 -h 600 --dry-run
+
+# Check batch crop
+for file in *.jpg; do
+  mediaproc image crop "$file" -w 1080 -h 1080 --dry-run
+done
+```
+
+### Verbose Processing
+
+Monitor crop operations:
+
+```bash
+# See crop details
+mediaproc image crop photo.jpg -w 1920 -h 1080 -v -o cropped.jpg
+
+# Debug position and size
+mediaproc image crop image.png -x 200 -y 150 -w 800 -h 600 -v -o region.png
+
+# Monitor batch processing
+for file in *.jpg; do
+  mediaproc image crop "$file" -w 1080 -h 1080 -v -o "cropped/${file}"
+done
+```
+
+## Crop Position Guide
+
+### Coordinate System
+
+```
+(0,0)──────────────────────> X
+  │  ┌─────────────────┐
+  │  │                 │
+  │  │   (x,y)         │
+  │  │    ┌────────┐   │
+  │  │    │  CROP  │   │
+  │  │    │  AREA  │   │
+  │  │    └────────┘   │
+  │  │       w x h     │
+  │  └─────────────────┘
+  v
+  Y
+```
+
+- **Origin**: Top-left corner is (0, 0)
+- **X-axis**: Increases to the right
+- **Y-axis**: Increases downward
+- **Position**: (x, y) is top-left of crop region
+- **Dimensions**: Width and height from position
+
+### Calculating Center Crop
+
+To center a crop in an image:
+
+```
+center_x = (image_width - crop_width) / 2
+center_y = (image_height - crop_height) / 2
+```
+
+**Example**: Center crop 1080x1080 from 3000x2000 image:
+```
+x = (3000 - 1080) / 2 = 960
+y = (2000 - 1080) / 2 = 460
+```
+
+```bash
+mediaproc image crop photo.jpg -x 960 -y 460 -w 1080 -h 1080 -o centered.jpg
+```
+
+### Common Positions
+
+**Top-Left**: `-x 0 -y 0`
+**Top-Center**: `-x (w-crop_w)/2 -y 0`
+**Top-Right**: `-x (w-crop_w) -y 0`
+**Center-Left**: `-x 0 -y (h-crop_h)/2`
+**Center**: `-x (w-crop_w)/2 -y (h-crop_h)/2`
+**Center-Right**: `-x (w-crop_w) -y (h-crop_h)/2`
+**Bottom-Left**: `-x 0 -y (h-crop_h)`
+**Bottom-Center**: `-x (w-crop_w)/2 -y (h-crop_h)`
+**Bottom-Right**: `-x (w-crop_w) -y (h-crop_h)`
+
+## Aspect Ratio Reference
+
+### Common Aspect Ratios
+
+| Ratio | Description | Example Dimensions | Use Case |
+|-------|-------------|-------------------|----------|
+| 1:1 | Square | 1080x1080, 1000x1000 | Instagram, profile pics |
+| 4:3 | Standard | 1600x1200, 1024x768 | Traditional photos, iPad |
+| 3:2 | Classic | 1500x1000, 3000x2000 | 35mm film, DSLRs |
+| 16:9 | Widescreen | 1920x1080, 3840x2160 | HD video, monitors |
+| 9:16 | Portrait | 1080x1920, 1125x2436 | Stories, mobile video |
+| 21:9 | Ultrawide | 2560x1080, 3440x1440 | Cinema, ultrawide monitors |
+| 5:4 | Medium format | 1600x1280, 2560x2048 | Medium format cameras |
+| 2:1 | Univisium | 2048x1024 | Modern cinema |
+
+### Social Media Dimensions
+
+**Instagram**:
+- Square post: 1080x1080
+- Portrait: 1080x1350
+- Landscape: 1080x566
+- Story: 1080x1920
+
+**Facebook**:
+- Post: 1200x630
+- Cover: 820x312
+- Profile: 180x180
+
+**Twitter**:
+- Post: 1200x675
+- Header: 1500x500
+- Profile: 400x400
+
+**YouTube**:
+- Thumbnail: 1280x720
+- Channel banner: 2560x1440
+
+**LinkedIn**:
+- Post: 1200x627
+- Banner: 1584x396
+- Profile: 400x400
 
 ## Best Practices
 
-1. **Use Gravity for Consistent Crops**: When batch processing, gravity ensures consistent results
-2. **Choose the Right Strategy**: Use `attention` for people/subjects, `entropy` for landscapes
-3. **Preserve Aspect Ratios**: Calculate dimensions to maintain the original aspect ratio if needed
-4. **Test Smart Cropping**: Preview results when using automatic strategies
-5. **Consider Output Format**: Crop before converting to lossy formats to minimize quality loss
-6. **Profile Photos**: Always use center gravity with attention strategy
-7. **Large Images**: Crop before resizing to save processing time
+1. **Check Source Dimensions**: Verify image is large enough for desired crop
+2. **Maintain Aspect Ratio**: Choose dimensions that match intended use
+3. **Center Important Content**: Position crop to include main subject
+4. **Use Dry Run**: Test crop parameters before processing
+5. **Quality Settings**: Use high quality (90-95) for final outputs
+6. **Batch Consistency**: Apply same crop parameters across related images
+7. **Preserve Originals**: Always keep original files
+8. **Calculate Center Crops**: Use formulas for precise centering
+9. **Test on Sample**: Verify crop on one image before batch processing
+10. **Consider Output Format**: Match dimensions to platform requirements
 
 ## Common Use Cases
 
-- **Profile Pictures**: Square crops with attention strategy
-- **Thumbnails**: Fixed-size crops from center or smart position
-- **Social Media**: Platform-specific dimensions with center gravity
-- **Product Photos**: Consistent crops for catalog/grid layouts
-- **Banners**: Wide crops from top or center
-- **Mobile Optimization**: Portrait crops for mobile displays
+### Product Photography
+
+```bash
+# Extract product from white background
+mediaproc image crop product_shoot.jpg -x 300 -y 200 -w 1000 -h 1000 -o product.jpg
+
+# Crop all products consistently
+for img in products/*.jpg; do
+  mediaproc image crop "$img" -x 250 -y 250 -w 1500 -h 1500 -o "cropped/${img##*/}"
+done
+```
+
+### Portrait Photography
+
+```bash
+# Crop to vertical portrait orientation
+mediaproc image crop portrait.jpg -x 400 -y 100 -w 1080 -h 1350 -o instagram_portrait.jpg
+
+# Center crop face region
+mediaproc image crop headshot.jpg -x 500 -y 300 -w 800 -h 800 -o profile_pic.jpg
+```
+
+### Landscape Photography
+
+```bash
+# Create panoramic crop
+mediaproc image crop landscape.jpg -y 200 -w 3000 -h 1000 -o panorama.jpg
+
+# Extract sky portion
+mediaproc image crop scene.jpg -w 2000 -h 800 -o sky_only.jpg
+```
+
+### Web Design
+
+```bash
+# Create hero image
+mediaproc image crop hero_full.jpg -w 1920 -h 600 -o hero_banner.jpg
+
+# Generate header
+mediaproc image crop photo.jpg -w 1200 -h 300 -o site_header.jpg
+
+# Mobile header variant
+mediaproc image crop same_photo.jpg -w 750 -h 300 -o mobile_header.jpg
+```
+
+### Social Media Content
+
+```bash
+# Instagram feed post
+mediaproc image crop photo.jpg -x 460 -y 210 -w 1080 -h 1080 -o insta_post.jpg
+
+# Story format
+mediaproc image crop photo.jpg -x 300 -y 0 -w 1080 -h 1920 -o story.jpg
+
+# YouTube thumbnail
+mediaproc image crop video_screenshot.jpg -w 1280 -h 720 -o thumbnail.jpg
+```
+
+### Document Processing
+
+```bash
+# Remove document borders
+mediaproc image crop scan.jpg -x 50 -y 50 -w 1700 -h 2200 -o clean_scan.jpg
+
+# Extract specific page region
+mediaproc image crop document.png -x 100 -y 200 -w 600 -h 800 -o excerpt.png
+```
 
 ## Performance Tips
 
-- Crop before other operations to reduce processing time
-- Use exact dimensions to avoid re-cropping
-- For batch operations, use consistent crop settings
-- Consider output format to balance size and quality
+1. **Crop Before Resize**: Crop first to reduce data before other operations
+2. **Efficient Memory Use**: Sharp's extract() doesn't load entire image
+3. **Batch Optimization**: Group similar crops together
+4. **Quality Trade-offs**: Lower quality for previews, high for finals
+5. **Format Selection**: Use appropriate format for output (WebP for web, PNG for graphics)
+6. **Parallel Processing**: Process multiple images in parallel when possible
+
+## Troubleshooting
+
+### Crop Exceeds Image Bounds
+
+**Problem**: Error "Crop width/height exceeds image bounds".
+
+**Solutions**:
+```bash
+# Check image dimensions first
+mediaproc image metadata-cmd photo.jpg
+
+# Adjust crop dimensions to fit
+mediaproc image crop photo.jpg -w 1500 -h 1000 -o cropped.jpg
+
+# Use dry-run to verify
+mediaproc image crop image.jpg -w 2000 -h 1500 --dry-run
+```
+
+### Wrong Crop Position
+
+**Problem**: Cropped region doesn't include desired content.
+
+**Solutions**:
+```bash
+# Recalculate position
+# For center crop: x = (img_width - crop_width) / 2
+
+# Test different positions
+mediaproc image crop photo.jpg -x 500 -y 300 -w 800 -h 600 -o test1.jpg
+mediaproc image crop photo.jpg -x 600 -y 400 -w 800 -h 600 -o test2.jpg
+
+# Use image viewer to find correct coordinates
+```
+
+### Aspect Ratio Issues
+
+**Problem**: Cropped image has wrong aspect ratio.
+
+**Solutions**:
+```bash
+# Calculate correct dimensions for desired ratio
+# 16:9 ratio: width = height * 16/9
+# 4:3 ratio: width = height * 4/3
+# 1:1 ratio: width = height
+
+# Example: 16:9 with height 1080
+# width = 1080 * 16/9 = 1920
+mediaproc image crop photo.jpg -w 1920 -h 1080 -o correct_ratio.jpg
+```
+
+### Output Quality Issues
+
+**Problem**: Cropped image looks pixelated or low quality.
+
+**Solutions**:
+```bash
+# Increase quality setting
+mediaproc image crop photo.jpg -w 1920 -h 1080 -q 95 -o high_quality.jpg
+
+# Ensure source image is high resolution
+# Check source dimensions first
+
+# Use PNG for graphics to avoid compression
+mediaproc image crop graphic.png -w 800 -h 600 -o cropped.png
+```
+
+### Batch Cropping Inconsistencies
+
+**Problem**: Batch cropped images look different.
+
+**Solutions**:
+```bash
+# Ensure all source images have same dimensions
+# Or calculate position per image
+
+# Use consistent parameters
+CROP_PARAMS="-w 1920 -h 1080 -q 90"
+for file in *.jpg; do
+  mediaproc image crop "$file" $CROP_PARAMS -o "cropped/${file}"
+done
+
+# For center crops, calculate position per image
+```
+
+### File Not Found
+
+**Problem**: Input file not found error.
+
+**Solutions**:
+```bash
+# Verify file exists
+ls -lh photo.jpg
+
+# Use absolute path
+mediaproc image crop /full/path/to/photo.jpg -w 1920 -h 1080 -o output.jpg
+
+# Check file extension
+file photo.jpg
+```
+
+### Negative Coordinates
+
+**Problem**: Using negative x or y values.
+
+**Solutions**:
+```bash
+# Coordinates must be positive (0 or greater)
+# To crop from right/bottom, calculate position:
+# x_from_right = image_width - crop_width - offset
+# y_from_bottom = image_height - crop_height - offset
+
+# Example: 100px from right edge of 2000px wide image
+# x = 2000 - 800 - 100 = 1100
+mediaproc image crop photo.jpg -x 1100 -w 800 -h 600 -o from_right.jpg
+```
 
 ## See Also
 
-- [resize](./resize) - Resize images with various fit modes
-- [trim](./trim) - Remove edges automatically
-- [extract](./extract) - Extract a specific channel or region
-- [rotate](./rotate) - Rotate images before/after cropping
-- [thumbnail](./thumbnail) - Create thumbnails with smart cropping
+- [smart-crop](./smart-crop) - Automatic intelligent cropping
+- [resize](./resize) - Resize images (often used after crop)
+- [trim](./trim) - Remove solid color borders
+- [extract](./extract) - Extract specific image channels
+- [extend](./extend) - Add padding/borders (opposite of crop)
+- [rotate](./rotate) - Rotate before/after cropping
+- [thumbnail](./thumbnail) - Create thumbnails with automatic cropping

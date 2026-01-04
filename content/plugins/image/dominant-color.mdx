@@ -1,0 +1,531 @@
+---
+title: "dominant-color"
+description: "Extract dominant colors from images for palette generation and color analysis"
+---
+
+# dominant-color
+
+Extract the most dominant colors from an image for palette generation and color analysis.
+
+## Usage
+
+```bash
+mediaproc image dominant-color <input> [options]
+```
+
+## Description
+
+The `dominant-color` command analyzes an image and extracts its most prominent colors using color histogram analysis. This is perfect for:
+- **Color palette generation**: Create color schemes from photos
+- **Brand color extraction**: Extract colors from logos
+- **Theme creation**: Generate website/app color themes
+- **Design inspiration**: Find color combinations from images
+- **Color matching**: Match colors across multiple images
+- **UI/UX design**: Generate complementary color schemes
+
+The command uses efficient color bucketing and frequency analysis to identify the colors that appear most frequently in the image.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `<input>` | string | *required* | Input image file path |
+| `-c, --count` | number | `5` | Number of dominant colors to extract (1-10) |
+| `--export` | string | (none) | Export color palette to JSON file |
+| `--dry-run` | boolean | `false` | Show what would be analyzed without processing |
+| `-v, --verbose` | boolean | `false` | Show detailed RGB/HSL values |
+
+## Examples
+
+### Basic Color Extraction
+
+Extract dominant colors from images:
+
+```bash
+# Extract top 5 colors (default)
+mediaproc image dominant-color photo.jpg
+
+# Extract top 3 colors
+mediaproc image dominant-color image.png --count 3
+
+# Extract single most dominant color
+mediaproc image dominant-color picture.jpg -c 1
+
+# Extract maximum 10 colors
+mediaproc image dominant-color photo.png -c 10
+```
+
+### Verbose Output
+
+Show detailed color information:
+
+```bash
+# Display RGB and HSL values
+mediaproc image dominant-color photo.jpg -v
+
+# Detailed analysis with 3 colors
+mediaproc image dominant-color image.png -c 3 -v
+
+# Full color details for single color
+mediaproc image dominant-color logo.png -c 1 -v
+```
+
+### Export to JSON
+
+Save color palettes as JSON:
+
+```bash
+# Export palette to JSON
+mediaproc image dominant-color photo.jpg --export palette.json
+
+# Export with specific color count
+mediaproc image dominant-color image.png -c 3 --export colors.json
+
+# Export single dominant color
+mediaproc image dominant-color logo.png -c 1 --export brand_color.json
+
+# Export with verbose details
+mediaproc image dominant-color photo.jpg -c 5 --export full_palette.json -v
+```
+
+### Brand Color Extraction
+
+Extract colors from logos and branding:
+
+```bash
+# Extract brand colors from logo
+mediaproc image dominant-color logo.png -c 3 --export brand_colors.json
+
+# Get primary brand color
+mediaproc image dominant-color brand_logo.jpg -c 1 -v
+
+# Extract full brand palette
+mediaproc image dominant-color brand_assets.png -c 5 --export brand_palette.json
+```
+
+### Website Theme Generation
+
+Create color themes from photos:
+
+```bash
+# Generate hero image palette
+mediaproc image dominant-color hero.jpg -c 5 --export hero_theme.json
+
+# Extract background colors
+mediaproc image dominant-color background.png -c 3 --export bg_colors.json
+
+# Create accent color palette
+mediaproc image dominant-color accent_photo.jpg -c 4 --export accents.json
+```
+
+### Design Inspiration
+
+Extract colors for design reference:
+
+```bash
+# Analyze artwork colors
+mediaproc image dominant-color artwork.jpg -c 6 --export artwork_palette.json -v
+
+# Extract nature photo colors
+mediaproc image dominant-color nature.png -c 5 --export nature_colors.json
+
+# Get color scheme from inspiration
+mediaproc image dominant-color inspiration.jpg -c 4 --export scheme.json
+```
+
+### Batch Color Analysis
+
+Analyze multiple images:
+
+```bash
+# Extract colors from all photos
+for file in photos/*.jpg; do
+  basename="${file##*/}"
+  mediaproc image dominant-color "$file" -c 5 --export "palettes/${basename%.jpg}.json"
+done
+
+# Analyze logo collection
+for logo in logos/*.png; do
+  name="${logo##*/}"
+  mediaproc image dominant-color "$logo" -c 3 --export "colors/${name%.png}_colors.json"
+done
+
+# Generate themes from images
+for img in images/*.jpg; do
+  mediaproc image dominant-color "$img" -c 5 -v
+  echo "---"
+done
+```
+
+### Product Photography
+
+Extract product colors:
+
+```bash
+# Get product primary color
+mediaproc image dominant-color product.jpg -c 1 -v
+
+# Extract product color variations
+mediaproc image dominant-color product_variants.png -c 4 --export product_colors.json
+
+# Analyze fabric colors
+mediaproc image dominant-color fabric_sample.jpg -c 6 --export fabric_palette.json
+```
+
+### Photo Analysis
+
+Analyze photograph color composition:
+
+```bash
+# Sunset colors
+mediaproc image dominant-color sunset.jpg -c 5 --export sunset_palette.json -v
+
+# Portrait skin tones
+mediaproc image dominant-color portrait.png -c 3 -v
+
+# Landscape colors
+mediaproc image dominant-color landscape.jpg -c 6 --export landscape_colors.json
+```
+
+### UI/UX Design
+
+Generate UI color schemes:
+
+```bash
+# App theme colors
+mediaproc image dominant-color app_mockup.png -c 4 --export app_theme.json
+
+# Dashboard color scheme
+mediaproc image dominant-color dashboard.jpg -c 5 --export dashboard_colors.json
+
+# Icon color extraction
+mediaproc image dominant-color icons.png -c 3 --export icon_colors.json
+```
+
+### Dry Run Testing
+
+Preview color analysis:
+
+```bash
+# Test without processing
+mediaproc image dominant-color photo.jpg --dry-run
+
+# Preview batch analysis
+for file in *.jpg; do
+  mediaproc image dominant-color "$file" --dry-run
+done
+```
+
+## Output Format
+
+### Standard Output
+
+Terminal output shows:
+
+```
+🎨 Top 5 Dominant Colors:
+
+████ #3B5998 (45.32%)
+
+████ #FFFFFF (22.15%)
+
+████ #1A1A1A (15.78%)
+
+████ #8B9DC3 (10.24%)
+
+████ #DFE3EE (6.51%)
+```
+
+### Verbose Output
+
+With `-v` flag, includes RGB and HSL:
+
+```
+████ #3B5998 (45.32%)
+   RGB: (59, 89, 152)
+   HSL: (220°, 44%, 41%)
+```
+
+### JSON Export
+
+Exported JSON structure:
+
+```json
+{
+  "source": "/path/to/image.jpg",
+  "imageSize": {
+    "width": 1920,
+    "height": 1080
+  },
+  "colors": [
+    {
+      "hex": "#3B5998",
+      "rgb": { "r": 59, "g": 89, "b": 152 },
+      "hsl": { "h": 220, "s": 44, "l": 41 },
+      "percentage": 45.32
+    },
+    {
+      "hex": "#FFFFFF",
+      "rgb": { "r": 255, "g": 255, "b": 255 },
+      "hsl": { "h": 0, "s": 0, "l": 100 },
+      "percentage": 22.15
+    }
+  ]
+}
+```
+
+## Color Information
+
+### Hex Color
+
+6-digit hexadecimal: `#RRGGBB`
+- R: Red (00-FF)
+- G: Green (00-FF)  
+- B: Blue (00-FF)
+
+Example: `#3B5998` = RGB(59, 89, 152)
+
+### RGB Values
+
+Red, Green, Blue components (0-255):
+- `rgb(59, 89, 152)` = Blue tone
+- `rgb(255, 0, 0)` = Pure red
+- `rgb(0, 255, 0)` = Pure green
+
+### HSL Values (Verbose Mode)
+
+Hue, Saturation, Lightness:
+- **H (Hue)**: 0-360° (color wheel position)
+  - 0° = Red
+  - 120° = Green
+  - 240° = Blue
+- **S (Saturation)**: 0-100% (color intensity)
+  - 0% = Gray
+  - 100% = Pure color
+- **L (Lightness)**: 0-100% (brightness)
+  - 0% = Black
+  - 50% = Normal
+  - 100% = White
+
+### Percentage
+
+Coverage of image:
+- Shows how much of the image contains that color
+- Percentages sum to 100%
+- Higher percentage = more dominant
+
+## Algorithm Details
+
+### Color Bucketing
+
+Colors are grouped into buckets to reduce variations:
+
+```
+Bucket size: 16
+RGB(59, 89, 152) → Bucket(48, 80, 144)
+RGB(61, 91, 155) → Bucket(48, 80, 144)
+```
+
+This groups similar colors together for analysis.
+
+### Frequency Analysis
+
+1. Resize image to 100×100 for faster processing
+2. Analyze each pixel's RGB values
+3. Group colors into buckets
+4. Count frequency of each bucket
+5. Sort by frequency
+6. Return top N colors
+
+### Performance Optimization
+
+- Downscaling to 100×100 ensures fast analysis
+- Color bucketing reduces unique colors from millions to hundreds
+- Efficient for images of any size
+
+## Use Cases by Industry
+
+### Web Design
+
+```bash
+# Hero image palette
+mediaproc image dominant-color hero.jpg -c 5 --export theme.json
+
+# Generate site color scheme
+mediaproc image dominant-color brand_photo.jpg -c 4 -v
+```
+
+### Fashion/Retail
+
+```bash
+# Extract garment colors
+mediaproc image dominant-color dress.jpg -c 3 --export dress_colors.json
+
+# Analyze fabric samples
+mediaproc image dominant-color fabric.png -c 6 -v
+```
+
+### Branding/Marketing
+
+```bash
+# Brand color audit
+mediaproc image dominant-color logo.png -c 3 --export brand.json
+
+# Campaign color analysis
+mediaproc image dominant-color campaign_image.jpg -c 5 -v
+```
+
+### Interior Design
+
+```bash
+# Room color palette
+mediaproc image dominant-color room_photo.jpg -c 5 --export room_palette.json
+
+# Furniture color extraction
+mediaproc image dominant-color furniture.png -c 3 -v
+```
+
+### Game Development
+
+```bash
+# Environment color scheme
+mediaproc image dominant-color concept_art.jpg -c 6 --export env_colors.json
+
+# Character color palette
+mediaproc image dominant-color character.png -c 4 -v
+```
+
+## Best Practices
+
+1. **Image Selection**: Use representative images with good color distribution
+2. **Color Count**: 3-5 colors typically best for themes, 1-2 for brand colors
+3. **Export for Reuse**: Save JSON for design tools and documentation
+4. **Verbose for Details**: Use `-v` when you need precise RGB/HSL values
+5. **Batch Analysis**: Analyze multiple images to find consistent colors
+6. **High Contrast**: Works best with images that have distinct colors
+7. **Consider Context**: Analyze in context of intended use (web, print, etc.)
+
+## Performance Tips
+
+1. **Image Size**: Analysis resizes to 100×100 internally (fast regardless of source size)
+2. **Batch Efficiency**: Process multiple images sequentially
+3. **Export Only When Needed**: Terminal output is faster than JSON export
+4. **Color Count**: More colors = slightly slower but still very fast
+
+## Troubleshooting
+
+### Too Many Similar Colors
+
+**Problem**: Extracted colors are too similar.
+
+**Solutions**:
+```bash
+# Reduce color count
+mediaproc image dominant-color photo.jpg -c 3
+
+# Analyze image with more color variety
+# Consider using different source image
+```
+
+### Unexpected Colors
+
+**Problem**: Dominant colors don't match visual perception.
+
+**Solutions**:
+```bash
+# Increase color count to see full distribution
+mediaproc image dominant-color image.jpg -c 10 -v
+
+# Check if background is dominating
+# Consider cropping image first
+
+# Use verbose to see percentages
+mediaproc image dominant-color photo.jpg -c 5 -v
+```
+
+### Not Enough Color Variety
+
+**Problem**: Only 1-2 distinct colors found.
+
+**Solutions**:
+```bash
+# Increase color count
+mediaproc image dominant-color image.jpg -c 10
+
+# Verify source image has color variety
+# Monochrome images will only show few colors
+```
+
+### JSON Export Issues
+
+**Problem**: Cannot export to JSON.
+
+**Solutions**:
+```bash
+# Check directory exists
+mkdir -p palettes
+mediaproc image dominant-color photo.jpg --export palettes/colors.json
+
+# Verify write permissions
+ls -ld palettes/
+
+# Use absolute path
+mediaproc image dominant-color photo.jpg --export /full/path/to/colors.json
+```
+
+### Colors Look Different
+
+**Problem**: Colors display differently than in image.
+
+**Solutions**:
+```bash
+# This is normal - bucketing groups similar colors
+# Use verbose mode to see exact values
+mediaproc image dominant-color image.jpg -v
+
+# Colors shown as hex/RGB are bucketed approximations
+# For precise color matching, use color picker on original image
+```
+
+## Integration Examples
+
+### Using JSON in JavaScript
+
+```javascript
+const palette = require('./palette.json');
+
+palette.colors.forEach(color => {
+  console.log(`${color.hex}: ${color.percentage}%`);
+  // Apply to CSS variables, etc.
+});
+```
+
+### CSS Variable Generation
+
+```bash
+# Extract colors and create CSS
+mediaproc image dominant-color photo.jpg -c 5 --export palette.json
+
+# Then in build script:
+# Read palette.json and generate:
+# :root {
+#   --color-primary: #3B5998;
+#   --color-secondary: #FFFFFF;
+# }
+```
+
+### Design Tool Import
+
+Export JSON can be imported into:
+- Adobe Color
+- Coolors.co
+- Figma plugins
+- Custom design tools
+
+## See Also
+
+- [stats](./stats) - Get detailed image statistics
+- [metadata-cmd](./metadata) - View image metadata
+- [palette](./palette) - Apply color palette to image
+- [modulate](./modulate) - Adjust color saturation
+- [tint](./tint) - Apply color tint to images

@@ -1,0 +1,46 @@
+# palette
+
+Extract a color palette from an image.
+
+## Usage
+
+```bash
+mediaproc image palette <input> [options]
+```
+
+## Description
+
+The `palette` command extracts a color palette from an image, useful for design and theming.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--count` | number | 5 | Number of colors to extract |
+| `--format` | string | hex | Output format (hex, rgb, hsl) |
+| `--output` | string | - | Save palette as JSON |
+
+## Examples
+
+```bash
+# Extract 5 colors
+mediaproc image palette photo.jpg --count 5
+
+# Extract 10 colors in RGB
+mediaproc image palette image.png --count 10 --format rgb
+
+# Save palette to file
+mediaproc image palette photo.jpg --count 8 --output palette.json
+```
+
+## Common Use Cases
+
+- **Design Systems**: Generate color schemes
+- **Brand Colors**: Extract brand palettes
+- **Theme Generation**: Create UI themes
+- **Color Analysis**: Analyze image colors
+
+## See Also
+
+- [dominant-color](./dominant-color) - Get dominant color
+- [stats](./stats) - Color statistics

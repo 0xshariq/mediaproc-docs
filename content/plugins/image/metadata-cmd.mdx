@@ -1,0 +1,39 @@
+# metadata-cmd
+
+View and edit image metadata.
+
+## Usage
+
+```bash
+mediaproc image metadata-cmd <input> [options]
+```
+
+## Description
+
+The `metadata-cmd` command provides comprehensive metadata viewing and editing capabilities.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--show` | boolean | false | Display metadata |
+| `--strip` | boolean | false | Remove all metadata |
+| `--set` | string[] | - | Set metadata fields |
+
+## Examples
+
+```bash
+# View metadata
+mediaproc image metadata-cmd photo.jpg --show
+
+# Strip metadata
+mediaproc image metadata-cmd photo.jpg --strip -o clean.jpg
+
+# Set fields
+mediaproc image metadata-cmd photo.jpg --set "copyright=© 2024" --set "author=John Doe" -o tagged.jpg
+```
+
+## See Also
+
+- [metadata](./metadata) - Metadata operations

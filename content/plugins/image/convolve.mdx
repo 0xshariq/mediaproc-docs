@@ -1,37 +1,675 @@
+---
+title: "convolve"
+description: "Apply custom convolution kernels for advanced image filtering (sharpen, emboss, edge detection, blur)"
+---
+
 # convolve
 
-Apply custom convolution kernel.
+Apply custom convolution kernels for advanced image filtering and effects.
 
 ## Usage
 
 ```bash
-mediaproc image convolve <input> [options]
+mediaproc image convolve <input> --kernel <preset> [options]
+mediaproc image convolve <input> --custom <matrix> [options]
 ```
 
 ## Description
 
-The `convolve` command applies a custom convolution matrix for advanced image processing effects.
+The `convolve` command applies convolution kernels to images for advanced filtering effects. Convolution is a mathematical operation that combines each pixel with its neighbors using a kernel matrix, enabling sophisticated image processing effects like:
+- **Edge detection**: Identify boundaries and edges
+- **Sharpening**: Enhance detail and clarity
+- **Embossing**: Create 3D raised effects
+- **Blurring**: Custom blur algorithms
+- **High-pass filtering**: Emphasize high-frequency details
+- **Custom effects**: Create unique artistic filters
+
+Includes predefined kernels for common effects and supports custom kernel matrices for specialized processing.
 
 ## Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-k, --kernel` | string | - | Kernel matrix (comma-separated) |
-| `-f, --format` | string | - | Output format |
-| `-q, --quality` | number | 80 | Output quality |
+| `<input>` | string | *required* | Input image file path |
+| `-k, --kernel` | string | (none) | Predefined kernel: sharpen, emboss, edge-detect, box-blur, gaussian-blur, laplacian, high-pass |
+| `--custom` | string | (none) | Custom kernel as JSON array (e.g., "[[1,2,1],[2,4,2],[1,2,1]]") |
+| `--scale` | number | `1` | Kernel scale factor (multiplies all kernel values) |
+| `--offset` | number | `0` | Kernel offset (added to each pixel value) |
+| `-o, --output` | string | `<input>_<kernel>.<ext>` | Output file path |
+| `--dry-run` | boolean | `false` | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false` | Enable verbose logging |
 
 ## Examples
 
-```bash
-# Edge detection
-mediaproc image convolve photo.jpg -k "-1,-1,-1,-1,8,-1,-1,-1,-1" -o edges.jpg
+### Predefined Kernels
 
-# Sharpen
-mediaproc image convolve image.jpg -k "0,-1,0,-1,5,-1,0,-1,0" -o sharp.jpg
+Use built-in kernel presets:
+
+```bash
+# Sharpen image
+mediaproc image convolve image.jpg --kernel sharpen -o sharpened.jpg
+
+# Apply emboss effect
+mediaproc image convolve photo.png --kernel emboss -o embossed.png
+
+# Detect edges
+mediaproc image convolve image.jpg --kernel edge-detect -o edges.jpg
+
+# Apply box blur
+mediaproc image convolve photo.jpg --kernel box-blur -o blurred.jpg
+
+# Apply Gaussian blur
+mediaproc image convolve image.png --kernel gaussian-blur -o gaussian.png
+
+# Laplacian edge detection
+mediaproc image convolve photo.jpg --kernel laplacian -o laplacian.jpg
+
+# High-pass filter
+mediaproc image convolve image.jpg --kernel high-pass -o high_pass.jpg
+```
+
+### Custom Kernels
+
+Define your own kernel matrices:
+
+```bash
+# Custom sharpening kernel
+mediaproc image convolve image.jpg \
+  --custom "[[0,-1,0],[-1,5,-1],[0,-1,0]]" \
+  -o custom_sharp.jpg
+
+# Custom edge detection
+mediaproc image convolve photo.png \
+  --custom "[[-1,-1,-1],[-1,8,-1],[-1,-1,-1]]" \
+  -o custom_edges.png
+
+# Identity kernel (no change)
+mediaproc image convolve image.jpg \
+  --custom "[[0,0,0],[0,1,0],[0,0,0]]" \
+  -o identity.jpg
+
+# Horizontal edge detection
+mediaproc image convolve photo.jpg \
+  --custom "[[-1,-1,-1],[0,0,0],[1,1,1]]" \
+  -o horizontal_edges.jpg
+
+# Vertical edge detection
+mediaproc image convolve image.jpg \
+  --custom "[[-1,0,1],[-1,0,1],[-1,0,1]]" \
+  -o vertical_edges.jpg
+```
+
+### Scale and Offset
+
+Adjust kernel behavior:
+
+```bash
+# Sharpen with doubled intensity
+mediaproc image convolve image.jpg --kernel sharpen --scale 2 -o intense_sharp.jpg
+
+# Laplacian with enhanced scale
+mediaproc image convolve photo.jpg --kernel laplacian --scale 3 -o enhanced_edges.jpg
+
+# Custom kernel with normalization
+mediaproc image convolve image.png \
+  --custom "[[1,2,1],[2,4,2],[1,2,1]]" \
+  --scale 0.0625 \
+  -o normalized.png
+
+# Emboss with offset for brightness
+mediaproc image convolve photo.jpg --kernel emboss --offset 128 -o bright_emboss.jpg
+
+# Edge detection with scale and offset
+mediaproc image convolve image.jpg --kernel edge-detect --scale 2 --offset 50 -o adjusted_edges.jpg
+```
+
+### Edge Detection Variations
+
+Different edge detection approaches:
+
+```bash
+# Standard edge detection
+mediaproc image convolve photo.jpg --kernel edge-detect -o edges_standard.jpg
+
+# Laplacian (second derivative)
+mediaproc image convolve photo.jpg --kernel laplacian -o edges_laplacian.jpg
+
+# Sobel X (horizontal edges)
+mediaproc image convolve image.jpg \
+  --custom "[[-1,0,1],[-2,0,2],[-1,0,1]]" \
+  -o edges_sobel_x.jpg
+
+# Sobel Y (vertical edges)
+mediaproc image convolve image.jpg \
+  --custom "[[-1,-2,-1],[0,0,0],[1,2,1]]" \
+  -o edges_sobel_y.jpg
+
+# Prewitt operator
+mediaproc image convolve photo.jpg \
+  --custom "[[-1,0,1],[-1,0,1],[-1,0,1]]" \
+  -o edges_prewitt.jpg
+```
+
+### Sharpening Variations
+
+Different sharpening effects:
+
+```bash
+# Standard sharpen
+mediaproc image convolve image.jpg --kernel sharpen -o sharp_standard.jpg
+
+# Stronger sharpening
+mediaproc image convolve photo.jpg \
+  --custom "[[0,-1,0],[-1,5,-1],[0,-1,0]]" \
+  --scale 1.5 \
+  -o sharp_strong.jpg
+
+# Unsharp mask effect
+mediaproc image convolve image.jpg \
+  --custom "[[-1,-1,-1],[-1,9,-1],[-1,-1,-1]]" \
+  -o unsharp.jpg
+
+# High-pass sharpening
+mediaproc image convolve photo.jpg --kernel high-pass -o sharp_high_pass.jpg
+```
+
+### Blur Variations
+
+Different blur algorithms:
+
+```bash
+# Box blur (simple average)
+mediaproc image convolve image.jpg --kernel box-blur -o box_blurred.jpg
+
+# Gaussian blur (weighted)
+mediaproc image convolve photo.png --kernel gaussian-blur -o gaussian_blurred.png
+
+# Motion blur (horizontal)
+mediaproc image convolve image.jpg \
+  --custom "[[0.2,0.2,0.2,0.2,0.2],[0,0,0,0,0],[0,0,0,0,0]]" \
+  -o motion_blur.jpg
+
+# Larger box blur (5x5)
+mediaproc image convolve photo.jpg \
+  --custom "[[0.04,0.04,0.04,0.04,0.04],[0.04,0.04,0.04,0.04,0.04],[0.04,0.04,0.04,0.04,0.04],[0.04,0.04,0.04,0.04,0.04],[0.04,0.04,0.04,0.04,0.04]]" \
+  -o blur_5x5.jpg
+```
+
+### Artistic Effects
+
+Creative convolution effects:
+
+```bash
+# Emboss effect
+mediaproc image convolve photo.jpg --kernel emboss -o art_emboss.jpg
+
+# Emboss with offset for gray background
+mediaproc image convolve image.jpg --kernel emboss --offset 128 -o gray_emboss.jpg
+
+# Strong emboss
+mediaproc image convolve photo.png --kernel emboss --scale 2 -o strong_emboss.png
+
+# Ridge detection
+mediaproc image convolve image.jpg \
+  --custom "[[-1,-1,-1],[-1,8,-1],[-1,-1,-1]]" \
+  --scale 1.5 \
+  -o ridges.jpg
+```
+
+### Batch Processing
+
+Apply kernels to multiple images:
+
+```bash
+# Sharpen entire photo collection
+for file in photos/*.jpg; do
+  mediaproc image convolve "$file" --kernel sharpen -o "sharpened/${file##*/}"
+done
+
+# Edge detection on all images
+for file in images/*.png; do
+  mediaproc image convolve "$file" --kernel edge-detect -o "edges/${file##*/}"
+done
+
+# Apply custom kernel to batch
+KERNEL='[[0,-1,0],[-1,5,-1],[0,-1,0]]'
+for file in *.jpg; do
+  mediaproc image convolve "$file" --custom "$KERNEL" -o "processed/${file}"
+done
+```
+
+### Analysis and Detection
+
+Use convolution for image analysis:
+
+```bash
+# Detect horizontal lines
+mediaproc image convolve document.jpg \
+  --custom "[[-1,-1,-1],[2,2,2],[-1,-1,-1]]" \
+  -o horizontal_lines.jpg
+
+# Detect vertical lines
+mediaproc image convolve document.jpg \
+  --custom "[[-1,2,-1],[-1,2,-1],[-1,2,-1]]" \
+  -o vertical_lines.jpg
+
+# Corner detection (approximation)
+mediaproc image convolve image.jpg --kernel laplacian --scale 2 -o corners.jpg
+
+# Texture analysis
+mediaproc image convolve photo.jpg --kernel high-pass -o texture.jpg
+```
+
+### Dry Run Testing
+
+Test kernels before applying:
+
+```bash
+# Test sharpen kernel
+mediaproc image convolve image.jpg --kernel sharpen --dry-run
+
+# Test custom kernel
+mediaproc image convolve photo.png --custom "[[0,-1,0],[-1,5,-1],[0,-1,0]]" --dry-run
+
+# Test with scale
+mediaproc image convolve image.jpg --kernel laplacian --scale 2 --dry-run
+
+# Test emboss with offset
+mediaproc image convolve photo.jpg --kernel emboss --offset 128 --dry-run
+```
+
+### Verbose Processing
+
+Monitor convolution details:
+
+```bash
+# See kernel details
+mediaproc image convolve image.jpg --kernel sharpen -v -o sharpened.jpg
+
+# Debug custom kernel
+mediaproc image convolve photo.png --custom "[[1,2,1],[2,4,2],[1,2,1]]" -v -o processed.png
+
+# Monitor scale and offset effects
+mediaproc image convolve image.jpg --kernel emboss --scale 2 --offset 100 -v -o embossed.jpg
+```
+
+## Predefined Kernels Reference
+
+### sharpen
+**Matrix**:
+```
+ 0  -1   0
+-1   5  -1
+ 0  -1   0
+```
+
+**Effect**: Enhances edges and fine details by emphasizing differences between adjacent pixels.
+
+**Use for**: Improving image clarity, enhancing text, bringing out details.
+
+**Example**:
+```bash
+mediaproc image convolve photo.jpg --kernel sharpen -o sharp.jpg
+```
+
+### emboss
+**Matrix**:
+```
+-2  -1   0
+-1   1   1
+ 0   1   2
+```
+
+**Effect**: Creates a 3D raised appearance by highlighting edges in one direction.
+
+**Use for**: Artistic effects, simulating relief, highlighting texture.
+
+**Example**:
+```bash
+mediaproc image convolve image.jpg --kernel emboss --offset 128 -o embossed.jpg
+```
+
+### edge-detect
+**Matrix**:
+```
+-1  -1  -1
+-1   8  -1
+-1  -1  -1
+```
+
+**Effect**: Highlights edges by detecting significant changes in pixel values.
+
+**Use for**: Object detection, boundary identification, preprocessing for analysis.
+
+**Example**:
+```bash
+mediaproc image convolve photo.jpg --kernel edge-detect -o edges.jpg
+```
+
+### box-blur
+**Matrix**:
+```
+1/9  1/9  1/9
+1/9  1/9  1/9
+1/9  1/9  1/9
+```
+
+**Effect**: Simple blur by averaging pixel values with neighbors.
+
+**Use for**: Quick blur, noise reduction, softening.
+
+**Example**:
+```bash
+mediaproc image convolve image.jpg --kernel box-blur -o blurred.jpg
+```
+
+### gaussian-blur
+**Matrix**:
+```
+1/16  2/16  1/16
+2/16  4/16  2/16
+1/16  2/16  1/16
+```
+
+**Effect**: Weighted blur that preserves more detail than box blur.
+
+**Use for**: Smooth blur, preprocessing, reducing noise while preserving edges.
+
+**Example**:
+```bash
+mediaproc image convolve photo.png --kernel gaussian-blur -o smooth.png
+```
+
+### laplacian
+**Matrix**:
+```
+ 0   1   0
+ 1  -4   1
+ 0   1   0
+```
+
+**Effect**: Second derivative edge detection, sensitive to fine details.
+
+**Use for**: Detailed edge detection, image analysis, finding zero-crossings.
+
+**Example**:
+```bash
+mediaproc image convolve image.jpg --kernel laplacian -o detailed_edges.jpg
+```
+
+### high-pass
+**Matrix**:
+```
+-1  -1  -1
+-1   8  -1
+-1  -1  -1
+```
+
+**Effect**: Emphasizes high-frequency components (edges, details), suppresses low-frequency (smooth areas).
+
+**Use for**: Detail enhancement, texture analysis, sharpening.
+
+**Example**:
+```bash
+mediaproc image convolve photo.jpg --kernel high-pass -o details.jpg
+```
+
+## Custom Kernel Guide
+
+### Kernel Matrix Rules
+
+1. **Size**: Typically 3×3 or 5×5 (must be square and odd-sized)
+2. **Format**: JSON array of arrays: `[[a,b,c],[d,e,f],[g,h,i]]`
+3. **Center**: Middle value is applied to current pixel
+4. **Symmetry**: Symmetric kernels produce balanced effects
+5. **Normalization**: Values should sum to 1 (or use --scale)
+
+### Common Kernel Patterns
+
+**Identity (no change)**:
+```
+0  0  0
+0  1  0
+0  0  0
+```
+
+**Edge Enhancement**:
+```
+ 0  -1   0
+-1   5  -1
+ 0  -1   0
+```
+
+**Blur (average)**:
+```
+1/9  1/9  1/9
+1/9  1/9  1/9
+1/9  1/9  1/9
+```
+
+**Directional Edge Detection**:
+```
+Horizontal:  -1  -1  -1     Vertical:  -1  0  1
+              0   0   0               -1  0  1
+              1   1   1               -1  0  1
+```
+
+### Scale and Offset Parameters
+
+**Scale** (`--scale`):
+- Multiplies all kernel values
+- Use for: Adjusting effect intensity
+- Values > 1: Stronger effect
+- Values < 1: Weaker effect
+- Example: `--scale 2` doubles kernel values
+
+**Offset** (`--offset`):
+- Added to result after convolution
+- Use for: Brightness adjustment, centering results
+- Typical values: 0 (default), 128 (for emboss)
+- Example: `--offset 128` adds gray background
+
+**Normalization Example**:
+```bash
+# Unnormalized blur kernel (sums to 9)
+--custom "[[1,1,1],[1,1,1],[1,1,1]]" --scale 0.111  # Divide by 9
+
+# Gaussian kernel (already normalized, sums to 1)
+--custom "[[0.0625,0.125,0.0625],[0.125,0.25,0.125],[0.0625,0.125,0.0625]]"
+```
+
+## Best Practices
+
+1. **Kernel Selection**:
+   - Start with predefined kernels for common effects
+   - Use custom kernels for specialized processing
+   - Test on small images first
+
+2. **Normalization**:
+   - Ensure kernel values sum to 1 for brightness preservation
+   - Use `--scale` to normalize if needed
+   - Non-normalized kernels may darken/brighten image
+
+3. **Edge Handling**:
+   - Convolution affects edge pixels differently
+   - Expect slight changes at image borders
+   - Consider cropping edges if necessary
+
+4. **Performance**:
+   - 3×3 kernels faster than 5×5
+   - Convolution is computationally intensive
+   - Process smaller images when testing
+
+5. **Effect Intensity**:
+   - Use `--scale` to adjust effect strength
+   - Start with scale=1, adjust up/down
+   - Higher scale = more pronounced effect
+
+6. **Batch Processing**:
+   - Use consistent kernels across image sets
+   - Test on samples before batch processing
+   - Monitor output quality
+
+7. **Combining Effects**:
+   - Apply multiple convolutions sequentially
+   - Order matters (sharpen then blur ≠ blur then sharpen)
+   - Each pass reduces quality slightly
+
+## Common Use Cases
+
+### Photo Enhancement
+
+```bash
+# Sharpen slightly out-of-focus photo
+mediaproc image convolve blurry.jpg --kernel sharpen --scale 1.2 -o focused.jpg
+
+# Enhance details in landscape
+mediaproc image convolve landscape.jpg --kernel high-pass --scale 1.5 -o detailed.jpg
+```
+
+### Artistic Effects
+
+```bash
+# Create embossed art print
+mediaproc image convolve photo.jpg --kernel emboss --offset 128 -o art.jpg
+
+# Pencil sketch effect (edges only)
+mediaproc image convolve portrait.jpg --kernel edge-detect -o sketch.jpg
+```
+
+### Image Analysis
+
+```bash
+# Detect objects by edges
+mediaproc image convolve scene.jpg --kernel laplacian -o object_edges.jpg
+
+# Find horizontal features
+mediaproc image convolve image.jpg --custom "[[-1,-1,-1],[2,2,2],[-1,-1,-1]]" -o horizontal.jpg
+```
+
+### Texture Processing
+
+```bash
+# Extract texture information
+mediaproc image convolve material.jpg --kernel high-pass -o texture_map.jpg
+
+# Analyze surface details
+mediaproc image convolve surface.jpg --kernel laplacian --scale 2 -o detail_analysis.jpg
+```
+
+## Performance Tips
+
+1. **Kernel Size**: 3×3 kernels process much faster than 5×5
+2. **Image Size**: Downscale large images before testing
+3. **Batch Mode**: Process similar images together
+4. **Testing**: Use small regions/crops for kernel experimentation
+5. **Caching**: Save custom kernels in variables for reuse
+6. **Parallel Processing**: Use shell parallelization for batch jobs
+
+## Troubleshooting
+
+### Result Too Dark/Bright
+
+**Problem**: Output has wrong brightness.
+
+**Solutions**:
+```bash
+# Normalize kernel with scale
+mediaproc image convolve image.jpg --custom "[[1,1,1],[1,1,1],[1,1,1]]" --scale 0.111 -o normalized.jpg
+
+# Add offset for brightness
+mediaproc image convolve photo.jpg --kernel emboss --offset 128 -o brightened.jpg
+
+# Adjust scale value
+mediaproc image convolve image.jpg --kernel sharpen --scale 0.5 -o lighter.jpg
+```
+
+### Effect Too Weak
+
+**Problem**: Convolution effect barely visible.
+
+**Solutions**:
+```bash
+# Increase scale
+mediaproc image convolve image.jpg --kernel sharpen --scale 2 -o stronger.jpg
+
+# Use more aggressive kernel
+mediaproc image convolve photo.jpg --custom "[[-1,-1,-1],[-1,9,-1],[-1,-1,-1]]" -o intense.jpg
+
+# Apply multiple passes
+mediaproc image convolve image.jpg --kernel sharpen -o temp.jpg
+mediaproc image convolve temp.jpg --kernel sharpen -o double_sharp.jpg
+```
+
+### Effect Too Strong
+
+**Problem**: Convolution creates artifacts or over-processing.
+
+**Solutions**:
+```bash
+# Reduce scale
+mediaproc image convolve image.jpg --kernel sharpen --scale 0.5 -o subtle.jpg
+
+# Use gentler kernel
+mediaproc image convolve photo.jpg --kernel gaussian-blur -o gentle.jpg
+
+# Lower kernel values in custom matrix
+```
+
+### Edge Artifacts
+
+**Problem**: Strange effects at image edges.
+
+**Solutions**:
+```bash
+# Crop edges after processing
+mediaproc image convolve image.jpg --kernel sharpen -o temp.jpg
+mediaproc image crop temp.jpg --width -10 --height -10 -o cropped.jpg
+
+# Use gentler kernel near edges
+# This is automatic in Sharp library
+
+# Accept edge effects as normal for convolution
+```
+
+### Invalid Kernel JSON
+
+**Problem**: Custom kernel JSON parsing error.
+
+**Solutions**:
+```bash
+# Check JSON syntax (quotes, brackets, commas)
+--custom "[[1,2,1],[2,4,2],[1,2,1]]"  # Correct
+
+# Ensure proper nesting
+--custom "[[1,1,1],[1,1,1],[1,1,1]]"  # 3x3 matrix
+
+# Verify square matrix
+# Must be NxN (3x3, 5x5, etc.)
+```
+
+### Processing Too Slow
+
+**Problem**: Convolution takes too long.
+
+**Solutions**:
+```bash
+# Use 3x3 instead of 5x5 kernel
+--kernel sharpen  # Fast 3x3
+
+# Downscale image first
+mediaproc image resize large.jpg --width 1000 -o medium.jpg
+mediaproc image convolve medium.jpg --kernel sharpen -o processed.jpg
+
+# Process smaller batches
+# Parallelize with xargs or GNU parallel
 ```
 
 ## See Also
 
-- [sharpen](./sharpen) - Built-in sharpening
-- [blur](./blur) - Built-in blur
+- [sharpen](./sharpen) - Dedicated sharpening command
+- [blur](./blur) - Gaussian blur command
+- [edge-detect](./edge-detect) - If available as separate command
+- [emboss](./emboss) - If available as separate command
+- [median](./median) - Median filter (different algorithm)
+- [normalize](./normalize) - Adjust contrast after edge detection

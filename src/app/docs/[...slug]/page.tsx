@@ -40,8 +40,9 @@ export async function generateStaticParams() {
   return paths;
 }
 
-export default async function DocPage({ params }: { params: { slug: string[] } }) {
-  const slugPath = params.slug.join('/');
+export default async function DocPage({ params }: { params: Promise<{ slug: string[] }> }) {
+  const { slug } = await params;
+  const slugPath = slug.join('/');
   const contentPath = path.join(process.cwd(), 'content', `${slugPath}.mdx`);
 
   // Check if file exists
