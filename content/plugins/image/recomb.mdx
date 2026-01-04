@@ -411,14 +411,14 @@ Values clamped to 0-255 range.
 - **1**: Full contribution (100%)
 - **0.5**: Half contribution (50%)
 - **Negative**: Inverts channel
-- **>1**: Amplifies channel (may clip to 255)
+- **Greater than 1**: Amplifies channel (may clip to 255)
 
 ### Performance
 
 - **Fast**: Matrix multiplication is efficient
-- **Small images (<1MP)**: ~50-100ms
+- **Small images (less than 1MP)**: ~50-100ms
 - **Medium images (5MP)**: ~150-250ms
-- **Large images (>10MP)**: ~300-500ms
+- **Large images (greater than 10MP)**: ~300-500ms
 - Same speed regardless of matrix values
 
 ### Output Formats

@@ -47,39 +47,39 @@ mediaproc image pixelate game.jpg -p 8 -o retro.jpg
 
 The pixelate effect works by:
 
-1. **Shrinking**: Image reduced by pixel size factor
-2. **Enlarging**: Resized back to original using nearest neighbor interpolation
-3. **Result**: Blocky, pixelated appearance
+- **Shrinking**: Image reduced by pixel size factor
+- **Enlarging**: Resized back to original using nearest neighbor interpolation
+- **Result**: Blocky, pixelated appearance
 
 ### Example Process
 
 Original: 1000x1000px with 10px blocks
 
-1. Shrink to 100x100px (1000 ÷ 10)
-2. Enlarge to 1000x1000px (nearest neighbor)
-3. Result: 10x10px blocks across image
+- Shrink to 100x100px (1000 ÷ 10)
+- Enlarge to 1000x1000px (nearest neighbor)
+- Result: 10x10px blocks across image
 
 ## Pixel Size Guide
 
-### 2-5: Subtle Pixelation
+### Subtle Pixelation (2-5)
 
 - **Effect**: Slight pixelation, retains most detail
 - **Use**: Artistic touch, mild privacy
 - **Example**: `--pixels 3`
 
-### 8-12: Retro Gaming
+### Retro Gaming (8-12)
 
 - **Effect**: Classic 8-bit/16-bit game style
 - **Use**: Retro aesthetics, gaming content
 - **Example**: `--pixels 8` (8-bit) or `--pixels 12` (16-bit)
 
-### 15-25: Strong Effect
+### Strong Effect (15-25)
 
 - **Effect**: Heavy pixelation, significant detail loss
 - **Use**: Privacy protection, strong stylization
 - **Example**: `--pixels 20`
 
-### 30-50: Extreme Pixelation
+### Extreme Pixelation (30-50)
 
 - **Effect**: Very blocky, minimal detail
 - **Use**: Heavy censorship, extreme artistic effect
@@ -87,7 +87,7 @@ Original: 1000x1000px with 10px blocks
 
 ## Examples
 
-### 1. Default Pixelation
+### Default Pixelation
 
 Apply moderate pixelation:
 
@@ -97,7 +97,7 @@ mediaproc image pixelate photo.jpg
 
 **Result**: 10x10px blocks (default size).
 
-### 2. Retro 8-Bit Style
+### Retro Eight-Bit Style
 
 Classic 8-bit gaming aesthetic:
 
@@ -107,7 +107,7 @@ mediaproc image pixelate game-sprite.png --pixels 8
 
 **Perfect for**: Retro game graphics, pixel art style.
 
-### 3. Privacy Protection
+### Privacy Protection
 
 Blur faces or sensitive information:
 
@@ -117,7 +117,7 @@ mediaproc image pixelate document.jpg --pixels 20 -o censored.jpg
 
 **Privacy**: Obscures text, faces, or sensitive data.
 
-### 4. Subtle Artistic Effect
+### Subtle Artistic Effect
 
 Light pixelation for artistic touch:
 
@@ -127,7 +127,7 @@ mediaproc image pixelate portrait.jpg -p 5
 
 **Artistic**: Retains detail while adding pixelated aesthetic.
 
-### 5. Heavy Censorship
+### Heavy Censorship
 
 Extreme pixelation for redaction:
 
@@ -137,17 +137,17 @@ mediaproc image pixelate sensitive.png --pixels 40
 
 **Censorship**: Complete obscuration of content.
 
-### 6. 16-Bit Gaming Style
+### Console Gaming Style (Sixteen-Bit)
 
 Classic console gaming look:
 
 ```bash
-mediaproc image pixelate character.png -p 12 -o 16bit.png
+mediaproc image pixelate character.png -p 12 -o retro-16bit.png
 ```
 
 **Retro**: 16-bit console era style.
 
-### 7. Batch Processing
+### Batch Processing
 
 Pixelate multiple images:
 
@@ -157,7 +157,7 @@ mediaproc image pixelate "photos/*.jpg" --pixels 10
 
 **Batch**: All images get same pixel size.
 
-### 8. Custom Output Path
+### Custom Output Path
 
 Save to specific location:
 
@@ -167,7 +167,7 @@ mediaproc image pixelate photo.jpg -p 15 -o output/pixel-art.jpg
 
 **Organization**: Custom output directory.
 
-### 9. Different Pixel Sizes
+### Different Pixel Sizes
 
 Compare effects:
 
@@ -184,7 +184,7 @@ mediaproc image pixelate photo.jpg -p 20 -o strong.jpg
 
 **Comparison**: Test different intensities.
 
-### 10. Verbose Mode
+### Verbose Mode
 
 Show detailed processing info:
 
@@ -194,7 +194,7 @@ mediaproc image pixelate image.png -p 8 --verbose
 
 **Output**: Original size, processing steps, output details.
 
-### 11. Portrait Pixelation
+### Portrait Pixelation
 
 Pixelate portrait for effect:
 
@@ -204,7 +204,7 @@ mediaproc image pixelate portrait.jpg --pixels 6
 
 **Artistic**: Pixel art portrait style.
 
-### 12. Landscape Retro
+### Landscape Retro
 
 Retro gaming landscape:
 
@@ -214,7 +214,7 @@ mediaproc image pixelate landscape.jpg -p 10 -o retro-landscape.jpg
 
 **Gaming**: Retro game background style.
 
-### 13. Logo Pixelation
+### Logo Pixelation
 
 Pixelate logo for creative effect:
 
@@ -224,7 +224,7 @@ mediaproc image pixelate logo.png -p 4
 
 **Branding**: Pixelated logo variation.
 
-### 14. Preview Operation
+### Preview Operation
 
 Check before applying:
 
@@ -234,7 +234,7 @@ mediaproc image pixelate photo.jpg --pixels 15 --dry-run
 
 **Safety**: Verify settings before processing.
 
-### 15. Extreme Blocks
+### Extreme Blocks
 
 Very large pixel blocks:
 
@@ -246,7 +246,7 @@ mediaproc image pixelate image.png --pixels 50
 
 ## Use Cases
 
-### 1. Retro Gaming Graphics
+### Retro Gaming Graphics
 
 Create 8-bit or 16-bit style:
 
@@ -260,7 +260,7 @@ mediaproc image pixelate character.png --pixels 12
 
 **Gaming**: Perfect for retro game assets, pixel art.
 
-### 2. Privacy Protection
+### Privacy Protection
 
 Obscure faces, text, or sensitive info:
 
@@ -274,7 +274,7 @@ mediaproc image pixelate document.png -p 25
 
 **Privacy**: GDPR compliance, content moderation.
 
-### 3. Artistic Effects
+### Artistic Effects
 
 Creative pixelated style:
 
@@ -288,7 +288,7 @@ mediaproc image pixelate photo.jpg -p 15
 
 **Art**: Unique visual aesthetic, modern pixel art.
 
-### 4. Censorship/Redaction
+### Censorship/Redaction
 
 Hide sensitive content:
 
@@ -302,7 +302,7 @@ mediaproc image pixelate classified.png -p 40
 
 **Compliance**: Redact PII, sensitive data, classified info.
 
-### 5. Vintage/Retro Look
+### Vintage/Retro Look
 
 Early computer graphics style:
 
@@ -316,7 +316,7 @@ mediaproc image pixelate image.png -p 8
 
 **Nostalgia**: Retro digital aesthetic.
 
-### 6. Social Media Content
+### Social Media Content
 
 Eye-catching pixelated posts:
 
@@ -330,7 +330,7 @@ mediaproc image pixelate video-frame.png -p 8
 
 **Social**: Trendy pixelated content.
 
-### 7. Game Development
+### Game Development
 
 Create pixel art assets:
 
@@ -344,7 +344,7 @@ mediaproc image pixelate tile.jpg -p 10
 
 **GameDev**: Quick pixel art conversion.
 
-### 8. Low-Resolution Aesthetic
+### Low-Resolution Aesthetic
 
 Intentional low-res look:
 
@@ -437,9 +437,9 @@ For 1920×1080 image with 10px blocks:
 ### Performance
 
 - **Very Fast**: Resize operations are efficient
-- **Small images (<1MP)**: ~50-100ms
+- **Small images (less than 1MP)**: ~50-100ms
 - **Medium images (5MP)**: ~100-200ms
-- **Large images (>10MP)**: ~200-400ms
+- **Large images (greater than 10MP)**: ~200-400ms
 - **Larger pixel sizes**: Faster (less shrunk image data)
 
 ### File Size
@@ -452,7 +452,7 @@ Pixelated images often:
 
 ## Best Practices
 
-### 1. Start with Default
+### Start with Default
 
 Begin with size 10, adjust as needed:
 
@@ -464,7 +464,7 @@ mediaproc image pixelate photo.jpg
 mediaproc image pixelate photo.jpg -p 15
 ```
 
-### 2. Match Pixel Size to Purpose
+### Match Pixel Size to Purpose
 
 **Privacy**: 15-30 pixels
 
@@ -484,7 +484,7 @@ mediaproc image pixelate art.jpg -p 8
 mediaproc image pixelate censor.jpg -p 40
 ```
 
-### 3. Use Dry Run
+### Use Dry Run
 
 Test settings first:
 
@@ -492,7 +492,7 @@ Test settings first:
 mediaproc image pixelate photo.jpg --pixels 15 --dry-run
 ```
 
-### 4. Consider Output Format
+### Consider Output Format
 
 **JPEG**: Good compression for pixelated images
 
@@ -506,7 +506,7 @@ mediaproc image pixelate photo.png -p 10 -o output.jpg
 mediaproc image pixelate logo.png -p 8 -o pixel-logo.png
 ```
 
-### 5. Batch Similar Content
+### Batch Similar Content
 
 Process multiple images:
 
@@ -515,7 +515,7 @@ Process multiple images:
 mediaproc image pixelate "photos/*.jpg" --pixels 10
 ```
 
-### 6. Combine Effects for Style
+### Combine Effects for Style
 
 Pixelate + other effects:
 
@@ -525,7 +525,7 @@ mediaproc image pixelate photo.jpg -p 8 -o temp.jpg
 mediaproc image sepia temp.jpg -o retro.jpg
 ```
 
-### 7. Power of Two Sizes
+### Power of Two Sizes
 
 Use 2, 4, 8, 16 for cleaner results:
 
@@ -620,5 +620,5 @@ mediaproc image pixelate temp.jpg -p 10
 
 - [Pixel Art](https://en.wikipedia.org/wiki/Pixel_art)
 - [Nearest Neighbor Interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)
-- [8-Bit Graphics](https://en.wikipedia.org/wiki/8-bit_color)
+- [Eight-Bit Graphics](https://en.wikipedia.org/wiki/8-bit_color)
 - [Image Resampling](https://en.wikipedia.org/wiki/Image_scaling)

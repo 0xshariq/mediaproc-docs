@@ -562,16 +562,16 @@ mediaproc image modulate "series/*.jpg" -b 1.15 -s 1.25 --hue 10
 
 Modulate is very fast:
 
-- Typical image (<5MP): ~50-100ms
-- Large image (>10MP): ~100-200ms
+- Typical image (under 5MP): ~50-100ms
+- Large image (greater than 10MP): ~100-200ms
 - Batch processing: ~100-150ms per image
 
 ### Memory Usage
 
 Minimal memory overhead:
 
-- Small images: <50MB
-- Large images: <200MB
+- Small images: under 50MB
+- Large images: under 200MB
 - Multiple parameters: No additional memory
 
 ### Quality Impact

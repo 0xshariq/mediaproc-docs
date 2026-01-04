@@ -501,9 +501,9 @@ Formula: `output = original + (original - blurred) × threshold`
 ### Performance
 
 - **Fast**: Gaussian blur + addition
-- **Small images (<1MP)**: ~80-120ms
+- **Small images (less than 1MP)**: ~80-120ms
 - **Medium images (5MP)**: ~200-300ms
-- **Large images (>10MP)**: ~400-600ms
+- **Large images (greater than 10MP)**: ~400-600ms
 - Larger sigma = slightly slower
 
 ### Artifacts to Watch For

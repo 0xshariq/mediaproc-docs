@@ -31,7 +31,7 @@ mediaproc image mirror <input> [options]
 | Option          | Alias | Type    | Default    | Description                                           |
 | --------------- | ----- | ------- | ---------- | ----------------------------------------------------- |
 | `-m, --mode`    |       | string  | horizontal | Mirror mode: horizontal, vertical, both, quad         |
-| `-o, --output`  |       | string  |            | Custom output path (default: input-mirror-{mode}.ext) |
+| `-o, --output`  |       | string  |            | Custom output path (default: input-mirror-\{mode\}.ext) |
 | `--dry-run`     |       | boolean | false      | Preview without processing                            |
 | `-v, --verbose` |       | boolean | false      | Show detailed processing information                  |
 
@@ -481,7 +481,7 @@ Result:   960 × 540 (center extracted, 4-way mirror)
 
 ## Output Naming
 
-Default naming pattern: `{basename}-mirror-{mode}.{ext}`
+Default naming pattern: `\{basename\}-mirror-\{mode\}.\{ext\}`
 
 ```bash
 # Examples

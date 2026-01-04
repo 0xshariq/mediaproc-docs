@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 interface TOCItem {
@@ -11,18 +11,22 @@ interface TOCItem {
 
 export function TableOfContents() {
   const [activeId, setActiveId] = useState<string>('');
+  const [headings, setHeadings] = useState<TOCItem[]>([]);
 
-  const headings = useMemo(() => {
-    // Extract headings from the page
-    const elements = Array.from(document.querySelectorAll('h1, h2, h3'));
-    const items: TOCItem[] = elements
-      .filter((el) => el.id) // Only include headings with IDs
-      .map((el) => ({
-        id: el.id,
-        title: el.textContent || '',
-        level: parseInt(el.tagName.substring(1)),
-      }));
-    return items;
+  useEffect(() => {
+    // Extract headings from the page (only on client)
+    // Use requestAnimationFrame to avoid synchronous state update
+    requestAnimationFrame(() => {
+      const elements = Array.from(document.querySelectorAll('h1, h2, h3'));
+      const items: TOCItem[] = elements
+        .filter((el) => el.id) // Only include headings with IDs
+        .map((el) => ({
+          id: el.id,
+          title: el.textContent || '',
+          level: parseInt(el.tagName.substring(1)),
+        }));
+      setHeadings(items);
+    });
   }, []);
 
   useEffect(() => {

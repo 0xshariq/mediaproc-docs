@@ -490,7 +490,7 @@ A_out = 255 - A_in
 
 Negate is extremely fast:
 
-- Small image (<1MP): <10ms
+- Small image (less than 1MP): under 10ms
 - Medium image (5MP): ~20-30ms
 - Large image (20MP): ~50-100ms
 - Very efficient, per-pixel operation
@@ -501,8 +501,8 @@ Minimal memory overhead:
 
 - Only requires input and output buffers
 - No complex calculations
-- Small images: <50MB
-- Large images: <200MB
+- Small images: under 50MB
+- Large images: under 200MB
 
 ## Reversibility
 
