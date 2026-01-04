@@ -1,0 +1,79 @@
+# grayscale
+
+Convert an image to grayscale (black and white).
+
+## Usage
+
+```bash
+mediaproc image grayscale <input> [options]
+```
+
+## Description
+
+The `grayscale` command removes all color information from an image, creating a black and white version. Uses perceptual luminance calculation for natural-looking results.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Conversion
+
+```bash
+# Convert to grayscale
+mediaproc image grayscale input.jpg -o gray.jpg
+
+# Grayscale with format conversion
+mediaproc image grayscale photo.png -f webp -o bw.webp
+```
+
+### Batch Processing
+
+```bash
+# Convert all images to grayscale
+for img in *.jpg; do
+  mediaproc image grayscale "$img" -o "bw-$img"
+done
+
+# Grayscale for thumbnails
+find . -name "*.png" -exec mediaproc image grayscale {} -o {}_gray.png \;
+```
+
+### High-Quality Output
+
+```bash
+# Grayscale for print
+mediaproc image grayscale photo.jpg -q 95 -o print-bw.jpg
+
+# Grayscale with optimization
+mediaproc image grayscale large.png -f jpg -q 70 -o optimized-bw.jpg
+```
+
+## Best Practices
+
+1. **Quality Matters**: Use 90+ quality for important images
+2. **Format Choice**: JPEG works well for grayscale photos
+3. **File Size**: Grayscale images are typically smaller than color
+4. **Combine Effects**: Apply grayscale before other effects
+5. **Artistic Use**: Great for dramatic, timeless looks
+
+## Common Use Cases
+
+- **Artistic Photography**: Create classic black and white images
+- **Print Media**: Newspaper/magazine style images
+- **Accessibility**: Improve clarity for some visual conditions
+- **Thumbnails**: Reduce file size for preview images
+- **Vintage Effect**: Combine with sepia or other effects
+- **Document Processing**: Convert scans to grayscale
+
+## See Also
+
+- [sepia](./sepia) - Vintage brown tone effect
+- [threshold](./threshold) - Convert to pure black and white
+- [normalize](./normalize) - Enhance contrast after grayscale
+- [modulate](./modulate) - Adjust brightness/saturation

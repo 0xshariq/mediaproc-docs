@@ -1,0 +1,89 @@
+# info
+
+Get detailed information about an image.
+
+## Usage
+
+```bash
+mediaproc image info <input> [options]
+```
+
+## Description
+
+The `info` command displays comprehensive information about images including dimensions, format, color space, file size, and technical metadata.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--json` | boolean | false | Output as JSON |
+| `--verbose` | boolean | false | Show all available metadata |
+
+## Examples
+
+### Basic Info
+
+```bash
+# Display image information
+mediaproc image info photo.jpg
+
+# JSON output
+mediaproc image info image.png --json
+
+# Verbose output with all metadata
+mediaproc image info photo.jpg --verbose
+```
+
+### Batch Information
+
+```bash
+# Get info for all images
+for img in *.jpg; do
+  echo "=== $img ==="
+  mediaproc image info "$img"
+done
+
+# JSON output for processing
+mediaproc image info photo.jpg --json > image-data.json
+```
+
+## Output Example
+
+```
+File: photo.jpg
+Format: JPEG
+Dimensions: 1920x1080 (2.07 MP)
+Color Space: sRGB
+Bit Depth: 8
+File Size: 543.2 KB
+Has Alpha: No
+Orientation: Horizontal
+```
+
+## Displayed Information
+
+- **File path and name**
+- **Format** (JPEG, PNG, WebP, etc.)
+- **Dimensions** (width x height)
+- **Megapixels**
+- **Color space** (sRGB, Adobe RGB, etc.)
+- **Bit depth** (8, 16, 32-bit)
+- **File size**
+- **Alpha channel** presence
+- **Orientation**
+- **Compression** type
+- **EXIF data** (with --verbose)
+
+## Common Use Cases
+
+- **Quick Check**: Verify image properties
+- **Batch Analysis**: Analyze multiple images
+- **Quality Control**: Check image specifications
+- **Automation**: Parse JSON output in scripts
+- **Documentation**: Record image specifications
+
+## See Also
+
+- [metadata](./metadata) - Full EXIF/IPTC metadata
+- [exif](./exif) - EXIF-specific data
+- [stats](./stats) - Color statistics

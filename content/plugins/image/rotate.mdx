@@ -1,0 +1,156 @@
+# rotate
+
+Rotate an image by a specified angle.
+
+## Usage
+
+```bash
+mediaproc image rotate <input> [options]
+```
+
+## Description
+
+The `rotate` command rotates images by any angle. Supports 90° increments for lossless rotation and arbitrary angles with optional background fill. Works with all standard image formats.
+
+## Options
+
+### Basic Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-a, --angle` | number | 90 | Rotation angle in degrees (positive = clockwise) |
+| `-b, --background` | string | #000000 | Background color for areas created by rotation |
+
+### Advanced Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+| `--no-rotate-exif` | boolean | false | Don't apply EXIF orientation |
+
+## Examples
+
+### Basic Rotation
+
+```bash
+# Rotate 90 degrees clockwise
+mediaproc image rotate input.jpg -a 90 -o rotated.jpg
+
+# Rotate 180 degrees
+mediaproc image rotate image.png -a 180 -o flipped.png
+
+# Rotate 270 degrees (or -90)
+mediaproc image rotate photo.jpg -a 270 -o rotated.jpg
+mediaproc image rotate photo.jpg -a -90 -o rotated.jpg
+```
+
+### Arbitrary Angles
+
+```bash
+# Rotate 45 degrees
+mediaproc image rotate image.jpg -a 45 -o diagonal.jpg
+
+# Rotate 30 degrees with white background
+mediaproc image rotate photo.png -a 30 -b "#ffffff" -o tilted.png
+
+# Slight rotation correction
+mediaproc image rotate scan.jpg -a -2.5 -b "#ffffff" -o straightened.jpg
+```
+
+### Auto-Orient from EXIF
+
+```bash
+# Apply EXIF orientation (camera orientation)
+mediaproc image rotate photo.jpg -o oriented.jpg
+
+# Rotate and ignore EXIF
+mediaproc image rotate photo.jpg -a 90 --no-rotate-exif -o rotated.jpg
+```
+
+### Background Colors
+
+```bash
+# Rotate with transparent background (PNG)
+mediaproc image rotate logo.png -a 45 -b "transparent" -f png -o tilted.png
+
+# Rotate with custom color
+mediaproc image rotate banner.jpg -a 15 -b "#ff0000" -o red-bg.jpg
+
+# Rotate with white background
+mediaproc image rotate document.png -a -3 -b "#ffffff" -o corrected.png
+```
+
+### Batch Rotation
+
+```bash
+# Rotate all images 90 degrees
+for img in *.jpg; do
+  mediaproc image rotate "$img" -a 90 -o "rotated-$img"
+done
+
+# Fix portrait orientation for all images
+find . -name "*.jpg" -exec mediaproc image rotate {} -a 90 -o {} \;
+```
+
+### Format Conversion
+
+```bash
+# Rotate and convert to WebP
+mediaproc image rotate input.jpg -a 180 -f webp -q 85 -o output.webp
+
+# Rotate and optimize
+mediaproc image rotate large.png -a 90 -f jpg -q 75 -o optimized.jpg
+```
+
+## Rotation Angles
+
+### Standard Angles (Lossless for JPEG)
+
+- **90°**: Rotate clockwise (right)
+- **180°**: Flip upside down
+- **270°** or **-90°**: Rotate counter-clockwise (left)
+
+These angles preserve JPEG quality as they're lossless transformations.
+
+### Arbitrary Angles
+
+Any angle between 0-360 degrees is supported. Negative angles rotate counter-clockwise.
+
+- **Positive**: Clockwise rotation
+- **Negative**: Counter-clockwise rotation
+- **> 360**: Wraps around (e.g., 450° = 90°)
+
+## Best Practices
+
+1. **Use 90° Increments**: For lossless JPEG rotation
+2. **Specify Background**: Always set background color for non-90° rotations
+3. **PNG for Transparency**: Use PNG format if you need transparent background
+4. **EXIF Orientation**: Let the command auto-orient images from cameras
+5. **Slight Corrections**: Use small angles (< 5°) for document straightening
+6. **Quality Consideration**: Arbitrary rotations may reduce quality slightly
+
+## Common Use Cases
+
+- **Portrait/Landscape Switch**: Rotate 90° or 270° to change orientation
+- **Document Scanning**: Correct slight misalignments with small angles
+- **Photo Correction**: Fix incorrectly oriented photos
+- **Design Elements**: Create tilted graphics for visual interest
+- **EXIF Handling**: Auto-orient images from digital cameras
+- **Batch Processing**: Fix orientation for multiple images
+
+## Performance Tips
+
+- 90° increments are faster and lossless for JPEG
+- Rotate before resizing for better performance
+- Use lower quality for arbitrary angles if file size matters
+- Consider output format based on background (PNG for transparency)
+
+## See Also
+
+- [flip](./flip) - Flip images horizontally
+- [flop](./flop) - Flip images vertically
+- [crop](./crop) - Crop rotated images
+- [trim](./trim) - Remove background after rotation
+- [affine](./affine) - Advanced transformations

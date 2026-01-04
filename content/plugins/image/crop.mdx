@@ -1,0 +1,205 @@
+# crop {#crop}
+
+Crop an image to a specified region or dimensions.
+
+## Usage {#usage}
+
+```bash
+mediaproc image crop <input> [options]
+```
+
+## Description {#description}
+
+The `crop` command extracts a rectangular region from an image. You can specify the exact position and size, or use gravity-based cropping for smart positioning. Sup+ports all common image formats.
+
+## Options {#options}
+
+### Basic Options {#basic-options}
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-w, --width` | number | - | Crop width in pixels (required) |
+| `-h, --height` | number | - | Crop height in pixels (required) |
+| `-x, --left` | number | 0 | Left offset in pixels |
+| `-y, --top` | number | 0 | Top offset in pixels |
+
+### Advanced Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-g, --gravity` | string | - | Smart crop position (center, north, south, east, west, northeast, northwest, southeast, southwest) |
+| `--strategy` | string | attention | Crop strategy (entropy, attention) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif, tiff) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Crop
+
+```bash
+# Crop 500x500px from top-left corner
+mediaproc image crop input.jpg -w 500 -h 500 -o cropped.jpg
+
+# Crop with specific offset
+mediaproc image crop photo.png -w 800 -h 600 -x 100 -y 50 -o cropped.png
+```
+
+### Gravity-Based Cropping
+
+```bash
+# Crop from center
+mediaproc image crop image.jpg -w 400 -h 400 -g center -o centered.jpg
+
+# Crop from top center
+mediaproc image crop banner.jpg -w 1920 -h 400 -g north -o top.jpg
+
+# Crop from bottom right
+mediaproc image crop photo.jpg -w 500 -h 500 -g southeast -o corner.jpg
+```
+
+### Smart Cropping
+
+```bash
+# Use entropy (edge detection) for smart crop
+mediaproc image crop image.jpg -w 800 -h 600 --strategy entropy -o smart.jpg
+
+# Use attention (face/subject detection) for smart crop
+mediaproc image crop portrait.jpg -w 400 -h 400 --strategy attention -o face-crop.jpg
+```
+
+### Format Conversion During Crop
+
+```bash
+# Crop and convert to WebP
+mediaproc image crop input.png -w 600 -h 400 -f webp -q 85 -o cropped.webp
+
+# Crop and convert to AVIF
+mediaproc image crop photo.jpg -w 800 -h 600 -f avif -q 75 -o cropped.avif
+```
+
+### Batch Cropping
+
+```bash
+# Crop multiple images with same dimensions
+for img in *.jpg; do
+  mediaproc image crop "$img" -w 1000 -h 1000 -g center -o "cropped-$img"
+done
+
+# Create square thumbnails from center
+find . -name "*.png" -exec mediaproc image crop {} -w 300 -h 300 -g center -o {}_thumb.png \;
+```
+
+### Profile Photos
+
+```bash
+# Create circular profile crop area (square first)
+mediaproc image crop avatar.jpg -w 400 -h 400 -g center --strategy attention -o profile.jpg
+
+# Multiple profile sizes
+mediaproc image crop photo.jpg -w 200 -h 200 -g center -o profile-lg.jpg
+mediaproc image crop photo.jpg -w 100 -h 100 -g center -o profile-md.jpg
+mediaproc image crop photo.jpg -w 50 -h 50 -g center -o profile-sm.jpg
+```
+
+### Banner Cropping
+
+```bash
+# Create website banner
+mediaproc image crop header.jpg -w 1920 -h 400 -g north -o banner.jpg
+
+# Social media covers
+mediaproc image crop cover.jpg -w 1200 -h 628 -g center -o facebook.jpg  # Facebook
+mediaproc image crop cover.jpg -w 1500 -h 500 -g center -o twitter.jpg    # Twitter
+mediaproc image crop cover.jpg -w 1128 -h 191 -g center -o linkedin.jpg   # LinkedIn
+```
+
+### Content-Aware Cropping
+
+```bash
+# Let the algorithm find the best crop
+mediaproc image crop landscape.jpg -w 800 -h 600 --strategy attention -o best-crop.jpg
+
+# For images with text, use entropy
+mediaproc image crop infographic.png -w 1000 -h 800 --strategy entropy -o cropped.png
+```
+
+### Aspect Ratio Cropping
+
+```bash
+# 16:9 aspect ratio
+mediaproc image crop video-poster.jpg -w 1920 -h 1080 -g center -o 16-9.jpg
+
+# 4:3 aspect ratio
+mediaproc image crop photo.jpg -w 1024 -h 768 -g center -o 4-3.jpg
+
+# 1:1 square
+mediaproc image crop image.jpg -w 1000 -h 1000 -g center -o square.jpg
+
+# 21:9 ultrawide
+mediaproc image crop panorama.jpg -w 2560 -h 1080 -g center -o ultrawide.jpg
+```
+
+## Gravity Options
+
+The `--gravity` option determines which part of the image to crop:
+
+- **center**: Crop from the center (default behavior)
+- **north**: Crop from top center
+- **south**: Crop from bottom center
+- **east**: Crop from middle right
+- **west**: Crop from middle left
+- **northeast**: Crop from top right
+- **northwest**: Crop from top left
+- **southeast**: Crop from bottom right
+- **southwest**: Crop from bottom left
+
+## Crop Strategies
+
+### Entropy Strategy
+Uses edge detection to find the most interesting part of the image. Best for:
+- Images with clear subjects
+- Architectural photos
+- Graphics and illustrations
+- Images with strong lines/patterns
+
+### Attention Strategy
+Uses face and subject detection to focus on people or main subjects. Best for:
+- Portrait photos
+- Group photos
+- Product photography
+- Any image with a clear focal point
+
+## Best Practices
+
+1. **Use Gravity for Consistent Crops**: When batch processing, gravity ensures consistent results
+2. **Choose the Right Strategy**: Use `attention` for people/subjects, `entropy` for landscapes
+3. **Preserve Aspect Ratios**: Calculate dimensions to maintain the original aspect ratio if needed
+4. **Test Smart Cropping**: Preview results when using automatic strategies
+5. **Consider Output Format**: Crop before converting to lossy formats to minimize quality loss
+6. **Profile Photos**: Always use center gravity with attention strategy
+7. **Large Images**: Crop before resizing to save processing time
+
+## Common Use Cases
+
+- **Profile Pictures**: Square crops with attention strategy
+- **Thumbnails**: Fixed-size crops from center or smart position
+- **Social Media**: Platform-specific dimensions with center gravity
+- **Product Photos**: Consistent crops for catalog/grid layouts
+- **Banners**: Wide crops from top or center
+- **Mobile Optimization**: Portrait crops for mobile displays
+
+## Performance Tips
+
+- Crop before other operations to reduce processing time
+- Use exact dimensions to avoid re-cropping
+- For batch operations, use consistent crop settings
+- Consider output format to balance size and quality
+
+## See Also
+
+- [resize](./resize) - Resize images with various fit modes
+- [trim](./trim) - Remove edges automatically
+- [extract](./extract) - Extract a specific channel or region
+- [rotate](./rotate) - Rotate images before/after cropping
+- [thumbnail](./thumbnail) - Create thumbnails with smart cropping

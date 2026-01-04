@@ -1,0 +1,143 @@
+# tint
+
+Apply a color tint to an image.
+
+## Usage
+
+```bash
+mediaproc image tint <input> [options]
+```
+
+## Description
+
+The `tint` command applies a color overlay to images, creating monochromatic or duotone effects. Perfect for creating consistent color themes or artistic looks.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-c, --color` | string | - | Tint color (hex, rgb, or name) |
+| `--opacity` | number | 0.5 | Tint strength (0-1) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Tints
+
+```bash
+# Blue tint
+mediaproc image tint photo.jpg -c "#3b82f6" -o blue-tint.jpg
+
+# Red tint
+mediaproc image tint image.jpg -c "#ef4444" --opacity 0.4 -o red-tint.jpg
+
+# Green tint
+mediaproc image tint photo.png -c "#10b981" -o green-tint.png
+```
+
+### Monochrome Effects
+
+```bash
+# Sepia-like brown tint
+mediaproc image tint photo.jpg -c "#8b4513" --opacity 0.6 -o sepia-style.jpg
+
+# Cyanotype (blueprint) effect
+mediaproc image tint image.jpg -c "#0891b2" --opacity 0.7 -o cyanotype.jpg
+
+# Purple duotone
+mediaproc image tint photo.jpg -c "#8b5cf6" --opacity 0.5 -o purple-tone.jpg
+```
+
+### Brand Coloring
+
+```bash
+# Apply brand color
+mediaproc image tint product.jpg -c "#ff0080" --opacity 0.3 -o branded.jpg
+
+# Consistent theme color
+for img in gallery/*.jpg; do
+  mediaproc image tint "$img" -c "#3b82f6" --opacity 0.4 -o "themed-$(basename $img)"
+done
+```
+
+### Seasonal Tints
+
+```bash
+# Warm autumn tint
+mediaproc image tint summer.jpg -c "#fb923c" --opacity 0.3 -o autumn.jpg
+
+# Cool winter tint
+mediaproc image tint photo.jpg -c "#60a5fa" --opacity 0.3 -o winter.jpg
+
+# Spring green tint
+mediaproc image tint image.jpg -c "#84cc16" --opacity 0.25 -o spring.jpg
+```
+
+### Instagram-Style Filters
+
+```bash
+# Valencia filter (warm orange)
+mediaproc image tint photo.jpg -c "#ff8c00" --opacity 0.3 -o valencia.jpg
+
+# Nashville filter (warm pink)
+mediaproc image tint image.jpg -c "#ff69b4" --opacity 0.25 -o nashville.jpg
+
+# Inkwell (cool blue-gray)
+mediaproc image tint photo.jpg -c "#708090" --opacity 0.5 -o inkwell.jpg
+```
+
+## Opacity Guide
+
+| Value | Effect | Use Case |
+|-------|--------|----------|
+| 0.1-0.2 | Very subtle | Slight color shift |
+| 0.3-0.4 | Noticeable | Standard filter |
+| 0.5-0.6 | Strong | Bold look |
+| 0.7-0.9 | Very strong | Artistic, dramatic |
+| 1.0 | Solid color | Overlay effect |
+
+## Popular Tint Colors
+
+### Warm Tints
+- **Orange**: `#ff8c00` - Sunset, cozy
+- **Red**: `#dc2626` - Passionate, energetic
+- **Yellow**: `#fbbf24` - Cheerful, bright
+- **Brown**: `#92400e` - Vintage, rustic
+
+### Cool Tints
+- **Blue**: `#3b82f6` - Calm, professional
+- **Cyan**: `#06b6d4` - Fresh, modern
+- **Purple**: `#8b5cf6` - Creative, luxury
+- **Teal**: `#14b8a6` - Balanced, natural
+
+### Neutral Tints
+- **Gray**: `#6b7280` - Sophisticated
+- **Slate**: `#64748b` - Modern, clean
+
+## Best Practices
+
+1. **Start Subtle**: Begin with opacity 0.3-0.4
+2. **Brand Colors**: Use for consistent theming
+3. **Monochrome**: High opacity (0.6-0.8) for bold looks
+4. **Batch Apply**: Consistent tints across galleries
+5. **Combine Effects**: Use with other adjustments
+6. **Quality**: Maintain high quality (85+)
+
+## Common Use Cases
+
+- **Brand Theming**: Apply brand colors consistently
+- **Artistic Filters**: Create unique looks
+- **Mood Setting**: Warm or cool atmospheric tones
+- **Social Media**: Instagram-style filter effects
+- **Photo Series**: Consistent look across albums
+- **Seasonal Themes**: Match seasonal aesthetics
+- **Duotone Effects**: Two-color artistic looks
+
+## See Also
+
+- [modulate](./modulate) - Adjust color properties
+- [grayscale](./grayscale) - Remove color
+- [sepia](./sepia) - Classic sepia effect
+- [threshold](./threshold) - High contrast effects

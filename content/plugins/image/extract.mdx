@@ -1,0 +1,63 @@
+# extract
+
+Extract a region or channel from an image.
+
+## Usage
+
+```bash
+mediaproc image extract <input> [options]
+```
+
+## Description
+
+The `extract` command extracts specific channels (RGB, alpha) or rectangular regions from images. Useful for channel manipulation, region extraction, and color analysis.
+
+## Options
+
+### Region Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--channel` | string | - | Channel to extract (red, green, blue, alpha) |
+| `-x, --left` | number | 0 | Left position for region |
+| `-y, --top` | number | 0 | Top position for region |
+| `-w, --width` | number | - | Region width |
+| `-h, --height` | number | - | Region height |
+
+### Output Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Extract Channels
+
+```bash
+# Extract red channel
+mediaproc image extract photo.jpg --channel red -o red-channel.jpg
+
+# Extract alpha channel
+mediaproc image extract logo.png --channel alpha -o alpha-mask.png
+
+# Extract green channel
+mediaproc image extract image.jpg --channel green -o green.jpg
+```
+
+### Extract Regions
+
+```bash
+# Extract specific area
+mediaproc image extract photo.jpg -x 100 -y 50 -w 500 -h 300 -o region.jpg
+
+# Extract face region
+mediaproc image extract portrait.jpg -x 200 -y 100 -w 400 -h 400 -o face.jpg
+```
+
+## See Also
+
+- [crop](./crop) - Crop images with smart positioning
+- [channel](./channel) - Channel operations

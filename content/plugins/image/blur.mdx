@@ -1,0 +1,120 @@
+# blur
+
+Apply blur effect to an image.
+
+## Usage
+
+```bash
+mediaproc image blur <input> [options]
+```
+
+## Description
+
+The `blur` command applies Gaussian blur to images. Control the intensity with sigma value. Useful for backgrounds, privacy protection, or artistic effects.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-s, --sigma` | number | 3 | Blur strength (0.3-1000) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Blur
+
+```bash
+# Light blur
+mediaproc image blur input.jpg -s 2 -o subtle.jpg
+
+# Medium blur
+mediaproc image blur photo.png -s 5 -o blurred.png
+
+# Heavy blur
+mediaproc image blur background.jpg -s 15 -o very-blurred.jpg
+```
+
+### Background Blur
+
+```bash
+# Create blurred background for UI
+mediaproc image blur header.jpg -s 20 -q 70 -o bg-blur.jpg
+
+# Hero section backdrop
+mediaproc image blur banner.png -s 10 -f webp -o backdrop.webp
+```
+
+### Privacy Protection
+
+```bash
+# Blur sensitive information
+mediaproc image blur document.png -s 25 -o redacted.png
+
+# Blur faces (after detecting region - manual crop first)
+mediaproc image crop photo.jpg -w 200 -h 200 -x 100 -y 50 -o face.jpg
+mediaproc image blur face.jpg -s 30 -o blurred-face.jpg
+```
+
+### Artistic Effects
+
+```bash
+# Soft focus effect
+mediaproc image blur portrait.jpg -s 3 -q 95 -o soft-focus.jpg
+
+# Dream-like effect
+mediaproc image blur landscape.jpg -s 8 -o dreamy.jpg
+```
+
+### Batch Blur
+
+```bash
+# Blur all backgrounds
+for img in bg-*.jpg; do
+  mediaproc image blur "$img" -s 12 -o "blurred-$img"
+done
+```
+
+## Blur Strength Guide
+
+| Sigma | Effect | Use Case |
+|-------|--------|----------|
+| 0.3-1 | Very subtle | Slight softening |
+| 2-3 | Light | Soft focus, subtle background |
+| 4-7 | Medium | Standard blur, UI backgrounds |
+| 8-15 | Strong | Heavy background blur |
+| 16-30 | Very strong | Privacy protection, strong effects |
+| 30+ | Extreme | Complete obscuration |
+
+## Best Practices
+
+1. **Start Low**: Begin with sigma 3-5 and adjust
+2. **Quality Matters**: Use higher quality for subtle blurs
+3. **Performance**: Higher sigma = slower processing
+4. **WebP Format**: Good for blurred backgrounds (small file size)
+5. **Combine Effects**: Blur before resizing for better performance
+6. **UI Backgrounds**: Sigma 10-15 works well for backdrop effects
+
+## Common Use Cases
+
+- **UI Backgrounds**: Blurred hero images for clean text overlay
+- **Privacy**: Obscure sensitive information or faces
+- **Depth of Field**: Simulate camera focus effects
+- **Loading States**: Blur placeholder images
+- **Artistic Effects**: Create soft, dreamy atmospheres
+- **Thumbnails**: Blur backgrounds to emphasize subject
+
+## Performance Tips
+
+- Lower sigma values process faster
+- Blur before resizing to save processing time
+- Use appropriate output format (WebP for web)
+- Batch process with consistent sigma for uniform results
+
+## See Also
+
+- [sharpen](./sharpen) - Opposite effect: increase sharpness
+- [median](./median) - Edge-preserving noise reduction
+- [modulate](./modulate) - Adjust overall image properties
+- [composite](./composite) - Combine blurred and sharp images

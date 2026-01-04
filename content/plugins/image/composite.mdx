@@ -1,0 +1,134 @@
+# composite
+
+Composite (overlay) images together.
+
+## Usage
+
+```bash
+mediaproc image composite <input> [options]
+```
+
+## Description
+
+The `composite` command overlays one image on top of another with control over positioning, blending modes, and opacity. Perfect for watermarks, logos, borders, and creative compositions.
+
+## Options
+
+### Basic Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--overlay` | string | - | Image to overlay (required) |
+| `-p, --position` | string | center | Position (center, north, south, east, west, northeast, northwest, southeast, southwest) |
+
+### Position Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-x, --left` | number | 0 | Horizontal offset in pixels |
+| `-y, --top` | number | 0 | Vertical offset in pixels |
+
+### Style Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--blend` | string | over | Blend mode (over, multiply, screen, overlay, darken, lighten) |
+| `--opacity` | number | 1.0 | Overlay opacity (0-1) |
+
+### Output Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Compositing
+
+```bash
+# Overlay logo on photo
+mediaproc image composite photo.jpg --overlay logo.png -o branded.jpg
+
+# Centered overlay
+mediaproc image composite background.jpg --overlay watermark.png -p center -o marked.jpg
+```
+
+### Logo Placement
+
+```bash
+# Logo in corner
+mediaproc image composite banner.jpg --overlay logo.png -p northeast -x 20 -y 20 -o branded.jpg
+
+# Multiple positions
+mediaproc image composite photo.jpg --overlay logo.png -p southeast -x 30 -y 30 -o bottom-right.jpg
+```
+
+### Opacity Control
+
+```bash
+# Semi-transparent overlay
+mediaproc image composite bg.jpg --overlay pattern.png --opacity 0.3 -o subtle.jpg
+
+# Watermark with 50% opacity
+mediaproc image composite photo.jpg --overlay watermark.png --opacity 0.5 -p center -o protected.jpg
+```
+
+### Blend Modes
+
+```bash
+# Multiply blend (darken)
+mediaproc image composite base.jpg --overlay texture.png --blend multiply -o textured.jpg
+
+# Screen blend (lighten)
+mediaproc image composite dark.jpg --overlay light.png --blend screen -o brightened.jpg
+
+# Overlay blend
+mediaproc image composite photo.jpg --overlay effect.png --blend overlay -o artistic.jpg
+```
+
+### Creative Effects
+
+```bash
+# Add texture overlay
+mediaproc image composite photo.jpg --overlay grain.png --blend overlay --opacity 0.2 -o textured.jpg
+
+# Light leak effect
+mediaproc image composite image.jpg --overlay light-leak.png --blend screen --opacity 0.7 -o vintage.jpg
+
+# Vignette effect
+mediaproc image composite photo.jpg --overlay vignette.png --blend multiply -o vignette.jpg
+```
+
+## Blend Modes Explained
+
+- **over**: Default, simple overlay
+- **multiply**: Darkens, good for shadows/textures
+- **screen**: Lightens, good for light effects
+- **overlay**: Combines multiply and screen
+- **darken**: Shows darker of the two
+- **lighten**: Shows lighter of the two
+
+## Best Practices
+
+1. **PNG Overlays**: Use PNG with transparency
+2. **Size Matching**: Overlay should be proportional to base
+3. **Opacity**: Start with 0.5 and adjust
+4. **Blend Modes**: Experiment for creative effects
+5. **Quality**: Use high quality for final output
+
+## Common Use Cases
+
+- **Branding**: Add logos to images
+- **Watermarking**: Protect content
+- **Texture Overlays**: Add film grain, paper texture
+- **Light Effects**: Add light leaks, bokeh
+- **Borders**: Composite decorative borders
+- **Photo Editing**: Layer adjustments
+
+## See Also
+
+- [watermark](./watermark) - Simplified watermarking
+- [border](./border) - Add borders
+- [blend](./blend) - Advanced blending

@@ -1,0 +1,164 @@
+# sharpen
+
+Sharpen an image to enhance details and edges.
+
+## Usage
+
+```bash
+mediaproc image sharpen <input> [options]
+```
+
+## Description
+
+The `sharpen` command enhances image details and edges using unsharp mask algorithm. Adjustable parameters for fine control over sharpening intensity.
+
+## Options
+
+### Basic Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-s, --sigma` | number | 1 | Sharpening strength (0.3-1000) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+### Advanced Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--flat` | number | 1.0 | Sharpening of flat areas |
+| `--jagged` | number | 2.0 | Sharpening of jagged areas |
+
+## Examples
+
+### Basic Sharpening
+
+```bash
+# Light sharpen
+mediaproc image sharpen input.jpg -s 0.5 -o sharp.jpg
+
+# Medium sharpen
+mediaproc image sharpen photo.png -s 1 -o sharpened.png
+
+# Strong sharpen
+mediaproc image sharpen soft.jpg -s 2 -o very-sharp.jpg
+```
+
+### Fine-Tuned Sharpening
+
+```bash
+# Sharpen with custom flat/jagged values
+mediaproc image sharpen landscape.jpg -s 1 --flat 0.8 --jagged 2.5 -o detailed.jpg
+
+# Gentle sharpening for portraits
+mediaproc image sharpen portrait.jpg -s 0.8 --flat 0.5 --jagged 1.5 -o portrait-sharp.jpg
+```
+
+### Photo Enhancement
+
+```bash
+# Sharpen for web display
+mediaproc image sharpen photo.jpg -s 1.2 -f webp -q 85 -o web-ready.webp
+
+# Sharpen for print
+mediaproc image sharpen image.png -s 1.5 -q 95 -o print-sharp.png
+```
+
+### Batch Sharpening
+
+```bash
+# Sharpen all photos
+for img in *.jpg; do
+  mediaproc image sharpen "$img" -s 1 -o "sharp-$img"
+done
+
+# Sharpen product photos
+find products/ -name "*.jpg" -exec mediaproc image sharpen {} -s 1.2 -o {} \;
+```
+
+### Fix Blurry Images
+
+```bash
+# Recover slightly blurry photo
+mediaproc image sharpen blurry.jpg -s 2 -o recovered.jpg
+
+# Enhance scanned document
+mediaproc image sharpen scan.png -s 1.5 --jagged 3 -o clear-scan.png
+```
+
+## Sharpening Strength Guide
+
+| Sigma | Effect | Use Case |
+|-------|--------|----------|
+| 0.3-0.5 | Subtle | Minor enhancement, portraits |
+| 0.6-1.0 | Light | General photos, web images |
+| 1.1-1.5 | Medium | Product photos, detailed shots |
+| 1.6-2.5 | Strong | Recovery, technical images |
+| 2.6+ | Very strong | Heavily blurred images, special effects |
+
+## Parameter Guide
+
+### Sigma
+Controls the overall sharpening intensity:
+- **Lower (0.3-1)**: Subtle, natural sharpening
+- **Medium (1-2)**: Noticeable enhancement
+- **Higher (2+)**: Aggressive sharpening
+
+### Flat
+Controls sharpening in smooth areas:
+- **Lower (0.5-0.8)**: Less sharpening in flat areas (good for portraits)
+- **Default (1.0)**: Balanced
+- **Higher (1.5+)**: More sharpening everywhere
+
+### Jagged
+Controls sharpening at edges:
+- **Lower (1.0-1.5)**: Subtle edge enhancement
+- **Default (2.0)**: Standard edge sharpening
+- **Higher (2.5+)**: Strong edge definition
+
+## Best Practices
+
+1. **Start Subtle**: Begin with sigma 0.5-1.0
+2. **Avoid Over-Sharpening**: Creates artificial halos and artifacts
+3. **Portraits Need Care**: Use lower flat values (0.5-0.8)
+4. **Sharpen Last**: Apply after resizing and other edits
+5. **High-Quality Output**: Use quality 90+ for sharpened images
+6. **Test Settings**: Preview different sigma values first
+7. **Landscapes**: Can handle higher sigma (1.5-2)
+
+## Common Use Cases
+
+- **Web Photos**: Light sharpening (sigma 1) for crisp display
+- **Product Photography**: Medium sharpening (sigma 1.2-1.5) for details
+- **Portraits**: Gentle sharpening (sigma 0.8) with low flat value
+- **Scanned Documents**: Strong sharpening (sigma 1.5-2) for clarity
+- **Recovery**: Fix slightly blurry photos with sigma 2-2.5
+- **Print Preparation**: Sharpen before printing (sigma 1.5)
+
+## Avoid These Mistakes
+
+❌ **Over-Sharpening**: Creates white halos around edges
+❌ **Sharpening Noise**: Amplifies image noise - denoise first
+❌ **Sharpening Compressed Images**: Enhances compression artifacts
+❌ **High Sigma on Portraits**: Creates unnatural skin texture
+
+✅ **Do This Instead**:
+- Use moderate sigma values
+- Denoise before sharpening if needed
+- Use higher quality output settings
+- Test on small area first
+
+## Performance Tips
+
+- Sharpen after resizing for faster processing
+- Lower sigma values process faster
+- Combine with format conversion in one command
+- Batch process with consistent settings
+
+## See Also
+
+- [blur](./blur) - Opposite effect: soften images
+- [clahe](./clahe) - Enhance local contrast
+- [normalize](./normalize) - Enhance overall contrast
+- [median](./median) - Remove noise before sharpening

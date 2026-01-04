@@ -1,0 +1,93 @@
+# border
+
+Add decorative borders to images.
+
+## Usage
+
+```bash
+mediaproc image border <input> [options]
+```
+
+## Description
+
+The `border` command adds styled borders around images with customizable width, color, and style options.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-w, --width` | number | 10 | Border width in pixels |
+| `-c, --color` | string | #000000 | Border color |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Borders
+
+```bash
+# Simple black border
+mediaproc image border photo.jpg -w 20 -o framed.jpg
+
+# White border
+mediaproc image border image.jpg -w 15 -c "#ffffff" -o white-frame.jpg
+
+# Thin border
+mediaproc image border photo.png -w 5 -c "#333333" -o subtle.png
+```
+
+### Colored Borders
+
+```bash
+# Blue border
+mediaproc image border photo.jpg -w 25 -c "#3b82f6" -o blue-border.jpg
+
+# Gold border for certificates
+mediaproc image border certificate.jpg -w 30 -c "#fbbf24" -o gold-frame.jpg
+
+# Custom brand color
+mediaproc image border product.png -w 20 -c "#ff0080" -o branded.png
+```
+
+### Thick Borders
+
+```bash
+# Gallery-style thick border
+mediaproc image border artwork.jpg -w 50 -c "#ffffff" -o gallery-frame.jpg
+
+# Mat effect
+mediaproc image border photo.jpg -w 80 -c "#f5f5f5" -o matted.jpg
+```
+
+### Batch Bordering
+
+```bash
+# Add borders to all images
+for img in *.jpg; do
+  mediaproc image border "$img" -w 20 -c "#ffffff" -o "framed-$img"
+done
+```
+
+## Best Practices
+
+1. **Proportional Width**: Border should be 2-5% of image dimension
+2. **High Contrast**: Use contrasting colors for visibility
+3. **White/Black**: Classic choices for most images
+4. **Quality**: Use high quality for bordered images
+5. **Format**: PNG preserves borders better
+
+## Common Use Cases
+
+- **Photo Galleries**: Uniform framed appearance
+- **Certificates**: Professional border styling
+- **Product Photos**: Clean, bordered presentation
+- **Social Media**: Stand-out posts
+- **Print Preparation**: Add bleed area
+- **Thumbnails**: Define image boundaries
+
+## See Also
+
+- [extend](./extend) - Add padding
+- [composite](./composite) - Custom border overlays
+- [background](./background) - Colored backgrounds

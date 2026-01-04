@@ -1,0 +1,74 @@
+# sepia
+
+Apply a sepia tone effect for a vintage look.
+
+## Usage
+
+```bash
+mediaproc image sepia <input> [options]
+```
+
+## Description
+
+The `sepia` command applies a warm, brownish tone to images, creating a classic vintage or antique photograph appearance.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Sepia
+
+```bash
+# Apply sepia tone
+mediaproc image sepia photo.jpg -o vintage.jpg
+
+# Sepia with format conversion
+mediaproc image sepia modern.png -f webp -o old-style.webp
+```
+
+### Vintage Effects
+
+```bash
+# Create vintage photo
+mediaproc image sepia family-photo.jpg -q 90 -o vintage-family.jpg
+
+# Sepia for web gallery
+mediaproc image sepia portrait.jpg -f webp -q 75 -o gallery-item.webp
+```
+
+### Batch Processing
+
+```bash
+# Apply sepia to all photos
+for img in photos/*.jpg; do
+  mediaproc image sepia "$img" -o "vintage-$(basename $img)"
+done
+```
+
+## Best Practices
+
+1. **Vintage Aesthetic**: Perfect for nostalgic, retro themes
+2. **Quality**: Use high quality for print reproduction
+3. **Combine Effects**: Use with vignette or grain for authenticity
+4. **Historical Content**: Great for period-appropriate imagery
+
+## Common Use Cases
+
+- **Vintage Photography**: Create old-fashioned photo effects
+- **Historical Projects**: Match historical photo aesthetics
+- **Wedding Albums**: Classic, timeless look
+- **Art Projects**: Nostalgic, warm atmosphere
+- **Branding**: Retro brand aesthetics
+- **Social Media**: Vintage filter effects
+
+## See Also
+
+- [grayscale](./grayscale) - Black and white conversion
+- [modulate](./modulate) - Adjust color properties
+- [tint](./tint) - Apply custom color tints

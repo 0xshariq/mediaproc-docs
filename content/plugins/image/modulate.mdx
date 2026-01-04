@@ -1,0 +1,219 @@
+# modulate
+
+Adjust brightness, saturation, and hue.
+
+## Usage
+
+```bash
+mediaproc image modulate <input> [options]
+```
+
+## Description
+
+The `modulate` command adjusts color properties: brightness (lightness), saturation (color intensity), and hue (color shift). Fine-tune images with precise control over color characteristics.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-b, --brightness` | number | 1 | Brightness multiplier (0-3, 1 = no change) |
+| `-s, --saturation` | number | 1 | Saturation multiplier (0-3, 1 = no change) |
+| `-h, --hue` | number | 0 | Hue rotation in degrees (0-360) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Brightness Adjustment
+
+```bash
+# Brighten image
+mediaproc image modulate dark.jpg -b 1.3 -o brighter.jpg
+
+# Darken image
+mediaproc image modulate bright.jpg -b 0.7 -o darker.jpg
+
+# Extreme brightness
+mediaproc image modulate photo.jpg -b 1.8 -o very-bright.jpg
+```
+
+### Saturation Adjustment
+
+```bash
+# Increase saturation (vibrant)
+mediaproc image modulate photo.jpg -s 1.4 -o vibrant.jpg
+
+# Decrease saturation
+mediaproc image modulate colorful.jpg -s 0.6 -o muted.jpg
+
+# Remove color (grayscale effect)
+mediaproc image modulate image.jpg -s 0 -o desaturated.jpg
+
+# Maximum saturation
+mediaproc image modulate photo.jpg -s 2.0 -o super-saturated.jpg
+```
+
+### Hue Rotation
+
+```bash
+# Shift hue 30 degrees
+mediaproc image modulate photo.jpg -h 30 -o hue-shifted.jpg
+
+# Complementary colors (180 degree shift)
+mediaproc image modulate image.jpg -h 180 -o complementary.jpg
+
+# Seasonal color shifts
+mediaproc image modulate summer.jpg -h 45 -o autumn-tones.jpg
+```
+
+### Combined Adjustments
+
+```bash
+# Enhance photo (brighter + more saturated)
+mediaproc image modulate photo.jpg -b 1.2 -s 1.3 -o enhanced.jpg
+
+# Muted, darker aesthetic
+mediaproc image modulate image.jpg -b 0.8 -s 0.7 -o moody.jpg
+
+# Vintage look (desaturate + darken)
+mediaproc image modulate modern.jpg -b 0.9 -s 0.6 -o vintage.jpg
+
+# Fantasy colors (hue shift + vibrant)
+mediaproc image modulate landscape.jpg -h 90 -s 1.5 -o fantasy.jpg
+```
+
+### Batch Color Grading
+
+```bash
+# Apply consistent color grade
+for img in photos/*.jpg; do
+  mediaproc image modulate "$img" -b 1.1 -s 1.2 -o "graded-$(basename $img)"
+done
+
+# Seasonal transformation
+for img in *.jpg; do
+  mediaproc image modulate "$img" -h 30 -s 1.1 -o "autumn-$img"
+done
+```
+
+### Social Media Filters
+
+```bash
+# Warm filter
+mediaproc image modulate photo.jpg -h 15 -s 1.2 -b 1.1 -o warm.jpg
+
+# Cool filter
+mediaproc image modulate photo.jpg -h -15 -s 1.1 -b 0.95 -o cool.jpg
+
+# Pastel effect
+mediaproc image modulate image.jpg -s 0.7 -b 1.2 -o pastel.jpg
+
+# High contrast vivid
+mediaproc image modulate photo.jpg -s 1.5 -b 1.1 -o vivid.jpg
+```
+
+## Parameter Guide
+
+### Brightness
+- **< 1.0**: Darker (0.7 = 30% darker)
+- **1.0**: No change
+- **> 1.0**: Brighter (1.3 = 30% brighter)
+- **Range**: 0-3 (0 = black, 3 = very bright)
+
+### Saturation
+- **0**: Grayscale (no color)
+- **< 1.0**: Desaturated/muted
+- **1.0**: Original colors
+- **> 1.0**: More vibrant
+- **Range**: 0-3 (2+ = highly saturated)
+
+### Hue
+- **0**: No shift
+- **30-60**: Warm shift (orange/yellow)
+- **90**: Quarter rotation
+- **180**: Complementary colors
+- **-30 to -60**: Cool shift (blue/cyan)
+- **Range**: 0-360 degrees (wraps around)
+
+## Best Practices
+
+1. **Subtle Changes**: Use small increments (±0.1-0.3)
+2. **Test Combinations**: Try different combinations
+3. **Monitor Preview**: Check results before batch processing
+4. **Quality**: Use 90+ quality for color-graded images
+5. **Consistent Grading**: Apply same values for uniform look
+6. **Save Presets**: Document successful combinations
+
+## Color Grading Presets
+
+### Warm & Inviting
+```bash
+-b 1.1 -s 1.2 -h 10
+```
+
+### Cool & Modern
+```bash
+-b 0.95 -s 1.1 -h -10
+```
+
+### Vintage/Film
+```bash
+-b 0.9 -s 0.7 -h 5
+```
+
+### Vibrant/Pop
+```bash
+-b 1.15 -s 1.4 -h 5
+```
+
+### Moody/Dark
+```bash
+-b 0.75 -s 0.8 -h -5
+```
+
+### Pastel/Soft
+```bash
+-b 1.2 -s 0.6 -h 15
+```
+
+## Common Use Cases
+
+- **Color Grading**: Apply consistent looks across photos
+- **Photo Enhancement**: Fix exposure and color issues
+- **Artistic Effects**: Create unique color palettes
+- **Brand Consistency**: Match brand color guidelines
+- **Seasonal Themes**: Transform summer to autumn colors
+- **Instagram Filters**: Recreate popular filter effects
+- **Product Photos**: Enhance product colors
+- **Mood Setting**: Create emotional tone through color
+
+## When to Use
+
+✅ **Perfect for**:
+- Color correction
+- Artistic color grading
+- Creating filter effects
+- Brand color consistency
+- Seasonal themes
+
+❌ **Not ideal for**:
+- Precise color replacement (use tint instead)
+- White balance correction (use normalize)
+- Local adjustments (affects entire image)
+
+## Performance Tips
+
+- Fast operation suitable for batch processing
+- Combine all adjustments in one command
+- Process before resizing for better quality
+- Use consistent values for uniform look
+
+## See Also
+
+- [tint](./tint) - Apply color tints
+- [normalize](./normalize) - Auto-enhance contrast
+- [gamma](./gamma) - Adjust gamma curve
+- [linear](./linear) - Linear color adjustments
+- [grayscale](./grayscale) - Remove all color
+- [threshold](./threshold) - Convert to black/white

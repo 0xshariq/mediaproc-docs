@@ -1,0 +1,127 @@
+# normalize
+
+Normalize image contrast by stretching luminance values.
+
+## Usage
+
+```bash
+mediaproc image normalize <input> [options]
+```
+
+## Description
+
+The `normalize` command enhances image contrast by stretching the luminance range to use the full available spectrum. Automatically adjusts brightness and contrast for optimal visual appearance.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+| `--lower` | number | 1 | Lower percentile for normalization |
+| `--upper` | number | 99 | Upper percentile for normalization |
+
+## Examples
+
+### Basic Normalization
+
+```bash
+# Auto-enhance contrast
+mediaproc image normalize dull.jpg -o enhanced.jpg
+
+# Normalize with custom range
+mediaproc image normalize photo.png --lower 2 --upper 98 -o balanced.png
+```
+
+### Fix Underexposed Images
+
+```bash
+# Recover dark image
+mediaproc image normalize dark-photo.jpg -o brightened.jpg
+
+# Fix overexposed image
+mediaproc image normalize washed-out.jpg -o corrected.jpg
+```
+
+### Batch Enhancement
+
+```bash
+# Normalize all photos
+for img in *.jpg; do
+  mediaproc image normalize "$img" -o "enhanced-$img"
+done
+
+# Normalize scanned documents
+find scans/ -name "*.png" -exec mediaproc image normalize {} -o {} \;
+```
+
+### Combined with Other Effects
+
+```bash
+# Normalize then sharpen
+mediaproc image normalize blurry.jpg -o norm.jpg
+mediaproc image sharpen norm.jpg -s 1 -o final.jpg
+
+# Normalize grayscale
+mediaproc image grayscale photo.jpg -o gray.jpg
+mediaproc image normalize gray.jpg -o enhanced-bw.jpg
+```
+
+## Parameters Explained
+
+### Lower/Upper Percentiles
+
+- **Default (1-99)**: Balanced normalization
+- **Aggressive (2-98)**: More dramatic enhancement
+- **Conservative (0.5-99.5)**: Subtle improvement
+- **Extreme (5-95)**: Maximum contrast boost
+
+## Best Practices
+
+1. **Auto-Enhancement**: Quick way to improve dull images
+2. **Batch Processing**: Great for consistent enhancement
+3. **Before Other Edits**: Normalize first, then apply effects
+4. **Scanned Images**: Essential for scanned documents/photos
+5. **Quality Output**: Use high quality to preserve details
+6. **Test Range**: Adjust percentiles for different image types
+
+## Common Use Cases
+
+- **Photo Recovery**: Fix poorly exposed images
+- **Scanned Documents**: Improve scan contrast
+- **Batch Enhancement**: Consistent improvements across multiple images
+- **Low-Light Photos**: Recover detail from dark images
+- **Old Photos**: Restore faded photographs
+- **Medical Imaging**: Enhance diagnostic images
+- **Surveillance Footage**: Improve visibility
+
+## When to Use
+
+✅ **Good for**:
+- Underexposed/overexposed images
+- Flat, dull images lacking contrast
+- Scanned documents
+- Batch processing diverse images
+- Quick automatic enhancement
+
+❌ **Avoid for**:
+- Already well-exposed images (may over-process)
+- Intentionally low-contrast artistic photos
+- Images with specific color grading
+- HDR images (may lose tonal range)
+
+## Performance Tips
+
+- Fast operation suitable for batch processing
+- Combine with format conversion in one command
+- Process before resizing for better quality
+- Use consistent settings for uniform results
+
+## See Also
+
+- [clahe](./clahe) - Local contrast enhancement
+- [gamma](./gamma) - Adjust brightness curve
+- [linear](./linear) - Linear contrast adjustment
+- [modulate](./modulate) - Adjust brightness/saturation
+- [sharpen](./sharpen) - Enhance details after normalization

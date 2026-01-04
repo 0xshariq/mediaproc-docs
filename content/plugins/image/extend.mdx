@@ -1,0 +1,98 @@
+# extend
+
+Extend image by adding borders or padding.
+
+## Usage
+
+```bash
+mediaproc image extend <input> [options]
+```
+
+## Description
+
+The `extend` command adds padding or borders around images by extending the canvas. Specify individual sides or use uniform padding.
+
+## Options
+
+### Size Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `--top` | number | 0 | Top padding in pixels |
+| `--bottom` | number | 0 | Bottom padding in pixels |
+| `--left` | number | 0 | Left padding in pixels |
+| `--right` | number | 0 | Right padding in pixels |
+| `--all` | number | - | Uniform padding on all sides |
+
+### Style Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-b, --background` | string | #000000 | Background color |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Uniform Padding
+
+```bash
+# Add 50px padding on all sides
+mediaproc image extend photo.jpg --all 50 -o padded.jpg
+
+# White padding
+mediaproc image extend image.jpg --all 30 -b "#ffffff" -o white-border.jpg
+```
+
+### Custom Padding
+
+```bash
+# Different padding per side
+mediaproc image extend photo.jpg --top 50 --bottom 50 --left 100 --right 100 -o extended.jpg
+
+# Add space on bottom for caption
+mediaproc image extend image.jpg --bottom 150 -b "#ffffff" -o caption-ready.jpg
+```
+
+### Colored Borders
+
+```bash
+# Black border
+mediaproc image extend photo.jpg --all 20 -b "#000000" -o black-border.jpg
+
+# Custom color border
+mediaproc image extend image.png --all 15 -b "#3b82f6" -o blue-border.png
+```
+
+### Social Media Templates
+
+```bash
+# Instagram post with padding
+mediaproc image extend photo.jpg --all 80 -b "#ffffff" -o insta-post.jpg
+
+# Pinterest template (extra top/bottom)
+mediaproc image extend image.jpg --top 100 --bottom 100 --left 50 --right 50 -o pinterest.jpg
+```
+
+## Best Practices
+
+1. **Use PNG**: For transparent padding, export as PNG
+2. **White/Black**: Most common border colors
+3. **Social Media**: Add padding for better appearance
+4. **Typography Space**: Extend for text overlay areas
+5. **Consistent Padding**: Use --all for uniform borders
+
+## Common Use Cases
+
+- **Social Media**: Add breathing room to posts
+- **Presentations**: Create uniform slide images
+- **Matting**: Digital photo matting effect
+- **Text Space**: Add area for captions
+- **Gallery Uniformity**: Standardize image sizes
+
+## See Also
+
+- [trim](./trim) - Remove borders (opposite)
+- [border](./border) - Add decorative borders
+- [background](./background) - Change background

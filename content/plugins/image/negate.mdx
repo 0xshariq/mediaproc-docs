@@ -1,0 +1,76 @@
+# negate
+
+Invert image colors (negative effect).
+
+## Usage
+
+```bash
+mediaproc image negate <input> [options]
+```
+
+## Description
+
+The `negate` command inverts all colors in an image, creating a photographic negative effect. Black becomes white, colors become their complementary opposites.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+| `--alpha` | boolean | false | Negate alpha channel as well |
+
+## Examples
+
+### Basic Negate
+
+```bash
+# Create negative image
+mediaproc image negate photo.jpg -o negative.jpg
+
+# Negate with alpha channel
+mediaproc image negate image.png --alpha -o inverted.png
+```
+
+### Artistic Effects
+
+```bash
+# Create surreal effect
+mediaproc image negate landscape.jpg -f webp -o surreal.webp
+
+# Double negate (return to original)
+mediaproc image negate photo.jpg -o neg.jpg
+mediaproc image negate neg.jpg -o restored.jpg
+```
+
+### Batch Processing
+
+```bash
+# Negate all images
+for img in *.jpg; do
+  mediaproc image negate "$img" -o "neg-$img"
+done
+```
+
+## Best Practices
+
+1. **Artistic Use**: Creates striking, surreal effects
+2. **Film Negatives**: Scan and invert film negatives
+3. **Design Elements**: Create complementary color schemes
+4. **Quality**: High quality preserves color accuracy
+
+## Common Use Cases
+
+- **Film Scanning**: Convert scanned negatives to positives
+- **Artistic Effects**: Create surreal, otherworldly images
+- **Color Analysis**: View complementary color schemes
+- **Design Work**: Explore alternative color palettes
+- **Scientific Imaging**: Analyze inverted images
+- **Creative Projects**: Unique visual effects
+
+## See Also
+
+- [grayscale](./grayscale) - Black and white conversion
+- [threshold](./threshold) - Binary black/white effect
+- [modulate](./modulate) - Color adjustments

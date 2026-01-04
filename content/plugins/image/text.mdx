@@ -1,0 +1,260 @@
+# text
+
+Add text overlays to images.
+
+## Usage
+
+```bash
+mediaproc image text <input> [options]
+```
+
+## Description
+
+The `text` command adds customizable text overlays to images with control over font, size, color, position, and styling.
+
+## Options
+
+### Text Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-t, --text` | string | - | Text to add (required) |
+| `--font` | string | Arial | Font family |
+| `--size` | number | 48 | Font size in pixels |
+| `--color` | string | #ffffff | Text color |
+
+### Position Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-p, --position` | string | center | Position (center, north, south, east, west, northeast, northwest, southeast, southwest) |
+| `-x, --offset-x` | number | 0 | Horizontal offset |
+| `-y, --offset-y` | number | 0 | Vertical offset |
+
+### Style Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--weight` | string | normal | Font weight (normal, bold) |
+| `--align` | string | center | Text alignment (left, center, right) |
+| `--stroke` | string | - | Stroke/outline color |
+| `--stroke-width` | number | 0 | Stroke width in pixels |
+| `--shadow` | boolean | false | Add text shadow |
+| `--opacity` | number | 1.0 | Text opacity (0-1) |
+
+### Output Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Text
+
+```bash
+# Simple centered text
+mediaproc image text photo.jpg -t "Hello World" -o with-text.jpg
+
+# Text with custom size and color
+mediaproc image text banner.jpg -t "Welcome" --size 72 --color "#ff0000" -o welcome.jpg
+```
+
+### Positioned Text
+
+```bash
+# Top center title
+mediaproc image text header.jpg -t "Article Title" -p north -y 50 --size 64 -o titled.jpg
+
+# Bottom right copyright
+mediaproc image text photo.jpg -t "© 2024" -p southeast -x 30 -y 30 --size 24 -o signed.jpg
+
+# Custom position
+mediaproc image text image.jpg -t "Featured" -p northwest -x 40 -y 40 --size 36 -o featured.jpg
+```
+
+### Styled Text
+
+```bash
+# Bold text
+mediaproc image text banner.jpg -t "SALE" --size 96 --weight bold --color "#ff0000" -o sale.jpg
+
+# Text with stroke/outline
+mediaproc image text photo.jpg \
+  -t "Adventure" \
+  --size 72 \
+  --color "#ffffff" \
+  --stroke "#000000" \
+  --stroke-width 3 \
+  -o outlined.jpg
+
+# Text with shadow
+mediaproc image text image.jpg -t "Gallery" --size 48 --shadow -o shadowed.jpg
+```
+
+### Semi-Transparent Text
+
+```bash
+# Watermark-style text
+mediaproc image text photo.jpg -t "DRAFT" -p center --size 120 --opacity 0.3 -o draft.jpg
+
+# Subtle attribution
+mediaproc image text image.jpg -t "Photo by John" -p southeast --opacity 0.7 --size 20 -o attributed.jpg
+```
+
+### Social Media Text
+
+```bash
+# Instagram quote
+mediaproc image text background.jpg \
+  -t "Live. Love. Travel." \
+  -p center \
+  --size 64 \
+  --color "#ffffff" \
+  --weight bold \
+  --shadow \
+  -o quote.jpg
+
+# YouTube thumbnail
+mediaproc image text thumbnail.jpg \
+  -t "CLICK HERE" \
+  -p center \
+  --size 96 \
+  --weight bold \
+  --color "#ffff00" \
+  --stroke "#000000" \
+  --stroke-width 4 \
+  -o yt-thumb.jpg
+```
+
+### Meme Creation
+
+```bash
+# Top text
+mediaproc image text meme.jpg -t "TOP TEXT" -p north --size 48 --weight bold --color "#ffffff" --stroke "#000000" --stroke-width 2 -o meme-top.jpg
+
+# Bottom text
+mediaproc image text meme-top.jpg -t "BOTTOM TEXT" -p south --size 48 --weight bold --color "#ffffff" --stroke "#000000" --stroke-width 2 -o meme-complete.jpg
+```
+
+### Certificates and Badges
+
+```bash
+# Certificate name
+mediaproc image text certificate.jpg \
+  -t "John Doe" \
+  -p center \
+  -y 20 \
+  --size 56 \
+  --weight bold \
+  --color "#1e3a8a" \
+  -o personalized-cert.jpg
+
+# Achievement badge
+mediaproc image text badge.png \
+  -t "100%" \
+  -p center \
+  --size 72 \
+  --weight bold \
+  --color "#10b981" \
+  -o completion-badge.png
+```
+
+### Multi-Line Text (requires newlines)
+
+```bash
+# Title and subtitle
+mediaproc image text hero.jpg \
+  -t "Welcome\nto our site" \
+  -p center \
+  --size 64 \
+  --align center \
+  -o hero-text.jpg
+```
+
+### Batch Text Addition
+
+```bash
+# Add logo text to all images
+for img in products/*.jpg; do
+  name=$(basename "$img" .jpg)
+  mediaproc image text "$img" \
+    -t "Brand Name" \
+    -p northeast \
+    -x 20 -y 20 \
+    --size 32 \
+    -o "branded-${name}.jpg"
+done
+```
+
+## Font Recommendations
+
+- **Arial/Helvetica**: Clean, universal
+- **Impact**: Bold, attention-grabbing
+- **Georgia**: Elegant, readable
+- **Courier**: Monospaced, technical
+- **Comic Sans**: Casual (use sparingly!)
+
+## Color Best Practices
+
+1. **High Contrast**: Ensure text is readable
+2. **White/Black**: Universal, safe choices
+3. **Stroke/Outline**: Improves readability over varied backgrounds
+4. **Shadow**: Adds depth and separation
+5. **Brand Colors**: Use for consistency
+
+## Position Guide
+
+| Position | Use Case |
+|----------|----------|
+| `center` | Titles, quotes, main messages |
+| `north` | Headers, titles |
+| `south` | Captions, credits |
+| `northeast` | Logos, branding |
+| `southeast` | Copyright, attribution |
+| `northwest` | Timestamps, labels |
+| `southwest` | Secondary info |
+
+## Common Use Cases
+
+- **Social Media**: Add quotes, captions
+- **Marketing**: Sale announcements, CTAs
+- **Memes**: Top/bottom text format
+- **Certificates**: Names, dates, achievements
+- **Thumbnails**: Video titles, clickbait
+- **Branding**: Add brand name/logo text
+- **Watermarking**: Text-based protection
+- **Photo Captions**: Add context to images
+
+## Readability Tips
+
+✅ **Do**:
+- Use stroke/outline for text over photos
+- Choose high-contrast colors
+- Make text large enough (48px+ for titles)
+- Add shadow for depth
+- Test on different backgrounds
+
+❌ **Avoid**:
+- Text too small (<20px)
+- Low contrast (light text on light background)
+- Too many fonts/styles
+- Cluttered compositions
+- Text covering important image areas
+
+## Performance Tips
+
+- Text rendering is fast
+- Use bold for better visibility
+- PNG format preserves text quality best
+- Batch process for consistency
+- Pre-test font availability on system
+
+## See Also
+
+- [watermark](./watermark) - Specialized watermarking
+- [composite](./composite) - Image overlays
+- [border](./border) - Add borders around text
+- [extend](./extend) - Add space for text

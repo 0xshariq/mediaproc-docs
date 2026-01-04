@@ -1,0 +1,122 @@
+# trim
+
+Automatically remove borders by detecting edges.
+
+## Usage
+
+```bash
+mediaproc image trim <input> [options]
+```
+
+## Description
+
+The `trim` command automatically detects and removes uniform-colored borders from images. Useful for cleaning up scanned documents, screenshots, or removing unwanted edges.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-t, --threshold` | number | 10 | Edge detection threshold (0-100) |
+| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
+| `-q, --quality` | number | 80 | Output quality (1-100) |
+
+## Examples
+
+### Basic Trim
+
+```bash
+# Remove white borders
+mediaproc image trim scan.jpg -o trimmed.jpg
+
+# Trim with custom threshold
+mediaproc image trim image.png -t 20 -o clean.png
+```
+
+### Document Scanning
+
+```bash
+# Clean scanned document
+mediaproc image trim scan.jpg -t 15 -o document.jpg
+
+# Remove borders from multiple scans
+for scan in scan-*.jpg; do
+  mediaproc image trim "$scan" -t 10 -o "clean-$scan"
+done
+```
+
+### Screenshot Cleanup
+
+```bash
+# Remove screenshot borders
+mediaproc image trim screenshot.png -o cleaned.png
+
+# Trim and optimize
+mediaproc image trim capture.png -f webp -q 80 -o optimized.webp
+```
+
+### Photo Cleanup
+
+```bash
+# Remove photo borders
+mediaproc image trim bordered-photo.jpg -t 5 -o clean-photo.jpg
+
+# Aggressive border removal
+mediaproc image trim image.jpg -t 30 -o trimmed.jpg
+```
+
+## Threshold Guide
+
+| Value | Effect | Use Case |
+|-------|--------|----------|
+| 0-5 | Very sensitive | Near-identical colors only |
+| 5-10 | Sensitive | Clean borders, slight variations |
+| 10-20 | Balanced | Most use cases (default range) |
+| 20-40 | Aggressive | Gradients, fuzzy borders |
+| 40+ | Very aggressive | Complex borders, may over-trim |
+
+## Best Practices
+
+1. **Start Low**: Begin with threshold 10-15
+2. **White Backgrounds**: Lower thresholds work best
+3. **Gradients**: Use higher thresholds (20-30)
+4. **Test First**: Preview before batch processing
+5. **Document Scans**: Essential for clean documents
+6. **Combine Operations**: Trim before resizing
+
+## Common Use Cases
+
+- **Scanned Documents**: Remove scan borders automatically
+- **Screenshots**: Clean up captured images
+- **Product Photos**: Remove studio background borders
+- **Artwork Scans**: Isolate artwork from background
+- **PDF Generation**: Clean images before document creation
+- **Web Images**: Remove unnecessary borders for cleaner display
+
+## When to Use
+
+✅ **Perfect for**:
+- Scanned documents with white borders
+- Screenshots with solid-color borders
+- Images with uniform edges
+- Batch processing similar images
+
+❌ **Not ideal for**:
+- Images without borders (no effect)
+- Intentional borders/frames (will remove)
+- Complex backgrounds
+- Images where edges matter
+
+## Performance Tips
+
+- Fast operation, good for batch processing
+- Trim before other operations for efficiency
+- Use consistent threshold for uniform results
+- Combine with format conversion
+
+## See Also
+
+- [crop](./crop) - Manual cropping with exact dimensions
+- [extend](./extend) - Add borders (opposite operation)
+- [normalize](./normalize) - Enhance after trimming
+- [background](./background) - Change background color

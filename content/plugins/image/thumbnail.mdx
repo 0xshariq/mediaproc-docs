@@ -1,0 +1,205 @@
+# thumbnail
+
+Create optimized thumbnails with smart cropping.
+
+## Usage
+
+```bash
+mediaproc image thumbnail <input> [options]
+```
+
+## Description
+
+The `thumbnail` command creates small, optimized preview images. Combines smart resizing, cropping, and compression for fast-loading thumbnails perfect for galleries, listings, and previews.
+
+## Options
+
+### Size Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-o, --output` | string | - | Output file path |
+| `-w, --width` | number | 200 | Thumbnail width in pixels |
+| `-h, --height` | number | 200 | Thumbnail height in pixels |
+| `--size` | string | - | Preset size (sm=150, md=300, lg=500) |
+
+### Quality Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-q, --quality` | number | 70 | Output quality (1-100) |
+| `-f, --format` | string | webp | Output format (jpg, png, webp, avif) |
+
+### Crop Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--fit` | string | cover | Resize fit mode (cover, contain, fill) |
+| `--gravity` | string | center | Crop position (center, north, south, etc.) |
+| `--strategy` | string | attention | Smart crop (attention, entropy) |
+
+## Examples
+
+### Basic Thumbnails
+
+```bash
+# Create 200x200 thumbnail
+mediaproc image thumbnail photo.jpg -o thumb.webp
+
+# Custom size thumbnail
+mediaproc image thumbnail image.png -w 300 -h 300 -o preview.webp
+
+# Using size presets
+mediaproc image thumbnail photo.jpg --size lg -o large-thumb.webp
+```
+
+### Gallery Thumbnails
+
+```bash
+# Batch create thumbnails
+for img in photos/*.jpg; do
+  name=$(basename "$img" .jpg)
+  mediaproc image thumbnail "$img" -w 250 -h 250 -o "thumbs/${name}-thumb.webp"
+done
+
+# Multiple sizes for responsive design
+mediaproc image thumbnail photo.jpg --size sm -o thumb-sm.webp
+mediaproc image thumbnail photo.jpg --size md -o thumb-md.webp
+mediaproc image thumbnail photo.jpg --size lg -o thumb-lg.webp
+```
+
+### Product Thumbnails
+
+```bash
+# Square product thumbnail
+mediaproc image thumbnail product.jpg -w 400 -h 400 --fit cover -o product-thumb.webp
+
+# Contain fit (show full image)
+mediaproc image thumbnail product.png -w 300 -h 300 --fit contain -o full-view.webp
+```
+
+### Smart Cropping
+
+```bash
+# Face-focused thumbnail
+mediaproc image thumbnail portrait.jpg -w 200 -h 200 --strategy attention -o face-thumb.webp
+
+# Content-aware thumbnail
+mediaproc image thumbnail landscape.jpg -w 300 -h 200 --strategy entropy -o smart-thumb.webp
+
+# Top-focused thumbnail
+mediaproc image thumbnail banner.jpg -w 400 -h 300 --gravity north -o header-thumb.webp
+```
+
+### Optimized for Web
+
+```bash
+# Ultra-optimized thumbnail
+mediaproc image thumbnail large.jpg -w 200 -h 200 -q 60 -f webp -o tiny-thumb.webp
+
+# AVIF for maximum compression
+mediaproc image thumbnail photo.jpg -w 300 -h 300 -q 65 -f avif -o modern-thumb.avif
+
+# JPEG for compatibility
+mediaproc image thumbnail image.png -w 250 -h 250 -q 75 -f jpg -o compat-thumb.jpg
+```
+
+### Blog Post Thumbnails
+
+```bash
+# Featured image thumbnail (16:9)
+mediaproc image thumbnail article.jpg -w 640 -h 360 --gravity center -o featured.webp
+
+# Card thumbnail (4:3)
+mediaproc image thumbnail post.jpg -w 400 -h 300 -o card.webp
+
+# List thumbnail (21:9)
+mediaproc image thumbnail hero.jpg -w 420 -h 180 -o list-thumb.webp
+```
+
+### Social Media Previews
+
+```bash
+# Open Graph image
+mediaproc image thumbnail cover.jpg -w 1200 -h 630 -q 75 -o og-image.jpg
+
+# Twitter card
+mediaproc image thumbnail hero.jpg -w 800 -h 418 -o twitter-card.jpg
+
+# Instagram preview
+mediaproc image thumbnail photo.jpg -w 640 -h 640 -o insta-preview.webp
+```
+
+## Size Presets
+
+| Preset | Dimensions | Use Case |
+|--------|------------|----------|
+| `sm` | 150x150 | Small icons, avatars |
+| `md` | 300x300 | Standard thumbnails |
+| `lg` | 500x500 | Large previews |
+
+## Fit Modes
+
+- **cover**: Fill dimensions, crop excess (default for thumbnails)
+- **contain**: Fit within dimensions, add padding if needed
+- **fill**: Stretch to fit (may distort)
+
+## Best Practices
+
+1. **WebP Format**: Best balance of size/quality for thumbnails
+2. **Lower Quality**: 60-75 quality is fine for small thumbnails
+3. **Smart Cropping**: Use attention strategy for portraits
+4. **Consistent Sizes**: Use same dimensions for uniform galleries
+5. **Lazy Loading**: Generate thumbnails for progressive loading
+6. **Multiple Sizes**: Create several sizes for responsive images
+7. **Batch Process**: Generate all thumbnails at once
+
+## Quality Guidelines
+
+| Thumbnail Size | Recommended Quality | Format |
+|----------------|-------------------|---------|
+| < 150px | 60-65 | WebP/AVIF |
+| 150-300px | 65-75 | WebP |
+| 300-500px | 75-80 | WebP/JPEG |
+| > 500px | 80-85 | WebP/JPEG |
+
+## Common Use Cases
+
+- **Image Galleries**: Fast-loading preview images
+- **E-commerce**: Product listing thumbnails
+- **Blog Posts**: Article preview images
+- **User Avatars**: Profile picture thumbnails
+- **Video Previews**: Video thumbnail images
+- **Search Results**: Quick preview of images
+- **Social Media**: Share preview images
+- **Mobile Optimization**: Smaller images for mobile devices
+
+## Performance Optimization
+
+```bash
+# Ultra-fast loading thumbnails
+mediaproc image thumbnail photo.jpg -w 200 -h 200 -q 60 -f webp -o fast-thumb.webp
+
+# Progressive loading setup
+# Generate multiple sizes
+mediaproc image thumbnail image.jpg -w 50 -h 50 -q 50 -o placeholder.webp    # Blur placeholder
+mediaproc image thumbnail image.jpg -w 200 -h 200 -q 70 -o thumb.webp        # Standard
+mediaproc image thumbnail image.jpg -w 400 -h 400 -q 80 -o thumb-2x.webp     # Retina
+```
+
+## Performance Tips
+
+- WebP reduces file size by 25-35% vs JPEG
+- AVIF reduces size by 40-50% but slower to generate
+- Quality 60-70 is visually acceptable for thumbnails
+- Square thumbnails process faster
+- Smart cropping adds minimal overhead
+- Batch process for efficiency
+
+## See Also
+
+- [resize](./resize) - Full-featured resizing
+- [crop](./crop) - Manual cropping
+- [optimize](./optimize) - Further optimize thumbnails
+- [batch-resize](./batch-resize) - Batch thumbnail generation
+- [webp](./webp) - WebP-specific optimization
