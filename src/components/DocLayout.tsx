@@ -39,9 +39,9 @@ export function DocLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative">
         <Sidebar />
-        <main className="flex-1 max-w-4xl px-8 py-12">
+        <main className="flex-1 max-w-4xl px-8 py-12 min-h-screen">
           <article className="prose prose-lg">
             {children}
           </article>

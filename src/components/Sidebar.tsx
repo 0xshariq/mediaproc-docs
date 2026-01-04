@@ -58,7 +58,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r border-border/50 bg-card/30 backdrop-blur-sm h-[calc(100vh-4rem)] sticky top-16 flex flex-col">
+    <aside className="w-64 border-r border-border/50 bg-card/30 backdrop-blur-sm sticky top-16 flex flex-col" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
       <ScrollArea className="flex-1 px-3 py-6">
         <nav className="space-y-6">
           {navigationConfig.map((section) => (
