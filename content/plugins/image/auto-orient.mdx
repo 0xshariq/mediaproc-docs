@@ -18,27 +18,28 @@ After correction, the EXIF orientation tag is removed since the pixels are now p
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | path | `<input>-oriented.<ext>` | Output file path |
-| `-q, --quality` | number | 90 | Output quality (1-100) |
-| `--dry-run` | flag | - | Preview changes without executing |
-| `-v, --verbose` | flag | - | Show detailed output |
+| Option          | Type   | Default                  | Description                       |
+| --------------- | ------ | ------------------------ | --------------------------------- |
+| `-o, --output`  | path   | `<inp
+ut>-oriented.<ext>` | Output file path                  |
+| `-q, --quality` | number | 90                       | Output quality (1-100)            |
+| `--dry-run`     | flag   | -                        | Preview changes without executing |
+| `-v, --verbose` | flag   | -                        | Show detailed output              |
 
 ## EXIF Orientation Values
 
 The EXIF orientation tag can have these values:
 
-| Value | Rotation | Flip | Description |
-|-------|----------|------|-------------|
-| 1 | None | None | Normal (no correction needed) |
-| 2 | None | Horizontal | Flipped horizontally |
-| 3 | 180° | None | Rotated 180 degrees |
-| 4 | 180° | Horizontal | Rotated 180° and flipped |
-| 5 | 90° CW | Horizontal | Rotated 90° clockwise and flipped |
-| 6 | 90° CW | None | Rotated 90° clockwise (vertical photo) |
-| 7 | 90° CCW | Horizontal | Rotated 90° counter-clockwise and flipped |
-| 8 | 90° CCW | None | Rotated 90° counter-clockwise |
+| Value | Rotation | Flip       | Description                               |
+| ----- | -------- | ---------- | ----------------------------------------- |
+| 1     | None     | None       | Normal (no correction needed)             |
+| 2     | None     | Horizontal | Flipped horizontally                      |
+| 3     | 180°     | None       | Rotated 180 degrees                       |
+| 4     | 180°     | Horizontal | Rotated 180° and flipped                  |
+| 5     | 90° CW   | Horizontal | Rotated 90° clockwise and flipped         |
+| 6     | 90° CW   | None       | Rotated 90° clockwise (vertical photo)    |
+| 7     | 90° CCW  | Horizontal | Rotated 90° counter-clockwise and flipped |
+| 8     | 90° CCW  | None       | Rotated 90° counter-clockwise             |
 
 The `auto-orient` command automatically handles all these cases.
 
@@ -148,6 +149,7 @@ mediaproc image auto-orient "photos/**/*.jpg" -v
 ### Problem Without Auto-Orient
 
 When you take photos with a smartphone or camera held vertically:
+
 - The image pixels are saved in landscape orientation
 - An EXIF tag records the camera was rotated
 - Many programs read this tag and display correctly
@@ -157,6 +159,7 @@ When you take photos with a smartphone or camera held vertically:
 ### Solution With Auto-Orient
 
 The command actually rotates the image pixels:
+
 - Reads EXIF orientation tag
 - Physically rotates/flips the image data
 - Removes the EXIF orientation tag
@@ -181,6 +184,7 @@ The command actually rotates the image pixels:
 ## Safe to Run Multiple Times
 
 The command is idempotent and safe:
+
 - Images with no EXIF orientation (value 1) are unchanged
 - Already-oriented images won't be re-rotated
 - Safe to run on entire directories without checking
@@ -188,6 +192,7 @@ The command is idempotent and safe:
 ## Supported Formats
 
 Works with all common image formats that support EXIF:
+
 - **JPEG/JPG**: Full EXIF support (most common)
 - **TIFF**: EXIF supported
 - **HEIC/HEIF**: Modern iPhone format with EXIF
@@ -205,12 +210,14 @@ Note: PNG and WebP rarely have EXIF orientation tags.
 ## Comparison with Manual Rotation
 
 **Without auto-orient** (manual approach):
+
 1. Check EXIF orientation
 2. Calculate needed rotation
 3. Manually rotate
 4. Remove EXIF tag
 
 **With auto-orient** (automatic):
+
 ```bash
 mediaproc image auto-orient photo.jpg
 ```
@@ -220,21 +227,25 @@ Much simpler and error-free!
 ## Troubleshooting
 
 **Image not rotated:**
+
 - Check if image has EXIF data: `exiftool image.jpg`
 - Some images may already have orientation 1 (correct)
 - Verify file has EXIF orientation tag
 
 **Image rotated wrong direction:**
+
 - This shouldn't happen with standard EXIF values
 - If it does, the EXIF tag may be incorrect
 - Try manual rotation instead
 
 **Loss of quality:**
+
 - Increase quality setting: `-q 95`
 - Use lossless formats (PNG)
 - Note: JPEG rotation always reencodes
 
 **Batch taking long time:**
+
 - This is normal for large batches
 - Use `-v` to see progress
 - Consider parallel processing for thousands of images
@@ -267,7 +278,7 @@ done
 
 ## Future Enhancements
 
-*These features are planned but not yet implemented:*
+_These features are planned but not yet implemented:_
 
 - **--preserve-exif**: Keep all EXIF data including orientation tag (FUTURE)
 - **--check-only**: Report orientation without processing (FUTURE)

@@ -14,14 +14,14 @@ The `boolean` command performs bitwise boolean operations between two images at 
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--operation` | string | *required* | Operation: `and`, `or`, `eor` (XOR) |
-| `--operand` | path | *required* | Second image for operation |
-| `-o, --output` | path | `<input>-boolean.<ext>` | Output file path |
-| `-q, --quality` | number | 90 | Output quality (1-100) |
-| `--dry-run` | flag | - | Preview changes without executing |
-| `-v, --verbose` | flag | - | Show detailed output |
+| Option          | Type   | Default                 | Description                         |
+| --------------- | ------ | ----------------------- | ----------------------------------- |
+| `--operation`   | string | _required_              | Operation: `and`, `or`, `eor` (XOR) |
+| `--operand`     | path   | _required_              | Second image for operation          |
+| `-o, --output`  | path   | `<input>-boolean.<ext>` | Output file path                    |
+| `-q, --quality` | number | 90                      | Output quality (1-100)              |
+| `--dry-run`     | flag   | -                       | Preview changes without executing   |
+| `-v, --verbose` | flag   | -                       | Show detailed output                |
 
 ## Operations
 
@@ -32,12 +32,14 @@ The `boolean` command performs bitwise boolean operations between two images at 
 **Logic**: `output = input AND operand`
 
 **Effect**:
+
 - Black pixel (0) + Any pixel = Black (0)
 - White pixel (255) + White pixel (255) = White (255)
 - Removes areas where operand is black
 - Preserves areas where both are bright
 
 **Use cases:**
+
 - Apply masks to extract regions
 - Remove backgrounds
 - Intersection of two images
@@ -50,12 +52,14 @@ The `boolean` command performs bitwise boolean operations between two images at 
 **Logic**: `output = input OR operand`
 
 **Effect**:
+
 - Black pixel (0) + Black pixel (0) = Black (0)
 - Any bright pixel results in bright output
 - Adds brightness from both images
 - Combines patterns
 
 **Use cases:**
+
 - Merge patterns
 - Combine multiple exposures
 - Add watermarks/overlays
@@ -68,12 +72,14 @@ The `boolean` command performs bitwise boolean operations between two images at 
 **Logic**: `output = input XOR operand`
 
 **Effect**:
+
 - Same pixels (0,0 or 255,255) = Black (0)
 - Different pixels = Bright
 - Shows where images differ
 - Creates pattern effects
 
 **Use cases:**
+
 - Change detection
 - Find differences between versions
 - Create symmetric patterns
@@ -156,6 +162,7 @@ mediaproc image boolean "images/*.png" --operation or --operand overlay.png -v
 ### Format Compatibility
 
 Works with all image formats:
+
 - **JPEG/JPG**: Good for photos
 - **PNG**: Best for masks (transparency)
 - **WebP**: Modern format support
@@ -172,6 +179,7 @@ Works with all image formats:
 ### Masking and Extraction
 
 **Remove Background:**
+
 ```bash
 # Create white background where subject is, black elsewhere
 # Then use AND to keep only subject
@@ -179,6 +187,7 @@ mediaproc image boolean photo.jpg --operation and --operand subject-mask.png
 ```
 
 **Extract Region:**
+
 ```bash
 # Use white mask for area of interest
 mediaproc image boolean image.jpg --operation and --operand roi-mask.png -o extracted.jpg
@@ -187,6 +196,7 @@ mediaproc image boolean image.jpg --operation and --operand roi-mask.png -o extr
 ### Pattern Creation
 
 **Symmetric Designs:**
+
 ```bash
 # XOR with flipped version creates symmetry
 mediaproc image flip texture.png -o flipped.png
@@ -196,12 +206,14 @@ mediaproc image boolean texture.png --operation eor --operand flipped.png -o sym
 ### Change Detection
 
 **Security Monitoring:**
+
 ```bash
 # Detect changes in surveillance images
 mediaproc image boolean cam-before.jpg --operation eor --operand cam-after.jpg -o motion-detected.jpg
 ```
 
 **Version Comparison:**
+
 ```bash
 # See what changed between edits
 mediaproc image boolean draft1.png --operation eor --operand draft2.png -o changes.png
@@ -210,6 +222,7 @@ mediaproc image boolean draft1.png --operation eor --operand draft2.png -o chang
 ### Watermarking
 
 **Invisible Watermark (Steganography):**
+
 ```bash
 # Embed pattern using OR
 mediaproc image boolean original.jpg --operation or --operand subtle-watermark.png -o protected.jpg
@@ -220,17 +233,20 @@ mediaproc image boolean original.jpg --operation or --operand subtle-watermark.p
 ### AND: Masking
 
 Input 1 (photo.jpg):
+
 ```
 Full color photo
 ```
 
 Operand (mask.png):
+
 ```
 White where you want to keep
 Black where you want to remove
 ```
 
 Result:
+
 ```
 Photo visible only in white mask areas
 Black everywhere else
@@ -239,16 +255,19 @@ Black everywhere else
 ### OR: Combining
 
 Input 1 (base.jpg):
+
 ```
 Base image
 ```
 
 Operand (pattern.png):
+
 ```
 Pattern to add
 ```
 
 Result:
+
 ```
 Base image with pattern added
 Brighter where both have bright pixels
@@ -257,16 +276,19 @@ Brighter where both have bright pixels
 ### XOR: Difference
 
 Input 1 (before.jpg):
+
 ```
 Scene at time 1
 ```
 
 Operand (after.jpg):
+
 ```
 Scene at time 2
 ```
 
 Result:
+
 ```
 Black where unchanged
 Bright where different
@@ -291,6 +313,7 @@ Bright where different
 ## Common Patterns
 
 **Create Mask from Image:**
+
 ```bash
 # Convert to grayscale, threshold, then use as mask
 mediaproc image grayscale photo.jpg -o gray.jpg
@@ -299,6 +322,7 @@ mediaproc image boolean original.jpg --operation and --operand mask.png
 ```
 
 **Combine Multiple Overlays:**
+
 ```bash
 # OR multiple patterns together
 mediaproc image boolean base.jpg --operation or --operand overlay1.png -o temp.jpg
@@ -306,6 +330,7 @@ mediaproc image boolean temp.jpg --operation or --operand overlay2.png -o final.
 ```
 
 **Detect Motion:**
+
 ```bash
 # XOR consecutive frames
 mediaproc image boolean frame-t0.jpg --operation eor --operand frame-t1.jpg -o motion.jpg
@@ -314,22 +339,27 @@ mediaproc image boolean frame-t0.jpg --operation eor --operand frame-t1.jpg -o m
 ## Troubleshooting
 
 **Dimension mismatch error:**
+
 - Resize both images to same dimensions first
 - Use `mediaproc image resize` to match sizes
 
 **Unexpected all-black output:**
+
 - Check if operand mask is inverted (black/white swapped)
 - Verify AND operation is appropriate for use case
 
 **Unexpected all-white output:**
+
 - Check if using OR with bright images
 - May need to use AND or XOR instead
 
 **Results not visible:**
+
 - Try adjusting brightness/contrast of output
 - XOR results may be very dark - use normalize command
 
 **Operation not recognized:**
+
 - Use lowercase: `and`, `or`, `eor` (not `AND`, `OR`, `XOR`)
 - XOR is called `eor` in this command
 

@@ -16,6 +16,7 @@ mediaproc image composite <input> --overlay <overlay> [options]
 ## Description
 
 The `composite` command layers one image (overlay) on top of another (base image) with precise control over positioning, blend modes, opacity, and tiling. This is perfect for:
+
 - **Watermarking**: Add copyright or brand logos
 - **Overlays**: Layer graphics, badges, or icons
 - **Textures**: Apply texture overlays with blend modes
@@ -26,19 +27,19 @@ The command supports various positioning strategies (gravity-based or exact coor
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `<input>` | string | *required* | Base input image file path |
-| `--overlay` | string | *required* | Overlay image file path to composite on top |
-| `-o, --output` | string | `<input>_composite.<ext>` | Output file path |
-| `--gravity` | string | `center` | Position: center, north, south, east, west, northeast, northwest, southeast, southwest |
-| `--blend` | string | `over` | Blend mode: over, multiply, screen, overlay, darken, lighten, add, saturate, etc. |
-| `--left` | number | (none) | X position in pixels (overrides gravity) |
-| `--top` | number | (none) | Y position in pixels (overrides gravity) |
-| `--opacity` | number | `1` | Overlay opacity 0-1 (0 = transparent, 1 = opaque) |
-| `--tile` | boolean | `false` | Tile the overlay across the entire image |
-| `--dry-run` | boolean | `false` | Show what would be done without processing |
-| `-v, --verbose` | boolean | `false` | Enable verbose logging |
+| Option          | Type    | Default                   | Description                                                                            |
+| --------------- | ------- | ------------------------- | -------------------------------------------------------------------------------------- |
+| `<input>`       | string  | _required_                | Base input image file path                                                             |
+| `--overlay`     | string  | _required_                | Overlay image file path to composite on top                                            |
+| `-o, --output`  | string  | `<input>_composite.<ext>` | Output file path                                                                       |
+| `--gravity`     | string  | `center`                  | Position: center, north, south, east, west, northeast, northwest, southeast, southwest |
+| `--blend`       | string  | `over`                    | Blend mode: over, multiply, screen, overlay, darken, lighten, add, saturate, etc.      |
+| `--left`        | number  | (none)                    | X position in pixels (overrides gravity)                                               |
+| `--top`         | number  | (none)                    | Y position in pixels (overrides gravity)                                               |
+| `--opacity`     | number  | `1`                       | Overlay opacity 0-1 (0 = transparent, 1 = opaque)                                      |
+| `--tile`        | boolean | `false`                   | Tile the overlay across the entire image                                               |
+| `--dry-run`     | boolean | `false`                   | Show what would be done without processing                                             |
+| `-v, --verbose` | boolean | `false`                   | Enable verbose logging                                                                 |
 
 ## Examples
 
@@ -338,110 +339,134 @@ mediaproc image composite image.jpg \
 ## Blend Modes Explained
 
 ### over (default)
+
 Standard overlay - places overlay image on top of base image.
 
 **Use for**:
+
 - Watermarks
 - Logos
 - Standard overlays
 - PNG images with transparency
 
 **Example**:
+
 ```bash
 mediaproc image composite photo.jpg --overlay watermark.png --blend over -o standard.jpg
 ```
 
 ### multiply
+
 Multiplies pixel values - darkens the image.
 
 **Use for**:
+
 - Adding textures
 - Creating shadow effects
 - Darkening specific areas
 - Vintage looks
 
 **Example**:
+
 ```bash
 mediaproc image composite image.jpg --overlay texture.png --blend multiply --opacity 0.4 -o textured.jpg
 ```
 
 ### screen
+
 Inverts, multiplies, inverts again - lightens the image.
 
 **Use for**:
+
 - Glow effects
 - Light leaks
 - Brightening
 - Dreamy effects
 
 **Example**:
+
 ```bash
 mediaproc image composite dark.jpg --overlay light.png --blend screen --opacity 0.6 -o brightened.jpg
 ```
 
 ### overlay
+
 Combination of multiply and screen based on base color.
 
 **Use for**:
+
 - Balanced blending
 - Preserving highlights and shadows
 - General compositing
 - Color grading
 
 **Example**:
+
 ```bash
 mediaproc image composite photo.jpg --overlay color_grade.png --blend overlay --opacity 0.5 -o graded.jpg
 ```
 
 ### darken
+
 Keeps the darker of the two colors.
 
 **Use for**:
+
 - Shadow overlays
 - Darkening effects
 - Preserving dark details
 
 **Example**:
+
 ```bash
 mediaproc image composite image.jpg --overlay shadow.png --blend darken -o darkened.jpg
 ```
 
 ### lighten
+
 Keeps the lighter of the two colors.
 
 **Use for**:
+
 - Highlight overlays
 - Lightening effects
 - Preserving bright details
 
 **Example**:
+
 ```bash
 mediaproc image composite photo.jpg --overlay highlight.png --blend lighten -o lightened.jpg
 ```
 
 ### add
+
 Adds pixel values together (may clip at maximum).
 
 **Use for**:
+
 - Glow effects
 - Light addition
 - Bright overlays
 - Special effects
 
 **Example**:
+
 ```bash
 mediaproc image composite dark_scene.jpg --overlay glow.png --blend add --opacity 0.7 -o glowing.jpg
 ```
 
 ### saturate
+
 Increases color intensity where overlay and base overlap.
 
 **Use for**:
+
 - Color enhancement
 - Vibrant effects
 - Selective saturation
 
 **Example**:
+
 ```bash
 mediaproc image composite photo.jpg --overlay color_boost.png --blend saturate --opacity 0.4 -o vibrant.jpg
 ```
@@ -473,34 +498,40 @@ southwest    south    southeast
 ## Best Practices
 
 1. **Watermarking**:
+
    - Use PNG overlays with transparency
    - Position in corners (southeast common)
    - Use 0.3-0.7 opacity for subtlety
    - Consider --tile with low opacity for full protection
 
 2. **Blend Mode Selection**:
+
    - Start with `over` for standard overlays
    - Use `multiply` for textures and darkening
    - Use `screen` for glows and lightening
    - `overlay` for balanced blending
 
 3. **Opacity Guidelines**:
+
    - 0.1-0.3: Very subtle, background effects
    - 0.3-0.5: Watermarks, subtle overlays
    - 0.5-0.7: Visible but not dominant
    - 0.7-1.0: Strong, prominent overlays
 
 4. **Performance**:
+
    - Overlay image is loaded once for batch processing
    - Use appropriate overlay sizes (don't use massive files)
    - PNG format best for transparency preservation
 
 5. **Quality Preservation**:
+
    - Use high-quality overlay images
    - Match overlay and base image quality levels
    - Save in appropriate format (PNG for transparency)
 
 6. **Positioning**:
+
    - Use gravity for dynamic positioning
    - Use --left/--top for precise pixel placement
    - Consider different screen sizes for web watermarks
@@ -591,6 +622,7 @@ done
 **Problem**: Overlay doesn't appear on output.
 
 **Solutions**:
+
 ```bash
 # Check if overlay file exists
 ls -lh watermark.png
@@ -610,6 +642,7 @@ mediaproc image composite image.jpg --overlay logo.png -v -o test.jpg
 **Problem**: Overlay positioned incorrectly.
 
 **Solutions**:
+
 ```bash
 # Use different gravity
 mediaproc image composite image.jpg --overlay logo.png --gravity southeast -o corner.jpg
@@ -626,6 +659,7 @@ mediaproc image composite image.jpg --overlay logo.png --gravity center --dry-ru
 **Problem**: Overlay dominates the image.
 
 **Solutions**:
+
 ```bash
 # Reduce opacity
 mediaproc image composite photo.jpg --overlay watermark.png --opacity 0.3 -o subtle.jpg
@@ -641,6 +675,7 @@ mediaproc image composite photo.jpg --overlay texture.png --blend multiply --opa
 **Problem**: Overlay looks pixelated or low quality.
 
 **Solutions**:
+
 ```bash
 # Use PNG format for overlay (not JPEG)
 # Ensure overlay is high resolution
@@ -655,6 +690,7 @@ mediaproc image composite image.jpg --overlay high_res_logo.png -o quality.jpg
 **Problem**: Overlays look different across batch.
 
 **Solutions**:
+
 ```bash
 # Use consistent parameters
 OVERLAY_PARAMS="--overlay logo.png --gravity southeast --opacity 0.5"
@@ -671,6 +707,7 @@ done
 **Problem**: Visible seams when tiling overlay.
 
 **Solutions**:
+
 ```bash
 # Use seamless tiling pattern
 # Reduce opacity to minimize visibility
@@ -684,6 +721,7 @@ mediaproc image composite image.jpg --overlay pattern.png --tile --opacity 0.2 -
 **Problem**: Error: "Overlay file not found".
 
 **Solutions**:
+
 ```bash
 # Check file path
 ls -lh path/to/overlay.png

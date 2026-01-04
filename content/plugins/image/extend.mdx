@@ -1,6 +1,11 @@
+---
+title: "extend"
+description: "Add padding or borders around images with precise control over dimensions and background colors"
+---
+
 # extend
 
-Extend image by adding borders or padding.
+Add padding or borders around images by extending the canvas in any direction. Control each side independently or extend all sides uniformly with customizable background colors.
 
 ## Usage
 
@@ -8,91 +13,553 @@ Extend image by adding borders or padding.
 mediaproc image extend <input> [options]
 ```
 
-## Description
+### Basic Syntax
 
-The `extend` command adds padding or borders around images by extending the canvas. Specify individual sides or use uniform padding.
+```bash
+# Extend all sides equally
+mediaproc image extend photo.jpg --all 50
+
+# Extend specific sides
+mediaproc image extend photo.jpg --top 20 --bottom 20 --left 30 --right 30
+
+# Extend with custom background color
+mediaproc image extend photo.jpg --all 40 --background "#FF5733"
+```
 
 ## Options
 
-### Size Options
+| Option         | Alias | Type      | Default            | Description                                  |
+| -------------- | ----- | --------- | ------------------ | -------------------------------------------- |
+| `--all`        |       | `number`  | -                  | Extend all sides by the same amount (pixels) |
+| `--top`        |       | `number`  | `0`                | Top padding in pixels                        |
+| `--bottom`     |       | `number`  | `0`                | Bottom padding in pixels                     |
+| `--left`       |       | `number`  | `0`                | Left padding in pixels                       |
+| `--right`      |       | `number`  | `0`                | Right padding in pixels                      |
+| `--background` |       | `string`  | `white`            | Background color for extended area           |
+| `--output`     | `-o`  | `string`  | `extended-[input]` | Output file path                             |
+| `--quality`    | `-q`  | `number`  | `90`               | Output quality (1-100)                       |
+| `--dry-run`    |       | `boolean` | `false`            | Preview operation without saving             |
+| `--verbose`    | `-v`  | `boolean` | `false`            | Show detailed processing information         |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--top` | number | 0 | Top padding in pixels |
-| `--bottom` | number | 0 | Bottom padding in pixels |
-| `--left` | number | 0 | Left padding in pixels |
-| `--right` | number | 0 | Right padding in pixels |
-| `--all` | number | - | Uniform padding on all sides |
+### Background Color Formats
 
-### Style Options
+The `--background` option supports multiple color formats:
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-b, --background` | string | #000000 | Background color |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+- **Named colors**: `white`, `black`, `transparent`
+- **Hex colors**: `#FF5733`, `#f57`, `#RRGGBB`, `#RGB`
+- **RGB/RGBA**: `rgb(255, 87, 51)`, `rgba(255, 87, 51, 0.8)`
 
 ## Examples
 
-### Uniform Padding
+### 1. Uniform Padding (All Sides)
 
 ```bash
-# Add 50px padding on all sides
-mediaproc image extend photo.jpg --all 50 -o padded.jpg
+# Add 50px white padding on all sides
+mediaproc image extend photo.jpg --all 50
 
-# White padding
-mediaproc image extend image.jpg --all 30 -b "#ffffff" -o white-border.jpg
+# Add 30px black padding
+mediaproc image extend photo.jpg --all 30 --background black
+
+# Add 40px transparent padding (for PNG)
+mediaproc image extend photo.jpg --all 40 --background transparent -o padded.png
 ```
 
-### Custom Padding
+### 2. Asymmetric Padding
 
 ```bash
-# Different padding per side
-mediaproc image extend photo.jpg --top 50 --bottom 50 --left 100 --right 100 -o extended.jpg
+# Different padding for each side
+mediaproc image extend photo.jpg --top 20 --bottom 40 --left 30 --right 30
 
-# Add space on bottom for caption
-mediaproc image extend image.jpg --bottom 150 -b "#ffffff" -o caption-ready.jpg
+# Only top and bottom
+mediaproc image extend photo.jpg --top 50 --bottom 50
+
+# Only left and right (create letterbox effect)
+mediaproc image extend photo.jpg --left 100 --right 100
 ```
 
-### Colored Borders
+### 3. Custom Background Colors
 
 ```bash
-# Black border
-mediaproc image extend photo.jpg --all 20 -b "#000000" -o black-border.jpg
+# Hex color background
+mediaproc image extend photo.jpg --all 50 --background "#2C3E50"
 
-# Custom color border
-mediaproc image extend image.png --all 15 -b "#3b82f6" -o blue-border.png
+# RGB color background
+mediaproc image extend photo.jpg --all 40 --background "rgb(44, 62, 80)"
+
+# Transparent background (PNG only)
+mediaproc image extend photo.jpg --all 60 --background transparent -o result.png
 ```
 
-### Social Media Templates
+### 4. Creating Borders
 
 ```bash
-# Instagram post with padding
-mediaproc image extend photo.jpg --all 80 -b "#ffffff" -o insta-post.jpg
+# Thin border effect (10px)
+mediaproc image extend photo.jpg --all 10 --background black
 
-# Pinterest template (extra top/bottom)
-mediaproc image extend image.jpg --top 100 --bottom 100 --left 50 --right 50 -o pinterest.jpg
+# Thick frame effect (80px)
+mediaproc image extend photo.jpg --all 80 --background "#8B7355"
+
+# Colored border with transparency
+mediaproc image extend photo.png --all 15 --background "rgba(0, 0, 0, 0.5)" -o framed.png
+```
+
+### 5. Aspect Ratio Adjustment
+
+```bash
+# Convert portrait to square (add sides)
+# For a 600x800 image, add 100px to each side
+mediaproc image extend portrait.jpg --left 100 --right 100 --background white
+
+# Convert landscape to square (add top/bottom)
+# For an 800x600 image, add 100px top and bottom
+mediaproc image extend landscape.jpg --top 100 --bottom 100 --background white
+```
+
+### 6. Social Media Formatting
+
+```bash
+# Instagram post (1:1 aspect ratio with white background)
+mediaproc image extend photo.jpg --all 50 --background white -o instagram.jpg
+
+# Twitter header (add padding for safe zones)
+mediaproc image extend banner.jpg --top 20 --bottom 20 --left 40 --right 40
+
+# Pinterest pin (vertical format with branding space)
+mediaproc image extend photo.jpg --top 100 --bottom 150 --background "#E60023"
+```
+
+### 7. Batch Processing
+
+```bash
+# Add padding to multiple images
+for img in *.jpg; do
+  mediaproc image extend "$img" --all 30 --background white -o "padded-$img"
+done
+
+# Create thumbnails with consistent padding
+for img in photos/*.jpg; do
+  mediaproc image extend "$img" --all 20 --background "#F0F0F0" -o "thumbs/$(basename "$img")"
+done
+```
+
+### 8. Watermark Space Creation
+
+```bash
+# Add bottom space for watermark
+mediaproc image extend photo.jpg --bottom 80 --background white -o ready-for-watermark.jpg
+
+# Add side margins for text overlay
+mediaproc image extend photo.jpg --left 150 --right 150 --background "rgba(0, 0, 0, 0.7)" -o text-space.png
+```
+
+### 9. Print Preparation
+
+```bash
+# Add bleed area for printing (1/8 inch = ~36 pixels at 300 DPI)
+mediaproc image extend design.jpg --all 36 --background white -o print-ready.jpg
+
+# Create safe zone for cutting
+mediaproc image extend artwork.jpg --all 50 --background "#CCCCCC" -o with-margins.jpg
+```
+
+### 10. Preview Before Processing
+
+```bash
+# Preview the extension operation
+mediaproc image extend photo.jpg --all 50 --background "#FF5733" --dry-run
+
+# Check dimensions and output
+mediaproc image extend photo.jpg --top 30 --bottom 30 --dry-run --verbose
+```
+
+### 11. Combining with Other Operations
+
+```bash
+# Extend then resize
+mediaproc image extend photo.jpg --all 50 --background white -o extended.jpg
+mediaproc image resize extended.jpg -w 800 -h 800 -o final.jpg
+
+# Resize then extend to exact dimensions
+mediaproc image resize photo.jpg -w 700 -h 700 --fit contain -o resized.jpg
+mediaproc image extend resized.jpg --all 50 --background black -o final.jpg
+```
+
+### 12. Transparent PNG Handling
+
+```bash
+# Preserve transparency
+mediaproc image extend logo.png --all 40 --background transparent -o extended-logo.png
+
+# Add solid background to transparent PNG
+mediaproc image extend logo.png --all 30 --background white -o logo-on-white.png
+
+# Add colored background
+mediaproc image extend logo.png --all 25 --background "#0066CC" -o branded-logo.png
+```
+
+### 13. Photo Mat Effect
+
+```bash
+# Classic white mat with shadow-like border
+mediaproc image extend photo.jpg --all 100 --background white -o mat.jpg
+
+# Colored mat
+mediaproc image extend photo.jpg --all 80 --background "#2C2C2C" -o dark-mat.jpg
+
+# Double mat effect (extend twice)
+mediaproc image extend photo.jpg --all 40 --background "#8B7355" -o inner-mat.jpg
+mediaproc image extend inner-mat.jpg --all 60 --background white -o double-mat.jpg
+```
+
+### 14. Canvas Expansion for Composition
+
+```bash
+# Expand canvas right for text or additional elements
+mediaproc image extend photo.jpg --right 300 --background white -o expanded.jpg
+
+# Expand canvas top for header space
+mediaproc image extend photo.jpg --top 200 --background "#1E3A8A" -o with-header.jpg
+
+# Expand canvas bottom for caption area
+mediaproc image extend photo.jpg --bottom 150 --background "#F5F5F5" -o with-caption.jpg
+```
+
+### 15. High-Quality Output Control
+
+```bash
+# Maximum quality output
+mediaproc image extend photo.jpg --all 50 --background white -q 100 -o high-quality.jpg
+
+# Balanced quality (smaller file size)
+mediaproc image extend photo.jpg --all 50 --background white -q 85 -o balanced.jpg
+
+# Web-optimized quality
+mediaproc image extend photo.jpg --all 30 --background white -q 80 -o web-optimized.jpg
+```
+
+## Use Cases
+
+### 1. Social Media Content Creation
+
+- **Instagram Posts**: Add padding to ensure images display correctly in feeds
+- **Twitter Headers**: Create safe zones for profile picture overlap
+- **Pinterest Pins**: Add branding space at top or bottom
+- **LinkedIn Posts**: Format images to platform-specific dimensions
+
+### 2. Print and Publishing
+
+- **Bleed Areas**: Add extra space for professional printing
+- **Margins**: Create safe zones for cutting and binding
+- **Photo Mats**: Digital mat effects for framed prints
+- **Book Layouts**: Add gutters and margins for page design
+
+### 3. E-commerce and Product Photography
+
+- **Product Consistency**: Uniform padding for catalog images
+- **White Backgrounds**: Standard e-commerce image formatting
+- **Grid Layouts**: Ensure all products have same dimensions
+- **Zoom Margins**: Add space around product for zoom functionality
+
+### 4. Web Design and Development
+
+- **Hero Images**: Add space for text overlays
+- **Card Components**: Consistent padding for grid layouts
+- **Thumbnails**: Uniform dimensions with padding
+- **Banner Images**: Add safe zones for responsive design
+
+### 5. Photography and Art
+
+- **Photo Matting**: Digital frames and borders
+- **Gallery Display**: Consistent presentation format
+- **Portfolio Preparation**: Professional image formatting
+- **Exhibition Prints**: Add signature or caption space
+
+### 6. Brand and Marketing
+
+- **Watermark Space**: Add areas for branding elements
+- **Template Creation**: Prepare images for graphic overlays
+- **Campaign Assets**: Consistent formatting across materials
+- **Presentation Slides**: Add margins for better visibility
+
+## Technical Details
+
+### Processing Method
+
+The extend command uses Sharp's `extend()` method, which:
+
+- Adds pixels to the canvas without stretching the original image
+- Supports independent control of all four sides
+- Maintains original image quality (no resampling)
+- Supports transparent backgrounds for PNG format
+- Applies background color to extended areas only
+
+### Color Processing
+
+- **Named Colors**: Converted to RGB internally
+- **Hex Colors**: Parsed as 6-digit (`#RRGGBB`) or 3-digit (`#RGB`) format
+- **RGB/RGBA**: Supports alpha channel for transparency
+- **Transparent**: Only works with PNG output format
+- **Default**: White background if no color specified
+
+### Performance Considerations
+
+- **Fast Operation**: No complex calculations or resampling
+- **Memory Efficient**: Only stores extended canvas
+- **Output Size**: Final dimensions = original + padding
+- **Format Support**: Works with all image formats
+
+### Output Dimensions
+
+```
+Final Width = Original Width + Left Padding + Right Padding
+Final Height = Original Height + Top Padding + Bottom Padding
+```
+
+Example:
+
+- Original: 800×600
+- Padding: --all 50
+- Result: 900×700 (800+50+50 × 600+50+50)
+
+### Transparency Handling
+
+- **PNG Format**: Full transparency support
+- **JPEG Format**: No transparency (converted to solid color)
+- **WebP Format**: Supports transparency
+- **AVIF Format**: Supports transparency
+
+## Common Patterns
+
+### Pattern 1: Uniform Padding
+
+```bash
+# Quick uniform padding
+mediaproc image extend input.jpg --all 50 -o output.jpg
+```
+
+### Pattern 2: Vertical Letterbox
+
+```bash
+# Add black bars top and bottom (cinema effect)
+mediaproc image extend input.jpg --top 100 --bottom 100 --background black
+```
+
+### Pattern 3: Horizontal Pillarbox
+
+```bash
+# Add black bars left and right
+mediaproc image extend input.jpg --left 150 --right 150 --background black
+```
+
+### Pattern 4: Custom Aspect Ratio
+
+```bash
+# Convert to specific aspect ratio with centered content
+# Calculate padding needed for target dimensions
+mediaproc image extend input.jpg --top 50 --bottom 50 --left 100 --right 100
+```
+
+### Pattern 5: Transparent Background (PNG)
+
+```bash
+# Maintain transparency
+mediaproc image extend logo.png --all 40 --background transparent -o result.png
+```
+
+## Troubleshooting
+
+### Issue: Background Color Not Applied
+
+**Problem**: Extended area appears white instead of specified color
+
+**Solutions**:
+
+```bash
+# Check color format (hex colors need quotes)
+mediaproc image extend input.jpg --all 50 --background "#FF5733"
+
+# Use named colors without quotes
+mediaproc image extend input.jpg --all 50 --background black
+
+# Verify RGB format
+mediaproc image extend input.jpg --all 50 --background "rgb(255, 87, 51)"
+```
+
+### Issue: Transparency Not Working
+
+**Problem**: Transparent background appears white
+
+**Solutions**:
+
+```bash
+# Ensure PNG output format
+mediaproc image extend input.png --all 50 --background transparent -o output.png
+
+# JPEG doesn't support transparency
+# Use PNG or WebP instead
+mediaproc image extend input.jpg --all 50 --background transparent -o output.png
+```
+
+### Issue: Unexpected Output Dimensions
+
+**Problem**: Output size doesn't match expectations
+
+**Solutions**:
+
+```bash
+# Use --dry-run to preview dimensions
+mediaproc image extend input.jpg --all 50 --dry-run --verbose
+
+# Calculate manually:
+# Final Width = Original Width + Left + Right
+# Final Height = Original Height + Top + Bottom
+
+# Check input dimensions first
+mediaproc image metadata input.jpg
+```
+
+### Issue: --all Override
+
+**Problem**: `--all` option conflicts with individual side options
+
+**Solutions**:
+
+```bash
+# Don't mix --all with individual options
+# Use one OR the other
+
+# Either use --all
+mediaproc image extend input.jpg --all 50
+
+# Or use individual sides
+mediaproc image extend input.jpg --top 20 --bottom 20 --left 30 --right 30
+
+# If both specified, --all takes precedence
+```
+
+### Issue: Large File Sizes
+
+**Problem**: Extended images have unexpectedly large file sizes
+
+**Solutions**:
+
+```bash
+# Reduce output quality
+mediaproc image extend input.jpg --all 50 -q 85 -o output.jpg
+
+# Use efficient format
+mediaproc image extend input.jpg --all 50 -o output.webp
+
+# Optimize after extending
+mediaproc image extend input.jpg --all 50 -o temp.jpg
+mediaproc image optimize temp.jpg -o output.jpg
+```
+
+### Issue: Color Mismatch
+
+**Problem**: Extended background doesn't match design color
+
+**Solutions**:
+
+```bash
+# Use exact hex color from design
+mediaproc image extend input.jpg --all 50 --background "#2C3E50"
+
+# Use color picker to get RGB values
+mediaproc image extend input.jpg --all 50 --background "rgb(44, 62, 80)"
+
+# Test with --dry-run first
+mediaproc image extend input.jpg --all 50 --background "#2C3E50" --dry-run
 ```
 
 ## Best Practices
 
-1. **Use PNG**: For transparent padding, export as PNG
-2. **White/Black**: Most common border colors
-3. **Social Media**: Add padding for better appearance
-4. **Typography Space**: Extend for text overlay areas
-5. **Consistent Padding**: Use --all for uniform borders
+1. **Use Dry Run for Testing**
 
-## Common Use Cases
+   - Preview dimensions and settings before processing
+   - Verify background color appearance
+   - Check file size estimates
 
-- **Social Media**: Add breathing room to posts
-- **Presentations**: Create uniform slide images
-- **Matting**: Digital photo matting effect
-- **Text Space**: Add area for captions
-- **Gallery Uniformity**: Standardize image sizes
+2. **Choose Appropriate Backgrounds**
+
+   - White for clean, professional look
+   - Black for dramatic, gallery-style presentation
+   - Transparent for logos and graphics (PNG only)
+   - Brand colors for consistent identity
+
+3. **Consider Output Format**
+
+   - PNG for transparency support
+   - JPEG for photography with solid backgrounds
+   - WebP for efficient web delivery with transparency
+
+4. **Calculate Dimensions Carefully**
+
+   - Use `--dry-run` to verify final dimensions
+   - Plan padding for specific aspect ratios
+   - Account for platform-specific requirements
+
+5. **Optimize for Use Case**
+
+   - Social media: Use platform-specific dimensions
+   - Print: Include bleed and safe zones
+   - Web: Optimize quality vs. file size balance
+   - E-commerce: Maintain consistency across products
+
+6. **Batch Processing Consistency**
+
+   - Use same padding values for related images
+   - Maintain consistent background colors
+   - Create scripts for repeatable workflows
+
+7. **Quality Management**
+   - Use higher quality (90-100) for print
+   - Use moderate quality (80-90) for web
+   - Balance quality with file size requirements
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Resize, extend, then add border
+mediaproc image resize input.jpg -w 800 -h 600 -o resized.jpg
+mediaproc image extend resized.jpg --all 50 --background white -o extended.jpg
+mediaproc image border extended.jpg -w 2 --color black -o final.jpg
+
+# Crop center, then extend to specific size
+mediaproc image smart-crop input.jpg -w 600 -h 600 -o cropped.jpg
+mediaproc image extend cropped.jpg --all 100 --background "#F5F5F5" -o final.jpg
+
+# Flatten transparency, then extend
+mediaproc image flatten logo.png --background white -o flattened.jpg
+mediaproc image extend flattened.jpg --all 30 --background white -o final.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Prepare images for Instagram feed
+
+for img in photos/*.jpg; do
+  filename=$(basename "$img" .jpg)
+
+  # Resize to square
+  mediaproc image resize "$img" -w 1000 -h 1000 --fit contain -o "temp-$filename.jpg"
+
+  # Add white padding
+  mediaproc image extend "temp-$filename.jpg" --all 50 --background white -o "instagram-$filename.jpg"
+
+  # Clean up temp files
+  rm "temp-$filename.jpg"
+done
+```
 
 ## See Also
 
-- [trim](./trim) - Remove borders (opposite)
-- [border](./border) - Add decorative borders
-- [background](./background) - Change background
+- [border](./border) - Add solid color borders around images
+- [resize](./resize) - Change image dimensions with various fit modes
+- [crop](./crop) - Extract rectangular regions from images
+- [flatten](./flatten) - Remove transparency with background color
+- [composite](./composite) - Layer multiple images together

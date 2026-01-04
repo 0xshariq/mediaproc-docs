@@ -16,6 +16,7 @@ mediaproc image crop <input> -w <width> -h <height> [options]
 ## Description
 
 The `crop` command extracts a rectangular region from an image using pixel-perfect positioning. This is essential for:
+
 - **Removing unwanted areas**: Eliminate distractions or unwanted elements
 - **Aspect ratio adjustment**: Convert images to specific aspect ratios
 - **Focus on subject**: Highlight the main subject by removing background
@@ -27,17 +28,17 @@ The command uses Sharp's `extract()` method for efficient, high-quality cropping
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `<input>` | string | *required* | Input image file path or glob pattern |
-| `-x, --x` | number | `0` | X position (left offset in pixels) |
-| `-y, --y` | number | `0` | Y position (top offset in pixels) |
-| `-w, --width` | number | *required* | Crop width in pixels |
-| `-h, --height` | number | *required* | Crop height in pixels |
-| `-o, --output` | string | `<input>_cropped.<ext>` | Output file path |
-| `-q, --quality` | number | `90` | Output quality 1-100 |
-| `--dry-run` | boolean | `false` | Show what would be done without processing |
-| `-v, --verbose` | boolean | `false` | Enable verbose logging |
+| Option          | Type    | Default                 | Description                                |
+| --------------- | ------- | ----------------------- | ------------------------------------------ |
+| `<input>`       | string  | _required_              | Input image file path or glob pattern      |
+| `-x, --x`       | number  | `0`                     | X position (left offset in pixels)         |
+| `-y, --y`       | number  | `0`                     | Y position (top offset in pixels)          |
+| `-w, --width`   | number  | _required_              | Crop width in pixels                       |
+| `-h, --height`  | number  | _required_              | Crop height in pixels                      |
+| `-o, --output`  | string  | `<input>_cropped.<ext>` | Output file path                           |
+| `-q, --quality` | number  | `90`                    | Output quality 1-100                       |
+| `--dry-run`     | boolean | `false`                 | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false`                 | Enable verbose logging                     |
 
 ## Examples
 
@@ -344,6 +345,7 @@ center_y = (image_height - crop_height) / 2
 ```
 
 **Example**: Center crop 1080x1080 from 3000x2000 image:
+
 ```
 x = (3000 - 1080) / 2 = 960
 y = (2000 - 1080) / 2 = 460
@@ -369,40 +371,45 @@ mediaproc image crop photo.jpg -x 960 -y 460 -w 1080 -h 1080 -o centered.jpg
 
 ### Common Aspect Ratios
 
-| Ratio | Description | Example Dimensions | Use Case |
-|-------|-------------|-------------------|----------|
-| 1:1 | Square | 1080x1080, 1000x1000 | Instagram, profile pics |
-| 4:3 | Standard | 1600x1200, 1024x768 | Traditional photos, iPad |
-| 3:2 | Classic | 1500x1000, 3000x2000 | 35mm film, DSLRs |
-| 16:9 | Widescreen | 1920x1080, 3840x2160 | HD video, monitors |
-| 9:16 | Portrait | 1080x1920, 1125x2436 | Stories, mobile video |
-| 21:9 | Ultrawide | 2560x1080, 3440x1440 | Cinema, ultrawide monitors |
-| 5:4 | Medium format | 1600x1280, 2560x2048 | Medium format cameras |
-| 2:1 | Univisium | 2048x1024 | Modern cinema |
+| Ratio | Description   | Example Dimensions   | Use Case                   |
+| ----- | ------------- | -------------------- | -------------------------- |
+| 1:1   | Square        | 1080x1080, 1000x1000 | Instagram, profile pics    |
+| 4:3   | Standard      | 1600x1200, 1024x768  | Traditional photos, iPad   |
+| 3:2   | Classic       | 1500x1000, 3000x2000 | 35mm film, DSLRs           |
+| 16:9  | Widescreen    | 1920x1080, 3840x2160 | HD video, monitors         |
+| 9:16  | Portrait      | 1080x1920, 1125x2436 | Stories, mobile video      |
+| 21:9  | Ultrawide     | 2560x1080, 3440x1440 | Cinema, ultrawide monitors |
+| 5:4   | Medium format | 1600x1280, 2560x2048 | Medium format cameras      |
+| 2:1   | Univisium     | 2048x1024            | Modern cinema              |
 
 ### Social Media Dimensions
 
 **Instagram**:
+
 - Square post: 1080x1080
 - Portrait: 1080x1350
 - Landscape: 1080x566
 - Story: 1080x1920
 
 **Facebook**:
+
 - Post: 1200x630
 - Cover: 820x312
 - Profile: 180x180
 
 **Twitter**:
+
 - Post: 1200x675
 - Header: 1500x500
 - Profile: 400x400
 
 **YouTube**:
+
 - Thumbnail: 1280x720
 - Channel banner: 2560x1440
 
 **LinkedIn**:
+
 - Post: 1200x627
 - Banner: 1584x396
 - Profile: 400x400
@@ -506,6 +513,7 @@ mediaproc image crop document.png -x 100 -y 200 -w 600 -h 800 -o excerpt.png
 **Problem**: Error "Crop width/height exceeds image bounds".
 
 **Solutions**:
+
 ```bash
 # Check image dimensions first
 mediaproc image metadata-cmd photo.jpg
@@ -522,6 +530,7 @@ mediaproc image crop image.jpg -w 2000 -h 1500 --dry-run
 **Problem**: Cropped region doesn't include desired content.
 
 **Solutions**:
+
 ```bash
 # Recalculate position
 # For center crop: x = (img_width - crop_width) / 2
@@ -538,6 +547,7 @@ mediaproc image crop photo.jpg -x 600 -y 400 -w 800 -h 600 -o test2.jpg
 **Problem**: Cropped image has wrong aspect ratio.
 
 **Solutions**:
+
 ```bash
 # Calculate correct dimensions for desired ratio
 # 16:9 ratio: width = height * 16/9
@@ -554,6 +564,7 @@ mediaproc image crop photo.jpg -w 1920 -h 1080 -o correct_ratio.jpg
 **Problem**: Cropped image looks pixelated or low quality.
 
 **Solutions**:
+
 ```bash
 # Increase quality setting
 mediaproc image crop photo.jpg -w 1920 -h 1080 -q 95 -o high_quality.jpg
@@ -570,6 +581,7 @@ mediaproc image crop graphic.png -w 800 -h 600 -o cropped.png
 **Problem**: Batch cropped images look different.
 
 **Solutions**:
+
 ```bash
 # Ensure all source images have same dimensions
 # Or calculate position per image
@@ -588,6 +600,7 @@ done
 **Problem**: Input file not found error.
 
 **Solutions**:
+
 ```bash
 # Verify file exists
 ls -lh photo.jpg
@@ -604,6 +617,7 @@ file photo.jpg
 **Problem**: Using negative x or y values.
 
 **Solutions**:
+
 ```bash
 # Coordinates must be positive (0 or greater)
 # To crop from right/bottom, calculate position:

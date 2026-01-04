@@ -1,6 +1,11 @@
+---
+title: "extract"
+description: "Extract individual color channels or rectangular regions from images with pixel-perfect precision"
+---
+
 # extract
 
-Extract a region or channel from an image.
+Extract individual color channels (red, green, blue, alpha) as grayscale images, or extract specific rectangular regions from images with precise coordinate control.
 
 ## Usage
 
@@ -8,56 +13,597 @@ Extract a region or channel from an image.
 mediaproc image extract <input> [options]
 ```
 
-## Description
+### Basic Syntax
 
-The `extract` command extracts specific channels (RGB, alpha) or rectangular regions from images. Useful for channel manipulation, region extraction, and color analysis.
+```bash
+# Extract a color channel
+mediaproc image extract photo.jpg -c red
+
+# Extract a rectangular region
+mediaproc image extract photo.jpg --left 100 --top 50 -w 300 -h 200
+
+# Extract alpha channel from PNG
+mediaproc image extract image.png -c alpha
+```
 
 ## Options
 
-### Region Options
+| Option      | Alias | Type      | Default             | Description                                                  |
+| ----------- | ----- | --------- | ------------------- | ------------------------------------------------------------ |
+| `--channel` | `-c`  | `string`  | -                   | Color channel to extract: `red`, `green`, `blue`, or `alpha` |
+| `--left`    |       | `number`  | -                   | X coordinate (left edge) for region extraction               |
+| `--top`     |       | `number`  | -                   | Y coordinate (top edge) for region extraction                |
+| `--width`   | `-w`  | `number`  | -                   | Width of region to extract (required for region extraction)  |
+| `--height`  | `-h`  | `number`  | -                   | Height of region to extract (required for region extraction) |
+| `--output`  | `-o`  | `string`  | `extracted-[input]` | Output file path                                             |
+| `--quality` | `-q`  | `number`  | `90`                | Output quality (1-100)                                       |
+| `--dry-run` |       | `boolean` | `false`             | Preview operation without saving                             |
+| `--verbose` | `-v`  | `boolean` | `false`             | Show detailed processing information                         |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `--channel` | string | - | Channel to extract (red, green, blue, alpha) |
-| `-x, --left` | number | 0 | Left position for region |
-| `-y, --top` | number | 0 | Top position for region |
-| `-w, --width` | number | - | Region width |
-| `-h, --height` | number | - | Region height |
+## Extraction Modes
 
-### Output Options
+### Mode 1: Channel Extraction
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+Extract individual color channels as grayscale images. Each pixel's value represents the intensity of that channel (0-255).
+
+**Supported Channels:**
+
+- `red` - Red channel intensity
+- `green` - Green channel intensity
+- `blue` - Blue channel intensity
+- `alpha` - Transparency/opacity channel (PNG only)
+
+### Mode 2: Region Extraction
+
+Extract a rectangular region from an image by specifying coordinates and dimensions.
+
+**Required Parameters:**
+
+- `--width` and `--height` (region dimensions)
+- Optional: `--left` and `--top` (default to 0,0 if omitted)
 
 ## Examples
 
-### Extract Channels
+### 1. Extract Color Channels
 
 ```bash
 # Extract red channel
-mediaproc image extract photo.jpg --channel red -o red-channel.jpg
-
-# Extract alpha channel
-mediaproc image extract logo.png --channel alpha -o alpha-mask.png
+mediaproc image extract photo.jpg -c red -o red-channel.jpg
 
 # Extract green channel
-mediaproc image extract image.jpg --channel green -o green.jpg
+mediaproc image extract photo.jpg -c green -o green-channel.jpg
+
+# Extract blue channel
+mediaproc image extract photo.jpg -c blue -o blue-channel.jpg
+
+# Extract all channels
+mediaproc image extract photo.jpg -c red -o red.jpg
+mediaproc image extract photo.jpg -c green -o green.jpg
+mediaproc image extract photo.jpg -c blue -o blue.jpg
 ```
 
-### Extract Regions
+### 2. Extract Alpha Channel
 
 ```bash
-# Extract specific area
-mediaproc image extract photo.jpg -x 100 -y 50 -w 500 -h 300 -o region.jpg
+# Extract transparency information from PNG
+mediaproc image extract logo.png -c alpha -o alpha-mask.png
 
-# Extract face region
-mediaproc image extract portrait.jpg -x 200 -y 100 -w 400 -h 400 -o face.jpg
+# Extract alpha to use as mask
+mediaproc image extract transparent-image.png -c alpha -o mask.jpg
+
+# Preview alpha channel
+mediaproc image extract image.png -c alpha --dry-run --verbose
+```
+
+### 3. Extract Rectangular Regions
+
+```bash
+# Extract from top-left corner
+mediaproc image extract photo.jpg -w 300 -h 200 -o region.jpg
+
+# Extract from specific coordinates
+mediaproc image extract photo.jpg --left 100 --top 50 -w 400 -h 300 -o region.jpg
+
+# Extract center region (for 1920×1080 image)
+mediaproc image extract photo.jpg --left 460 --top 140 -w 1000 -h 800 -o center.jpg
+```
+
+### 4. Extract Face Region
+
+```bash
+# After detecting face coordinates
+mediaproc image extract portrait.jpg --left 250 --top 180 -w 400 -h 500 -o face.jpg
+
+# Extract multiple faces
+mediaproc image extract group.jpg --left 100 --top 150 -w 300 -h 350 -o face1.jpg
+mediaproc image extract group.jpg --left 500 --top 200 -w 280 -h 330 -o face2.jpg
+```
+
+### 5. Extract Watermark Region
+
+```bash
+# Extract bottom-right watermark area
+mediaproc image extract photo.jpg --left 1600 --top 900 -w 300 -h 100 -o watermark.jpg
+
+# Extract bottom center watermark
+mediaproc image extract photo.jpg --left 800 --top 950 -w 400 -h 130 -o watermark.jpg
+```
+
+### 6. Color Analysis via Channels
+
+```bash
+# Extract red channel for red-eye detection
+mediaproc image extract portrait.jpg -c red -o red-analysis.jpg
+
+# Extract green channel for vegetation analysis
+mediaproc image extract landscape.jpg -c green -o vegetation.jpg
+
+# Extract blue channel for sky analysis
+mediaproc image extract landscape.jpg -c blue -o sky.jpg
+```
+
+### 7. Batch Channel Extraction
+
+```bash
+# Extract all RGB channels from multiple images
+for img in *.jpg; do
+  filename=$(basename "$img" .jpg)
+  mediaproc image extract "$img" -c red -o "${filename}-red.jpg"
+  mediaproc image extract "$img" -c green -o "${filename}-green.jpg"
+  mediaproc image extract "$img" -c blue -o "${filename}-blue.jpg"
+done
+```
+
+### 8. Region Grid Extraction
+
+```bash
+# Extract 3×3 grid of regions (for 1200×1200 image)
+for row in 0 400 800; do
+  for col in 0 400 800; do
+    mediaproc image extract grid.jpg --left $col --top $row -w 400 -h 400 -o "tile-${row}-${col}.jpg"
+  done
+done
+```
+
+### 9. Extract with Quality Control
+
+```bash
+# Maximum quality extraction
+mediaproc image extract photo.jpg --left 200 --top 100 -w 800 -h 600 -q 100 -o high-quality.jpg
+
+# Web-optimized extraction
+mediaproc image extract photo.jpg --left 200 --top 100 -w 800 -h 600 -q 80 -o web-optimized.jpg
+```
+
+### 10. Preview Before Extraction
+
+```bash
+# Preview channel extraction
+mediaproc image extract photo.jpg -c red --dry-run --verbose
+
+# Preview region extraction
+mediaproc image extract photo.jpg --left 100 --top 50 -w 400 -h 300 --dry-run --verbose
+```
+
+### 11. Scientific Image Analysis
+
+```bash
+# Extract channels for medical imaging
+mediaproc image extract scan.jpg -c red -o red-intensity.jpg
+mediaproc image extract scan.jpg -c green -o green-intensity.jpg
+mediaproc image extract scan.jpg -c blue -o blue-intensity.jpg
+
+# Extract specific tissue region
+mediaproc image extract scan.jpg --left 300 --top 200 -w 600 -h 600 -o tissue-sample.jpg
+```
+
+### 12. Create Masks from Channels
+
+```bash
+# Extract alpha channel as mask
+mediaproc image extract logo.png -c alpha -o mask.jpg
+
+# Use green channel for chroma key mask
+mediaproc image extract greenscreen.jpg -c green -o green-mask.jpg
+
+# Extract red channel for specific color isolation
+mediaproc image extract photo.jpg -c red -o red-mask.jpg
+```
+
+### 13. Extract Thumbnail Region
+
+```bash
+# Extract top-left corner for thumbnail
+mediaproc image extract photo.jpg -w 300 -h 300 -o thumbnail.jpg
+
+# Extract center region for thumbnail
+mediaproc image extract photo.jpg --left 500 --top 300 -w 400 -h 400 -o center-thumb.jpg
+```
+
+### 14. Extract Text Region from Document
+
+```bash
+# Extract header region
+mediaproc image extract document.jpg --top 0 --left 0 -w 1200 -h 200 -o header.jpg
+
+# Extract body text region
+mediaproc image extract document.jpg --top 250 --left 100 -w 1000 -h 800 -o body.jpg
+
+# Extract footer
+mediaproc image extract document.jpg --top 1000 --left 0 -w 1200 -h 100 -o footer.jpg
+```
+
+### 15. Extract Logo or Brand Elements
+
+```bash
+# Extract logo from corner
+mediaproc image extract banner.jpg --left 50 --top 50 -w 200 -h 100 -o logo.jpg
+
+# Extract brand element
+mediaproc image extract design.jpg --left 800 --top 200 -w 300 -h 300 -o brand-element.jpg
+```
+
+## Use Cases
+
+### 1. Scientific and Medical Imaging
+
+- **Channel Analysis**: Study individual color channels for research
+- **Region of Interest**: Extract specific areas for detailed analysis
+- **Tissue Sampling**: Isolate tissue regions from medical scans
+- **Spectral Analysis**: Analyze color distribution patterns
+
+### 2. Photography and Image Processing
+
+- **Color Grading**: Analyze individual channels for color correction
+- **Mask Creation**: Extract channels to create selection masks
+- **Red-Eye Detection**: Use red channel for eye region analysis
+- **Sky Replacement**: Extract sky regions for editing
+
+### 3. Computer Vision and ML
+
+- **Feature Extraction**: Extract regions containing specific features
+- **Training Data**: Create datasets from larger images
+- **Object Detection**: Extract detected object regions
+- **Image Segmentation**: Extract segmented regions for processing
+
+### 4. Web and UI Development
+
+- **Sprite Extraction**: Extract individual elements from sprite sheets
+- **Icon Extraction**: Isolate icons from design files
+- **Thumbnail Generation**: Extract representative regions
+- **Asset Preparation**: Extract specific UI elements
+
+### 5. Design and Creative Work
+
+- **Element Isolation**: Extract specific design elements
+- **Pattern Extraction**: Extract repeating patterns or textures
+- **Color Studies**: Analyze color channels separately
+- **Alpha Channel Editing**: Extract and modify transparency
+
+### 6. Document Processing
+
+- **Header/Footer Extraction**: Isolate document sections
+- **Signature Extraction**: Extract signature regions
+- **Text Region Isolation**: Extract text areas for OCR
+- **Layout Analysis**: Extract page elements for analysis
+
+## Technical Details
+
+### Channel Extraction Method
+
+The extract command uses Sharp's `extractChannel()` method:
+
+- Converts color channel to grayscale (0-255 intensity)
+- Maintains original resolution
+- Output is single-channel (grayscale) image
+- No color information retained (only intensity)
+- Fast operation (no complex calculations)
+
+**Channel Mapping:**
+
+```
+RGB(r, g, b) → Channel Extraction → Grayscale(channel_value)
+Example: RGB(200, 150, 100)
+- Red channel → Grayscale(200)
+- Green channel → Grayscale(150)
+- Blue channel → Grayscale(100)
+```
+
+### Region Extraction Method
+
+The extract command uses Sharp's `extract()` method:
+
+- Pixel-perfect rectangular extraction
+- No resampling or quality loss
+- Coordinates are 0-indexed (top-left is 0,0)
+- Maintains original pixel values
+- Efficient (no processing, just copying)
+
+**Coordinate System:**
+
+```
+(0,0) ────────────────→ X (width)
+  │
+  │     ┌─────────────┐
+  │     │   Region    │
+  │     │  (left,top) │
+  │     │      ↓      │
+  │     │  w × h      │
+  │     └─────────────┘
+  ↓
+Y (height)
+```
+
+### Performance Considerations
+
+- **Channel Extraction**: Very fast (O(n) where n = pixels)
+- **Region Extraction**: Very fast (O(region_pixels))
+- **Memory Efficient**: Only processes/stores extracted data
+- **No Quality Loss**: Direct pixel copy, no resampling
+- **Alpha Channel**: Only works with formats supporting transparency
+
+### Output Characteristics
+
+**Channel Extraction:**
+
+- Output: Grayscale image
+- Dimensions: Same as input
+- Color Space: Single channel
+- Format: Any (RGB converted to grayscale)
+
+**Region Extraction:**
+
+- Output: Full color (if input is color)
+- Dimensions: Specified width × height
+- Color Space: Same as input
+- Format: Maintains input format characteristics
+
+### Validation Rules
+
+**Channel Extraction:**
+
+- Channel must be: `red`, `green`, `blue`, or `alpha`
+- Alpha channel only works with PNG, WebP, or formats supporting transparency
+- JPEG images don't have alpha channel
+
+**Region Extraction:**
+
+- `--width` and `--height` are required
+- `--left` must be < image width
+- `--top` must be < image height
+- `left + width` must be ≤ image width
+- `top + height` must be ≤ image height
+- Coordinates must be non-negative integers
+
+## Common Patterns
+
+### Pattern 1: Extract All RGB Channels
+
+```bash
+# Extract complete RGB breakdown
+mediaproc image extract input.jpg -c red -o red.jpg
+mediaproc image extract input.jpg -c green -o green.jpg
+mediaproc image extract input.jpg -c blue -o blue.jpg
+```
+
+### Pattern 2: Extract Center Region
+
+```bash
+# For 1920×1080 image, extract 1000×800 center
+# Center calculation: left = (1920-1000)/2 = 460, top = (1080-800)/2 = 140
+mediaproc image extract input.jpg --left 460 --top 140 -w 1000 -h 800 -o center.jpg
+```
+
+### Pattern 3: Extract Alpha Mask
+
+```bash
+# Extract transparency as mask
+mediaproc image extract logo.png -c alpha -o mask.png
+```
+
+### Pattern 4: Extract Grid Tiles
+
+```bash
+# Extract 2×2 grid (for 1000×1000 image)
+mediaproc image extract input.jpg --left 0 --top 0 -w 500 -h 500 -o tile1.jpg
+mediaproc image extract input.jpg --left 500 --top 0 -w 500 -h 500 -o tile2.jpg
+mediaproc image extract input.jpg --left 0 --top 500 -w 500 -h 500 -o tile3.jpg
+mediaproc image extract input.jpg --left 500 --top 500 -w 500 -h 500 -o tile4.jpg
+```
+
+### Pattern 5: Extract Corners
+
+```bash
+# Top-left corner
+mediaproc image extract input.jpg -w 400 -h 300 -o top-left.jpg
+
+# Top-right corner (for 1920×1080)
+mediaproc image extract input.jpg --left 1520 --top 0 -w 400 -h 300 -o top-right.jpg
+```
+
+## Troubleshooting
+
+### Issue: Invalid Channel Name
+
+**Problem**: Error when specifying channel
+
+**Solutions**:
+
+```bash
+# Use correct channel names (lowercase)
+mediaproc image extract photo.jpg -c red    # ✓ Correct
+mediaproc image extract photo.jpg -c Red    # ✗ Incorrect
+mediaproc image extract photo.jpg -c RED    # ✗ Incorrect
+
+# Valid channels: red, green, blue, alpha
+```
+
+### Issue: Alpha Channel Not Found
+
+**Problem**: Error extracting alpha channel from JPEG
+
+**Solutions**:
+
+```bash
+# Alpha channel only works with PNG, WebP, etc.
+# JPEG doesn't support transparency
+
+# Convert to PNG first if needed
+mediaproc image convert photo.jpg -f png -o photo.png
+mediaproc image extract photo.png -c alpha -o mask.png
+```
+
+### Issue: Region Out of Bounds
+
+**Problem**: Extraction fails due to coordinates outside image
+
+**Solutions**:
+
+```bash
+# Check image dimensions first
+mediaproc image metadata input.jpg
+
+# Verify: left + width ≤ image width
+# Verify: top + height ≤ image height
+
+# Example: For 1920×1080 image
+mediaproc image extract input.jpg --left 1600 --top 900 -w 320 -h 180  # ✓ OK (1600+320=1920, 900+180=1080)
+mediaproc image extract input.jpg --left 1700 --top 900 -w 320 -h 180  # ✗ Fails (1700+320 > 1920)
+
+# Use --dry-run to test
+mediaproc image extract input.jpg --left 1700 --top 900 -w 320 -h 180 --dry-run
+```
+
+### Issue: Missing Required Parameters
+
+**Problem**: Region extraction requires width and height
+
+**Solutions**:
+
+```bash
+# Both width and height are required for region extraction
+mediaproc image extract input.jpg -w 300 -h 200  # ✓ Correct
+
+# Missing height
+mediaproc image extract input.jpg -w 300  # ✗ Error
+
+# Missing width
+mediaproc image extract input.jpg -h 200  # ✗ Error
+```
+
+### Issue: Unexpected Grayscale Output
+
+**Problem**: Channel extraction produces grayscale instead of color
+
+**Solutions**:
+
+```bash
+# This is expected behavior
+# Channel extraction always produces grayscale output
+# Each pixel shows the intensity (0-255) of that channel
+
+# For color output, use region extraction instead
+mediaproc image extract input.jpg --left 100 --top 50 -w 400 -h 300 -o color-region.jpg
+```
+
+### Issue: Quality Loss in Extracted Region
+
+**Problem**: Extracted region appears lower quality
+
+**Solutions**:
+
+```bash
+# Use maximum quality setting
+mediaproc image extract input.jpg --left 100 --top 50 -w 400 -h 300 -q 100 -o output.jpg
+
+# Ensure input is high quality
+# Extraction doesn't resample, so quality matches input
+
+# Use lossless format for no quality loss
+mediaproc image extract input.jpg --left 100 --top 50 -w 400 -h 300 -o output.png
+```
+
+## Best Practices
+
+1. **Verify Coordinates Before Extraction**
+
+   - Use `--dry-run` to test coordinates
+   - Check image dimensions with metadata command
+   - Calculate bounds carefully to avoid errors
+
+2. **Use Appropriate Output Formats**
+
+   - PNG for alpha channel extraction
+   - JPEG for photographic region extraction
+   - PNG for lossless region extraction
+
+3. **Channel Extraction for Analysis**
+
+   - Extract all RGB channels for complete color analysis
+   - Use alpha channel for mask creation
+   - Analyze channels separately for color correction
+
+4. **Region Extraction Efficiency**
+
+   - Extract multiple regions in batch processing
+   - Use precise coordinates for consistent results
+   - Plan extraction grid for systematic processing
+
+5. **Quality Management**
+
+   - Use high quality settings for important extractions
+   - Consider output format impact on file size
+   - Balance quality with storage requirements
+
+6. **Coordinate Calculation**
+
+   - Use image dimensions to calculate center regions
+   - Account for aspect ratio in region selection
+   - Validate bounds before processing large batches
+
+7. **Alpha Channel Handling**
+   - Only extract alpha from formats that support it
+   - Convert to PNG first if needed
+   - Use extracted alpha as masks for other operations
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Extract channel, then apply threshold
+mediaproc image extract input.jpg -c red -o red-channel.jpg
+mediaproc image threshold red-channel.jpg --level 128 -o mask.jpg
+
+# Extract region, then resize
+mediaproc image extract input.jpg --left 200 --top 100 -w 800 -h 600 -o region.jpg
+mediaproc image resize region.jpg -w 400 -h 300 -o thumbnail.jpg
+
+# Extract alpha, then use as mask
+mediaproc image extract logo.png -c alpha -o mask.png
+mediaproc image boolean base.jpg mask.png --operation and -o masked.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Extract face regions from batch photos
+
+for img in portraits/*.jpg; do
+  filename=$(basename "$img" .jpg)
+
+  # Extract face region (adjust coordinates as needed)
+  mediaproc image extract "$img" \\
+    --left 250 --top 200 -w 400 -h 500 \\
+    -o "faces/${filename}-face.jpg"
+done
 ```
 
 ## See Also
 
-- [crop](./crop) - Crop images with smart positioning
-- [channel](./channel) - Channel operations
+- [crop](./crop) - Similar to region extraction with different syntax
+- [split](./split) - Split image into multiple tiles automatically
+- [boolean](./boolean) - Combine images using extracted channels
+- [threshold](./threshold) - Apply threshold to extracted channels
+- [recomb](./recomb) - Recombine extracted channels

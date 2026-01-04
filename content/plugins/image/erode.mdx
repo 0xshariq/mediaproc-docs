@@ -16,6 +16,7 @@ mediaproc image erode <input> [options]
 ## Description
 
 The `erode` command applies morphological erosion, a fundamental operation in image processing that expands dark (low-value) regions while shrinking bright (high-value) regions. This is the opposite of dilation. Erosion is useful for:
+
 - **Noise removal**: Remove small bright spots and noise
 - **Object separation**: Separate touching or connected objects
 - **Thinning**: Thin bright features like text or lines
@@ -26,13 +27,13 @@ Uses a 3×3 kernel that examines each pixel and its 8 neighbors, replacing the c
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `<input>` | string | *required* | Input image file path |
-| `-o, --output` | string | `<input>_eroded.<ext>` | Output file path |
-| `-q, --quality` | number | `90` | Output quality 1-100 |
-| `--dry-run` | boolean | `false` | Show what would be done without processing |
-| `-v, --verbose` | boolean | `false` | Enable verbose logging |
+| Option          | Type    | Default                | Description                                |
+| --------------- | ------- | ---------------------- | ------------------------------------------ |
+| `<input>`       | string  | _required_             | Input image file path                      |
+| `-o, --output`  | string  | `<input>_eroded.<ext>` | Output file path                           |
+| `-q, --quality` | number  | `90`                   | Output quality 1-100                       |
+| `--dry-run`     | boolean | `false`                | Show what would be done without processing |
+| `-v, --verbose` | boolean | `false`                | Enable verbose logging                     |
 
 ## Examples
 
@@ -228,6 +229,7 @@ For each pixel, replace with MINIMUM value in 3×3 neighborhood
 ```
 
 **Effect**:
+
 - Dark pixels expand into neighboring bright pixels
 - Bright regions shrink
 - Small bright spots disappear
@@ -345,6 +347,7 @@ mediaproc image erode temp1.png -o closed.png
 **Problem**: Eroded objects are too small or disappeared.
 
 **Solutions**:
+
 ```bash
 # Use single erosion instead of multiple
 mediaproc image erode mask.png -o eroded.png
@@ -360,6 +363,7 @@ rm temp.png
 **Problem**: Touching objects still not separated.
 
 **Solutions**:
+
 ```bash
 # Apply multiple erosions
 mediaproc image erode mask.png -o temp1.png
@@ -376,6 +380,7 @@ mediaproc image dilate separated.png -o restored.png
 **Problem**: Noise still visible after erosion.
 
 **Solutions**:
+
 ```bash
 # Apply multiple erosions
 mediaproc image erode noisy.png -o temp1.png
@@ -394,6 +399,7 @@ rm temp_e.png
 **Problem**: Output looks pixelated.
 
 **Solutions**:
+
 ```bash
 # Increase quality
 mediaproc image erode mask.png -q 95 -o high_quality.png
@@ -409,6 +415,7 @@ mediaproc image erode binary.jpg -o eroded.png
 **Problem**: Important features removed.
 
 **Solutions**:
+
 ```bash
 # Use single pass only
 mediaproc image erode mask.png -o eroded.png

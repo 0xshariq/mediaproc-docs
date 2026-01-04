@@ -13,8 +13,9 @@ mediaproc image batch <directory> --operation <operation> [options]
 The `batch` command processes multiple images in a directory with a single operation. It automatically finds all image files, applies the specified operation, and saves results to an output directory while preserving the folder structure.
 
 Perfect for:
+
 - Bulk image conversion
-- Mass resizing for web galleries  
+- Mass resizing for web galleries
 - Batch format optimization
 - Automated photo workflows
 - Directory-wide transformations
@@ -22,33 +23,33 @@ Perfect for:
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--operation` | string | *required* | Operation to perform (see list below) |
-| `-o, --output` | path | `./output` | Output directory |
-| `-p, --pattern` | glob | `*.{jpg,jpeg,png,webp,gif}` | File pattern to match |
-| `-r, --recursive` | flag | - | Process subdirectories recursively |
-| `--width` | number | - | Width in pixels (for resize/thumbnail) |
-| `--height` | number | - | Height in pixels (for resize/thumbnail) |
-| `-f, --format` | string | - | Output format (for convert operation) |
-| `-q, --quality` | number | varies | Output quality (1-100) |
-| `--sigma` | number | 5 | Blur sigma (for blur operation) |
-| `--dry-run` | flag | - | Preview changes without executing |
-| `-v, --verbose` | flag | - | Show detailed output |
+| Option            | Type   | Default                     | Description                             |
+| ----------------- | ------ | --------------------------- | --------------------------------------- |
+| `--operation`     | string | _required_                  | Operation to perform (see list below)   |
+| `-o, --output`    | path   | `./output`                  | Output directory                        |
+| `-p, --pattern`   | glob   | `*.{jpg,jpeg,png,webp,gif}` | File pattern to match                   |
+| `-r, --recursive` | flag   | -                           | Process subdirectories recursively      |
+| `--width`         | number | -                           | Width in pixels (for resize/thumbnail)  |
+| `--height`        | number | -                           | Height in pixels (for resize/thumbnail) |
+| `-f, --format`    | string | -                           | Output format (for convert operation)   |
+| `-q, --quality`   | number | varies                      | Output quality (1-100)                  |
+| `--sigma`         | number | 5                           | Blur sigma (for blur operation)         |
+| `--dry-run`       | flag   | -                           | Preview changes without executing       |
+| `-v, --verbose`   | flag   | -                           | Show detailed output                    |
 
 ## Supported Operations
 
-| Operation | Description | Required Options | Example |
-|-----------|-------------|------------------|---------|
-| `resize` | Resize images | `--width` and/or `--height` | Resize to 1920px wide |
-| `convert` | Convert format | `--format` | Convert to WebP |
-| `optimize` | Optimize file size | `--quality` (optional) | Reduce file size |
-| `grayscale` | Convert to grayscale | None | Black and white |
-| `blur` | Apply blur effect | `--sigma` (optional) | Blur with sigma 5 |
-| `sharpen` | Sharpen images | None | Enhance edges |
-| `thumbnail` | Generate thumbnails | `--width`, `--height` (optional) | Create 200x200 thumbs |
-| `sepia` | Apply sepia tone | None | Vintage brown tone |
-| `normalize` | Auto-normalize colors | None | Balance histogram |
+| Operation   | Description           | Required Options                 | Example               |
+| ----------- | --------------------- | -------------------------------- | --------------------- |
+| `resize`    | Resize images         | `--width` and/or `--height`      | Resize to 1920px wide |
+| `convert`   | Convert format        | `--format`                       | Convert to WebP       |
+| `optimize`  | Optimize file size    | `--quality` (optional)           | Reduce file size      |
+| `grayscale` | Convert to grayscale  | None                             | Black and white       |
+| `blur`      | Apply blur effect     | `--sigma` (optional)             | Blur with sigma 5     |
+| `sharpen`   | Sharpen images        | None                             | Enhance edges         |
+| `thumbnail` | Generate thumbnails   | `--width`, `--height` (optional) | Create 200x200 thumbs |
+| `sepia`     | Apply sepia tone      | None                             | Vintage brown tone    |
+| `normalize` | Auto-normalize colors | None                             | Balance histogram     |
 
 ## Examples
 
@@ -177,6 +178,7 @@ output/
 ```
 
 Features:
+
 - Maintains folder hierarchy
 - Creates subdirectories automatically
 - Adds operation suffix to filenames
@@ -396,7 +398,7 @@ Current limitations (may be addressed in future versions):
 
 ## Future Enhancements
 
-*These features are planned but not yet implemented:*
+_These features are planned but not yet implemented:_
 
 - **Parallel processing**: Process multiple images simultaneously (FUTURE)
 - **Operation chaining**: Apply multiple operations in sequence (FUTURE)
@@ -408,26 +410,31 @@ Current limitations (may be addressed in future versions):
 ## Troubleshooting
 
 **No files found:**
+
 - Check directory path is correct
 - Verify images have supported extensions
 - Try --verbose to see what's happening
 
 **Some files failed:**
+
 - Use --verbose to see specific errors
 - Check file permissions
 - Verify files aren't corrupted
 
 **Output structure unexpected:**
+
 - Check if --recursive is needed
 - Verify output directory setting
 - Review directory structure with --dry-run
 
 **Taking too long:**
+
 - Normal for large batches (sequential processing)
 - Consider processing subsets separately
 - Check file sizes (large files take longer)
 
 **Quality issues:**
+
 - Adjust --quality setting
 - Test on small batch first
 - Consider using lossless formats (PNG)

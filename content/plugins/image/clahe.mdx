@@ -18,6 +18,7 @@ mediaproc image clahe <input> [options]
 The `clahe` command applies Contrast Limited Adaptive Histogram Equalization to enhance local contrast in images. Unlike standard histogram equalization that works globally, CLAHE divides the image into tiles and applies histogram equalization to each tile independently with contrast limiting to prevent over-amplification of noise.
 
 This technique is particularly effective for:
+
 - **Medical imaging**: Enhancing X-rays, CT scans, MRI images
 - **Underwater photography**: Revealing details in murky water
 - **Low-light images**: Bringing out shadow details
@@ -28,15 +29,15 @@ CLAHE improves local contrast while limiting noise amplification, making it supe
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `<input>` | string | *required* | Input image file path |
-| `-w, --width` | number | `3` | Width of CLAHE tile in pixels (min: 1) |
-| `-h, --height` | number | `3` | Height of CLAHE tile in pixels (min: 1) |
-| `--max-slope` | number | `3` | Maximum slope for contrast limiting (min: 0) |
-| `-o, --output` | string | `<input>_clahe.<ext>` | Output file path |
-| `--dry-run` | boolean | `false` | Show what would be done without processing |
-| `-v, --verbose` | boolean | `false` | Enable verbose logging |
+| Option          | Type    | Default               | Description                                  |
+| --------------- | ------- | --------------------- | -------------------------------------------- |
+| `<input>`       | string  | _required_            | Input image file path                        |
+| `-w, --width`   | number  | `3`                   | Width of CLAHE tile in pixels (min: 1)       |
+| `-h, --height`  | number  | `3`                   | Height of CLAHE tile in pixels (min: 1)      |
+| `--max-slope`   | number  | `3`                   | Maximum slope for contrast limiting (min: 0) |
+| `-o, --output`  | string  | `<input>_clahe.<ext>` | Output file path                             |
+| `--dry-run`     | boolean | `false`               | Show what would be done without processing   |
+| `-v, --verbose` | boolean | `false`               | Enable verbose logging                       |
 
 ## Examples
 
@@ -271,6 +272,7 @@ CLAHE (Contrast Limited Adaptive Histogram Equalization) operates in several ste
 5. **Interpolation**: Bilinear interpolation is used between tile boundaries to eliminate artifacts
 
 This approach provides:
+
 - **Better local contrast**: Each region is enhanced independently
 - **Noise control**: Contrast limiting prevents amplifying noise in uniform regions
 - **Smooth transitions**: Interpolation prevents tile boundary artifacts
@@ -280,6 +282,7 @@ This approach provides:
 The tile size (`-w` and `-h`) controls the spatial extent of local contrast enhancement:
 
 **Small Tiles (1-3 pixels)**:
+
 - Maximum local contrast enhancement
 - Reveals finest details
 - Best for: medical imaging, microscopy
@@ -287,6 +290,7 @@ The tile size (`-w` and `-h`) controls the spatial extent of local contrast enha
 - Use when: Detail preservation is critical
 
 **Medium Tiles (4-6 pixels)**:
+
 - Balanced local/global enhancement
 - Good detail with less noise
 - Best for: general photography, underwater images
@@ -294,6 +298,7 @@ The tile size (`-w` and `-h`) controls the spatial extent of local contrast enha
 - Use when: Need good detail without excessive noise
 
 **Large Tiles (7-10+ pixels)**:
+
 - More global contrast enhancement
 - Minimal noise amplification
 - Best for: images with large uniform regions
@@ -301,6 +306,7 @@ The tile size (`-w` and `-h`) controls the spatial extent of local contrast enha
 - Use when: Subtle enhancement desired
 
 **Aspect Ratio Considerations**:
+
 - **Square tiles** (w = h): Uniform enhancement in all directions
 - **Wide tiles** (w > h): Emphasize horizontal features
 - **Tall tiles** (h > w): Emphasize vertical features
@@ -310,6 +316,7 @@ The tile size (`-w` and `-h`) controls the spatial extent of local contrast enha
 The max slope (`--max-slope`) controls contrast limiting:
 
 **Low Values (0-2)**:
+
 - Conservative enhancement
 - Minimal noise amplification
 - Smooth, natural results
@@ -317,6 +324,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 - Use when: Image already has decent contrast
 
 **Medium Values (2.5-4)**:
+
 - Standard enhancement
 - Good detail without excessive noise
 - Balanced results
@@ -324,6 +332,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 - Use when: Moderate enhancement needed
 
 **High Values (5-10)**:
+
 - Aggressive enhancement
 - Maximum local contrast
 - May amplify noise significantly
@@ -331,6 +340,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 - Use when: Maximum detail extraction needed
 
 **Zero (0)**:
+
 - No contrast limiting
 - Equivalent to standard adaptive histogram equalization
 - Maximum noise amplification
@@ -339,18 +349,21 @@ The max slope (`--max-slope`) controls contrast limiting:
 ### Comparison with Other Techniques
 
 **CLAHE vs Standard Histogram Equalization**:
+
 - **Standard HE**: Global operation, uniform transformation across entire image
 - **CLAHE**: Local operation, different transformation for each tile
 - **Advantage**: CLAHE preserves local details better
 - **Use CLAHE when**: Image has varying lighting conditions
 
 **CLAHE vs Normalize**:
+
 - **Normalize**: Stretches pixel values to full range globally
 - **CLAHE**: Enhances local contrast adaptively
 - **Advantage**: CLAHE better for images with backlit subjects
 - **Use CLAHE when**: Need to reveal shadow/highlight details simultaneously
 
 **CLAHE vs Auto-Enhance**:
+
 - **Auto-Enhance**: Applies multiple operations (levels, contrast, saturation)
 - **CLAHE**: Focused on local contrast only
 - **Advantage**: CLAHE more precise control over local contrast
@@ -361,6 +374,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 ### For Medical Imaging
 
 **X-rays**:
+
 ```bash
 # Chest X-ray
 -w 4 -h 4 --max-slope 2.5
@@ -373,6 +387,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 ```
 
 **CT/MRI Scans**:
+
 ```bash
 # Brain CT
 -w 5 -h 5 --max-slope 2
@@ -387,6 +402,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 ### For Underwater Photography
 
 **Water Clarity**:
+
 ```bash
 # Clear water
 -w 5 -h 5 --max-slope 3
@@ -399,6 +415,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 ```
 
 **Depth**:
+
 ```bash
 # Shallow (<10m)
 -w 4 -h 4 --max-slope 3
@@ -413,6 +430,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 ### For Low-Light Photography
 
 **Scene Type**:
+
 ```bash
 # Indoor low-light
 -w 4 -h 4 --max-slope 3.5
@@ -430,6 +448,7 @@ The max slope (`--max-slope`) controls contrast limiting:
 ### For Microscopy
 
 **Magnification Level**:
+
 ```bash
 # Low magnification (4x-10x)
 -w 5 -h 5 --max-slope 3
@@ -536,6 +555,7 @@ mediaproc image clahe telescope_image.jpg \
 **Problem**: Enhanced image shows excessive noise.
 
 **Solutions**:
+
 ```bash
 # Reduce max slope
 mediaproc image clahe image.jpg --max-slope 2 -o less_noise.jpg
@@ -553,6 +573,7 @@ mediaproc image clahe temp.jpg -w 4 -h 4 --max-slope 2.5 -o denoised.jpg
 **Problem**: Image doesn't look significantly enhanced.
 
 **Solutions**:
+
 ```bash
 # Increase max slope
 mediaproc image clahe image.jpg --max-slope 5 -o more_contrast.jpg
@@ -570,6 +591,7 @@ mediaproc image sharpen temp.jpg -s 2 -o enhanced.jpg
 **Problem**: Visible grid pattern in output.
 
 **Solutions**:
+
 ```bash
 # Increase tile size to reduce boundaries
 mediaproc image clahe image.jpg -w 8 -h 8 -o fewer_tiles.jpg
@@ -583,6 +605,7 @@ mediaproc image clahe image.jpg --max-slope 2 -o smoother_transition.jpg
 **Problem**: Colors look artificial or over-saturated.
 
 **Solutions**:
+
 ```bash
 # Convert to grayscale first
 mediaproc image grayscale image.jpg -o gray.jpg && \
@@ -598,6 +621,7 @@ mediaproc image modulate temp.jpg --saturation 80 -o natural_colors.jpg
 **Problem**: CLAHE takes too long.
 
 **Solutions**:
+
 ```bash
 # Increase tile size
 mediaproc image clahe large_image.jpg -w 10 -h 10 -o faster.jpg
@@ -615,6 +639,7 @@ ls *.jpg | parallel mediaproc image clahe {} -w 4 -h 4 -o processed/{}
 **Problem**: Batch processed images look different.
 
 **Solutions**:
+
 ```bash
 # Use consistent parameters
 PARAMS="-w 4 -h 4 --max-slope 3"
@@ -635,7 +660,7 @@ done
 - [auto-enhance](./auto-enhance) - Automatic multi-level enhancement
 - [modulate](./modulate) - Adjust brightness, saturation, and hue
 - [gamma](./gamma) - Apply gamma correction for brightness adjustment
-- [linear](./linear) - Apply linear formula (a * input + b)
+- [linear](./linear) - Apply linear formula (a \* input + b)
 - [threshold](./threshold) - Convert to black and white based on threshold
 - [sharpen](./sharpen) - Enhance edge details
 - [convolve](./convolve) - Apply custom convolution kernels

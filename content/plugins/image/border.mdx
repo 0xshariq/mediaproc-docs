@@ -14,13 +14,13 @@ The `border` command adds a uniform solid color border around all sides of an im
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-w, --width` | number | 10 | Border width in pixels (applied to all sides) |
-| `--color` | color | `#000000` | Border color (hex, rgb, or color name) |
-| `-o, --output` | path | `<input>-border.<ext>` | Output file path |
-| `--dry-run` | flag | - | Preview changes without executing |
-| `-v, --verbose` | flag | - | Show detailed output |
+| Option          | Type   | Default                | Description                                   |
+| --------------- | ------ | ---------------------- | --------------------------------------------- |
+| `-w, --width`   | number | 10                     | Border width in pixels (applied to all sides) |
+| `--color`       | color  | `#000000`              | Border color (hex, rgb, or color name)        |
+| `-o, --output`  | path   | `<input>-border.<ext>` | Output file path                              |
+| `--dry-run`     | flag   | -                      | Preview changes without executing             |
+| `-v, --verbose` | flag   | -                      | Show detailed output                          |
 
 ## Color Formats
 
@@ -164,8 +164,9 @@ The border extends the image canvas in all directions:
 **Result**: 840x640px (800+20+20 by 600+20+20)
 
 Border is applied equally to:
+
 - **Top**: 20px
-- **Bottom**: 20px  
+- **Bottom**: 20px
 - **Left**: 20px
 - **Right**: 20px
 
@@ -225,14 +226,14 @@ mediaproc image border diagram.jpg --width 35 --color white -o document-ready.jp
 
 ## Border Width Guide
 
-| Width | Effect | Best For |
-|-------|--------|----------|
-| 2-5px | Minimal | Subtle separation, web thumbnails |
-| 5-15px | Small | Gallery thumbnails, icons |
-| 15-30px | Medium | Standard photo frames, presentations |
-| 30-60px | Large | Instagram posts, emphasis |
-| 60-100px | Extra Large | Art prints, poster effects |
-| 100+px | Massive | Special effects, canvas extensions |
+| Width    | Effect      | Best For                             |
+| -------- | ----------- | ------------------------------------ |
+| 2-5px    | Minimal     | Subtle separation, web thumbnails    |
+| 5-15px   | Small       | Gallery thumbnails, icons            |
+| 15-30px  | Medium      | Standard photo frames, presentations |
+| 30-60px  | Large       | Instagram posts, emphasis            |
+| 60-100px | Extra Large | Art prints, poster effects           |
+| 100+px   | Massive     | Special effects, canvas extensions   |
 
 ## Color Recommendations
 
@@ -335,20 +336,24 @@ mediaproc image border cropped.jpg --width 50 --color white -o framed.jpg
 ## Troubleshooting
 
 **Border color not showing:**
+
 - Check color format is correct
 - Use quotes around color values: `--color "rgb(255,0,0)"`
 - Verify hex colors start with #
 
 **Unexpected output size:**
+
 - Remember: output = input + (2 × border width)
 - Border is added to all four sides
 
 **Color appears different than expected:**
+
 - Monitor calibration may affect perception
 - Some formats (JPEG) don't support transparency
 - Use PNG for transparent borders
 
 **Large file size after border:**
+
 - Larger dimensions = larger file
 - Optimize after adding border if needed
 - Consider using compressed formats (WebP)
@@ -362,7 +367,7 @@ mediaproc image border cropped.jpg --width 50 --color white -o framed.jpg
 
 ## Future Enhancements
 
-*These features are planned but not yet implemented:*
+_These features are planned but not yet implemented:_
 
 - **Individual side widths**: Different width per side (FUTURE)
 - **Gradient borders**: Color gradients instead of solid (FUTURE)

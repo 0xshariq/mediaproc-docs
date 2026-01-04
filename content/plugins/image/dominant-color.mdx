@@ -16,6 +16,7 @@ mediaproc image dominant-color <input> [options]
 ## Description
 
 The `dominant-color` command analyzes an image and extracts its most prominent colors using color histogram analysis. This is perfect for:
+
 - **Color palette generation**: Create color schemes from photos
 - **Brand color extraction**: Extract colors from logos
 - **Theme creation**: Generate website/app color themes
@@ -27,13 +28,13 @@ The command uses efficient color bucketing and frequency analysis to identify th
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `<input>` | string | *required* | Input image file path |
-| `-c, --count` | number | `5` | Number of dominant colors to extract (1-10) |
-| `--export` | string | (none) | Export color palette to JSON file |
-| `--dry-run` | boolean | `false` | Show what would be analyzed without processing |
-| `-v, --verbose` | boolean | `false` | Show detailed RGB/HSL values |
+| Option          | Type    | Default    | Description                                    |
+| --------------- | ------- | ---------- | ---------------------------------------------- |
+| `<input>`       | string  | _required_ | Input image file path                          |
+| `-c, --count`   | number  | `5`        | Number of dominant colors to extract (1-10)    |
+| `--export`      | string  | (none)     | Export color palette to JSON file              |
+| `--dry-run`     | boolean | `false`    | Show what would be analyzed without processing |
+| `-v, --verbose` | boolean | `false`    | Show detailed RGB/HSL values                   |
 
 ## Examples
 
@@ -279,8 +280,9 @@ Exported JSON structure:
 ### Hex Color
 
 6-digit hexadecimal: `#RRGGBB`
+
 - R: Red (00-FF)
-- G: Green (00-FF)  
+- G: Green (00-FF)
 - B: Blue (00-FF)
 
 Example: `#3B5998` = RGB(59, 89, 152)
@@ -288,6 +290,7 @@ Example: `#3B5998` = RGB(59, 89, 152)
 ### RGB Values
 
 Red, Green, Blue components (0-255):
+
 - `rgb(59, 89, 152)` = Blue tone
 - `rgb(255, 0, 0)` = Pure red
 - `rgb(0, 255, 0)` = Pure green
@@ -295,6 +298,7 @@ Red, Green, Blue components (0-255):
 ### HSL Values (Verbose Mode)
 
 Hue, Saturation, Lightness:
+
 - **H (Hue)**: 0-360° (color wheel position)
   - 0° = Red
   - 120° = Green
@@ -310,6 +314,7 @@ Hue, Saturation, Lightness:
 ### Percentage
 
 Coverage of image:
+
 - Shows how much of the image contains that color
 - Percentages sum to 100%
 - Higher percentage = more dominant
@@ -419,6 +424,7 @@ mediaproc image dominant-color character.png -c 4 -v
 **Problem**: Extracted colors are too similar.
 
 **Solutions**:
+
 ```bash
 # Reduce color count
 mediaproc image dominant-color photo.jpg -c 3
@@ -432,6 +438,7 @@ mediaproc image dominant-color photo.jpg -c 3
 **Problem**: Dominant colors don't match visual perception.
 
 **Solutions**:
+
 ```bash
 # Increase color count to see full distribution
 mediaproc image dominant-color image.jpg -c 10 -v
@@ -448,6 +455,7 @@ mediaproc image dominant-color photo.jpg -c 5 -v
 **Problem**: Only 1-2 distinct colors found.
 
 **Solutions**:
+
 ```bash
 # Increase color count
 mediaproc image dominant-color image.jpg -c 10
@@ -461,6 +469,7 @@ mediaproc image dominant-color image.jpg -c 10
 **Problem**: Cannot export to JSON.
 
 **Solutions**:
+
 ```bash
 # Check directory exists
 mkdir -p palettes
@@ -478,6 +487,7 @@ mediaproc image dominant-color photo.jpg --export /full/path/to/colors.json
 **Problem**: Colors display differently than in image.
 
 **Solutions**:
+
 ```bash
 # This is normal - bucketing groups similar colors
 # Use verbose mode to see exact values
@@ -492,9 +502,9 @@ mediaproc image dominant-color image.jpg -v
 ### Using JSON in JavaScript
 
 ```javascript
-const palette = require('./palette.json');
+const palette = require("./palette.json");
 
-palette.colors.forEach(color => {
+palette.colors.forEach((color) => {
   console.log(`${color.hex}: ${color.percentage}%`);
   // Apply to CSS variables, etc.
 });
@@ -517,6 +527,7 @@ mediaproc image dominant-color photo.jpg -c 5 --export palette.json
 ### Design Tool Import
 
 Export JSON can be imported into:
+
 - Adobe Color
 - Coolors.co
 - Figma plugins

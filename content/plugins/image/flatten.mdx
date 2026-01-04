@@ -1,6 +1,11 @@
+---
+title: "flatten"
+description: "Remove alpha channel transparency by merging with a solid background color"
+---
+
 # flatten
 
-Flatten image by merging alpha channel.
+Remove the alpha channel (transparency) from images by compositing them onto a solid background color. Essential for converting transparent PNGs to formats like JPEG that don't support transparency.
 
 ## Usage
 
@@ -8,39 +13,593 @@ Flatten image by merging alpha channel.
 mediaproc image flatten <input> [options]
 ```
 
-## Description
+### Basic Syntax
 
-The `flatten` command removes the alpha channel by compositing it against a background color.
+```bash
+# Flatten with white background (default)
+mediaproc image flatten logo.png
+
+# Flatten with custom color
+mediaproc image flatten logo.png --background "#2C3E50"
+
+# Flatten and convert to JPEG
+mediaproc image flatten transparent.png -o output.jpg
+```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | string | - | Output file path |
-| `-b, --background` | string | #ffffff | Background color |
-| `-f, --format` | string | - | Output format (jpg, png, webp, avif) |
-| `-q, --quality` | number | 80 | Output quality (1-100) |
+| Option         | Alias | Type      | Default             | Description                          |
+| -------------- | ----- | --------- | ------------------- | ------------------------------------ |
+| `--background` |       | `string`  | `#ffffff`           | Background color (hex format)        |
+| `--output`     | `-o`  | `string`  | `flattened-[input]` | Output file path                     |
+| `--quality`    | `-q`  | `number`  | `90`                | Output quality (1-100)               |
+| `--dry-run`    |       | `boolean` | `false`             | Preview operation without saving     |
+| `--verbose`    | `-v`  | `boolean` | `false`             | Show detailed processing information |
+
+### Background Color Format
+
+The `--background` option accepts hex color codes:
+
+- **6-digit hex**: `#RRGGBB` (e.g., `#FF5733`, `#2C3E50`)
+- **3-digit hex**: `#RGB` (e.g., `#F57`, `#ABC`) - expanded to 6 digits
+- **Common values**: `#ffffff` (white), `#000000` (black)
 
 ## Examples
 
+### 1. Basic Flattening (White Background)
+
 ```bash
-# Flatten on white
-mediaproc image flatten transparent.png -o flat.jpg
+# Flatten with default white background
+mediaproc image flatten logo.png
 
-# Flatten on black
-mediaproc image flatten logo.png -b "#000000" -o dark-bg.jpg
+# Explicit white background
+mediaproc image flatten logo.png --background "#ffffff"
 
-# Custom color
-mediaproc image flatten image.png -b "#3b82f6" -o blue-bg.jpg
+# Flatten and save as JPEG
+mediaproc image flatten transparent.png -o output.jpg
+```
+
+### 2. Custom Background Colors
+
+```bash
+# Black background
+mediaproc image flatten logo.png --background "#000000"
+
+# Gray background
+mediaproc image flatten logo.png --background "#808080"
+
+# Colored background
+mediaproc image flatten logo.png --background "#FF5733"
+
+# Dark blue background
+mediaproc image flatten logo.png --background "#2C3E50"
+```
+
+### 3. PNG to JPEG Conversion
+
+```bash
+# Convert transparent PNG to JPEG
+mediaproc image flatten logo.png --background "#ffffff" -o logo.jpg
+
+# Convert with custom background
+mediaproc image flatten graphic.png --background "#F5F5F5" -o graphic.jpg
+
+# High-quality conversion
+mediaproc image flatten image.png --background "#ffffff" -q 100 -o image.jpg
+```
+
+### 4. Web Graphics Preparation
+
+```bash
+# Flatten for web use (white background)
+mediaproc image flatten icon.png --background "#ffffff" -o icon-web.jpg
+
+# Flatten with brand color background
+mediaproc image flatten logo.png --background "#1E3A8A" -o logo-branded.jpg
+
+# Flatten for social media
+mediaproc image flatten graphic.png --background "#F8F9FA" -o social-media.jpg
+```
+
+### 5. Print Preparation
+
+```bash
+# Flatten for CMYK print (white background)
+mediaproc image flatten design.png --background "#ffffff" -o print-ready.jpg
+
+# Flatten with cream background for print
+mediaproc image flatten artwork.png --background "#FFF8DC" -o print-artwork.jpg
+
+# High-quality print output
+mediaproc image flatten design.png --background "#ffffff" -q 100 -o high-res-print.jpg
+```
+
+### 6. Batch Processing
+
+```bash
+# Flatten all PNGs in a directory
+for img in *.png; do
+  mediaproc image flatten "$img" --background "#ffffff" -o "flattened-$img"
+done
+
+# Flatten and convert to JPEG
+for img in *.png; do
+  filename=$(basename "$img" .png)
+  mediaproc image flatten "$img" --background "#ffffff" -o "${filename}.jpg"
+done
+```
+
+### 7. Logo Background Variations
+
+```bash
+# White background version
+mediaproc image flatten logo.png --background "#ffffff" -o logo-white.jpg
+
+# Black background version
+mediaproc image flatten logo.png --background "#000000" -o logo-black.jpg
+
+# Colored background version
+mediaproc image flatten logo.png --background "#FF6B6B" -o logo-colored.jpg
+
+# Transparent to multiple backgrounds
+for color in "#ffffff" "#000000" "#3498db" "#e74c3c"; do
+  mediaproc image flatten logo.png --background "$color" -o "logo-${color:1}.jpg"
+done
+```
+
+### 8. Preview Before Processing
+
+```bash
+# Preview flattening operation
+mediaproc image flatten logo.png --background "#2C3E50" --dry-run
+
+# Check output with verbose info
+mediaproc image flatten logo.png --background "#ffffff" --dry-run --verbose
+```
+
+### 9. Email and Document Attachments
+
+```bash
+# Flatten for email compatibility (JPEG)
+mediaproc image flatten image.png --background "#ffffff" -o email-attachment.jpg
+
+# Flatten for document embedding
+mediaproc image flatten graphic.png --background "#ffffff" -q 95 -o document-image.jpg
+```
+
+### 10. E-commerce Product Images
+
+```bash
+# Standard white background for product photos
+mediaproc image flatten product.png --background "#ffffff" -o product-listing.jpg
+
+# Light gray background for variation
+mediaproc image flatten product.png --background "#F5F5F5" -o product-variant.jpg
+
+# Batch flatten product images
+for img in products/*.png; do
+  filename=$(basename "$img" .png)
+  mediaproc image flatten "$img" --background "#ffffff" -o "listings/${filename}.jpg"
+done
+```
+
+### 11. Screenshot Processing
+
+```bash
+# Flatten screenshot with white background
+mediaproc image flatten screenshot.png --background "#ffffff" -o screenshot.jpg
+
+# Flatten with subtle gray for better visibility
+mediaproc image flatten screenshot.png --background "#F8F9FA" -o screenshot-gray.jpg
+```
+
+### 12. Icon and Button Graphics
+
+```bash
+# Flatten icon for use on white background
+mediaproc image flatten icon.png --background "#ffffff" -o icon-light.jpg
+
+# Flatten icon for use on dark background
+mediaproc image flatten icon.png --background "#1A1A1A" -o icon-dark.jpg
+
+# Create multiple icon variants
+for bg in "#ffffff" "#f0f0f0" "#e0e0e0"; do
+  mediaproc image flatten icon.png --background "$bg" -o "icon-${bg:1}.jpg"
+done
+```
+
+### 13. Social Media Assets
+
+```bash
+# Flatten for Instagram post (white background)
+mediaproc image flatten post.png --background "#ffffff" -o instagram-post.jpg
+
+# Flatten for Facebook cover (branded color)
+mediaproc image flatten cover.png --background "#4267B2" -o facebook-cover.jpg
+
+# Flatten for Twitter card
+mediaproc image flatten card.png --background "#1DA1F2" -o twitter-card.jpg
+```
+
+### 14. Quality Control
+
+```bash
+# Maximum quality flatten
+mediaproc image flatten image.png --background "#ffffff" -q 100 -o max-quality.jpg
+
+# Balanced quality (smaller file)
+mediaproc image flatten image.png --background "#ffffff" -q 85 -o balanced.jpg
+
+# Web-optimized quality
+mediaproc image flatten image.png --background "#ffffff" -q 80 -o web-optimized.jpg
+```
+
+### 15. Combining with Other Operations
+
+```bash
+# Flatten, then resize
+mediaproc image flatten logo.png --background "#ffffff" -o temp.jpg
+mediaproc image resize temp.jpg -w 800 -h 600 -o final.jpg
+rm temp.jpg
+
+# Flatten, then add border
+mediaproc image flatten graphic.png --background "#ffffff" -o temp.jpg
+mediaproc image border temp.jpg -w 5 --color "#000000" -o final.jpg
+rm temp.jpg
+```
+
+## Use Cases
+
+### 1. Format Conversion
+
+- **PNG to JPEG**: Convert transparent PNGs to JPEG format
+- **WebP to JPEG**: Flatten WebP images for broader compatibility
+- **Format Compatibility**: Ensure images work in all contexts
+- **File Size Reduction**: JPEG typically smaller than PNG
+
+### 2. Web Development
+
+- **Background Consistency**: Ensure consistent appearance on all backgrounds
+- **Browser Compatibility**: Avoid transparency rendering issues
+- **Performance Optimization**: Smaller JPEG files load faster
+- **Email Compatibility**: Ensure images display correctly in email clients
+
+### 3. Print and Publishing
+
+- **CMYK Conversion**: Prepare images for professional printing
+- **Background Control**: Specify exact background color for print
+- **PDF Embedding**: Flatten images for PDF documents
+- **Print-Ready Assets**: Remove transparency for print workflows
+
+### 4. E-commerce
+
+- **Product Photos**: Standard white background for marketplace requirements
+- **Listing Compliance**: Meet platform background requirements (Amazon, eBay)
+- **Consistent Presentation**: Uniform backgrounds across product catalog
+- **Professional Appearance**: Clean, professional product images
+
+### 5. Social Media
+
+- **Platform Requirements**: Some platforms don't handle transparency well
+- **Branded Backgrounds**: Use brand colors as background
+- **Consistent Look**: Maintain visual consistency across posts
+- **File Size Optimization**: Reduce file sizes for faster uploads
+
+### 6. Document Preparation
+
+- **Office Documents**: Embed images in Word, PowerPoint, Excel
+- **PDF Creation**: Flatten images for PDF compatibility
+- **Report Generation**: Prepare images for automated reports
+- **Presentation Materials**: Ensure images display correctly
+
+### 7. Legacy System Compatibility
+
+- **Older Software**: Support systems that don't handle transparency
+- **Database Storage**: Store images in formats compatible with legacy databases
+- **Export Requirements**: Meet specific format requirements
+- **System Integration**: Ensure compatibility with all systems
+
+## Technical Details
+
+### Processing Method
+
+The flatten command uses Sharp's `flatten()` method:
+
+- Composites image onto solid background color
+- Alpha channel is removed completely
+- Transparent pixels become solid based on alpha value
+- Semi-transparent pixels blend with background
+- Maintains original resolution and dimensions
+
+### Alpha Compositing Formula
+
+```
+For each pixel:
+R_final = R_image × α + R_background × (1 - α)
+G_final = G_image × α + G_background × (1 - α)
+B_final = B_image × α + B_background × (1 - α)
+
+Where α = alpha value (0-1)
+```
+
+**Example:**
+
+```
+Pixel: RGBA(255, 0, 0, 0.5) - Semi-transparent red
+Background: RGB(255, 255, 255) - White
+Result: RGB(255, 128, 128) - Pink (50% blend)
+```
+
+### Color Processing
+
+- **Hex Parsing**: Converts 6-digit (`#RRGGBB`) or 3-digit (`#RGB`) hex to RGB
+- **3-digit Expansion**: `#F57` → `#FF5577`
+- **Case Insensitive**: `#FF5733` same as `#ff5733`
+- **Default**: White (`#ffffff`) if not specified
+
+### Performance Considerations
+
+- **Fast Operation**: Simple pixel-wise compositing
+- **Memory Efficient**: In-place processing when possible
+- **No Resampling**: Maintains original dimensions exactly
+- **Format Support**: Works with any format supporting transparency
+
+### Output Characteristics
+
+- **Color Space**: Converts to RGB (removes alpha channel)
+- **Dimensions**: Same as input
+- **Quality**: Controlled by `--quality` parameter
+- **Format**: Supports JPEG, PNG, WebP, AVIF, TIFF
+
+### Format Recommendations
+
+| Input | Output | Use Case                                      |
+| ----- | ------ | --------------------------------------------- |
+| PNG   | JPEG   | Web, email, general use                       |
+| PNG   | PNG    | When transparency might be needed later       |
+| PNG   | WebP   | Modern web (good compression + compatibility) |
+| WebP  | JPEG   | Legacy browser support                        |
+| PNG   | AVIF   | Next-gen web format (best compression)        |
+
+## Common Patterns
+
+### Pattern 1: Standard White Background
+
+```bash
+# Most common use case
+mediaproc image flatten input.png --background "#ffffff" -o output.jpg
+```
+
+### Pattern 2: Batch Convert to JPEG
+
+```bash
+# Convert all transparent PNGs to JPEG
+for img in *.png; do
+  mediaproc image flatten "$img" --background "#ffffff" -o "${img%.png}.jpg"
+done
+```
+
+### Pattern 3: Multiple Background Versions
+
+```bash
+# Create light and dark versions
+mediaproc image flatten logo.png --background "#ffffff" -o logo-light.jpg
+mediaproc image flatten logo.png --background "#000000" -o logo-dark.jpg
+```
+
+### Pattern 4: High-Quality Print
+
+```bash
+# Maximum quality for print
+mediaproc image flatten design.png --background "#ffffff" -q 100 -o print.jpg
+```
+
+### Pattern 5: Web-Optimized
+
+```bash
+# Balanced quality for web
+mediaproc image flatten image.png --background "#ffffff" -q 85 -o web.jpg
+```
+
+## Troubleshooting
+
+### Issue: Background Color Not Applied
+
+**Problem**: Background appears different than expected
+
+**Solutions**:
+
+```bash
+# Ensure hex format is correct (6 digits with #)
+mediaproc image flatten input.png --background "#FF5733"  # ✓ Correct
+mediaproc image flatten input.png --background "FF5733"   # ✗ Missing #
+mediaproc image flatten input.png --background "#F57"     # ✓ OK (3-digit)
+
+# Check color code is valid hex
+# Use color picker to get exact hex value
+```
+
+### Issue: No Visible Change
+
+**Problem**: Image appears unchanged after flattening
+
+**Solutions**:
+
+```bash
+# Check if input has transparency
+# If image has no alpha channel, flatten has no effect
+
+# Verify PNG has transparency
+mediaproc image metadata input.png
+
+# If already opaque, flatten is unnecessary
+# Use original image or convert format directly
+```
+
+### Issue: Color Mismatch
+
+**Problem**: Flattened colors don't match expectation
+
+**Solutions**:
+
+```bash
+# Semi-transparent pixels blend with background
+# This is correct alpha compositing behavior
+
+# For 50% transparent red pixel on white:
+# Result = (255,0,0) × 0.5 + (255,255,255) × 0.5 = (255,128,128) pink
+
+# Use white background for neutral result
+mediaproc image flatten input.png --background "#ffffff"
+
+# Or use exact background color from design
+mediaproc image flatten input.png --background "#F5F5F5"
+```
+
+### Issue: Quality Loss
+
+**Problem**: Output appears lower quality than input
+
+**Solutions**:
+
+```bash
+# Increase quality setting
+mediaproc image flatten input.png --background "#ffffff" -q 100 -o output.jpg
+
+# Use PNG output to avoid JPEG compression
+mediaproc image flatten input.png --background "#ffffff" -o output.png
+
+# Ensure input is high quality
+# Low quality input = low quality output
+```
+
+### Issue: File Size Too Large
+
+**Problem**: Output file is very large
+
+**Solutions**:
+
+```bash
+# Reduce quality setting
+mediaproc image flatten input.png --background "#ffffff" -q 85 -o output.jpg
+
+# Use JPEG instead of PNG for photos
+mediaproc image flatten input.png --background "#ffffff" -o output.jpg
+
+# Combine with optimization
+mediaproc image flatten input.png --background "#ffffff" -o temp.jpg
+mediaproc image optimize temp.jpg -o output.jpg
+```
+
+### Issue: Invalid Hex Color
+
+**Problem**: Error parsing background color
+
+**Solutions**:
+
+```bash
+# Use valid hex format
+mediaproc image flatten input.png --background "#FF5733"  # ✓ 6-digit
+mediaproc image flatten input.png --background "#F57"     # ✓ 3-digit
+mediaproc image flatten input.png --background "#ffffff"  # ✓ Lowercase OK
+
+# Avoid invalid formats
+mediaproc image flatten input.png --background "rgb(255,87,51)"  # ✗ Not supported
+mediaproc image flatten input.png --background "white"           # ✗ Named colors not supported
 ```
 
 ## Best Practices
 
-1. **JPEG Export**: Flatten before saving as JPEG
-2. **Background Color**: Choose appropriate background
-3. **Preview**: Check result with different backgrounds
+1. **Choose Appropriate Background Colors**
+
+   - White (`#ffffff`) for general use and print
+   - Light gray (`#F5F5F5`) for subtle contrast
+   - Black (`#000000`) for dark theme versions
+   - Brand colors for consistent identity
+
+2. **Format Selection**
+
+   - JPEG for photographs and web use
+   - PNG when you might need transparency later
+   - WebP for modern web (good compression)
+   - AVIF for cutting-edge web (best compression)
+
+3. **Quality Settings**
+
+   - 100: Print and archival (large files)
+   - 90-95: High-quality web (default)
+   - 80-90: Balanced web use
+   - 70-80: Email attachments (smaller files)
+
+4. **Verify Before Batch Processing**
+
+   - Test with one image first
+   - Use `--dry-run` to preview
+   - Check output quality and appearance
+   - Verify background color is correct
+
+5. **Consider Use Context**
+
+   - E-commerce: White background standard
+   - Social media: Brand color backgrounds
+   - Print: White or specified background
+   - Web: Optimize for file size and quality balance
+
+6. **Preserve Original Files**
+
+   - Keep transparent originals
+   - Create flattened versions as needed
+   - Don't overwrite source files
+   - Use descriptive output names
+
+7. **Test Across Platforms**
+   - Verify appearance in target context
+   - Check on different backgrounds
+   - Ensure compatibility with target systems
+   - Test file size requirements
+
+## Integration Examples
+
+### With Other Image Commands
+
+```bash
+# Flatten, then resize for web
+mediaproc image flatten logo.png --background "#ffffff" -o temp.jpg
+mediaproc image resize temp.jpg -w 800 -h 600 -o final.jpg
+
+# Flatten, then add border
+mediaproc image flatten image.png --background "#ffffff" -o temp.jpg
+mediaproc image border temp.jpg -w 10 --color "#000000" -o final.jpg
+
+# Flatten, then optimize
+mediaproc image flatten graphic.png --background "#ffffff" -o temp.jpg
+mediaproc image optimize temp.jpg -o final.jpg
+```
+
+### In Scripts
+
+```bash
+#!/bin/bash
+# Prepare product images for e-commerce
+
+for img in products/*.png; do
+  filename=$(basename "$img" .png)
+
+  # Flatten with white background
+  mediaproc image flatten "$img" --background "#ffffff" -o "temp-${filename}.jpg"
+
+  # Resize to standard dimensions
+  mediaproc image resize "temp-${filename}.jpg" -w 1000 -h 1000 --fit contain -o "listings/${filename}.jpg"
+
+  # Clean up temp files
+  rm "temp-${filename}.jpg"
+done
+```
 
 ## See Also
 
-- [extend](./extend) - Add borders
-- [composite](./composite) - Layer images
+- [convert](./convert) - Convert between image formats
+- [composite](./composite) - Layer images with blending modes
+- [extend](./extend) - Add padding with background colors
+- [unflatten](./unflatten) - Add transparency back to images
+- [optimize](./optimize) - Reduce file size while maintaining quality

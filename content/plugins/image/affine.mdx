@@ -14,24 +14,26 @@ The `affine` command applies a 2x2 or 2x3 affine transformation matrix to an ima
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-o, --output` | path | `<input>-affine.<ext>` | Output file path |
-| `--matrix` | string | `[1,0,0,1]` | Affine matrix as JSON array: [a,b,c,d] or [a,b,c,d,e,f] |
-| `--background` | color | `transparent` | Background color for empty areas (hex, rgb, or name) |
-| `--interpolator` | string | `bilinear` | Interpolation: nearest, bilinear, bicubic, nohalo, lbb, vsqbs |
-| `-q, --quality` | number | 90 | Output quality (1-100) |
-| `--dry-run` | flag | - | Preview changes without executing |
-| `-v, --verbose` | flag | - | Show detailed output |
+| Option           | Type   | Default                | Description                                                   |
+| ---------------- | ------ | ---------------------- | -----------------------------------
+-------------------------- |
+| `-o, --output`   | path   | `<input>-affine.<ext>` | Output file path                                              |
+| `--matrix`       | string | `[1,0,0,1]`            | Affine matrix as JSON array: [a,b,c,d] or [a,b,c,d,e,f]       |
+| `--background`   | color  | `transparent`          | Background color for empty areas (hex, rgb, or name)          |
+| `--interpolator` | string | `bilinear`             | Interpolation: nearest, bilinear, bicubic, nohalo, lbb, vsqbs |
+| `-q, --quality`  | number | 90                     | Output quality (1-100)                                        |
+| `--dry-run`      | flag   | -                      | Preview changes without executing                             |
+| `-v, --verbose`  | flag   | -                      | Show detailed output                                          |
 
 ## Matrix Format
 
 The matrix defines how pixels are transformed:
 
 **2x2 Matrix [a, b, c, d]:**
+
 - `a`: horizontal scaling
 - `b`: horizontal shearing
-- `c`: vertical shearing  
+- `c`: vertical shearing
 - `d`: vertical scaling
 
 **Identity matrix [1,0,0,1]** = no change (original image)
@@ -97,26 +99,26 @@ mediaproc image affine image.jpg --matrix "[0.8,0.4,-0.2,1.2]"
 
 Different interpolation methods affect quality and speed:
 
-| Interpolator | Quality | Speed | Best For |
-|--------------|---------|-------|----------|
-| `nearest` | Lowest | Fastest | Pixel art, no antialiasing needed |
-| `bilinear` | Good | Fast | General use (default) |
-| `bicubic` | Better | Medium | Photographic images |
-| `nohalo` | Excellent | Slow | High-quality downscaling |
-| `lbb` | Best | Slowest | Professional work, best quality |
-| `vsqbs` | Excellent | Very Slow | Maximum quality requirements |
+| Interpolator | Quality   | Speed     | Best For                          |
+| ------------ | --------- | --------- | --------------------------------- |
+| `nearest`    | Lowest    | Fastest   | Pixel art, no antialiasing needed |
+| `bilinear`   | Good      | Fast      | General use (default)             |
+| `bicubic`    | Better    | Medium    | Photographic images               |
+| `nohalo`     | Excellent | Slow      | High-quality downscaling          |
+| `lbb`        | Best      | Slowest   | Professional work, best quality   |
+| `vsqbs`      | Excellent | Very Slow | Maximum quality requirements      |
 
 ## Common Transformation Matrices
 
-| Transformation | Matrix | Description |
-|----------------|--------|-------------|
-| Identity | `[1,0,0,1]` | No change |
-| Scale 2x | `[2,0,0,2]` | Double size |
-| Scale 0.5x | `[0.5,0,0,0.5]` | Half size |
-| Horizontal flip | `[-1,0,0,1]` | Mirror horizontally |
-| Vertical flip | `[1,0,0,-1]` | Mirror vertically |
-| Horizontal shear | `[1,0.5,0,1]` | Slant right |
-| Vertical shear | `[1,0,0.5,1]` | Slant down |
+| Transformation   | Matrix          | Description         |
+| ---------------- | --------------- | ------------------- |
+| Identity         | `[1,0,0,1]`     | No change           |
+| Scale 2x         | `[2,0,0,2]`     | Double size         |
+| Scale 0.5x       | `[0.5,0,0,0.5]` | Half size           |
+| Horizontal flip  | `[-1,0,0,1]`    | Mirror horizontally |
+| Vertical flip    | `[1,0,0,-1]`    | Mirror vertically   |
+| Horizontal shear | `[1,0.5,0,1]`   | Slant right         |
+| Vertical shear   | `[1,0,0.5,1]`   | Slant down          |
 
 ## Best Practices
 
@@ -146,16 +148,19 @@ Different interpolation methods affect quality and speed:
 ## Troubleshooting
 
 **Matrix produces unexpected results:**
+
 - Verify JSON format: `[a,b,c,d]` with proper commas
 - Check matrix values are numbers, not strings
 - Test with identity matrix `[1,0,0,1]` first
 
 **Image quality degraded:**
+
 - Use higher quality interpolator (bicubic, nohalo, lbb)
 - Increase --quality setting to 95+
 - Avoid multiple transforms (combine into one matrix)
 
 **Empty/transparent areas:**
+
 - Set --background to desired color
 - Use solid color for JPG output (JPG doesn't support transparency)
 

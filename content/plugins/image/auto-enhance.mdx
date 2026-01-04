@@ -13,6 +13,7 @@ mediaproc image auto-enhance <input> [options]
 The `auto-enhance` command automatically improves image quality by applying a combination of adjustments: histogram normalization, intelligent sharpening, contrast optimization, and brightness/saturation enhancements. It's designed to fix common issues in photos with minimal effort.
 
 Perfect for:
+
 - Quick photo fixes for social media
 - Old or faded photo restoration
 - Low-light image improvement
@@ -22,24 +23,28 @@ Perfect for:
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `-l, --level` | string | `medium` | Enhancement level: `low`, `medium`, `high` |
-| `-o, --output` | path | `<input>-enhanced.<ext>` | Output file path |
-| `--dry-run` | flag | - | Preview changes without executing |
-| `-v, --verbose` | flag | - | Show detailed output |
+| Option          | Type   | Default                  | Description                                |
+| --------------- | ------ | ------------------------ | ------------------------------------------ |
+| `-l, --level`   | string | `medium`                 | Enhancement level: `low`, `medium`, `high` |
+| `-o, --output`  | path   | `<input>-enhanced.<ext>` | Output file path                           |
+| `--dry-run`     | flag   | -                        | Preview changes without executing          |
+| `-v, --verbose` | flag   | -                        | Show detailed output                       |
 
 ## Enhancement Levels
 
 ### Low - Subtle Enhancement
+
 Applied operations:
+
 - **Histogram normalization**: Balance color distribution
 - **Light sharpening** (sigma: 0.5): Gentle edge enhancement
 
 Best for: Already decent photos that need a subtle polish
 
 ### Medium - Balanced Enhancement (Recommended)
+
 Applied operations:
+
 - **Histogram normalization**: Balance color distribution
 - **Brightness boost** (+5%): Improve overall exposure
 - **Saturation enhancement** (+10%): Make colors more vibrant
@@ -48,7 +53,9 @@ Applied operations:
 Best for: Most everyday photos, general purpose use
 
 ### High - Aggressive Enhancement
+
 Applied operations:
+
 - **Histogram normalization**: Balance color distribution
 - **CLAHE** (Contrast Limited Adaptive Histogram Equalization): Local contrast improvement
 - **Brightness boost** (+10%): Significant exposure lift
@@ -118,30 +125,34 @@ mediaproc image auto-enhance night-shot.jpg -l high -o brightened.jpg
 
 The command intelligently applies these improvements:
 
-| Adjustment | Low | Medium | High |
-|------------|-----|--------|------|
-| Histogram Normalization | ✓ | ✓ | ✓ |
-| Brightness Boost | - | +5% | +10% |
-| Saturation Enhancement | - | +10% | +20% |
-| Sharpening | Sigma 0.5 | Sigma 1.0 | Sigma 1.5 |
-| CLAHE (Local Contrast) | - | - | ✓ |
+| Adjustment              | Low       | Medium    | High      |
+| ----------------------- | --------- | --------- | --------- |
+| Histogram Normalization | ✓         | ✓         | ✓         |
+| Brightness Boost        | -         | +5%       | +10%      |
+| Saturation Enhancement  | -         | +10%      | +20%      |
+| Sharpening              | Sigma 0.5 | Sigma 1.0 | Sigma 1.5 |
+| CLAHE (Local Contrast)  | -         | -         | ✓         |
 
 ### Histogram Normalization
+
 - Balances color distribution across the image
 - Expands tonal range to use full spectrum
 - Improves overall contrast automatically
 
 ### Sharpening
+
 - Enhances edge definition and detail
 - Makes images appear crisper and clearer
 - Strength varies by level
 
 ### Contrast Optimization (High level)
+
 - CLAHE improves local contrast
 - Preserves detail in shadows and highlights
 - Reduces flat, dull appearance
 
 ### Brightness & Saturation
+
 - Makes images more vibrant and appealing
 - Corrects underexposure
 - Enhances color depth
@@ -149,18 +160,21 @@ The command intelligently applies these improvements:
 ## Choosing the Right Level
 
 ### Use Low When:
+
 - Image is already well-exposed and sharp
 - You want minimal intervention
 - Processing professional/high-quality photos
 - Subtle polish is all that's needed
 
 ### Use Medium When:
+
 - General-purpose enhancement needed
 - Typical smartphone/camera photos
 - Social media posting
 - Unsure which level to choose (default for a reason!)
 
 ### Use High When:
+
 - Image is dark, dull, or faded
 - Old photos need restoration
 - Low-light photos need brightening
@@ -186,26 +200,31 @@ The command intelligently applies these improvements:
 ## Common Use Cases
 
 **Social Media Prep:**
+
 ```bash
 mediaproc image auto-enhance selfie.jpg -l medium -o post.jpg
 ```
 
 **Old Photo Restoration:**
+
 ```bash
 mediaproc image auto-enhance "scans/*.jpg" -l high
 ```
 
 **Product Photography:**
+
 ```bash
 mediaproc image auto-enhance product.png -l low -o enhanced.png
 ```
 
 **Event Photo Batch:**
+
 ```bash
 mediaproc image auto-enhance "event/*.jpg" -l medium -v
 ```
 
 **Low-Light Fix:**
+
 ```bash
 mediaproc image auto-enhance concert.jpg -l high -o bright.jpg
 ```
@@ -215,12 +234,14 @@ mediaproc image auto-enhance concert.jpg -l high -o bright.jpg
 Auto-enhance is equivalent to manually running:
 
 **Low level:**
+
 ```bash
 mediaproc image normalize input.jpg
 mediaproc image sharpen input-normalized.jpg --sigma 0.5
 ```
 
 **Medium level:**
+
 ```bash
 mediaproc image normalize input.jpg
 mediaproc image modulate input-normalized.jpg --brightness 1.05 --saturation 1.1
@@ -228,6 +249,7 @@ mediaproc image sharpen input-modulated.jpg --sigma 1.0
 ```
 
 **High level:**
+
 ```bash
 mediaproc image normalize input.jpg
 mediaproc image clahe input-normalized.jpg --width 3 --height 3
@@ -244,7 +266,7 @@ mediaproc image sharpen input-modulated.jpg --sigma 1.5
 
 ## Future Enhancements
 
-*These features are planned but not yet implemented:*
+_These features are planned but not yet implemented:_
 
 - **Auto-level**: Automatic exposure correction (FUTURE)
 - **Red-eye removal**: Detect and fix red-eye automatically (FUTURE)
@@ -255,15 +277,18 @@ mediaproc image sharpen input-modulated.jpg --sigma 1.5
 ## Troubleshooting
 
 **Image looks over-processed:**
+
 - Try lower level (medium → low)
 - Use other commands individually for fine control
 
 **Not enough improvement:**
+
 - Try higher level (medium → high)
 - Check if original image is already optimal
 - Consider using specific commands (clahe, normalize, etc.)
 
 **Colors look unnatural:**
+
 - High level might be too aggressive
 - Use medium or low instead
 - Manually adjust with modulate command
