@@ -58,25 +58,29 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r border-border/50 bg-card/30 backdrop-blur-sm sticky top-16 flex flex-col" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
-      <ScrollArea className="flex-1 px-3 py-6">
-        <nav className="space-y-6">
-          {navigationConfig.map((section) => (
-            <div key={section.title}>
-              <h3 className="px-3 mb-3 text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider">
-                {section.title}
-              </h3>
-              <Accordion type="single" collapsible className="space-y-0.5">
-                {section.items.map((item) => renderNavItem(item))}
-              </Accordion>
-            </div>
-          ))}
-        </nav>
-      </ScrollArea>
+    <aside className="w-64 border-r border-border/50 bg-card/30 backdrop-blur-sm flex flex-col">
+      <div className="max-h-[calc(100vh-5rem)] flex flex-col">
+        <ScrollArea className="h-full">
+          <div className="px-3 py-6">
+            <nav className="space-y-6 pb-6">
+            {navigationConfig.map((section) => (
+              <div key={section.title}>
+                <h3 className="px-3 mb-3 text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider">
+                  {section.title}
+                </h3>
+                <Accordion type="single" collapsible className="space-y-0.5">
+                  {section.items.map((item) => renderNavItem(item))}
+                </Accordion>
+              </div>
+            ))}
+          </nav>
+          </div>
+        </ScrollArea>
 
-      <div className="p-4 border-t border-border/50 bg-muted/20">
-        <div className="text-xs text-muted-foreground mb-1.5">Version</div>
-        <div className="text-sm font-mono font-semibold text-foreground">v0.5.2</div>
+        <div className="p-4 border-t border-border/50 bg-muted/20 flex-shrink-0">
+          <div className="text-xs text-muted-foreground mb-1.5">Version</div>
+          <div className="text-sm font-mono font-semibold text-foreground">v0.5.2</div>
+        </div>
       </div>
     </aside>
   );

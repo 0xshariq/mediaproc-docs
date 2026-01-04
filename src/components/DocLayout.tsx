@@ -38,10 +38,10 @@ export function DocLayout({ children }: { children: ReactNode }) {
   const nextPage = currentIndex < allPages.length - 1 ? allPages[currentIndex + 1] : null;
 
   return (
-    <>
-      <div className="flex flex-1 relative">
-        <Sidebar />
-        <main className="flex-1 max-w-4xl px-8 py-12 min-h-screen">
+    <div className="flex flex-1 min-h-0">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <main className="flex-1 max-w-4xl px-8 py-12">
           <article className="prose prose-lg">
             {children}
           </article>
@@ -79,7 +79,7 @@ export function DocLayout({ children }: { children: ReactNode }) {
             )}
           </div>
 
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-8">
             <p>Found an issue? Help us improve this page.</p>
             <a 
               href="https://github.com/0xshariq/mediaproc-cli" 
@@ -91,8 +91,8 @@ export function DocLayout({ children }: { children: ReactNode }) {
             </a>
           </div>
         </main>
-        <TableOfContents />
       </div>
-    </>
+      <TableOfContents />
+    </div>
   );
 }

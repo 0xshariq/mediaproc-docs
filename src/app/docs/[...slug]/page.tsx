@@ -15,6 +15,20 @@ const components = {
     }
     return <InlineCode>{children}</InlineCode>;
   },
+  table: ({ children }: any) => (
+    <div className="overflow-x-auto my-6">
+      <table className="w-full border-collapse text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }: any) => <thead className="bg-muted/50">{children}</thead>,
+  tbody: ({ children }: any) => <tbody>{children}</tbody>,
+  tr: ({ children }: any) => <tr>{children}</tr>,
+  th: ({ children }: any) => (
+    <th className="px-4 py-3 text-left font-semibold border border-border text-foreground">{children}</th>
+  ),
+  td: ({ children }: any) => (
+    <td className="px-4 py-3 border border-border text-muted-foreground">{children}</td>
+  ),
   Alert,
 };
 
