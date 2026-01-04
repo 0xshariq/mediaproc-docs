@@ -1,0 +1,62 @@
+# Introduction
+
+Welcome to **MediaProc** - the universal media processing CLI that unifies all your media workflows into one powerful tool.
+
+## What is MediaProc?
+
+MediaProc is a modern, plugin-based command-line interface designed to process any type of media file. Whether you're working with images, videos, audio, documents, or 3D models, MediaProc provides a consistent and intuitive interface.
+
+## The Problem We Solve
+
+Traditional media processing is fragmented:
+
+- **Multiple Tools**: FFmpeg for videos, ImageMagick for images, SoX for audio
+- **Inconsistent Interfaces**: Each tool has different command syntax
+- **Complex Workflows**: Chaining tools requires custom scripts
+- **Steep Learning Curve**: Learn multiple tools separately
+
+## Our Solution
+
+**One tool. Consistent interface. Extensible architecture.**
+
+```bash
+# Traditional approach (different tools, different syntax)
+convert input.jpg -resize 1920x1080 output.jpg
+ffmpeg -i input.mp4 -c:v h264 -crf 23 output.mp4
+
+# MediaProc approach (one tool, consistent syntax)
+mediaproc image resize input.jpg --width 1920 --height 1080
+mediaproc video transcode input.mp4 --codec h264 --crf 23
+```
+
+## Key Features
+
+### 🎯 Unified Interface
+Process any media type with consistent, intuitive commands
+
+### 🔌 Plugin Architecture
+Official plugins for common tasks, community plugins for specialized needs
+
+### ⚡ High Performance
+Multi-threaded processing, streaming support, optimized for large files
+
+### 🎨 Developer Friendly
+TypeScript-first, excellent error messages, comprehensive docs
+
+### 🔧 Automation Ready
+Perfect for CI/CD pipelines, batch processing, and scripts
+
+### 🌍 Community Driven
+Open source, extensible, growing plugin marketplace
+
+## Who Uses MediaProc?
+
+- **Web Developers**: Optimize images, generate thumbnails, create responsive variants
+- **Video Editors**: Transcode videos, extract frames, create HLS streams
+- **DevOps Engineers**: Automate media processing in CI/CD pipelines
+- **Content Creators**: Batch process files, apply watermarks, compress media
+- **Developers**: Build custom media processing workflows
+
+## What's Next?
+
+Ready to get started? Continue to the [Installation](/docs/installation) guide or jump straight into the [Quick Start](/docs/quick-start) tutorial.

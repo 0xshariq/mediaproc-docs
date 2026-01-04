@@ -1,0 +1,137 @@
+# Quick Start
+
+Get up and running with MediaProc in 5 minutes.
+
+## 1. Install MediaProc
+
+```bash
+npm install -g @mediaproc/cli
+```
+
+## 2. Install Image Plugin
+
+```bash
+mediaproc add image
+```
+
+## 3. Process Your First Image
+
+### Resize an Image
+
+```bash
+mediaproc image resize photo.jpg --width 1920 --height 1080 -o resized.jpg
+```
+
+### Convert Format
+
+```bash
+mediaproc image convert photo.jpg -o photo.webp
+```
+
+### Optimize for Web
+
+```bash
+mediaproc image optimize photo.jpg --quality 85 -o optimized.jpg
+```
+
+## Common Tasks
+
+### Batch Resize Multiple Images
+
+```bash
+mediaproc image batch-resize *.jpg --width 800 -o thumbnails/
+```
+
+### Add Watermark
+
+```bash
+mediaproc image watermark photo.jpg --text "© 2026" --position bottom-right
+```
+
+### Create Thumbnails
+
+```bash
+mediaproc image thumbnail *.jpg --size 200x200 -o thumbs/
+```
+
+### Apply Filters
+
+```bash
+# Grayscale
+mediaproc image grayscale photo.jpg -o bw.jpg
+
+# Blur
+mediaproc image blur photo.jpg --sigma 5 -o blurred.jpg
+
+# Sharpen
+mediaproc image sharpen photo.jpg -o sharp.jpg
+```
+
+## Working with Directories
+
+Process all images in a directory:
+
+```bash
+# Resize all images
+mediaproc image resize input-folder/ --width 1920 -o output-folder/
+
+# Convert all to WebP
+mediaproc image convert input-folder/ --format webp -o output-folder/
+```
+
+## Plugin Management
+
+### List Installed Plugins
+
+```bash
+mediaproc list
+```
+
+### View Available Plugins
+
+```bash
+mediaproc plugins
+```
+
+### Update Plugins
+
+```bash
+# Update specific plugin
+mediaproc update image
+
+# Update all plugins
+mediaproc update
+```
+
+### Delete Plugins
+
+```bash
+mediaproc delete image
+```
+
+## Get Help
+
+### CLI Help
+
+```bash
+mediaproc --help
+```
+
+### Plugin Help
+
+```bash
+mediaproc image --help
+```
+
+### Command Help
+
+```bash
+mediaproc image resize --help
+```
+
+## What's Next?
+
+- Explore [CLI Overview](/docs/cli/overview) for detailed command reference
+- Learn about [Plugin Management](/docs/cli/plugin-management)
+- Check out all [Image Commands](/docs/plugins/image)
+- Read about [Creating Plugins](/docs/community/creating-plugins)
