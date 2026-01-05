@@ -1,0 +1,333 @@
+# info
+
+Display comprehensive image information and metadata including dimensions, format, color space, file size, and EXIF data.
+
+## Usage
+
+```bash
+mediaproc image info <input> [options]
+```
+
+## Description
+
+The `info` command provides a quick way to inspect image files and retrieve detailed information about their properties, dimensions, format, and metadata. Perfect for verifying image specifications, checking file integrity, and extracting technical details before processing.
+
+## Options
+
+| Option          | Type   | Default    | Description                                |
+| --------------- | ------ | ---------- | ------------------------------------------ |
+| `<input>`       | string | _required_ | Input image file path                      |
+| `--json`        | flag   | -          | Output information in JSON format          |
+| `-v, --verbose` | flag   | -          | Show all available metadata including EXIF |
+
+## Examples
+
+### Basic Usage
+
+```bash
+# Show basic image information
+mediaproc image info photo.jpg
+
+# Output in JSON format
+mediaproc image info image.png --json
+
+# Show all metadata including EXIF
+mediaproc image info photo.jpg -v
+
+# Inspect WebP image
+mediaproc image info picture.webp
+```
+
+### Scripting with JSON Output
+
+```bash
+# Extract width from JSON
+WIDTH=$(mediaproc image info photo.jpg --json | jq -r '.format.width')
+
+# Check if image has alpha channel
+HAS_ALPHA=$(mediaproc image info image.png --json | jq -r '.format.hasAlpha')
+
+# Get file size
+SIZE=$(mediaproc image info photo.jpg --json | jq -r '.file.size')
+```
+
+### Batch Information Gathering
+
+```bash
+# Get info for all images
+for img in *.jpg; do
+  echo "=== $img ==="
+  mediaproc image info "$img"
+  echo
+done
+
+# Export all image metadata to JSON file
+for img in *.png; do
+  mediaproc image info "$img" --json >> images-info.json
+done
+```
+
+## Information Displayed
+
+### Standard Mode
+
+**File Information:**
+
+- File name and full path
+- File size (formatted: KB, MB, GB)
+- Raw file size in bytes
+
+**Image Details:**
+
+- Format type (JPEG, PNG, WebP, etc.)
+- Dimensions (width × height in pixels)
+- Aspect ratio (calculated)
+- Color space (RGB, sRGB, CMYK, Grayscale)
+- Number of channels
+- Bit depth per channel
+- Alpha channel presence
+- Density/DPI (if available)
+- Orientation value (1-8)
+
+### Verbose Mode (`-v`)
+
+Everything from standard mode plus:
+
+**EXIF Metadata:**
+
+- Camera make and model
+- Capture date and time
+- ISO speed
+- Aperture (f-number)
+- Shutter speed
+- Focal length
+- Software used
+- GPS coordinates (if available)
+
+**Color Profile:**
+
+- ICC profile data
+- Color space information
+
+**Additional Metadata:**
+
+- IPTC data
+- XMP data
+
+## Output Examples
+
+### Standard Output
+
+```
+ℹ️  photo.jpg
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 File Information
+   Path: /path/to/photo.jpg
+   Size: 2.45 MB
+
+🖼️  Image Details
+   Format: JPEG
+   Dimensions: 4032 × 3024 pixels
+   Aspect Ratio: 1.33
+   Color Space: srgb
+   Channels: 3
+   Bit Depth: uchar
+   Alpha Channel: No
+   Density: 72 DPI
+```
+
+### JSON Output
+
+```json
+{
+  "file": {
+    "name": "photo.jpg",
+    "path": "/path/to/photo.jpg",
+    "size": 2568903,
+    "sizeFormatted": "2.45 MB"
+  },
+  "format": {
+    "type": "jpeg",
+    "width": 4032,
+    "height": 3024,
+    "space": "srgb",
+    "channels": 3,
+    "depth": "uchar",
+    "density": 72,
+    "hasAlpha": false,
+    "orientation": 1
+  },
+  "exif": null
+}
+```
+
+## Use Cases
+
+### Quality Verification
+
+```bash
+# Verify image meets requirements
+mediaproc image info product.jpg
+
+# Check if image is high resolution
+WIDTH=$(mediaproc image info image.jpg --json | jq -r '.format.width')
+if [ $WIDTH -lt 1920 ]; then
+  echo "Image too small for web"
+fi
+```
+
+### Pre-Processing Inspection
+
+```bash
+# Check format before conversion
+mediaproc image info source.png
+
+# Verify color space before printing
+mediaproc image info artwork.tiff -v
+```
+
+### Batch Quality Control
+
+```bash
+# Check all images in directory
+for img in uploads/*.jpg; do
+  INFO=$(mediaproc image info "$img" --json)
+  WIDTH=$(echo $INFO | jq -r '.format.width')
+  HEIGHT=$(echo $INFO | jq -r '.format.height')
+
+  if [ $WIDTH -lt 800 ] || [ $HEIGHT -lt 600 ]; then
+    echo "$img: Too small ($WIDTH×$HEIGHT)"
+  fi
+done
+```
+
+### Metadata Extraction
+
+```bash
+# Extract camera information (verbose mode)
+mediaproc image info photo.jpg -v
+
+# Export all metadata to file
+mediaproc image info image.jpg --json > metadata.json
+```
+
+## Technical Details
+
+### Supported Formats
+
+All Sharp-supported formats:
+
+- JPEG/JPG
+- PNG
+- WebP
+- AVIF
+- TIFF
+- GIF
+- SVG
+- HEIF/HEIC
+
+### Color Spaces
+
+- **sRGB**: Standard RGB (most common)
+- **RGB**: Generic RGB
+- **CMYK**: Print color space
+- **Lab**: Device-independent
+- **Grayscale**: Single channel
+- **B-W**: Black and white
+
+### Orientation Values
+
+EXIF orientation tag (1-8):
+
+- 1: Normal (no rotation)
+- 2: Flipped horizontally
+- 3: Rotated 180°
+- 4: Flipped vertically
+- 5: Rotated 90° CW + flipped
+- 6: Rotated 90° CW
+- 7: Rotated 90° CCW + flipped
+- 8: Rotated 90° CCW
+
+## JSON Integration
+
+### Parse with jq
+
+```bash
+# Get all dimensions
+mediaproc image info img.jpg --json | jq '.format | {width, height}'
+
+# Check if image needs rotation
+ORIENTATION=$(mediaproc image info photo.jpg --json | jq -r '.format.orientation')
+
+# Get file size in MB
+SIZE_MB=$(mediaproc image info img.png --json | jq -r '.file.size / 1024 / 1024')
+```
+
+### Parse with Node.js
+
+```javascript
+const { execSync } = require("child_process");
+
+const info = JSON.parse(
+  execSync("mediaproc image info photo.jpg --json").toString()
+);
+
+console.log(`Dimensions: ${info.format.width}×${info.format.height}`);
+console.log(`Format: ${info.format.type}`);
+console.log(`Size: ${info.file.sizeFormatted}`);
+```
+
+### Parse with Python
+
+```python
+import json
+import subprocess
+
+result = subprocess.run(
+    ['mediaproc', 'image', 'info', 'photo.jpg', '--json'],
+    capture_output=True,
+    text=True
+)
+
+info = json.loads(result.stdout)
+print(f"Dimensions: {info['format']['width']}×{info['format']['height']}")
+```
+
+## Tips
+
+- **Use `--json`** for scripting and automation workflows
+- **Verbose mode** shows camera EXIF data from photos
+- **Pipe JSON to jq** for easy parsing and filtering
+- **Combine with batch** to inspect multiple files efficiently
+- **Check orientation** before rotating to avoid double-rotation
+- **Verify color space** before converting for print vs web
+- **Use in CI/CD** to validate uploaded image specifications
+
+## Troubleshooting
+
+### No EXIF data shown
+
+- Not all images have EXIF data
+- EXIF may have been stripped during processing
+- Use verbose mode (-v) to check for EXIF
+- Try a specialized EXIF tool for detailed parsing
+
+### JSON parse errors
+
+- Ensure JSON output is complete
+- Check for error messages before JSON
+- Validate JSON with jq or online validator
+
+### File not found
+
+- Check file path is correct
+- Verify file extension is supported
+- Use absolute paths to avoid confusion
+
+## See Also
+
+- [stats](./stats) - Technical image statistics
+- [metadata](./metadata-cmd) - Manage EXIF/IPTC/XMP metadata
+- [batch](./batch) - Process multiple images
+- [convert](./convert) - Format conversion

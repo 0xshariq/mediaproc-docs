@@ -1,0 +1,262 @@
+# compress
+
+Compress images with advanced quality control. Reduce file sizes significantly while maintaining visual quality through fine-grained compression settings.
+
+## Usage
+
+```bash
+mediaproc image compress <input> [options]
+```
+
+## Description
+
+The `compress` command provides aggressive image compression with fine-grained quality control. Unlike `optimize` which focuses on balanced size/quality trade-offs, `compress` allows you to push compression further for maximum file size reduction. Perfect for thumbnails, backgrounds, or situations where smaller file sizes are prioritized.
+
+## Options
+
+| Option          | Type   | Default                    | Description                                    |
+| --------------- | ------ | -------------------------- | ---------------------------------------------- |
+| `<input>`       | string | _required_                 | Input image file path                          |
+| `-o, --output`  | path   | `<input>-compressed.<ext>` | Output file path                               |
+| `-q, --quality` | number | 75                         | Compression quality (1-100)                    |
+| `--lossy`       | flag   | -                          | Enable lossy compression for maximum reduction |
+| `--dry-run`     | flag   | -                          | Preview changes without executing              |
+| `-v, --verbose` | flag   | -                          | Show detailed output                           |
+
+## Examples
+
+### Basic Compression
+
+```bash
+# Compress with default quality (75)
+mediaproc image compress photo.jpg
+
+# Higher compression, lower quality
+mediaproc image compress image.png -q 60
+
+# Maximum compression using lossy mode
+mediaproc image compress pic.jpg --lossy
+
+# Custom quality and output
+mediaproc image compress photo.webp -q 80 -o small.webp
+```
+
+### Batch Compression
+
+```bash
+# Compress all JPEGs in directory
+for img in *.jpg; do
+  mediaproc image compress "$img" -q 70
+done
+
+# Compress with lossy mode for thumbnails
+mediaproc image compress large-image.jpg --lossy -o thumbnail.jpg
+```
+
+### Format-Specific Examples
+
+```bash
+# JPEG progressive compression
+mediaproc image compress photo.jpg -q 75
+
+# PNG with palette reduction
+mediaproc image compress screenshot.png --lossy
+
+# WebP with custom quality
+mediaproc image compress image.webp -q 60
+
+# AVIF next-gen compression
+mediaproc image compress photo.avif -q 70
+```
+
+## Quality Levels
+
+### Recommended Settings
+
+- **Quality 80-100**: High quality, moderate compression
+
+  - Best for: Hero images, portfolios, print-ready
+  - Typical reduction: 10-30%
+
+- **Quality 60-79**: Good quality, good compression (recommended)
+
+  - Best for: General web use, galleries, blogs
+  - Typical reduction: 30-60%
+
+- **Quality 40-59**: Lower quality, high compression
+
+  - Best for: Backgrounds, decorative images
+  - Typical reduction: 60-80%
+
+- **Quality 1-39**: Low quality, maximum compression
+  - Best for: Placeholders, low-priority assets
+  - Typical reduction: 80-90%
+
+### Lossy Mode
+
+Enabling `--lossy` activates aggressive compression algorithms:
+
+- JPEG: Uses MozJPEG for better compression
+- PNG: Converts to indexed palette (256 colors)
+- WebP: Switches to lossy encoding
+- Results in visible artifacts but smallest files
+
+## Format-Specific Behavior
+
+### JPEG Compression
+
+- Progressive encoding for faster loading
+- MozJPEG optimization (with --lossy)
+- Metadata stripping for size reduction
+
+### PNG Compression
+
+- Maximum compression level (9)
+- Optional palette reduction (with --lossy)
+- Alpha channel preservation
+
+### WebP Compression
+
+- Lossless by default
+- Lossy mode for better compression
+- Superior to JPEG at same quality
+
+### AVIF Compression
+
+- Next-generation format
+- 50% smaller than JPEG
+- Slower encoding, best quality
+
+## Use Cases
+
+### Web Optimization
+
+```bash
+# Compress hero images for web
+mediaproc image compress hero.jpg -q 75 -o hero-web.jpg
+
+# Aggressive compression for thumbnails
+mediaproc image compress large.jpg -q 50 --lossy -o thumb.jpg
+```
+
+### Social Media
+
+```bash
+# Optimize for Instagram (moderate quality)
+mediaproc image compress photo.jpg -q 70 -o instagram.jpg
+
+# Twitter images (smaller file size limit)
+mediaproc image compress pic.jpg -q 65 -o twitter.jpg
+```
+
+### Email Attachments
+
+```bash
+# Reduce file size for email
+mediaproc image compress photo.jpg -q 60 --lossy
+```
+
+### Storage Optimization
+
+```bash
+# Compress archived photos
+for img in archive/*.jpg; do
+  mediaproc image compress "$img" -q 65
+done
+```
+
+## vs Optimize
+
+### When to use `compress`:
+
+- Need aggressive size reduction
+- Quality is secondary to file size
+- Creating thumbnails or previews
+- Storage/bandwidth constrained
+- Can tolerate some artifacts
+
+### When to use `optimize`:
+
+- Need best quality/size balance
+- Want minimal quality loss
+- Processing customer photos
+- Professional photography
+- SEO and UX matter
+
+## Technical Details
+
+### Compression Algorithms
+
+**JPEG:**
+
+- Baseline: Standard JPEG compression
+- Progressive: Loads incrementally (better UX)
+- MozJPEG: Advanced optimization (--lossy)
+
+**PNG:**
+
+- zlib compression (level 9)
+- Palette optimization
+- Color reduction (--lossy)
+
+**WebP:**
+
+- Lossless: Predictive coding
+- Lossy: Transform coding like JPEG
+- Better compression than JPEG/PNG
+
+**AVIF:**
+
+- AV1 image format
+- Superior compression ratio
+- Slower encoding time
+
+### Output Information
+
+The command displays:
+
+- Original file size
+- Compressed file size
+- Reduction percentage
+- Processing time (verbose mode)
+- Quality settings used
+
+## Tips
+
+- **Quality 60-75** offers the best compression/quality trade-off for most use cases
+- Use **--lossy** for thumbnails and backgrounds where quality matters less
+- **WebP format** achieves better compression than JPEG at equivalent quality
+- **Test different quality levels** to find the sweet spot for your specific images
+- **Always keep originals** before compressing, especially with lossy mode
+- **Combine with resize** for even greater size reduction
+- **Use verbose mode** to see detailed compression statistics
+
+## Troubleshooting
+
+### File size not reducing much
+
+- Try lower quality values (-q 50-60)
+- Enable lossy mode (--lossy)
+- Consider format conversion to WebP/AVIF
+- Check if image is already optimized
+
+### Quality too low
+
+- Increase quality value (-q 80-90)
+- Disable lossy mode
+- Try optimize command instead
+- Use original higher-resolution source
+
+### Slow processing
+
+- AVIF format is slower to encode
+- Use JPEG/WebP for faster compression
+- Process smaller images first
+- Consider batch processing overnight
+
+## See Also
+
+- [optimize](./optimize) - Balanced size optimization
+- [convert](./convert) - Format conversion
+- [resize](./resize) - Resize before compressing
+- [batch](./batch) - Batch process multiple images
