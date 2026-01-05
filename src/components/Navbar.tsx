@@ -34,7 +34,7 @@ export function Navbar() {
               Documentation
             </Link>
             <Link
-              href="/docs/plugins/image"
+              href="/plugins"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               Plugins
