@@ -1,0 +1,654 @@
+#merge
+
+Concatenate multiple video files into a single video.
+
+## Description
+
+The `merge` command joins multiple videos into one continuous file. It intelligently detects format compatibility and uses either fast concat mode (no re-encoding) or re-encode mode for mixed formats.
+
+## Usage
+
+```bash
+mediaproc video merge <input1> <input2> [input3...] [options]
+```
+
+## Options
+
+| Option      | Alias | Type    | Default      | Description                 |
+| ----------- | ----- | ------- | ------------ | --------------------------- |
+| `--output`  | `-o`  | string  | `merged.mp4` | Output file path            |
+| `--dry-run` |       | boolean | false        | Preview without executing   |
+| `--verbose` | `-v`  | boolean | false        | Show detailed FFmpeg output |
+
+## Concat Modes
+
+The plugin automatically selects the best concatenation method:
+
+### Fast Mode (Concat Demuxer)
+
+**Used when:** All input videos have same format, codec, resolution, and frame rate
+
+- **Method**: Container-level concatenation
+- **Speed**: Very fast (seconds)
+- **Quality**: Lossless (no re-encoding)
+- **Requirements**: Identical format/codec/resolution
+
+### Re-encode Mode (Filter Complex)
+
+**Used when:** Input videos differ in format, codec, resolution, or frame rate
+
+- **Method**: Decode all, filter, re-encode
+- **Speed**: Slower (depends on total duration)
+- **Quality**: Near-lossless (CRF 23)
+- **Requirements**: Any mix of videos
+
+## Examples
+
+### Basic Merging
+
+```bash
+# Merge two videos
+mediaproc video merge video1.mp4 video2.mp4
+
+# Merge three videos
+mediaproc video merge part1.mp4 part2.mp4 part3.mp4
+
+# Merge with custom output
+mediaproc video merge clip1.mp4 clip2.mp4 clip3.mp4 -o complete.mp4
+```
+
+Output:
+
+```
+Input files:
+1. video1.mp4 (1920x1080, H.264, 00:02:30)
+2. video2.mp4 (1920x1080, H.264, 00:03:15)
+
+Format check: All videos compatible
+Method: Fast concat (no re-encoding)
+
+Merging videos...
+✓ Merge complete
+
+Output file: merged.mp4
+Total duration: 00:05:45
+Size: 180.3 MB
+```
+
+### Specify Output Location
+
+```bash
+# Save to specific file
+mediaproc video merge video1.mp4 video2.mp4 -o output/combined.mp4
+
+# Save to directory (uses default filename)
+mediaproc video merge video1.mp4 video2.mp4 -o output/
+```
+
+### Multiple Files
+
+```bash
+# Merge many files
+mediaproc video merge seg1.mp4 seg2.mp4 seg3.mp4 seg4.mp4 seg5.mp4 -o full.mp4
+
+# Use shell expansion
+mediaproc video merge clip*.mp4 -o compilation.mp4
+
+# Merge all MP4 files in order
+mediaproc video merge *.mp4 -o merged.mp4
+```
+
+### Different Formats
+
+```bash
+# Merge videos of different formats (will re-encode)
+mediaproc video merge video.mp4 video.avi video.mkv -o combined.mp4
+
+# Merge different resolutions (will re-encode)
+mediaproc video merge 1080p.mp4 720p.mp4 4k.mp4 -o mixed.mp4
+
+# Merge different codecs
+mediaproc video merge h264.mp4 h265.mp4 -o merged.mp4
+```
+
+Output:
+
+```
+Input files:
+1. video.mp4 (1920x1080, H.264)
+2. video.avi (1280x720, MPEG-4)
+3. video.mkv (1920x1080, H.265)
+
+Format check: Videos have different properties
+Method: Re-encode mode
+
+Merging with re-encoding...
+✓ Merge complete (slower due to re-encoding)
+
+Output file: combined.mp4
+```
+
+### Dry Run Preview
+
+```bash
+# Preview merge operation
+mediaproc video merge video1.mp4 video2.mp4 video3.mp4 --dry-run
+```
+
+Output:
+
+```
+[DRY RUN] Would merge 3 files:
+1. video1.mp4 (00:02:30, 1920x1080, H.264)
+2. video2.mp4 (00:01:45, 1920x1080, H.264)
+3. video3.mp4 (00:03:00, 1920x1080, H.264)
+
+Method: Fast concat (all files compatible)
+Total duration: 00:07:15
+Output: merged.mp4
+```
+
+### With Verbose Output
+
+```bash
+# See detailed FFmpeg processing
+mediaproc video merge video1.mp4 video2.mp4 -v
+```
+
+## Use Cases
+
+### Join Split Videos
+
+Merge videos that were split for storage or transfer:
+
+```bash
+# Merge split parts
+mediaproc video merge movie-part1.mp4 movie-part2.mp4 movie-part3.mp4 -o movie-complete.mp4
+
+# Numbered segments
+mediaproc video merge segment-{1..10}.mp4 -o full-recording.mp4
+```
+
+### Create Compilations
+
+Combine multiple clips into a single video:
+
+```bash
+# Highlight reel
+mediaproc video merge goal1.mp4 goal2.mp4 goal3.mp4 -o highlights.mp4
+
+# Best moments
+mediaproc video merge moment*.mp4 -o best-moments.mp4
+
+# Tutorial sections
+mediaproc video merge intro.mp4 step1.mp4 step2.mp4 step3.mp4 outro.mp4 -o full-tutorial.mp4
+```
+
+### Presentations and Lectures
+
+Combine multiple lecture segments or presentations:
+
+```bash
+# Lecture parts
+mediaproc video merge lecture-intro.mp4 lecture-content.mp4 lecture-qa.mp4 -o full-lecture.mp4
+
+# Multi-presenter webinar
+mediaproc video merge speaker1.mp4 speaker2.mp4 speaker3.mp4 -o webinar.mp4
+```
+
+### Concatenate with Trimmed Clips
+
+Merge clips after removing unwanted sections:
+
+```bash
+# Remove intro/outro from each, then merge
+mediaproc video trim video1.mp4 -s 10 -e 290 -o clip1.mp4
+mediaproc video trim video2.mp4 -s 5 -e 295 -o clip2.mp4
+mediaproc video trim video3.mp4 -s 8 -e 292 -o clip3.mp4
+
+mediaproc video merge clip1.mp4 clip2.mp4 clip3.mp4 -o final.mp4
+```
+
+### Multi-Camera Merge
+
+Combine footage from multiple camera angles:
+
+```bash
+# Sequential camera footage
+mediaproc video merge camera-a.mp4 camera-b.mp4 camera-c.mp4 -o multi-angle.mp4
+
+# Before/after segments
+mediaproc video merge before.mp4 during.mp4 after.mp4 -o transformation.mp4
+```
+
+### Screen Recording Assembly
+
+Merge multiple screen recording sessions:
+
+```bash
+# Recording sessions
+mediaproc video merge session1.mp4 session2.mp4 session3.mp4 -o full-recording.mp4
+
+# Tutorial steps recorded separately
+mediaproc video merge step*.mp4 -o complete-tutorial.mp4
+```
+
+## Technical Details
+
+### Fast Concat (Demuxer)
+
+Used when all inputs are identical:
+
+```bash
+# Creates temporary concat list
+file 'video1.mp4'
+file 'video2.mp4'
+file 'video3.mp4'
+
+# FFmpeg command
+ffmpeg -f concat -safe 0 -i list.txt -c copy output.mp4
+```
+
+**Requirements:**
+
+- Same container format (all MP4, or all MKV, etc.)
+- Same video codec (all H.264, or all H.265, etc.)
+- Same resolution (all 1920x1080, etc.)
+- Same frame rate (all 30fps, etc.)
+- Same audio codec
+
+**Advantages:**
+
+- Extremely fast (seconds)
+- Lossless (no quality loss)
+- No CPU intensive processing
+
+### Re-encode Mode (Filter Complex)
+
+Used when inputs differ:
+
+```bash
+ffmpeg -i video1.mp4 -i video2.avi -i video3.mkv \
+  -filter_complex '[0:v][0:a][1:v][1:a][2:v][2:a]concat=n=3:v=1:a=1[v][a]' \
+  -map '[v]' -map '[a]' -c:v libx264 -crf 23 -c:a aac output.mp4
+```
+
+**Used for:**
+
+- Different formats (MP4 + AVI + MKV)
+- Different resolutions (1080p + 720p + 4K)
+- Different codecs (H.264 + H.265)
+- Different frame rates (30fps + 60fps)
+
+**Advantages:**
+
+- Handles any combination
+- Normalizes output
+- Produces consistent result
+
+**Limitations:**
+
+- Slower processing
+- Quality loss (minimal with CRF 23)
+- CPU intensive
+
+### Compatibility Detection
+
+The plugin automatically detects if fast concat is possible:
+
+```typescript
+// Checks for:
+- Same format (container)
+- Same video codec
+- Same resolution
+- Same frame rate
+- Same audio codec
+
+// If all match → Fast concat
+// If any differ → Re-encode
+```
+
+### Output Format
+
+Output format is determined by file extension:
+
+```bash
+# MP4 output (default)
+mediaproc video merge video1.mp4 video2.mp4 -o output.mp4
+
+# MKV output
+mediaproc video merge video1.mp4 video2.mp4 -o output.mkv
+
+# WebM output
+mediaproc video merge video1.mp4 video2.mp4 -o output.webm
+```
+
+### Temporary Files
+
+Fast concat creates a temporary file list that's deleted after completion.
+
+## Performance Considerations
+
+### Processing Speed
+
+**Fast concat:**
+
+- Speed: ~1-5 seconds regardless of video length
+- CPU: Minimal
+- Memory: Low
+
+**Re-encode mode:**
+
+- Speed: Proportional to total video length
+- ~0.5-1x real-time for H.264
+- ~0.2-0.4x real-time for H.265
+- CPU: High
+- Memory: Scales with resolution
+
+### Optimization Tips
+
+1. **Standardize inputs**: Use same format/resolution for fast concat
+2. **Pre-process**: Transcode to same format first if needed
+3. **Order matters**: Maintain desired sequence when specifying files
+4. **Disk space**: Ensure enough space for output (sum of inputs + overhead)
+
+## Error Handling
+
+### Common Errors
+
+**No input files:**
+
+```
+Error: Must specify at least 2 input files
+Usage: mediaproc video merge <input1> <input2> [...]
+```
+
+**Input file not found:**
+
+```
+Error: Input file not found: video2.mp4
+Check file path and try again
+```
+
+**Insufficient disk space:**
+
+```
+Error: Not enough disk space
+Required: ~500 MB
+Available: 100 MB
+```
+
+**FFmpeg error (fast concat failed):**
+
+```
+Error: Fast concat failed (format incompatibility)
+Retrying with re-encode mode...
+```
+
+## Best Practices
+
+1. **Use same format**: All MP4 or all MKV for fast concat
+2. **Match resolution**: Same resolution for best results
+3. **Test with --dry-run**: Preview before processing
+4. **Order carefully**: Specify files in desired sequence
+5. **Keep originals**: Never delete source files until verified
+6. **Check compatibility**: Similar specs = faster processing
+7. **Verify output**: Always watch merged video completely
+8. **Use wildcards wisely**: Ensure correct alphabetical order
+
+## Troubleshooting
+
+### Audio/Video Desync
+
+If audio becomes out of sync in merged video:
+
+**Cause:** Different frame rates between input videos
+
+**Solution:** Re-encode to standardize frame rate first
+
+```bash
+# Transcode all to same frame rate
+for file in *.mp4; do
+  ffmpeg -i "$file" -r 30 -c:v libx264 -crf 23 "${file%.mp4}-30fps.mp4"
+done
+
+# Then merge standardized files
+mediaproc video merge *-30fps.mp4 -o merged.mp4
+```
+
+### Black Frames Between Clips
+
+Black frames appear at transitions:
+
+**Cause:** Keyframe alignment issues in fast concat
+
+**Solution:** Use re-encode mode (automatically selected if needed)
+
+### Files in Wrong Order
+
+Videos merged in incorrect sequence:
+
+**Cause:** Wildcard expansion order
+
+**Solution:** Specify files explicitly
+
+```bash
+# Wrong (alphabetical)
+mediaproc video merge video*.mp4
+
+# Right (explicit order)
+mediaproc video merge video1.mp4 video2.mp4 video3.mp4
+
+# Right (numbered)
+mediaproc video merge video{1..10}.mp4
+```
+
+### Merge Failed
+
+Fast concat fails with error:
+
+**Cause:** Input files incompatible
+
+**Solution:** Plugin automatically retries with re-encode. If still fails:
+
+```bash
+# Manually transcode to same format
+for file in *.mp4; do
+  mediaproc video transcode "$file" -f mp4 -c h264 -o "standardized-$file"
+done
+
+mediaproc video merge standardized-*.mp4 -o merged.mp4
+```
+
+### Processing Too Slow
+
+Re-encode mode is too slow:
+
+**Solution 1:** Standardize formats first for fast concat
+
+```bash
+# Convert all to same format once
+for file in *.{avi,mkv,mov}; do
+  mediaproc video transcode "$file" -f mp4 -c h264 -o "${file%.*}.mp4"
+done
+
+# Then fast merge
+mediaproc video merge *.mp4
+```
+
+**Solution 2:** Use faster codec
+
+```bash
+# Already uses H.264 by default (fastest reasonable codec)
+```
+
+## Advanced Examples
+
+### Smart Sequential Merge
+
+```bash
+#!/bin/bash
+# Merge files in numerical order
+
+files=($(ls -v segment-*.mp4))
+echo "Merging ${#files[@]} files in order..."
+
+mediaproc video merge "${files[@]}" -o complete.mp4
+```
+
+### Standardize Before Merge
+
+```bash
+#!/bin/bash
+# Ensure all videos have same properties before merging
+
+input_files=("video1.mp4" "video2.avi" "video3.mkv")
+standardized=()
+
+for file in "${input_files[@]}"; do
+  output="standardized-${file%.*}.mp4"
+  echo "Standardizing $file..."
+
+  mediaproc video transcode "$file" \
+    -f mp4 \
+    -c h264 \
+    --crf 23 \
+    -o "$output"
+
+  standardized+=("$output")
+done
+
+echo "Merging standardized files..."
+mediaproc video merge "${standardized[@]}" -o merged.mp4
+
+# Cleanup
+rm standardized-*.mp4
+```
+
+### Multi-Stage Compilation
+
+```bash
+#!/bin/bash
+# Create compilation with intro/outro
+
+intro="intro.mp4"
+outro="outro.mp4"
+clips=(clip1.mp4 clip2.mp4 clip3.mp4)
+
+# Merge main clips
+mediaproc video merge "${clips[@]}" -o main-content.mp4
+
+# Add intro and outro
+mediaproc video merge "$intro" main-content.mp4 "$outro" -o final-with-bookends.mp4
+
+# Cleanup
+rm main-content.mp4
+```
+
+### Merge with Transition Preparation
+
+```bash
+#!/bin/bash
+# Add fade transitions by trimming overlap points
+
+videos=(video1.mp4 video2.mp4 video3.mp4)
+trimmed=()
+
+for ((i=0; i<${#videos[@]}; i++)); do
+  input="${videos[$i]}"
+  output="trimmed-$i.mp4"
+
+  if [ $i -eq 0 ]; then
+    # First video: trim last 0.5 sec
+    duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$input")
+    end=$(echo "$duration - 0.5" | bc)
+    mediaproc video trim "$input" -e "$end" -o "$output"
+  elif [ $i -eq $((${#videos[@]}-1)) ]; then
+    # Last video: trim first 0.5 sec
+    mediaproc video trim "$input" -s 0.5 -o "$output"
+  else
+    # Middle videos: trim both ends
+    duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$input")
+    end=$(echo "$duration - 0.5" | bc)
+    mediaproc video trim "$input" -s 0.5 -e "$end" -o "$output"
+  fi
+
+  trimmed+=("$output")
+done
+
+# Merge trimmed videos
+mediaproc video merge "${trimmed[@]}" -o seamless.mp4
+
+# Cleanup
+rm trimmed-*.mp4
+```
+
+### Batch Chapter Creation
+
+```bash
+#!/bin/bash
+# Create multiple merged videos from chapter definitions
+
+# Define chapters (output_name: input_files...)
+declare -A chapters
+chapters["chapter1"]="intro.mp4 section1a.mp4 section1b.mp4"
+chapters["chapter2"]="section2a.mp4 section2b.mp4 section2c.mp4"
+chapters["chapter3"]="section3a.mp4 section3b.mp4 outro.mp4"
+
+for chapter in "${!chapters[@]}"; do
+  echo "Creating $chapter..."
+  files=(${chapters[$chapter]})
+  mediaproc video merge ${files[@]} -o "$chapter.mp4"
+done
+
+# Merge all chapters
+mediaproc video merge chapter*.mp4 -o complete-course.mp4
+```
+
+### Playlist Merge with Logging
+
+```bash
+#!/bin/bash
+# Merge videos from playlist with detailed logging
+
+playlist="playlist.txt"
+log="merge-log.txt"
+
+echo "Merge started: $(date)" > "$log"
+echo "---" >> "$log"
+
+files=()
+while IFS= read -r file; do
+  if [ -f "$file" ]; then
+    duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file")
+    size=$(du -h "$file" | cut -f1)
+    echo "Adding: $file (Duration: ${duration}s, Size: $size)" >> "$log"
+    files+=("$file")
+  else
+    echo "Warning: File not found: $file" >> "$log"
+  fi
+done < "$playlist"
+
+echo "---" >> "$log"
+echo "Total files: ${#files[@]}" >> "$log"
+
+if [ ${#files[@]} -ge 2 ]; then
+  echo "Merging..." >> "$log"
+  mediaproc video merge "${files[@]}" -o merged-playlist.mp4 -v >> "$log" 2>&1
+  echo "Merge completed: $(date)" >> "$log"
+else
+  echo "Error: Need at least 2 files to merge" >> "$log"
+fi
+```
+
+## Related Commands
+
+- [trim](./trim) - Cut clips before merging
+- [transcode](./transcode) - Standardize format before merging
+- [compress](./compress) - Reduce size after merging
+
+## See Also
+
+- [FFmpeg Concat Documentation](https://trac.ffmpeg.org/wiki/Concatenate)
+- [Concat Demuxer](https://ffmpeg.org/ffmpeg-formats.html#concat-1)
+- [Filter Complex](https://ffmpeg.org/ffmpeg-filters.html#concat)

@@ -1,0 +1,589 @@
+#transcode
+
+Convert videos between different formats and codecs.
+
+## Description
+
+The `transcode` command converts videos from one format/codec to another, enabling compatibility across different platforms, devices, and use cases. Transcode intelligently handles format conversion, codec migration, and container remuxing.
+
+## Usage
+
+```bash
+mediaproc video transcode <input> [options]
+```
+
+## Options
+
+| Option            | Alias | Type    | Default | Description                                |
+| ----------------- | ----- | ------- | ------- | ------------------------------------------ |
+| `--output`        | `-o`  | string  | Auto    | Output file path                           |
+| `--format`        | `-f`  | string  | `mp4`   | Output format: `mp4`, `webm`, `mkv`, `avi` |
+| `--codec`         | `-c`  | string  | Auto    | Video codec: `h264`, `h265`, `vp9`, `av1`  |
+| `--audio-codec`   | `-ac` | string  | Auto    | Audio codec: `aac`, `mp3`, `opus`          |
+| `--bitrate`       | `-b`  | string  |         | Video bitrate (e.g., `2000k`, `5M`)        |
+| `--audio-bitrate` | `-ab` | string  | `128k`  | Audio bitrate                              |
+| `--crf`           |       | number  | 23      | CRF value (if no bitrate specified)        |
+| `--dry-run`       |       | boolean | false   | Preview without executing                  |
+| `--verbose`       | `-v`  | boolean | false   | Show detailed FFmpeg output                |
+
+## Format Support
+
+### MP4 (.mp4)
+
+- **Compatibility**: Universal (all devices)
+- **Best codecs**: H.264, H.265
+- **Audio**: AAC, MP3
+- **Use case**: General distribution, web, mobile
+
+### WebM (.webm)
+
+- **Compatibility**: Modern web browsers
+- **Best codecs**: VP9, VP8
+- **Audio**: Opus, Vorbis
+- **Use case**: HTML5 video, web streaming
+
+### MKV (.mkv)
+
+- **Compatibility**: Desktop players, advanced users
+- **Best codecs**: Any (highly flexible)
+- **Audio**: Multiple tracks supported
+- **Use case**: High-quality archival, multiple audio/subtitle tracks
+
+### AVI (.avi)
+
+- **Compatibility**: Legacy systems, wide software support
+- **Best codecs**: H.264, MPEG-4
+- **Audio**: MP3, AAC
+- **Use case**: Legacy compatibility, older editing software
+
+## Codec Mapping
+
+The plugin automatically selects appropriate codecs for each format:
+
+| Format | Default Video Codec | Default Audio Codec |
+| ------ | ------------------- | ------------------- |
+| MP4    | H.264               | AAC                 |
+| WebM   | VP9                 | Opus                |
+| MKV    | H.264               | AAC                 |
+| AVI    | H.264               | MP3                 |
+
+## Examples
+
+### Basic Format Conversion
+
+```bash
+# Convert AVI to MP4
+mediaproc video transcode input.avi -f mp4
+
+# Convert MP4 to WebM
+mediaproc video transcode input.mp4 -f webm
+
+# Convert MOV to MKV
+mediaproc video transcode input.mov -f mkv
+```
+
+Output:
+
+```
+Input file: input.avi
+Format: AVI
+Video codec: MPEG-4
+Audio codec: MP3
+Duration: 00:03:45
+
+Transcoding to MP4 (H.264 + AAC)...
+✓ Transcoding complete
+
+Output file: input.mp4
+Format: MP4
+Size: 125.3 MB
+```
+
+### Specify Output Location
+
+```bash
+# Save to specific file
+mediaproc video transcode input.avi -f mp4 -o output/video.mp4
+
+# Save to directory (auto-generates filename with new extension)
+mediaproc video transcode input.avi -f mp4 -o output/
+```
+
+### Codec Selection
+
+```bash
+# Convert to H.265 (HEVC) for better compression
+mediaproc video transcode input.mp4 -c h265
+
+# Convert to VP9 for web delivery
+mediaproc video transcode input.mp4 -c vp9 -f webm
+
+# Use AV1 for maximum compression (very slow)
+mediaproc video transcode input.mp4 -c av1 -f mp4
+```
+
+### Audio Codec Control
+
+```bash
+# Specify audio codec
+mediaproc video transcode input.avi -f mp4 --audio-codec aac
+
+# Use Opus for web (excellent quality at low bitrates)
+mediaproc video transcode input.mp4 -f webm --audio-codec opus
+
+# Keep MP3 audio
+mediaproc video transcode input.mkv -f mp4 --audio-codec mp3
+```
+
+### Bitrate Control
+
+```bash
+# Target specific video bitrate
+mediaproc video transcode input.avi -f mp4 --bitrate 2000k
+
+# High quality with higher bitrate
+mediaproc video transcode input.avi -f mp4 --bitrate 5M
+
+# Control both video and audio bitrate
+mediaproc video transcode input.avi -f mp4 --bitrate 3000k --audio-bitrate 192k
+```
+
+### CRF-Based Quality
+
+```bash
+# Use CRF for quality-based encoding (recommended)
+mediaproc video transcode input.avi -f mp4 --crf 23
+
+# High quality
+mediaproc video transcode input.avi -f mp4 --crf 18
+
+# Smaller file size
+mediaproc video transcode input.avi -f mp4 --crf 28
+```
+
+### HTML5 Web Video
+
+```bash
+# Create WebM for modern browsers
+mediaproc video transcode video.mp4 -f webm -c vp9 --audio-codec opus
+
+# Create MP4 fallback for older browsers
+mediaproc video transcode video.mp4 -f mp4 -c h264 --audio-codec aac
+
+# Use in HTML:
+# <video>
+#   <source src="video.webm" type="video/webm">
+#   <source src="video.mp4" type="video/mp4">
+# </video>
+```
+
+### Codec Upgrade
+
+```bash
+# Upgrade old H.264 to H.265 for better compression
+mediaproc video transcode old-video.mp4 -c h265 -o new-video.mp4
+
+# Upgrade to VP9 for web
+mediaproc video transcode video.mp4 -c vp9 -f webm --crf 20
+```
+
+### Dry Run Preview
+
+```bash
+# Preview transcoding command
+mediaproc video transcode input.avi -f mp4 --dry-run
+```
+
+Output:
+
+```
+[DRY RUN] Would execute:
+ffmpeg -i input.avi -c:v libx264 -crf 23 -c:a aac -b:a 128k input.mp4
+
+Input: input.avi (Format: AVI, Codec: MPEG-4)
+Output: input.mp4 (Format: MP4, Codec: H.264)
+```
+
+### Batch Transcoding
+
+```bash
+# Convert all AVI files to MP4
+for file in *.avi; do
+  mediaproc video transcode "$file" -f mp4 -o converted/
+done
+
+# Create WebM versions of all MP4 files
+for file in *.mp4; do
+  mediaproc video transcode "$file" -f webm -o webm/
+done
+```
+
+## Use Cases
+
+### Legacy Format Migration
+
+Convert old video formats to modern standards:
+
+```bash
+# AVI to MP4
+mediaproc video transcode old-videos/*.avi -f mp4 -o mp4/
+
+# MOV to MP4
+mediaproc video transcode *.mov -f mp4
+
+# FLV to MP4
+mediaproc video transcode flash-video.flv -f mp4
+```
+
+### Web Platform Optimization
+
+Create optimized videos for web delivery:
+
+```bash
+# YouTube (MP4 with H.264)
+mediaproc video transcode video.avi -f mp4 -c h264 --crf 18
+
+# Vimeo (MP4 or WebM)
+mediaproc video transcode video.avi -f mp4 --bitrate 5M
+
+# Self-hosted website (WebM + MP4 fallback)
+mediaproc video transcode video.avi -f webm -c vp9 -o video.webm
+mediaproc video transcode video.avi -f mp4 -c h264 -o video.mp4
+```
+
+### Device Compatibility
+
+Ensure playback on specific devices:
+
+```bash
+# Apple devices (MP4 with H.264)
+mediaproc video transcode video.mkv -f mp4 -c h264 --audio-codec aac
+
+# Android devices (MP4)
+mediaproc video transcode video.avi -f mp4 -c h264
+
+# Smart TVs (MP4, lower bitrate)
+mediaproc video transcode 4k-video.mp4 --bitrate 8M -o tv-compatible.mp4
+```
+
+### Streaming Preparation
+
+Prepare videos for streaming services:
+
+```bash
+# High-quality stream
+mediaproc video transcode source.avi -f mp4 --bitrate 5M --audio-bitrate 192k
+
+# Medium-quality stream
+mediaproc video transcode source.avi -f mp4 --bitrate 2M --audio-bitrate 128k
+
+# Low-quality stream
+mediaproc video transcode source.avi -f mp4 --bitrate 1M --audio-bitrate 96k
+```
+
+### Archive Conversion
+
+Convert to efficient archival formats:
+
+```bash
+# H.265 in MKV for space-efficient archival
+mediaproc video transcode video.avi -f mkv -c h265 --crf 20
+
+# VP9 in WebM
+mediaproc video transcode video.mp4 -f webm -c vp9 --crf 20
+```
+
+### Social Media Formatting
+
+```bash
+# Instagram (MP4 with AAC)
+mediaproc video transcode video.avi -f mp4 -c h264 --audio-codec aac
+
+# Twitter (MP4, specific bitrate)
+mediaproc video transcode video.avi -f mp4 --bitrate 2M
+
+# Facebook (MP4 H.264)
+mediaproc video transcode video.avi -f mp4 -c h264 --crf 23
+```
+
+## Technical Details
+
+### Container vs Codec
+
+**Container** (format): The file wrapper that holds video/audio streams
+
+- MP4, WebM, MKV, AVI
+
+**Codec**: The algorithm that compresses video/audio data
+
+- H.264, H.265, VP9, AAC, Opus
+
+Example: MP4 container can hold H.264 or H.265 video + AAC audio
+
+### Transcoding vs Remuxing
+
+**Transcoding**: Re-encode video (slow, quality loss)
+
+```bash
+# Changes codec, re-encodes video
+mediaproc video transcode input.avi -f mp4 -c h264
+```
+
+**Remuxing**: Change container without re-encoding (fast, lossless)
+
+```bash
+# FFmpeg direct command for remuxing:
+ffmpeg -i input.mkv -c copy output.mp4
+```
+
+The plugin always transcodes to ensure compatibility.
+
+### Codec Selection Logic
+
+When codec is not specified, automatic selection:
+
+1. **MP4 format**: H.264 video + AAC audio
+2. **WebM format**: VP9 video + Opus audio
+3. **MKV format**: H.264 video + AAC audio
+4. **AVI format**: H.264 video + MP3 audio
+
+### Quality Control
+
+**CRF mode** (default):
+
+- Quality-based encoding
+- Variable bitrate
+- Consistent quality
+- Recommended for most use cases
+
+**Bitrate mode**:
+
+- Target specific size
+- Constant or average bitrate
+- Predictable file sizes
+- Use for streaming constraints
+
+## Performance Considerations
+
+### Encoding Speed
+
+Relative encoding speeds (H.264 baseline = 1x):
+
+- **H.264**: 1x (fast)
+- **H.265**: 2-3x slower
+- **VP9**: 3-5x slower
+- **AV1**: 10-20x slower (not recommended for bulk processing)
+
+### When to Use Each Codec
+
+**H.264 (libx264):**
+
+- ✅ Universal compatibility needed
+- ✅ Fast encoding required
+- ✅ Live streaming
+- ❌ Not ideal for 4K or UHD
+
+**H.265 (libx265):**
+
+- ✅ 4K/UHD content
+- ✅ Storage space critical
+- ✅ Modern devices (2016+)
+- ❌ Slow encoding
+- ❌ Limited older device support
+
+**VP9 (libvpx-vp9):**
+
+- ✅ Web delivery
+- ✅ Open-source requirement
+- ✅ YouTube compatibility
+- ❌ Very slow encoding
+- ❌ Limited hardware acceleration
+
+**AV1 (libaom-av1):**
+
+- ✅ Best compression (30% better than H.265)
+- ✅ Future-proof
+- ❌ Extremely slow (10-20x slower than H.264)
+- ❌ Limited device support currently
+
+## Error Handling
+
+### Common Errors
+
+**FFmpeg not found:**
+
+```
+Error: FFmpeg is not installed
+Install: brew install ffmpeg (macOS) or apt install ffmpeg (Ubuntu)
+```
+
+**Unsupported codec:**
+
+```
+Error: Codec 'av1' not available in your FFmpeg build
+Available codecs: h264, h265, vp9
+Check: ffmpeg -codecs
+```
+
+**Invalid format:**
+
+```
+Error: Unsupported output format 'xyz'
+Supported: mp4, webm, mkv, avi
+```
+
+**Incompatible codec/format combination:**
+
+```
+Warning: VP9 codec works best with WebM format
+Recommended: -f webm -c vp9
+```
+
+## Best Practices
+
+1. **Choose the right format**: MP4 for compatibility, WebM for web
+2. **Use CRF for quality**: Better than fixed bitrate for most cases
+3. **Test codec support**: Verify target devices support chosen codec
+4. **Keep source files**: Never overwrite originals
+5. **Use dry-run**: Preview commands before batch processing
+6. **Consider encoding time**: H.264 is much faster than H.265/VP9
+7. **Match audio codec**: AAC for MP4, Opus for WebM
+8. **Verify output**: Always test transcoded videos play correctly
+
+## Troubleshooting
+
+### Output File Won't Play
+
+- Check device/player codec support
+- Try H.264 (most compatible): `-c h264`
+- Use standard container: `-f mp4`
+- Verify with: `ffprobe output.mp4`
+
+### Poor Quality Output
+
+- Increase CRF (lower number): `--crf 18`
+- Use higher bitrate: `--bitrate 5M`
+- Choose better codec: `-c h265`
+- Check source quality (can't improve bad source)
+
+### Encoding Too Slow
+
+- Use H.264 instead of H.265/VP9: `-c h264`
+- Reduce resolution first: `mediaproc video resize input.mp4 --scale 1080p`
+- Use hardware acceleration (FFmpeg directly)
+- Process fewer files in parallel
+
+### File Size Too Large
+
+- Lower CRF: `--crf 28`
+- Use efficient codec: `-c h265`
+- Reduce bitrate: `--bitrate 2M`
+- Compress after transcoding: `mediaproc video compress output.mp4`
+
+### Audio Sync Issues
+
+- Check source file for issues
+- Use verbose mode: `-v`
+- Try different audio codec: `--audio-codec aac`
+- Report FFmpeg errors from verbose output
+
+## Advanced Examples
+
+### Multi-Format Web Delivery
+
+```bash
+#!/bin/bash
+# Create multiple formats for HTML5 video
+
+input="source.avi"
+output_name="video"
+
+# WebM for modern browsers
+mediaproc video transcode "$input" -f webm -c vp9 --crf 20 -o "${output_name}.webm"
+
+# MP4 for older browsers
+mediaproc video transcode "$input" -f mp4 -c h264 --crf 23 -o "${output_name}.mp4"
+
+echo "Use in HTML:"
+echo '<video controls>'
+echo "  <source src=\"${output_name}.webm\" type=\"video/webm\">"
+echo "  <source src=\"${output_name}.mp4\" type=\"video/mp4\">"
+echo '</video>'
+```
+
+### Adaptive Bitrate Ladder
+
+```bash
+#!/bin/bash
+# Create multiple quality levels for adaptive streaming
+
+input="source.mp4"
+
+# 1080p high quality
+mediaproc video transcode "$input" --bitrate 5M -o "1080p.mp4"
+
+# 720p medium quality
+mediaproc video transcode "$input" --bitrate 2.5M -o "720p.mp4"
+
+# 480p low quality
+mediaproc video transcode "$input" --bitrate 1M -o "480p.mp4"
+```
+
+### Codec Comparison Test
+
+```bash
+#!/bin/bash
+# Compare output of different codecs
+
+input="test-video.mp4"
+
+# H.264
+mediaproc video transcode "$input" -c h264 --crf 23 -o "test-h264.mp4"
+
+# H.265
+mediaproc video transcode "$input" -c h265 --crf 23 -o "test-h265.mp4"
+
+# VP9
+mediaproc video transcode "$input" -c vp9 --crf 23 -o "test-vp9.webm"
+
+# Compare sizes
+ls -lh test-*.{mp4,webm}
+```
+
+### Archive Conversion Pipeline
+
+```bash
+#!/bin/bash
+# Convert old format archive to efficient modern format
+
+for file in archive/*.{avi,mov,flv}; do
+  filename=$(basename "$file")
+  name="${filename%.*}"
+
+  echo "Converting: $filename"
+  mediaproc video transcode "$file" \
+    -f mkv \
+    -c h265 \
+    --crf 20 \
+    -o "converted/$name.mkv" \
+    -v
+
+  # Log file sizes
+  original_size=$(du -h "$file" | cut -f1)
+  new_size=$(du -h "converted/$name.mkv" | cut -f1)
+  echo "$filename: $original_size -> $new_size" >> conversion_log.txt
+done
+```
+
+## Related Commands
+
+- [compress](./compress) - Reduce file size after transcoding
+- [resize](./resize) - Change resolution during transcoding
+- [extract-audio](./extract) - Extract audio in different formats
+
+## See Also
+
+- [FFmpeg Formats Documentation](https://ffmpeg.org/ffmpeg-formats.html)
+- [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html)
+- [HTML5 Video Browser Support](https://caniuse.com/video)
+- [Video Codec Comparison](https://en.wikipedia.org/wiki/Comparison_of_video_codecs)

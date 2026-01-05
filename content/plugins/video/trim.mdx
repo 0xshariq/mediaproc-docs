@@ -1,0 +1,607 @@
+#trim
+
+Cut video segments with precise timing control.
+
+## Description
+
+The `trim` command extracts specific portions of a video by specifying start and end times or duration. It supports both fast stream-copy mode (no re-encoding) and accurate mode (frame-perfect cuts with re-encoding).
+
+## Usage
+
+```bash
+mediaproc video trim <input> [options]
+```
+
+## Options
+
+| Option       | Alias | Type    | Default | Description                                         |
+| ------------ | ----- | ------- | ------- | --------------------------------------------------- |
+| `--output`   | `-o`  | string  | Auto    | Output file path                                    |
+| `--start`    | `-s`  | string  | `0`     | Start time (HH:MM:SS or seconds)                    |
+| `--end`      | `-e`  | string  |         | End time (HH:MM:SS or seconds)                      |
+| `--duration` | `-d`  | string  |         | Duration from start (HH:MM:SS or seconds)           |
+| `--fast`     |       | boolean | false   | Fast mode (stream copy, may be slightly inaccurate) |
+| `--dry-run`  |       | boolean | false   | Preview without executing                           |
+| `--verbose`  | `-v`  | boolean | false   | Show detailed FFmpeg output                         |
+
+## Time Format
+
+Time can be specified in two formats:
+
+### HH:MM:SS Format
+
+- **Hours:Minutes:Seconds**: `01:30:45`
+- **Minutes:Seconds**: `05:30`
+- **Seconds only**: `00:00:30`
+
+### Seconds Format
+
+- **Integer seconds**: `90` (= 1 minute 30 seconds)
+- **Decimal seconds**: `90.5` (= 1 minute 30.5 seconds)
+
+## Modes
+
+### Fast Mode (`--fast`)
+
+- **Method**: Stream copy (no re-encoding)
+- **Speed**: Very fast (real-time or faster)
+- **Accuracy**: May be slightly off (up to 2-3 seconds)
+- **Quality**: Lossless (exact copy of source frames)
+- **Use case**: Quick cuts where frame precision isn't critical
+
+### Accurate Mode (default)
+
+- **Method**: Re-encodes video
+- **Speed**: Slower (depends on video length and codec)
+- **Accuracy**: Frame-perfect cuts
+- **Quality**: Near-lossless with default CRF 23
+- **Use case**: Professional editing, precise timing required
+
+## Examples
+
+### Basic Trimming
+
+```bash
+# Trim from 1 minute to 2 minutes
+mediaproc video trim video.mp4 --start 00:01:00 --end 00:02:00
+
+# Trim from 30 seconds for 1 minute duration
+mediaproc video trim video.mp4 --start 30 --duration 60
+
+# Trim first 10 seconds
+mediaproc video trim video.mp4 --duration 10
+```
+
+Output:
+
+```
+Input file: video.mp4
+Duration: 00:05:30
+Resolution: 1920x1080
+
+Trimming from 00:01:00 to 00:02:00...
+✓ Trim complete
+
+Output file: video_trimmed.mp4
+Duration: 00:01:00
+Size: 45.2 MB
+```
+
+### Specify Output Location
+
+```bash
+# Save to specific file
+mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 -o highlight.mp4
+
+# Save to directory
+mediaproc video trim video.mp4 -s 01:00 -d 30 -o clips/
+```
+
+### Using Seconds
+
+```bash
+# Start at 90 seconds (1:30), end at 180 seconds (3:00)
+mediaproc video trim video.mp4 -s 90 -e 180
+
+# Start at 0, duration 45 seconds
+mediaproc video trim video.mp4 -d 45
+
+# Start at 30.5 seconds, duration 15.5 seconds
+mediaproc video trim video.mp4 -s 30.5 -d 15.5
+```
+
+### Fast Mode (Stream Copy)
+
+```bash
+# Quick trim without re-encoding
+mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 --fast
+
+# Very fast processing for rough cuts
+mediaproc video trim long-video.mp4 -s 10:00 -d 60 --fast
+```
+
+Output:
+
+```
+Input file: long-video.mp4
+Duration: 01:30:00
+
+[FAST MODE] Stream copy (no re-encoding)
+Trimming from 00:10:00 for 00:01:00...
+✓ Trim complete (2.3 seconds)
+
+Output file: long-video_trimmed.mp4
+```
+
+### Extract Specific Segments
+
+```bash
+# Extract intro (first 5 seconds)
+mediaproc video trim video.mp4 -d 5 -o intro.mp4
+
+# Extract middle section
+mediaproc video trim video.mp4 -s 00:01:00 -e 00:03:00 -o middle.mp4
+
+# Extract outro (last 10 seconds - requires knowing duration)
+# If video is 5:30 long, start at 5:20
+mediaproc video trim video.mp4 -s 00:05:20 -o outro.mp4
+```
+
+### Dry Run Preview
+
+```bash
+# Preview trim operation
+mediaproc video trim video.mp4 -s 01:00 -e 02:00 --dry-run
+```
+
+Output:
+
+```
+[DRY RUN] Would execute:
+ffmpeg -i video.mp4 -ss 60 -to 120 -c:v libx264 -crf 23 -c:a aac video_trimmed.mp4
+
+Input: video.mp4 (Duration: 00:05:30)
+Trim: 00:01:00 to 00:02:00 (Duration: 00:01:00)
+Mode: Accurate (re-encode)
+```
+
+### Duration from Start
+
+```bash
+# Trim first 30 seconds
+mediaproc video trim video.mp4 --duration 30
+
+# Trim 2 minutes from beginning
+mediaproc video trim video.mp4 --duration 00:02:00
+
+# Combined with start time
+mediaproc video trim video.mp4 -s 00:01:00 --duration 45
+```
+
+### Multiple Clips
+
+```bash
+# Extract multiple segments
+mediaproc video trim video.mp4 -s 00:00:30 -e 00:01:00 -o clip1.mp4
+mediaproc video trim video.mp4 -s 00:02:00 -e 00:02:30 -o clip2.mp4
+mediaproc video trim video.mp4 -s 00:03:15 -e 00:04:00 -o clip3.mp4
+
+# Then merge them
+mediaproc video merge clip1.mp4 clip2.mp4 clip3.mp4 -o highlights.mp4
+```
+
+## Use Cases
+
+### Remove Intro/Outro
+
+Remove unwanted sections from videos:
+
+```bash
+# Remove first 10 seconds (skip intro)
+mediaproc video trim video.mp4 -s 10
+
+# Remove last 5 seconds (requires knowing video length)
+# For 5:30 video, trim to 5:25
+mediaproc video trim video.mp4 -e 00:05:25
+
+# Remove both intro and outro
+# For 10:00 video, keep 00:05 to 09:55
+mediaproc video trim video.mp4 -s 5 -e 595
+```
+
+### Create Highlights
+
+Extract best moments from long videos:
+
+```bash
+# Sports highlight at 2:30
+mediaproc video trim match.mp4 -s 00:02:25 -d 10 -o goal.mp4
+
+# Presentation key point
+mediaproc video trim webinar.mp4 -s 00:15:00 -d 120 -o key-point.mp4
+
+# Funny moment
+mediaproc video trim stream.mp4 -s 01:23:45 -d 30 -o funny-clip.mp4
+```
+
+### Social Media Clips
+
+Create short clips for social platforms:
+
+```bash
+# Instagram Reel (15 seconds)
+mediaproc video trim video.mp4 -s 00:01:30 -d 15 -o reel.mp4
+
+# TikTok video (up to 60 seconds)
+mediaproc video trim video.mp4 -s 00:02:00 -d 60 -o tiktok.mp4
+
+# Twitter video (up to 2:20)
+mediaproc video trim video.mp4 -s 00:00:30 -d 140 -o twitter.mp4
+```
+
+### Presentation Segments
+
+Break long presentations into chapters:
+
+```bash
+# Chapter 1: Introduction
+mediaproc video trim webinar.mp4 -s 00:00:00 -e 00:05:00 -o chapter1-intro.mp4
+
+# Chapter 2: Content
+mediaproc video trim webinar.mp4 -s 00:05:00 -e 00:25:00 -o chapter2-content.mp4
+
+# Chapter 3: Q&A
+mediaproc video trim webinar.mp4 -s 00:25:00 -o chapter3-qa.mp4
+```
+
+### Tutorial Sections
+
+Extract specific steps from tutorial videos:
+
+```bash
+# Step 1
+mediaproc video trim tutorial.mp4 -s 00:01:00 -e 00:03:30 -o step1.mp4
+
+# Step 2
+mediaproc video trim tutorial.mp4 -s 00:03:30 -e 00:07:15 -o step2.mp4
+
+# Step 3
+mediaproc video trim tutorial.mp4 -s 00:07:15 -e 00:12:00 -o step3.mp4
+```
+
+### Remove Mistakes
+
+Cut out errors from recordings:
+
+```bash
+# Remove mistake at 2:30-2:45
+# Trim two segments and merge
+mediaproc video trim recording.mp4 -e 00:02:30 -o part1.mp4
+mediaproc video trim recording.mp4 -s 00:02:45 -o part2.mp4
+mediaproc video merge part1.mp4 part2.mp4 -o clean.mp4
+```
+
+## Technical Details
+
+### Stream Copy (Fast Mode)
+
+Fast mode uses stream copy (`-c copy`):
+
+```bash
+ffmpeg -i input.mp4 -ss 60 -to 120 -c copy output.mp4
+```
+
+**Advantages:**
+
+- Extremely fast (no decoding/encoding)
+- Lossless (exact frames from source)
+- Minimal CPU usage
+
+**Limitations:**
+
+- May not cut at exact frame
+- Depends on keyframe positions
+- Can be off by 0-3 seconds
+- First frame might be black
+
+**When to use:**
+
+- Rough cuts acceptable
+- Speed is priority
+- Very long videos
+- Multiple quick previews
+
+### Re-encoding (Accurate Mode)
+
+Accurate mode re-encodes video:
+
+```bash
+ffmpeg -i input.mp4 -ss 60 -to 120 -c:v libx264 -crf 23 -c:a aac output.mp4
+```
+
+**Advantages:**
+
+- Frame-perfect accuracy
+- Clean start/end frames
+- Consistent results
+- No black frames
+
+**Limitations:**
+
+- Slower processing
+- Quality loss (minimal with CRF 23)
+- CPU intensive
+
+**When to use:**
+
+- Professional editing
+- Precise timing required
+- Final deliverables
+- Concatenating multiple clips
+
+### Time Calculation
+
+**End time vs Duration:**
+
+- `--end`: Absolute position in video
+- `--duration`: Length of output clip
+
+Examples:
+
+```bash
+# These are equivalent:
+mediaproc video trim video.mp4 -s 60 -e 120
+mediaproc video trim video.mp4 -s 60 -d 60
+
+# Start=1:00, End=2:30, Duration=1:30
+mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:30
+# Same as:
+mediaproc video trim video.mp4 -s 00:01:00 -d 00:01:30
+```
+
+### Time Validation
+
+The command validates times against video duration:
+
+```bash
+# Error: End time exceeds video duration
+mediaproc video trim short-video.mp4 -e 00:10:00
+# Error: Video is only 00:05:00 long
+```
+
+## Performance Considerations
+
+### Fast Mode Speed
+
+Approximate processing speeds:
+
+- **Fast mode**: Real-time or faster (seconds for any length)
+- **Accurate mode**: Depends on trim length and codec
+  - H.264: ~1-2x real-time
+  - H.265: ~0.3-0.5x real-time
+
+### Disk Usage
+
+Temporary files are not created. Output is written directly.
+
+### Memory Usage
+
+Memory usage scales with:
+
+- Video resolution (4K uses more RAM)
+- Codec complexity
+- Not dependent on video length
+
+## Error Handling
+
+### Common Errors
+
+**Invalid time format:**
+
+```
+Error: Invalid time format '1:75:00'
+Use HH:MM:SS or seconds (e.g., '01:15:00' or '75')
+```
+
+**End before start:**
+
+```
+Error: End time (00:01:00) must be after start time (00:02:00)
+```
+
+**Time exceeds duration:**
+
+```
+Error: End time 00:10:00 exceeds video duration 00:05:30
+```
+
+**Missing time parameters:**
+
+```
+Error: Must specify --end or --duration
+```
+
+## Best Practices
+
+1. **Use fast mode for preview**: Test cuts quickly with `--fast`
+2. **Use accurate mode for final**: Produce final clips without `--fast`
+3. **Test with --dry-run**: Preview commands before execution
+4. **Note keyframe positions**: Fast mode cuts at keyframes
+5. **Add buffer time**: For fast mode, add 1-2 seconds buffer
+6. **Keep originals**: Never trim source files directly
+7. **Verify output**: Always check trimmed videos play correctly
+8. **Document times**: Keep notes of interesting timestamps
+
+## Troubleshooting
+
+### Black Frames at Start (Fast Mode)
+
+Fast mode may produce black frames:
+
+**Solution:** Use accurate mode (remove `--fast`)
+
+```bash
+# Instead of:
+mediaproc video trim video.mp4 -s 60 --fast
+
+# Use:
+mediaproc video trim video.mp4 -s 60
+```
+
+### Inaccurate Cut Points (Fast Mode)
+
+Fast mode cuts at nearest keyframe:
+
+**Solution 1:** Use accurate mode
+
+```bash
+mediaproc video trim video.mp4 -s 60 -e 120
+```
+
+**Solution 2:** Add buffer time in fast mode
+
+```bash
+# Add 2 seconds before/after desired time
+mediaproc video trim video.mp4 -s 58 -e 122 --fast
+```
+
+### Audio/Video Desync
+
+If audio and video become desynchronized:
+
+**Solution:** Use accurate mode (default)
+
+```bash
+mediaproc video trim video.mp4 -s 60 -e 120
+```
+
+### Processing Too Slow
+
+If accurate mode is too slow:
+
+**Solution 1:** Use fast mode for rough cuts
+
+```bash
+mediaproc video trim video.mp4 -s 60 -e 120 --fast
+```
+
+**Solution 2:** Use faster codec (H.264 vs H.265)
+
+```bash
+# Fast mode automatically uses stream copy
+```
+
+## Advanced Examples
+
+### Extract Multiple Highlights
+
+```bash
+#!/bin/bash
+# Extract multiple highlight clips from a video
+
+input="long-video.mp4"
+output_dir="highlights"
+
+# Define highlights (start_time duration output_name)
+highlights=(
+  "00:02:30 15 goal1"
+  "00:15:45 20 goal2"
+  "01:05:20 12 goal3"
+)
+
+mkdir -p "$output_dir"
+
+for highlight in "${highlights[@]}"; do
+  read -r start duration name <<< "$highlight"
+  echo "Extracting $name..."
+  mediaproc video trim "$input" -s "$start" -d "$duration" -o "$output_dir/$name.mp4"
+done
+
+echo "Merging highlights..."
+mediaproc video merge "$output_dir"/*.mp4 -o "all-highlights.mp4"
+```
+
+### Remove Commercials
+
+```bash
+#!/bin/bash
+# Remove commercial breaks from recording
+
+input="tv-recording.mp4"
+
+# Keep these segments (content)
+mediaproc video trim "$input" -s 00:00:00 -e 00:15:00 -o part1.mp4
+mediaproc video trim "$input" -s 00:18:00 -e 00:33:00 -o part2.mp4
+mediaproc video trim "$input" -s 00:36:00 -e 00:51:00 -o part3.mp4
+
+# Merge without commercials
+mediaproc video merge part1.mp4 part2.mp4 part3.mp4 -o no-commercials.mp4
+
+# Cleanup
+rm part1.mp4 part2.mp4 part3.mp4
+```
+
+### Time-based Splitting
+
+```bash
+#!/bin/bash
+# Split video into equal segments
+
+input="lecture.mp4"
+segment_duration=300  # 5 minutes
+
+# Get video duration (requires ffprobe)
+duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$input")
+duration=${duration%.*}  # Remove decimal
+
+segment=1
+for ((start=0; start<duration; start+=segment_duration)); do
+  echo "Creating segment $segment..."
+  mediaproc video trim "$input" -s "$start" -d "$segment_duration" -o "segment-$segment.mp4"
+  ((segment++))
+done
+```
+
+### Precision Timing Log
+
+```bash
+#!/bin/bash
+# Log exact times for review
+
+input="video.mp4"
+
+echo "Timestamp,Duration,Output" > trim-log.csv
+
+# Array of clips (start, end, name)
+clips=(
+  "00:01:23,00:01:45,intro"
+  "00:05:30,00:06:15,demo"
+  "00:10:00,00:11:30,outro"
+)
+
+for clip in "${clips[@]}"; do
+  IFS=',' read -r start end name <<< "$clip"
+
+  mediaproc video trim "$input" -s "$start" -e "$end" -o "$name.mp4"
+
+  # Calculate duration
+  start_sec=$(echo "$start" | awk -F: '{print $1*3600 + $2*60 + $3}')
+  end_sec=$(echo "$end" | awk -F: '{print $1*3600 + $2*60 + $3}')
+  duration=$((end_sec - start_sec))
+
+  echo "$start-$end,$duration,$name.mp4" >> trim-log.csv
+done
+```
+
+## Related Commands
+
+- [merge](./merge) - Join trimmed clips together
+- [extract-frames](./extract) - Extract specific frames instead of segments
+- [resize](./resize) - Change resolution of trimmed clips
+- [compress](./compress) - Reduce size of trimmed videos
+
+## See Also
+
+- [FFmpeg Seeking Documentation](https://trac.ffmpeg.org/wiki/Seeking)
+- [Stream Copy Limitations](https://ffmpeg.org/ffmpeg.html#Stream-copy)
+- [Keyframe Explanation](https://en.wikipedia.org/wiki/Key_frame)

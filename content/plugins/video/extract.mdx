@@ -1,0 +1,602 @@
+#extract
+
+Extract audio, frames, or thumbnails from video files.
+
+## Description
+
+The `extract` command provides three sub-commands for extracting content from videos: audio tracks, image frame sequences, and single-frame thumbnails.
+
+## Sub-commands
+
+- [extract-audio](#extract-audio) - Extract audio track to standalone file
+- [extract-frames](#extract-frames) - Extract video frames as image sequence
+- [extract-thumbnail](#extract-thumbnail) - Extract single frame as thumbnail
+
+---
+
+## extract-audio
+
+Extract the audio track from a video file.
+
+### Usage
+
+```bash
+mediaproc video extract-audio <input> [options]
+```
+
+### Options
+
+| Option      | Alias | Type    | Default | Description                                  |
+| ----------- | ----- | ------- | ------- | -------------------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file path                             |
+| `--format`  | `-f`  | string  | `mp3`   | Audio format: `mp3`, `aac`, `wav`, `opus`    |
+| `--bitrate` | `-b`  | string  | `192k`  | Audio bitrate (e.g., `128k`, `256k`, `320k`) |
+| `--dry-run` |       | boolean | false   | Preview without executing                    |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output                  |
+
+### Audio Formats
+
+| Format | Quality             | File Size | Use Case                       |
+| ------ | ------------------- | --------- | ------------------------------ |
+| MP3    | Good                | Medium    | Universal compatibility        |
+| AAC    | Better              | Smaller   | Modern devices, streaming      |
+| WAV    | Lossless            | Large     | Professional editing, archival |
+| Opus   | Best at low bitrate | Smallest  | Web streaming, voice           |
+
+### Examples
+
+#### Basic Audio Extraction
+
+```bash
+# Extract to MP3 (default)
+mediaproc video extract-audio video.mp4
+
+# Extract to AAC
+mediaproc video extract-audio video.mp4 -f aac
+
+# Extract to WAV (lossless)
+mediaproc video extract-audio video.mp4 -f wav
+
+# Extract to Opus
+mediaproc video extract-audio video.mp4 -f opus
+```
+
+Output:
+
+```
+Input file: video.mp4
+Duration: 00:03:45
+Audio codec: AAC
+
+Extracting audio...
+✓ Extraction complete
+
+Output file: video.mp3
+Format: MP3
+Bitrate: 192 kbps
+Size: 5.4 MB
+```
+
+#### Custom Bitrate
+
+```bash
+# High quality (320 kbps)
+mediaproc video extract-audio video.mp4 --bitrate 320k
+
+# Standard quality (192 kbps, default)
+mediaproc video extract-audio video.mp4 --bitrate 192k
+
+# Lower quality (128 kbps)
+mediaproc video extract-audio video.mp4 --bitrate 128k
+
+# Podcast quality (64 kbps)
+mediaproc video extract-audio video.mp4 --bitrate 64k -f opus
+```
+
+#### Specify Output
+
+```bash
+# Custom filename
+mediaproc video extract-audio video.mp4 -o audio.mp3
+
+# Different directory
+mediaproc video extract-audio video.mp4 -o audio/soundtrack.mp3
+
+# Save to directory with auto name
+mediaproc video extract-audio video.mp4 -o audio/
+```
+
+#### Use Cases
+
+```bash
+# Podcast from video
+mediaproc video extract-audio interview.mp4 -f mp3 --bitrate 128k -o podcast.mp3
+
+# Music from music video
+mediaproc video extract-audio music-video.mp4 -f mp3 --bitrate 320k -o song.mp3
+
+# Voice extraction
+mediaproc video extract-audio lecture.mp4 -f opus --bitrate 64k -o lecture-audio.opus
+
+# Archival (lossless)
+mediaproc video extract-audio source.mp4 -f wav -o archive.wav
+```
+
+---
+
+## extract-frames
+
+Extract video frames as an image sequence.
+
+### Usage
+
+```bash
+mediaproc video extract-frames <input> [options]
+```
+
+### Options
+
+| Option      | Alias | Type    | Default | Description                        |
+| ----------- | ----- | ------- | ------- | ---------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output directory or pattern        |
+| `--fps`     |       | number  | 1       | Frames per second to extract       |
+| `--start`   | `-s`  | string  | `0`     | Start time (HH:MM:SS or seconds)   |
+| `--end`     | `-e`  | string  |         | End time (HH:MM:SS or seconds)     |
+| `--format`  | `-f`  | string  | `jpg`   | Image format: `jpg`, `png`         |
+| `--quality` | `-q`  | number  | 85      | JPEG quality (1-100, only for JPG) |
+| `--dry-run` |       | boolean | false   | Preview without executing          |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output        |
+
+### Examples
+
+#### Basic Frame Extraction
+
+```bash
+# Extract 1 frame per second (default)
+mediaproc video extract-frames video.mp4
+
+# Extract 5 frames per second
+mediaproc video extract-frames video.mp4 --fps 5
+
+# Extract every frame (30 fps video)
+mediaproc video extract-frames video.mp4 --fps 30
+
+# Extract 1 frame every 10 seconds
+mediaproc video extract-frames video.mp4 --fps 0.1
+```
+
+Output:
+
+```
+Input file: video.mp4
+Duration: 00:03:45
+Frame rate: 30 fps
+
+Extracting frames (1 fps)...
+✓ Extraction complete
+
+Output directory: video_frames/
+Frames extracted: 225
+Format: JPEG
+```
+
+#### Time Range
+
+```bash
+# Extract frames from specific time range
+mediaproc video extract-frames video.mp4 --start 00:01:00 --end 00:02:00
+
+# Extract first minute
+mediaproc video extract-frames video.mp4 --end 60
+
+# Extract from 30 seconds onward
+mediaproc video extract-frames video.mp4 --start 30
+```
+
+#### Output Format
+
+```bash
+# PNG format (lossless)
+mediaproc video extract-frames video.mp4 -f png
+
+# JPEG with custom quality
+mediaproc video extract-frames video.mp4 -f jpg -q 95
+
+# Lower quality for smaller files
+mediaproc video extract-frames video.mp4 -f jpg -q 70
+```
+
+#### Custom Output
+
+```bash
+# Specify output directory
+mediaproc video extract-frames video.mp4 -o frames/
+
+# Custom filename pattern
+mediaproc video extract-frames video.mp4 -o output/frame-%04d.jpg
+
+# Different location
+mediaproc video extract-frames video.mp4 -o /path/to/output/
+```
+
+#### Use Cases
+
+```bash
+# Thumbnail gallery (1 frame every 5 seconds)
+mediaproc video extract-frames movie.mp4 --fps 0.2 -o thumbnails/
+
+# Animation analysis (all frames)
+mediaproc video extract-frames animation.mp4 --fps 30 -f png -o frames/
+
+# Video preview images (1 per second)
+mediaproc video extract-frames video.mp4 --fps 1 -f jpg -q 85 -o previews/
+
+# Key moments (specific time range)
+mediaproc video extract-frames match.mp4 --start 01:23:00 --end 01:24:00 --fps 2
+
+# Stop motion source (high FPS)
+mediaproc video extract-frames video.mp4 --fps 24 -f png -o stopmotion/
+```
+
+---
+
+## extract-thumbnail
+
+Extract a single frame as a thumbnail image.
+
+### Usage
+
+```bash
+mediaproc video extract-thumbnail <input> [options]
+```
+
+### Options
+
+| Option      | Alias | Type    | Default    | Description                                 |
+| ----------- | ----- | ------- | ---------- | ------------------------------------------- |
+| `--output`  | `-o`  | string  | Auto       | Output file path                            |
+| `--time`    | `-t`  | string  | `00:00:01` | Time to extract frame (HH:MM:SS or seconds) |
+| `--width`   | `-w`  | number  |            | Resize width (maintains aspect ratio)       |
+| `--height`  | `-h`  | number  |            | Resize height (maintains aspect ratio)      |
+| `--format`  | `-f`  | string  | `jpg`      | Image format: `jpg`, `png`                  |
+| `--quality` | `-q`  | number  | 85         | JPEG quality (1-100, only for JPG)          |
+| `--dry-run` |       | boolean | false      | Preview without executing                   |
+| `--verbose` | `-v`  | boolean | false      | Show detailed FFmpeg output                 |
+
+### Examples
+
+#### Basic Thumbnail
+
+```bash
+# Extract thumbnail at 1 second (default)
+mediaproc video extract-thumbnail video.mp4
+
+# Extract at specific time
+mediaproc video extract-thumbnail video.mp4 --time 00:01:30
+
+# Extract at 30 seconds
+mediaproc video extract-thumbnail video.mp4 -t 30
+
+# Extract middle frame (for 5-minute video)
+mediaproc video extract-thumbnail video.mp4 -t 150
+```
+
+Output:
+
+```
+Input file: video.mp4
+Duration: 00:05:00
+Resolution: 1920x1080
+
+Extracting thumbnail at 00:01:30...
+✓ Extraction complete
+
+Output file: video_thumbnail.jpg
+Resolution: 1920x1080
+Size: 245 KB
+```
+
+#### Resize Thumbnail
+
+```bash
+# Resize to 640px width
+mediaproc video extract-thumbnail video.mp4 -w 640
+
+# Resize to 360px height
+mediaproc video extract-thumbnail video.mp4 -h 360
+
+# Specify both (maintains aspect ratio)
+mediaproc video extract-thumbnail video.mp4 -w 1280 -h 720
+
+# Small preview
+mediaproc video extract-thumbnail video.mp4 -w 320
+```
+
+#### Output Format
+
+```bash
+# PNG thumbnail
+mediaproc video extract-thumbnail video.mp4 -f png
+
+# High quality JPEG
+mediaproc video extract-thumbnail video.mp4 -f jpg -q 95
+
+# Compressed JPEG
+mediaproc video extract-thumbnail video.mp4 -f jpg -q 70
+```
+
+#### Custom Output
+
+```bash
+# Specify filename
+mediaproc video extract-thumbnail video.mp4 -o preview.jpg
+
+# Different directory
+mediaproc video extract-thumbnail video.mp4 -o thumbnails/cover.jpg
+
+# Multiple thumbnails at different times
+mediaproc video extract-thumbnail video.mp4 -t 5 -o thumb-5s.jpg
+mediaproc video extract-thumbnail video.mp4 -t 30 -o thumb-30s.jpg
+mediaproc video extract-thumbnail video.mp4 -t 60 -o thumb-60s.jpg
+```
+
+#### Use Cases
+
+```bash
+# YouTube thumbnail (1280x720)
+mediaproc video extract-thumbnail video.mp4 -t 30 -w 1280 -h 720 -o youtube-thumb.jpg
+
+# Instagram preview (1080x1080)
+mediaproc video extract-thumbnail video.mp4 -t 10 -w 1080 -h 1080 -o instagram-thumb.jpg
+
+# Video player poster
+mediaproc video extract-thumbnail movie.mp4 -t 0.5 -o poster.jpg
+
+# Email preview (small size)
+mediaproc video extract-thumbnail video.mp4 -t 5 -w 320 -q 70 -o email-preview.jpg
+
+# Gallery thumbnail
+mediaproc video extract-thumbnail video.mp4 -t 1 -w 400 -o gallery-thumb.jpg
+```
+
+---
+
+## Combined Examples
+
+### Complete Video Processing
+
+```bash
+# Extract audio and thumbnail
+video="presentation.mp4"
+
+mediaproc video extract-audio "$video" -f mp3 --bitrate 192k -o audio.mp3
+mediaproc video extract-thumbnail "$video" -t 10 -w 1280 -o thumbnail.jpg
+```
+
+### Create Video Gallery
+
+```bash
+#!/bin/bash
+# Extract thumbnails for all videos
+
+for video in *.mp4; do
+  name="${video%.mp4}"
+  mediaproc video extract-thumbnail "$video" -t 5 -w 640 -o "thumbs/${name}.jpg"
+done
+```
+
+### Frame Analysis
+
+```bash
+# Extract frames at multiple FPS for comparison
+
+video="test.mp4"
+
+mediaproc video extract-frames "$video" --fps 1 -o frames-1fps/
+mediaproc video extract-frames "$video" --fps 5 -o frames-5fps/
+mediaproc video extract-frames "$video" --fps 10 -o frames-10fps/
+```
+
+### Music Video Processing
+
+```bash
+# Extract audio and create thumbnail
+music_video="song.mp4"
+
+# Extract high-quality audio
+mediaproc video extract-audio "$music_video" -f mp3 --bitrate 320k -o song.mp3
+
+# Create album art thumbnail
+mediaproc video extract-thumbnail "$music_video" -t 30 -w 1200 -h 1200 -f png -o album-art.png
+```
+
+### Batch Audio Extraction
+
+```bash
+#!/bin/bash
+# Extract audio from all videos
+
+mkdir -p audio
+
+for video in videos/*.mp4; do
+  filename=$(basename "$video" .mp4)
+  echo "Extracting audio from $filename..."
+  mediaproc video extract-audio "$video" -f mp3 --bitrate 192k -o "audio/${filename}.mp3"
+done
+```
+
+### Multi-Thumbnail Generation
+
+```bash
+#!/bin/bash
+# Generate thumbnails at different timestamps
+
+video="lecture.mp4"
+times=(5 30 60 120 180)
+
+mkdir -p thumbnails
+
+for time in "${times[@]}"; do
+  mediaproc video extract-thumbnail "$video" \
+    -t "$time" \
+    -w 640 \
+    -o "thumbnails/thumb-${time}s.jpg"
+done
+```
+
+### Frame-by-Frame Analysis
+
+```bash
+#!/bin/bash
+# Extract every frame for analysis
+
+video="action-sequence.mp4"
+start="00:01:30"
+end="00:01:35"
+
+mediaproc video extract-frames "$video" \
+  --start "$start" \
+  --end "$end" \
+  --fps 30 \
+  -f png \
+  -o "analysis-frames/"
+
+echo "Extracted $(ls -1 analysis-frames/ | wc -l) frames"
+```
+
+## Technical Details
+
+### Audio Extraction
+
+Audio is extracted using stream copy when possible:
+
+```bash
+# If source codec matches target
+ffmpeg -i input.mp4 -vn -acodec copy output.aac
+
+# If transcoding needed
+ffmpeg -i input.mp4 -vn -acodec libmp3lame -b:a 192k output.mp3
+```
+
+### Frame Extraction
+
+Frames are extracted using FFmpeg's fps filter:
+
+```bash
+# Extract at specific FPS
+ffmpeg -i input.mp4 -vf fps=1 output_%04d.jpg
+
+# With time range
+ffmpeg -ss 00:01:00 -to 00:02:00 -i input.mp4 -vf fps=5 output_%04d.jpg
+```
+
+### Thumbnail Extraction
+
+Single frame extraction seeks to specific time:
+
+```bash
+# Extract specific frame
+ffmpeg -ss 00:01:30 -i input.mp4 -vframes 1 -q:v 2 output.jpg
+
+# With resize
+ffmpeg -ss 00:01:30 -i input.mp4 -vframes 1 -vf scale=640:-1 output.jpg
+```
+
+## Performance Considerations
+
+### Audio Extraction
+
+- **Speed**: Very fast (usually real-time or faster)
+- **CPU**: Low (mostly I/O bound)
+- **Disk**: Size depends on bitrate and duration
+
+### Frame Extraction
+
+- **Speed**: Depends on FPS and video length
+- **CPU**: Moderate (decoding frames)
+- **Disk**: Can be large (1000s of image files)
+
+### Thumbnail Extraction
+
+- **Speed**: Very fast (single frame seek)
+- **CPU**: Minimal
+- **Disk**: Small (single image file)
+
+## Best Practices
+
+1. **Choose appropriate format**: MP3 for compatibility, Opus for size
+2. **Match bitrate to use**: 320k for music, 64k for voice
+3. **Use reasonable FPS**: 1 fps for previews, higher for analysis
+4. **JPG for photos**: PNG for graphics/text
+5. **Test thumbnail time**: Find representative frame
+6. **Consider disk space**: High FPS = many files
+7. **Batch process wisely**: Monitor disk usage
+
+## Troubleshooting
+
+### No Audio Track
+
+Error: Video has no audio track
+
+**Solution:** Check if video contains audio
+
+```bash
+ffprobe -i video.mp4 -show_streams -select_streams a
+```
+
+### Too Many Frames
+
+Extracting all frames creates thousands of files
+
+**Solution:** Use lower FPS
+
+```bash
+# Instead of --fps 30
+mediaproc video extract-frames video.mp4 --fps 1
+```
+
+### Thumbnail is Black
+
+Extracted thumbnail is black frame
+
+**Solution:** Choose different timestamp
+
+```bash
+# Try different times
+mediaproc video extract-thumbnail video.mp4 -t 5
+mediaproc video extract-thumbnail video.mp4 -t 10
+```
+
+### Disk Space Issues
+
+Running out of disk space during frame extraction
+
+**Solution 1:** Extract time range only
+
+```bash
+mediaproc video extract-frames video.mp4 --start 60 --end 120
+```
+
+**Solution 2:** Use lower FPS
+
+```bash
+mediaproc video extract-frames video.mp4 --fps 0.5
+```
+
+**Solution 3:** Use JPEG with lower quality
+
+```bash
+mediaproc video extract-frames video.mp4 -f jpg -q 70
+```
+
+## Related Commands
+
+- [trim](./trim) - Extract specific time segments before extracting content
+- [resize](./resize) - Resize video before frame extraction
+- [transcode](./transcode) - Convert format before extraction
+
+## See Also
+
+- [FFmpeg Audio Extraction](https://trac.ffmpeg.org/wiki/ExtractAudio)
+- [FFmpeg Frame Extraction](https://trac.ffmpeg.org/wiki/Create%20a%20thumbnail%20image%20every%20X%20seconds%20of%20the%20video)
+- [Audio Codec Comparison](https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats)

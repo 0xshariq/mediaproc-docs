@@ -1,0 +1,327 @@
+# Video Plugin
+
+Professional video processing powered by FFmpeg. The video plugin provides essential commands for compressing, converting, editing, and extracting content from video files.
+
+## Overview
+
+The MediaProc video plugin delivers industry-standard video processing capabilities through 6 carefully selected commands that cover 90% of common video manipulation tasks. Built on FFmpeg, it provides professional-grade results with an intuitive command-line interface.
+
+### Key Features
+
+- **Compression** - Reduce file size with CRF-based quality control
+- **Transcoding** - Convert between formats and codecs (MP4, WebM, MKV, H.264, H.265, VP9)
+- **Trimming** - Cut video segments with precise frame-accurate timing
+- **Resizing** - Scale resolution with preset sizes or custom dimensions
+- **Merging** - Concatenate multiple videos with smart format detection
+- **Extraction** - Pull audio tracks, image frames, and thumbnails
+
+## Requirements
+
+The video plugin requires FFmpeg to be installed on your system:
+
+**macOS:**
+
+```bash
+brew install ffmpeg
+```
+
+**Ubuntu/Debian:**
+
+```bash
+sudo apt update
+sudo apt install ffmpeg
+```
+
+**Windows:**
+
+```bash
+choco install ffmpeg
+```
+
+Verify installation:
+
+```bash
+ffmpeg -version
+ffprobe -version
+```
+
+## Installation
+
+```bash
+# Using MediaProc CLI
+mediaproc add video
+
+# Or install standalone
+npm install -g @mediaproc/video
+```
+
+## Commands
+
+| Command                              | Description             | Use Case                               |
+| ------------------------------------ | ----------------------- | -------------------------------------- |
+| [compress](./video/compress)         | Reduce video file size  | Optimize for web, email, storage       |
+| [transcode](./video/transcode)       | Convert format/codec    | Platform compatibility, codec upgrade  |
+| [trim](./video/trim)                 | Cut video segments      | Remove unwanted sections, create clips |
+| [resize](./video/resize)             | Change resolution       | Downscale 4K, mobile optimization      |
+| [merge](./video/merge)               | Join multiple videos    | Combine clips, create compilations     |
+| [extract-audio](./video/extract)     | Extract audio track     | Get audio from video                   |
+| [extract-frames](./video/extract)    | Extract image sequence  | Create thumbnails, analysis            |
+| [extract-thumbnail](./video/extract) | Single frame extraction | Video preview image                    |
+
+## Quick Start
+
+```bash
+# Compress a video
+mediaproc video compress input.mp4 -q high
+
+# Convert to different format
+mediaproc video transcode input.avi -f mp4
+
+# Trim a segment
+mediaproc video trim input.mp4 --start 00:01:00 --end 00:02:30
+
+# Resize to 720p
+mediaproc video resize input.mp4 --scale 720p
+
+# Merge videos
+mediaproc video merge video1.mp4 video2.mp4 video3.mp4
+
+# Extract audio
+mediaproc video extract-audio input.mp4 --format mp3
+```
+
+## Common Workflows
+
+### Prepare Video for Web
+
+```bash
+# Step 1: Resize to 1080p
+mediaproc video resize 4k-video.mp4 --scale 1080p
+
+# Step 2: Compress for web delivery
+mediaproc video compress 4k-video_1920x1080.mp4 -q medium
+
+# Step 3: Convert to WebM for HTML5 video
+mediaproc video transcode 4k-video_1920x1080_compressed.mp4 -f webm --codec vp9
+```
+
+### Create Social Media Clips
+
+```bash
+# Extract 30-second highlight
+mediaproc video trim long-video.mp4 --start 00:02:15 --duration 30 -o highlight.mp4
+
+# Resize for Instagram (1080x1080)
+mediaproc video resize highlight.mp4 -w 1080 -h 1080 -o highlight-square.mp4
+
+# Compress to reduce file size
+mediaproc video compress highlight-square.mp4 -q medium
+```
+
+### Batch Process Videos
+
+```bash
+# Compress all MP4 files
+for file in *.mp4; do
+  mediaproc video compress "$file" -q medium
+done
+
+# Convert all AVI to MP4
+for file in *.avi; do
+  mediaproc video transcode "$file" -f mp4 -o "${file%.avi}.mp4"
+done
+```
+
+## Format Support
+
+### Video Formats
+
+- **MP4** (.mp4) - Universal compatibility, recommended for most use cases
+- **WebM** (.webm) - Web-optimized, HTML5 video tag support
+- **MKV** (.mkv) - Feature-rich, supports multiple audio/subtitle tracks
+- **AVI** (.avi) - Legacy format, wide software support
+- **MOV** (.mov) - QuickTime format, macOS native
+- **FLV** (.flv) - Flash video (legacy)
+
+### Video Codecs
+
+- **H.264 (libx264)** - Universal compatibility, fast encoding
+- **H.265 (libx265)** - 50% better compression than H.264, slower encoding
+- **VP9 (libvpx-vp9)** - Open-source, used with WebM format
+- **AV1 (libaom-av1)** - Next-gen codec, best compression (very slow)
+
+### Audio Codecs
+
+- **AAC** - Universal, recommended for MP4
+- **MP3** - Legacy, wide compatibility
+- **Opus** - Modern, efficient for low bitrates
+- **WAV** - Lossless, large file size
+
+## Quality Settings
+
+### CRF (Constant Rate Factor)
+
+Lower CRF = better quality, larger file:
+
+- **0-17**: Visually lossless (archival)
+- **18-23**: High quality (recommended)
+- **23-28**: Good quality (distribution)
+- **28-51**: Lower quality (streaming)
+
+### Presets
+
+- **low**: CRF 28 - Smaller files, acceptable quality
+- **medium**: CRF 23 - Balanced (default)
+- **high**: CRF 18 - Larger files, excellent quality
+
+## Performance Tips
+
+1. **Use fast trim mode** (`--fast`) for quick cuts without re-encoding
+2. **Choose the right codec**: H.264 for speed, H.265 for size
+3. **Avoid unnecessary re-encoding** when merging same-format videos
+4. **Use preset scales** (720p, 1080p) instead of custom dimensions
+5. **Test with `--dry-run`** before processing large batches
+
+## Global Options
+
+All video commands support:
+
+- `-o, --output <path>` - Specify output file/directory
+- `--dry-run` - Preview command without executing
+- `-v, --verbose` - Show detailed FFmpeg output
+- `--help` - Display command-specific help
+
+## Technical Details
+
+### Video Processing Pipeline
+
+1. **Analysis**: FFprobe extracts video metadata (duration, resolution, codec, bitrate)
+2. **Processing**: FFmpeg applies transformations based on command options
+3. **Output**: Encoded video written to specified output path
+4. **Validation**: Output file verified and statistics displayed
+
+### Encoding Modes
+
+**CRF Mode** (Constant Rate Factor):
+
+- Variable bitrate based on video complexity
+- Consistent quality throughout
+- Recommended for most use cases
+
+**Bitrate Mode** (ABR - Average Bitrate):
+
+- Fixed average bitrate target
+- Predictable file sizes
+- Used for streaming constraints
+
+### Fast vs Accurate Trimming
+
+**Fast Mode** (`--fast`):
+
+- Stream copy (no re-encode)
+- Very quick processing
+- May have slight inaccuracies at cut points
+
+**Accurate Mode** (default):
+
+- Re-encodes video
+- Frame-perfect cuts
+- Slower but precise
+
+## Error Handling
+
+The plugin provides clear error messages for common issues:
+
+- **FFmpeg not installed**: Instructions for installation
+- **Invalid input file**: File path verification
+- **Unsupported format**: List of supported formats
+- **Out of range times**: Time validation against video duration
+- **Insufficient disk space**: Storage requirement checks
+
+## Troubleshooting
+
+### FFmpeg Not Found
+
+```bash
+# Check if FFmpeg is installed
+ffmpeg -version
+
+# Install on macOS
+brew install ffmpeg
+
+# Install on Ubuntu
+sudo apt install ffmpeg
+```
+
+### Codec Not Supported
+
+Some codecs require specific FFmpeg builds:
+
+```bash
+# Check available codecs
+ffmpeg -codecs | grep h265
+ffmpeg -codecs | grep vp9
+```
+
+### Processing Too Slow
+
+- Use H.264 instead of H.265 or VP9
+- Lower CRF value for faster encoding
+- Use `--fast` mode for trimming
+- Consider reducing resolution first
+
+### Large Output Files
+
+- Increase CRF value (28 instead of 23)
+- Use more efficient codec (H.265 instead of H.264)
+- Reduce resolution before compressing
+- Lower audio bitrate
+
+## Best Practices
+
+1. **Always test with `--dry-run`** before batch processing
+2. **Keep originals** - never overwrite source files
+3. **Use appropriate quality** - don't over-compress
+4. **Choose the right format** - MP4 for universal compatibility
+5. **Maintain aspect ratios** - avoid distortion
+6. **Check output** - verify results before deleting inputs
+
+## Advanced Usage
+
+### Custom FFmpeg Options
+
+While the plugin covers common use cases, you can use FFmpeg directly for advanced scenarios:
+
+```bash
+# The plugin generates commands like:
+ffmpeg -i input.mp4 -c:v libx264 -crf 23 -c:a aac output.mp4
+
+# Use --verbose to see exact FFmpeg commands
+mediaproc video compress input.mp4 --verbose
+```
+
+### Chaining Operations
+
+```bash
+# Resize, then compress
+mediaproc video resize large.mp4 --scale 1080p
+mediaproc video compress large_1920x1080.mp4 -q medium
+
+# Trim multiple segments and merge
+mediaproc video trim video.mp4 --start 0:30 --end 1:00 -o clip1.mp4
+mediaproc video trim video.mp4 --start 2:00 --end 2:30 -o clip2.mp4
+mediaproc video merge clip1.mp4 clip2.mp4 -o highlights.mp4
+```
+
+## Related Resources
+
+- [FFmpeg Documentation](https://ffmpeg.org/documentation.html)
+- [FFmpeg Wiki](https://trac.ffmpeg.org/wiki)
+- [Video Codec Comparison](https://en.wikipedia.org/wiki/Comparison_of_video_codecs)
+- [CRF Guide](https://trac.ffmpeg.org/wiki/Encode/H.264#crf)
+
+## Support
+
+- [Report Issues](https://github.com/0xshariq/mediaproc-cli/issues)
+- [Discussions](https://github.com/0xshariq/mediaproc-cli/discussions)
+- [Plugin Source](https://github.com/0xshariq/mediaproc-cli/tree/main/plugins/video)

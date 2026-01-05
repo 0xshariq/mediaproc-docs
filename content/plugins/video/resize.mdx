@@ -1,0 +1,595 @@
+#resize
+
+Change video resolution with preset scales or custom dimensions.
+
+## Description
+
+The `resize` command changes video resolution to optimize for different platforms, devices, or bandwidth constraints. It maintains aspect ratios, handles custom dimensions, and provides common resolution presets.
+
+## Usage
+
+```bash
+mediaproc video resize <input> [options]
+```
+
+## Options
+
+| Option      | Alias | Type    | Default | Description                                          |
+| ----------- | ----- | ------- | ------- | ---------------------------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file path                                     |
+| `--scale`   |       | string  |         | Preset scale: `480p`, `720p`, `1080p`, `1440p`, `4k` |
+| `--width`   | `-w`  | number  |         | Custom width in pixels                               |
+| `--height`  | `-h`  | number  |         | Custom height in pixels                              |
+| `--pad`     |       | boolean | false   | Add padding to maintain exact dimensions             |
+| `--dry-run` |       | boolean | false   | Preview without executing                            |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output                          |
+
+## Resolution Presets
+
+| Preset  | Resolution | Aspect Ratio | Common Use                     |
+| ------- | ---------- | ------------ | ------------------------------ |
+| `480p`  | 854x480    | 16:9         | Mobile, low bandwidth          |
+| `720p`  | 1280x720   | 16:9         | HD, web streaming              |
+| `1080p` | 1920x1080  | 16:9         | Full HD, standard distribution |
+| `1440p` | 2560x1440  | 16:9         | QHD, gaming, high-end displays |
+| `4k`    | 3840x2160  | 16:9         | UHD, premium content           |
+
+## Examples
+
+### Basic Resizing
+
+```bash
+# Resize to 1080p
+mediaproc video resize 4k-video.mp4 --scale 1080p
+
+# Resize to 720p
+mediaproc video resize video.mp4 --scale 720p
+
+# Resize to 480p for mobile
+mediaproc video resize video.mp4 --scale 480p
+```
+
+Output:
+
+```
+Input file: 4k-video.mp4
+Original resolution: 3840x2160
+Duration: 00:03:45
+
+Resizing to 1920x1080...
+✓ Resize complete
+
+Output file: 4k-video_1920x1080.mp4
+New resolution: 1920x1080
+Size: 180.5 MB
+```
+
+### Specify Output Location
+
+```bash
+# Save to specific file
+mediaproc video resize video.mp4 --scale 720p -o optimized.mp4
+
+# Save to directory
+mediaproc video resize video.mp4 --scale 1080p -o output/
+```
+
+### Custom Width
+
+```bash
+# Set width, height calculated automatically
+mediaproc video resize video.mp4 -w 1280
+
+# Downscale to 800px width
+mediaproc video resize video.mp4 -w 800
+
+# Ultra-wide width
+mediaproc video resize video.mp4 -w 2560
+```
+
+### Custom Height
+
+```bash
+# Set height, width calculated automatically
+mediaproc video resize video.mp4 -h 720
+
+# Vertical video height
+mediaproc video resize vertical.mp4 -h 1920
+```
+
+### Custom Width and Height
+
+```bash
+# Set both dimensions (maintains aspect ratio)
+mediaproc video resize video.mp4 -w 1280 -h 720
+
+# Square video
+mediaproc video resize video.mp4 -w 1080 -h 1080
+
+# Custom aspect ratio
+mediaproc video resize video.mp4 -w 1920 -h 800
+```
+
+### Padding Mode
+
+```bash
+# Add black bars to maintain exact dimensions
+mediaproc video resize video.mp4 -w 1080 -h 1080 --pad
+
+# Instagram square with padding
+mediaproc video resize landscape.mp4 -w 1080 -h 1080 --pad
+
+# Letterbox effect
+mediaproc video resize vertical.mp4 -w 1920 -h 1080 --pad
+```
+
+### Downscale 4K Content
+
+```bash
+# 4K to 1080p for standard displays
+mediaproc video resize 4k-video.mp4 --scale 1080p
+
+# 4K to 1440p for high-end displays
+mediaproc video resize 4k-video.mp4 --scale 1440p
+
+# 4K to 720p for streaming
+mediaproc video resize 4k-video.mp4 --scale 720p
+```
+
+### Dry Run Preview
+
+```bash
+# Preview resize operation
+mediaproc video resize video.mp4 --scale 720p --dry-run
+```
+
+Output:
+
+```
+[DRY RUN] Would execute:
+ffmpeg -i video.mp4 -vf scale=1280:720 -c:v libx264 -crf 23 -c:a copy video_1280x720.mp4
+
+Input: video.mp4 (1920x1080)
+Output: 1280x720
+Scale: 720p preset
+```
+
+### Batch Resizing
+
+```bash
+# Resize all MP4 files to 720p
+for file in *.mp4; do
+  mediaproc video resize "$file" --scale 720p -o 720p/
+done
+
+# Create multiple versions
+for file in *.mp4; do
+  mediaproc video resize "$file" --scale 1080p -o 1080p/
+  mediaproc video resize "$file" --scale 720p -o 720p/
+  mediaproc video resize "$file" --scale 480p -o 480p/
+done
+```
+
+## Use Cases
+
+### Mobile Optimization
+
+Reduce resolution for mobile devices and data savings:
+
+```bash
+# Standard mobile (720p)
+mediaproc video resize video.mp4 --scale 720p
+
+# Low bandwidth mobile (480p)
+mediaproc video resize video.mp4 --scale 480p
+
+# Very low bandwidth (custom small size)
+mediaproc video resize video.mp4 -w 640
+```
+
+### Web Streaming
+
+Create appropriate sizes for web delivery:
+
+```bash
+# Standard web (1080p)
+mediaproc video resize source.mp4 --scale 1080p -o web-hd.mp4
+
+# Medium quality (720p)
+mediaproc video resize source.mp4 --scale 720p -o web-sd.mp4
+
+# Low bandwidth (480p)
+mediaproc video resize source.mp4 --scale 480p -o web-mobile.mp4
+```
+
+### Social Media
+
+Resize for platform requirements:
+
+```bash
+# Instagram feed (1080x1080)
+mediaproc video resize video.mp4 -w 1080 -h 1080 --pad
+
+# Instagram story (1080x1920 vertical)
+mediaproc video resize horizontal.mp4 -w 1080 -h 1920 --pad
+
+# Twitter (1280x720 recommended)
+mediaproc video resize video.mp4 --scale 720p
+
+# TikTok (1080x1920 vertical)
+mediaproc video resize video.mp4 -w 1080 -h 1920 --pad
+
+# YouTube thumbnail video (1920x1080)
+mediaproc video resize video.mp4 --scale 1080p
+```
+
+### 4K Downscaling
+
+Convert high-resolution footage to standard sizes:
+
+```bash
+# 4K to standard HD
+mediaproc video resize 4k-footage.mp4 --scale 1080p
+
+# 4K to gaming/monitor standard
+mediaproc video resize 4k-footage.mp4 --scale 1440p
+
+# 4K to mobile
+mediaproc video resize 4k-footage.mp4 --scale 720p
+```
+
+### Adaptive Streaming
+
+Create multiple resolutions for adaptive bitrate:
+
+```bash
+# Create streaming ladder
+mediaproc video resize source.mp4 --scale 1080p -o 1080p.mp4
+mediaproc video resize source.mp4 --scale 720p -o 720p.mp4
+mediaproc video resize source.mp4 --scale 480p -o 480p.mp4
+
+# Then transcode each to different bitrates
+mediaproc video transcode 1080p.mp4 --bitrate 5M -o 1080p-5mbps.mp4
+mediaproc video transcode 720p.mp4 --bitrate 2.5M -o 720p-2.5mbps.mp4
+mediaproc video transcode 480p.mp4 --bitrate 1M -o 480p-1mbps.mp4
+```
+
+### Email-Friendly Videos
+
+Create small videos for email attachments:
+
+```bash
+# Small resolution + compression
+mediaproc video resize large-video.mp4 --scale 480p -o small.mp4
+mediaproc video compress small.mp4 -q low -o email-ready.mp4
+```
+
+## Technical Details
+
+### Aspect Ratio Preservation
+
+The plugin automatically maintains aspect ratio:
+
+**Width only specified:**
+
+- Height calculated to maintain aspect ratio
+- No distortion
+
+**Height only specified:**
+
+- Width calculated to maintain aspect ratio
+- No distortion
+
+**Both specified (without --pad):**
+
+- Scales to fit within dimensions
+- Maintains aspect ratio
+- May not use full width or height
+
+**Both specified (with --pad):**
+
+- Scales to fit
+- Adds black bars (letterbox/pillarbox)
+- Fills exact dimensions
+
+### Scaling Algorithm
+
+Uses FFmpeg's bicubic scaling (high quality):
+
+```bash
+# Downscaling (4K to 1080p)
+-vf scale=1920:1080
+
+# Upscaling (720p to 1080p) - not recommended
+-vf scale=1920:1080
+```
+
+### Even Dimensions
+
+Video codecs require even dimensions (divisible by 2):
+
+- Input: 1920x1080 → Valid ✓
+- Input: 1921x1080 → Adjusted to 1920x1080 ✓
+- Custom: 1281x720 → Adjusted to 1280x720 ✓
+
+The plugin automatically ensures even dimensions.
+
+### Quality Preservation
+
+Resizing uses default CRF 23 for re-encoding:
+
+- **Minimal quality loss** with good compression
+- Same as original if source is lower quality
+- Can combine with compress for more size reduction
+
+### Padding Behavior
+
+When `--pad` is used:
+
+```bash
+# 16:9 video → 1:1 square
+mediaproc video resize 1920x1080.mp4 -w 1080 -h 1080 --pad
+# Result: Video scaled to 1080x608, black bars top/bottom
+
+# 1:1 square → 16:9
+mediaproc video resize 1080x1080.mp4 -w 1920 -h 1080 --pad
+# Result: Video scaled to 1080x1080, black bars left/right
+```
+
+## Performance Considerations
+
+### Processing Speed
+
+Resizing speed depends on:
+
+- **Resolution change**: Larger changes take longer
+- **Downscaling**: Fast (throwing away pixels)
+- **Upscaling**: Slower (interpolating pixels)
+- **Video length**: Proportional to duration
+
+Approximate speeds (1080p to 720p):
+
+- ~0.5-1x real-time for downscaling
+- ~0.3-0.5x real-time for upscaling
+
+### Disk Usage
+
+No temporary files created. Output written directly.
+
+### Memory Usage
+
+Memory scales with source resolution:
+
+- 1080p: ~500 MB RAM
+- 4K: ~2 GB RAM
+
+## Error Handling
+
+### Common Errors
+
+**No dimensions specified:**
+
+```
+Error: Must specify --scale or --width/--height
+```
+
+**Invalid preset:**
+
+```
+Error: Invalid scale preset 'abc'
+Supported: 480p, 720p, 1080p, 1440p, 4k
+```
+
+**Dimensions too large:**
+
+```
+Error: Output dimensions exceed reasonable limits
+Maximum: 7680x4320 (8K)
+```
+
+**Invalid dimensions:**
+
+```
+Error: Width and height must be positive integers
+```
+
+## Best Practices
+
+1. **Downscale only**: Upscaling reduces quality
+2. **Use presets**: Easier than custom dimensions
+3. **Test with --dry-run**: Preview before processing
+4. **Combine with compress**: Further reduce file size after resizing
+5. **Keep originals**: Never resize source files
+6. **Match aspect ratio**: Avoid distortion
+7. **Use padding for social**: Exact dimensions with --pad
+8. **Batch process**: Create multiple sizes efficiently
+
+## Troubleshooting
+
+### Output Looks Distorted
+
+Video appears stretched or squashed:
+
+**Cause:** Specified dimensions don't match source aspect ratio
+
+**Solution 1:** Use preset
+
+```bash
+mediaproc video resize video.mp4 --scale 1080p
+```
+
+**Solution 2:** Use padding
+
+```bash
+mediaproc video resize video.mp4 -w 1920 -h 1080 --pad
+```
+
+**Solution 3:** Specify only width or height
+
+```bash
+mediaproc video resize video.mp4 -w 1920
+```
+
+### Quality Loss
+
+Resized video has artifacts or looks blurry:
+
+**Cause 1:** Upscaling from lower resolution
+
+- Don't upscale, keep original or downscale only
+
+**Cause 2:** Too aggressive downscaling
+
+```bash
+# Better: Gradual downscaling
+mediaproc video resize 4k.mp4 --scale 1440p
+mediaproc video resize output_2560x1440.mp4 --scale 1080p
+```
+
+**Cause 3:** Source already compressed
+
+- Quality can't improve beyond source
+
+### Processing Too Slow
+
+Resizing takes too long:
+
+**Solution:** Resize before other operations
+
+```bash
+# Efficient: Resize first (less data to process)
+mediaproc video resize video.mp4 --scale 1080p
+mediaproc video compress video_1920x1080.mp4
+
+# Inefficient: Resize after (more data)
+mediaproc video compress video.mp4
+mediaproc video resize video_compressed.mp4 --scale 1080p
+```
+
+### File Size Not Reduced
+
+Resized video is still large:
+
+**Solution:** Combine with compression
+
+```bash
+mediaproc video resize 4k.mp4 --scale 1080p
+mediaproc video compress output_1920x1080.mp4 -q medium
+```
+
+## Advanced Examples
+
+### Social Media Batch Export
+
+```bash
+#!/bin/bash
+# Create versions for all social platforms
+
+input="source.mp4"
+
+# Instagram feed (square)
+mediaproc video resize "$input" -w 1080 -h 1080 --pad -o instagram-feed.mp4
+
+# Instagram story (vertical)
+mediaproc video resize "$input" -w 1080 -h 1920 --pad -o instagram-story.mp4
+
+# YouTube (standard)
+mediaproc video resize "$input" --scale 1080p -o youtube.mp4
+
+# Twitter (720p recommended)
+mediaproc video resize "$input" --scale 720p -o twitter.mp4
+
+# TikTok (vertical)
+mediaproc video resize "$input" -w 1080 -h 1920 --pad -o tiktok.mp4
+```
+
+### Adaptive Streaming Versions
+
+```bash
+#!/bin/bash
+# Create multiple resolutions for adaptive streaming
+
+input="source-4k.mp4"
+
+resolutions=("1080p" "720p" "480p")
+
+for res in "${resolutions[@]}"; do
+  echo "Creating $res version..."
+  mediaproc video resize "$input" --scale "$res" -o "stream-$res.mp4"
+done
+
+echo "All versions created:"
+ls -lh stream-*.mp4
+```
+
+### Aspect Ratio Conversion
+
+```bash
+#!/bin/bash
+# Convert 16:9 to different aspect ratios
+
+input="16x9-video.mp4"
+
+# 4:3 (classic TV)
+mediaproc video resize "$input" -w 1440 -h 1080 --pad -o 4x3.mp4
+
+# 21:9 (ultrawide)
+mediaproc video resize "$input" -w 2560 -h 1080 --pad -o 21x9.mp4
+
+# 1:1 (square)
+mediaproc video resize "$input" -w 1080 -h 1080 --pad -o 1x1.mp4
+
+# 9:16 (vertical)
+mediaproc video resize "$input" -w 1080 -h 1920 --pad -o 9x16.mp4
+```
+
+### Progressive Downscaling
+
+```bash
+#!/bin/bash
+# Progressively downscale for quality testing
+
+input="4k-video.mp4"
+current="$input"
+
+scales=("1440p" "1080p" "720p" "480p")
+
+for scale in "${scales[@]}"; do
+  output="downscaled-$scale.mp4"
+  echo "Downscaling to $scale..."
+  mediaproc video resize "$current" --scale "$scale" -o "$output"
+  current="$output"
+done
+```
+
+### Resolution Detection and Conditional Resize
+
+```bash
+#!/bin/bash
+# Only resize if resolution exceeds threshold
+
+input="$1"
+max_width=1920
+
+# Get current width using ffprobe
+width=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of default=nv=1:nk=1 "$input")
+
+if [ "$width" -gt "$max_width" ]; then
+  echo "Video width $width exceeds $max_width, resizing..."
+  mediaproc video resize "$input" -w "$max_width"
+else
+  echo "Video width $width is within limits, no resize needed"
+fi
+```
+
+## Related Commands
+
+- [compress](./compress) - Reduce file size after resizing
+- [transcode](./transcode) - Change format/codec during resize
+- [trim](./trim) - Cut video before resizing to save processing time
+
+## See Also
+
+- [FFmpeg Scaling Documentation](https://trac.ffmpeg.org/wiki/Scaling)
+- [Video Resolution Standards](https://en.wikipedia.org/wiki/Graphics_display_resolution)
+- [Aspect Ratio Guide](<https://en.wikipedia.org/wiki/Aspect_ratio_(image)>)

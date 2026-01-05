@@ -1,0 +1,508 @@
+#compress
+
+Reduce video file size using CRF-based compression with quality presets.
+
+## Description
+
+The `compress` command uses FFmpeg's Constant Rate Factor (CRF) encoding to intelligently reduce video file size while maintaining visual quality. Unlike simple bitrate-based compression, CRF adapts to video complexity, allocating more bits to complex scenes and fewer to simple ones.
+
+## Usage
+
+```bash
+mediaproc video compress <input> [options]
+```
+
+## Options
+
+| Option            | Alias | Type    | Default  | Description                             |
+| ----------------- | ----- | ------- | -------- | --------------------------------------- |
+| `--output`        | `-o`  | string  | Auto     | Output file path                        |
+| `--quality`       | `-q`  | string  | `medium` | Quality preset: `low`, `medium`, `high` |
+| `--codec`         | `-c`  | string  | `h264`   | Video codec: `h264`, `h265`, `vp9`      |
+| `--crf`           |       | number  | Auto     | Custom CRF value (0-51)                 |
+| `--audio-bitrate` | `-ab` | string  | `128k`   | Audio bitrate (e.g., `128k`, `192k`)    |
+| `--dry-run`       |       | boolean | false    | Preview without executing               |
+| `--verbose`       | `-v`  | boolean | false    | Show detailed FFmpeg output             |
+
+## Quality Presets
+
+### Low Quality (CRF 28)
+
+- **Use case**: Storage optimization, low-bandwidth streaming
+- **File size**: ~60-70% smaller than source
+- **Quality**: Acceptable for non-critical content
+- **Encoding speed**: Fast
+
+### Medium Quality (CRF 23)
+
+- **Use case**: General distribution, web delivery
+- **File size**: ~40-50% smaller than source
+- **Quality**: High quality, minimal artifacts
+- **Encoding speed**: Moderate (default)
+
+### High Quality (CRF 18)
+
+- **Use case**: Archival, professional delivery
+- **File size**: ~20-30% smaller than source
+- **Quality**: Visually lossless
+- **Encoding speed**: Slower
+
+## Codec Comparison
+
+### H.264 (libx264)
+
+- **Compatibility**: Universal (all devices)
+- **Encoding speed**: Fast
+- **Compression**: Good
+- **Best for**: General use, broad compatibility
+
+### H.265 (libx265)
+
+- **Compatibility**: Modern devices (2016+)
+- **Encoding speed**: Slow (2-3x longer than H.264)
+- **Compression**: Excellent (50% better than H.264)
+- **Best for**: 4K video, storage savings
+
+### VP9 (libvpx-vp9)
+
+- **Compatibility**: Web browsers, YouTube
+- **Encoding speed**: Very slow
+- **Compression**: Excellent (similar to H.265)
+- **Best for**: WebM format, open-source projects
+
+## Examples
+
+### Basic Compression
+
+```bash
+# Compress with default settings (medium quality, H.264)
+mediaproc video compress video.mp4
+```
+
+Output:
+
+```
+Input file: video.mp4
+Duration: 00:05:30
+Resolution: 1920x1080
+Original size: 450.5 MB
+
+Compressing with CRF 23 (H.264)...
+✓ Compression complete
+
+Output file: video_compressed.mp4
+New size: 225.3 MB
+Compression ratio: 50.0%
+Saved: 225.2 MB
+```
+
+### Specify Output Location
+
+```bash
+# Save to specific file
+mediaproc video compress input.mp4 -o output/compressed.mp4
+
+# Save to directory (keeps original name with suffix)
+mediaproc video compress input.mp4 -o output/
+```
+
+### Quality Presets
+
+```bash
+# Low quality - maximum compression
+mediaproc video compress large-video.mp4 -q low
+
+# High quality - minimal loss
+mediaproc video compress important-video.mp4 -q high
+
+# Medium quality (default)
+mediaproc video compress video.mp4 -q medium
+```
+
+### Custom CRF Value
+
+```bash
+# Ultra-high quality (archival)
+mediaproc video compress source.mp4 --crf 15
+
+# Balanced quality
+mediaproc video compress video.mp4 --crf 20
+
+# Higher compression
+mediaproc video compress video.mp4 --crf 30
+```
+
+### Different Codecs
+
+```bash
+# H.265 for better compression
+mediaproc video compress 4k-video.mp4 -c h265 -q medium
+
+# VP9 for WebM output
+mediaproc video compress video.mp4 -c vp9 -q high
+
+# H.264 for maximum compatibility
+mediaproc video compress video.mp4 -c h264 -q medium
+```
+
+### Audio Bitrate Control
+
+```bash
+# Lower audio bitrate for smaller file
+mediaproc video compress video.mp4 --audio-bitrate 96k
+
+# High-quality audio
+mediaproc video compress music-video.mp4 --audio-bitrate 256k
+
+# Standard quality (default)
+mediaproc video compress video.mp4 --audio-bitrate 128k
+```
+
+### Dry Run Preview
+
+```bash
+# Preview settings without processing
+mediaproc video compress video.mp4 -q high --dry-run
+```
+
+Output:
+
+```
+[DRY RUN] Would execute:
+ffmpeg -i video.mp4 -c:v libx264 -crf 18 -c:a aac -b:a 128k video_compressed.mp4
+
+Input: video.mp4 (450.5 MB)
+Expected quality: High (CRF 18)
+Codec: H.264
+```
+
+### Verbose Output
+
+```bash
+# See detailed FFmpeg processing
+mediaproc video compress video.mp4 -v
+```
+
+Output shows frame-by-frame encoding progress:
+
+```
+frame= 1234 fps=45 q=23.0 size=  12345kB time=00:00:41.13 bitrate=2458.3kbits/s speed=1.5x
+```
+
+### Batch Compression
+
+```bash
+# Compress all MP4 files in directory
+for file in *.mp4; do
+  mediaproc video compress "$file" -q medium -o compressed/
+done
+
+# Compress with different qualities
+for file in *.mp4; do
+  mediaproc video compress "$file" -q high -o high-quality/
+  mediaproc video compress "$file" -q low -o web-optimized/
+done
+```
+
+## Use Cases
+
+### Web Video Optimization
+
+Reduce file size for faster streaming and lower bandwidth:
+
+```bash
+# Step 1: Compress with medium quality
+mediaproc video compress large-video.mp4 -q medium
+
+# Step 2: Further optimize with custom CRF
+mediaproc video compress large-video_compressed.mp4 --crf 25 -o web-ready.mp4
+```
+
+### Email Attachments
+
+Most email services limit attachment size (10-25 MB):
+
+```bash
+# Aggressive compression for email
+mediaproc video compress video.mp4 -q low --audio-bitrate 64k
+
+# Check output size first with dry-run
+mediaproc video compress video.mp4 -q low --dry-run
+```
+
+### Storage Space Recovery
+
+Free up disk space by compressing archived videos:
+
+```bash
+# H.265 provides best compression
+mediaproc video compress archive/*.mp4 -c h265 -q medium
+
+# Batch process with size reporting
+for file in archive/*.mp4; do
+  mediaproc video compress "$file" -c h265 -o compressed/ -v
+done
+```
+
+### Social Media Uploads
+
+Optimize for Instagram, TikTok, Facebook:
+
+```bash
+# Instagram stories (small file size)
+mediaproc video compress story.mp4 -q low -o story-optimized.mp4
+
+# YouTube upload (high quality)
+mediaproc video compress youtube-video.mp4 -q high -c h264
+
+# TikTok (balance quality and size)
+mediaproc video compress tiktok.mp4 -q medium --audio-bitrate 128k
+```
+
+### 4K Video Compression
+
+Reduce massive 4K file sizes:
+
+```bash
+# H.265 codec recommended for 4K
+mediaproc video compress 4k-video.mp4 -c h265 -q high
+
+# More aggressive for streaming
+mediaproc video compress 4k-video.mp4 -c h265 -q medium --crf 24
+```
+
+### Screen Recordings
+
+Compress screen captures efficiently:
+
+```bash
+# Screen recordings have low complexity, compress well
+mediaproc video compress screen-recording.mp4 -q low
+
+# Tutorial videos with voice
+mediaproc video compress tutorial.mp4 -q medium --audio-bitrate 96k
+```
+
+## Technical Details
+
+### CRF Encoding
+
+Constant Rate Factor (CRF) is a quality-based encoding mode:
+
+- **How it works**: Allocates bits based on scene complexity
+- **Range**: 0 (lossless) to 51 (worst quality)
+- **Sweet spot**: 18-28 for most content
+- **File size**: Variable, depends on video complexity
+
+### Codec Selection
+
+**When to use H.264:**
+
+- Maximum compatibility needed
+- Fast encoding required
+- Target: older devices, TVs, mobile
+
+**When to use H.265:**
+
+- 4K or high-resolution video
+- Storage space is priority
+- Modern devices only (2016+)
+- Willing to wait 2-3x encoding time
+
+**When to use VP9:**
+
+- Web delivery (HTML5 video)
+- Open-source requirement
+- YouTube optimization
+- WebM container format
+
+### Audio Processing
+
+Audio is re-encoded with AAC codec by default:
+
+- **Default bitrate**: 128 kbps (good quality)
+- **Range**: 64k (acceptable) to 256k (excellent)
+- **Codec**: AAC (universal compatibility)
+- **Channels**: Preserved from source (stereo/5.1)
+
+### Output Format
+
+Output format is automatically determined:
+
+- **H.264**: .mp4 container
+- **H.265**: .mp4 container (HEVC)
+- **VP9**: .webm container
+
+## Performance Considerations
+
+### Encoding Speed
+
+Approximate encoding speeds (relative to H.264):
+
+- **H.264**: 1x (baseline)
+- **H.265**: 2-3x slower
+- **VP9**: 3-5x slower
+- **AV1**: 10-20x slower (not included)
+
+### Hardware Acceleration
+
+FFmpeg can use hardware encoders:
+
+```bash
+# CPU encoding (default, best quality)
+mediaproc video compress video.mp4 -c h264
+
+# For GPU acceleration, use FFmpeg directly:
+ffmpeg -hwaccel cuda -i input.mp4 -c:v h264_nvenc output.mp4
+```
+
+### Disk Usage
+
+Temporary files are not created. Processing is done in single pass.
+
+## Error Handling
+
+### Common Errors
+
+**FFmpeg not found:**
+
+```
+Error: FFmpeg is not installed or not in PATH
+Install: brew install ffmpeg (macOS) or apt install ffmpeg (Ubuntu)
+```
+
+**Invalid CRF value:**
+
+```
+Error: CRF must be between 0 and 51
+Provided: 55
+```
+
+**Insufficient disk space:**
+
+```
+Error: Not enough disk space
+Required: ~200 MB
+Available: 50 MB
+```
+
+**Unsupported codec:**
+
+```
+Error: Codec 'h265' not available in your FFmpeg build
+Available codecs: h264, vp9
+Check with: ffmpeg -codecs
+```
+
+## Best Practices
+
+1. **Test with samples**: Use `--dry-run` before batch processing
+2. **Keep originals**: Never overwrite source files
+3. **Choose appropriate quality**: Medium is good for most use cases
+4. **Consider target platform**: H.264 for compatibility, H.265 for size
+5. **Monitor output size**: Check compression ratio makes sense
+6. **Use verbose mode**: Debug encoding issues with `-v`
+7. **Batch processing**: Process multiple files in loops
+8. **Verify output**: Always check compressed video plays correctly
+
+## Troubleshooting
+
+### Compression Not Effective
+
+If file size doesn't reduce significantly:
+
+- Video may already be compressed
+- Try lower CRF value: `--crf 28` or `--crf 30`
+- Switch to H.265: `-c h265`
+- Check source codec: might already be efficient
+
+### Quality Too Low
+
+If compressed video looks bad:
+
+- Increase quality: `-q high`
+- Lower CRF value: `--crf 20`
+- Check source quality (garbage in, garbage out)
+- Use H.265 for better quality at same size
+
+### Encoding Too Slow
+
+If processing takes too long:
+
+- Use H.264 instead of H.265/VP9
+- Reduce quality: `-q low`
+- Process smaller files first
+- Consider hardware acceleration with FFmpeg directly
+
+### Output File Too Large
+
+If compressed file is still too big:
+
+- Lower CRF: `--crf 28` or `--crf 30`
+- Reduce audio bitrate: `--audio-bitrate 64k`
+- Consider resizing first: `mediaproc video resize input.mp4 --scale 720p`
+- Use H.265 codec: `-c h265`
+
+## Advanced Examples
+
+### Compare Quality Presets
+
+```bash
+# Create all three quality versions
+mediaproc video compress video.mp4 -q low -o video-low.mp4
+mediaproc video compress video.mp4 -q medium -o video-medium.mp4
+mediaproc video compress video.mp4 -q high -o video-high.mp4
+
+# Compare file sizes
+ls -lh video*.mp4
+```
+
+### Archive Compression Pipeline
+
+```bash
+#!/bin/bash
+# Compress all videos in archive directory with H.265
+
+for file in archive/*.mp4; do
+  filename=$(basename "$file" .mp4)
+  echo "Processing: $filename"
+
+  mediaproc video compress "$file" \
+    -c h265 \
+    -q medium \
+    -o "compressed/$filename.mp4"
+
+  echo "Original: $(du -h "$file" | cut -f1)"
+  echo "Compressed: $(du -h "compressed/$filename.mp4" | cut -f1)"
+  echo "---"
+done
+```
+
+### Quality Testing Script
+
+```bash
+#!/bin/bash
+# Test different CRF values to find optimal quality
+
+input="test-video.mp4"
+
+for crf in 18 20 23 25 28; do
+  output="test-crf-$crf.mp4"
+  mediaproc video compress "$input" --crf $crf -o "$output"
+  size=$(du -h "$output" | cut -f1)
+  echo "CRF $crf: $size"
+done
+```
+
+## Related Commands
+
+- [transcode](./transcode) - Convert between formats and codecs
+- [resize](./resize) - Change video resolution before compressing
+- [trim](./trim) - Remove unwanted sections to reduce size
+- [extract-audio](./extract) - Extract audio for separate compression
+
+## See Also
+
+- [FFmpeg H.264 Encoding Guide](https://trac.ffmpeg.org/wiki/Encode/H.264)
+- [CRF Guide](https://trac.ffmpeg.org/wiki/Encode/H.264#crf)
+- [Video Compression Comparison](https://en.wikipedia.org/wiki/Video_compression_picture_types)
