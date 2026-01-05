@@ -26,7 +26,8 @@ interface Plugin {
   id: string;
   name: string;
   description: string;
-  icon: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon: any;
   status: 'available' | 'coming-soon';
   commandCount?: number;
   link?: string;
@@ -179,7 +180,7 @@ export default function PluginsPage() {
         <h1 className="text-5xl font-bold mb-6">MediaProc Plugins</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           Extend MediaProc with powerful plugins for every media processing need.
-          From images to videos, audio to 3D models - we've got you covered.
+          From images to videos, audio to 3D models - we&apos;ve got you covered.
         </p>
       </div>
 
@@ -224,7 +225,7 @@ export default function PluginsPage() {
                 </div>
 
                 <h3 className="text-xl font-semibold mb-2">{plugin.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4 min-h-[3rem]">
+                <p className="text-sm text-muted-foreground mb-4 min-h-12">
                   {plugin.description}
                 </p>
 
@@ -292,10 +293,10 @@ export default function PluginsPage() {
 
       {/* CTA */}
       <section className="mt-20 text-center">
-        <Card className="p-12 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+        <Card className="p-12 bg-linear-to-r from-primary/5 to-primary/10 border-primary/20">
           <h2 className="text-3xl font-bold mb-4">Need a Custom Plugin?</h2>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            MediaProc's plugin system is designed to be extensible.
+            MediaProc&apos;s plugin system is designed to be extensible.
             Create your own plugins or request features for future releases.
           </p>
           <div className="flex gap-4 justify-center">
