@@ -74,6 +74,31 @@ export const imageCommands: Command[] = [
   { name: 'watermark', slug: 'watermark', description: 'Add watermark to images' },
 ];
 
+export const videoCommands: Command[] = [
+  { name: 'compress', slug: 'compress', description: 'Compress video files' },
+  { name: 'extract', slug: 'extract', description: 'Extract audio or frames from video' },
+  { name: 'merge', slug: 'merge', description: 'Merge multiple video files' },
+  { name: 'resize', slug: 'resize', description: 'Resize video dimensions' },
+  { name: 'trim', slug: 'trim', description: 'Trim video segments' },
+  { name: 'transcode', slug: 'transcode', description: 'Transcode video to different formats' },
+];
+
+export const audioCommands: Command[] = [];
+
+export const documentCommands: Command[] = [];
+
+export const animationCommands: Command[] = [];
+
+export const threeDCommands: Command[] = [];
+
+export const streamCommands: Command[] = [];
+
+export const aiCommands: Command[] = [];
+
+export const metadataCommands: Command[] = [];
+
+export const pipelineCommands: Command[] = [];
+
 
 export const plugins: Plugin[] = [
   {
@@ -86,55 +111,55 @@ export const plugins: Plugin[] = [
     name: 'Video',
     slug: 'video',
     description: 'Video processing and transcoding',
-    commands: [],
+    commands: videoCommands,
   },
   {
     name: 'Audio',
     slug: 'audio',
     description: 'Audio processing and conversion',
-    commands: [],
+    commands: audioCommands,
   },
   {
     name: 'Document',
     slug: 'document',
     description: 'Document processing and conversion',
-    commands: [],
+    commands: documentCommands,
   },
   {
     name: 'Animation',
     slug: 'animation',
     description: 'Animation and GIF processing',
-    commands: [],
+    commands: animationCommands,
   },
   {
     name: '3D',
     slug: '3d',
     description: '3D model processing',
-    commands: [],
+    commands: threeDCommands,
   },
   {
     name: 'Stream',
     slug: 'stream',
     description: 'Streaming media processing',
-    commands: [],
+    commands: streamCommands,
   },
   {
     name: 'AI',
     slug: 'ai',
     description: 'AI-powered media processing',
-    commands: [],
+    commands: aiCommands,
   },
   {
     name: 'Metadata',
     slug: 'metadata',
     description: 'Metadata extraction and manipulation',
-    commands: [],
+    commands: metadataCommands,
   },
   {
     name: 'Pipeline',
     slug: 'pipeline',
     description: 'Complex processing pipelines',
-    commands: [],
+    commands: pipelineCommands,
   },
 ];
 
@@ -172,7 +197,8 @@ export const navigationConfig: NavSection[] = [
       { title: 'Creating Plugins', slug: 'community/creating-plugins' },
       { title: 'Plugin Guidelines', slug: 'community/plugin-guidelines' },
       { title: 'Contributing', slug: 'community/contributing' },
-      { title: 'Plugin Integration', slug: 'community/plugin-integration' }
+      { title: 'Plugin Integration', slug: 'community/plugin-integration' },
+      { title: 'Plugin Ideas', slug: 'community/plugin-ideas' },
     ],
   },
 ];

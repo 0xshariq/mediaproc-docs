@@ -57,16 +57,151 @@ npm install -g @mediaproc/video
 
 ## Commands
 
-| Command                              | Description             | Use Case                               |
-| ------------------------------------ | ----------------------- | -------------------------------------- |
-| [compress](./video/compress)         | Reduce video file size  | Optimize for web, email, storage       |
-| [transcode](./video/transcode)       | Convert format/codec    | Platform compatibility, codec upgrade  |
-| [trim](./video/trim)                 | Cut video segments      | Remove unwanted sections, create clips |
-| [resize](./video/resize)             | Change resolution       | Downscale 4K, mobile optimization      |
-| [merge](./video/merge)               | Join multiple videos    | Combine clips, create compilations     |
-| [extract-audio](./video/extract)     | Extract audio track     | Get audio from video                   |
-| [extract-frames](./video/extract)    | Extract image sequence  | Create thumbnails, analysis            |
-| [extract-thumbnail](./video/extract) | Single frame extraction | Video preview image                    |
+<Accordion type="single" collapsible className="w-full">
+  <AccordionItem value="compress">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">compress</span>
+        <span className="text-sm text-muted-foreground">Reduce video file size</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">CRF-based compression with quality presets (low, medium, high). Supports H.264, H.265, and VP9 codecs.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> Web optimization, email attachments, storage space recovery, social media uploads
+        </div>
+        <a href="./video/compress" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="transcode">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">transcode</span>
+        <span className="text-sm text-muted-foreground">Convert format/codec</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">Convert between MP4, WebM, MKV, AVI formats. Upgrade codecs to H.265, VP9, or AV1 for better compression.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> Platform compatibility, codec upgrades, legacy format migration, web delivery
+        </div>
+        <a href="./video/transcode" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="trim">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">trim</span>
+        <span className="text-sm text-muted-foreground">Cut video segments</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">Extract specific time ranges with frame-perfect accuracy. Fast mode available for quick cuts without re-encoding.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> Remove intro/outro, create highlights, social media clips, tutorial sections
+        </div>
+        <a href="./video/trim" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="resize">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">resize</span>
+        <span className="text-sm text-muted-foreground">Change resolution</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">Scale to preset resolutions (480p-4K) or custom dimensions. Maintains aspect ratio with optional padding.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> Mobile optimization, 4K downscaling, social media sizing, adaptive streaming
+        </div>
+        <a href="./video/resize" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="merge">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">merge</span>
+        <span className="text-sm text-muted-foreground">Join multiple videos</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">Concatenate videos with smart format detection. Uses fast concat for identical formats or re-encodes when needed.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> Join split videos, create compilations, combine lecture segments, multi-camera assembly
+        </div>
+        <a href="./video/merge" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="extract-audio">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">extract-audio</span>
+        <span className="text-sm text-muted-foreground">Extract audio track</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">Extract audio to MP3, AAC, WAV, or Opus formats with configurable bitrate.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> Podcasts from video, music extraction, voice-only lectures, archival audio
+        </div>
+        <a href="./video/extract" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="extract-frames">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">extract-frames</span>
+        <span className="text-sm text-muted-foreground">Extract image sequence</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">Extract frames at specified FPS from video segments. Output as JPEG or PNG image sequences.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> Thumbnail galleries, animation analysis, stop motion, frame-by-frame review
+        </div>
+        <a href="./video/extract" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="extract-thumbnail">
+    <AccordionTrigger>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">extract-thumbnail</span>
+        <span className="text-sm text-muted-foreground">Single frame extraction</span>
+      </div>
+    </AccordionTrigger>
+    <AccordionContent>
+      <div className="space-y-2 pt-2">
+        <p className="text-sm">Extract single frame at specific timestamp with optional resizing. Perfect for video preview images.</p>
+        <div className="text-sm text-muted-foreground">
+          <strong>Use Cases:</strong> YouTube thumbnails, video posters, gallery previews, social media covers
+        </div>
+        <a href="./video/extract" className="text-sm text-primary hover:underline">View full documentation →</a>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
 
 ## Quick Start
 

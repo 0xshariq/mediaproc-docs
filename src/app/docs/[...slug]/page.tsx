@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { CodeBlock, InlineCode, Alert } from '@/components/CodeBlock';
+import remarkGfm from 'remark-gfm';
 
 const components = {
   pre: ({ children }: any) => children,
@@ -69,7 +70,12 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
   const { content } = await compileMDX({
     source,
     components,
-    options: { parseFrontmatter: true },
+    options: {
+      parseFrontmatter: true,
+      mdxOptions: {
+        remarkPlugins: [remarkGfm],
+      },
+    },
   });
 
   return <DocLayout>{content}</DocLayout>;
