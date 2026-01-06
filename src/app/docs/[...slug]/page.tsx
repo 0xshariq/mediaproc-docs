@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from 'next/navigation';
 import { DocLayout } from '@/components/DocLayout';
 import { imageCommands } from '@/config/docs-config';
@@ -5,6 +6,14 @@ import fs from 'fs';
 import path from 'path';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { CodeBlock, InlineCode, Alert } from '@/components/CodeBlock';
+import { Terminal, InlineTerminal } from '@/components/Terminal';
+import { Install } from '@/components/Install';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import remarkGfm from 'remark-gfm';
 
 const components = {
@@ -31,6 +40,13 @@ const components = {
     <td className="px-4 py-3 border border-border text-muted-foreground">{children}</td>
   ),
   Alert,
+  Terminal,
+  InlineTerminal,
+  Install,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 };
 
 export async function generateStaticParams() {
@@ -42,6 +58,7 @@ export async function generateStaticParams() {
     { slug: ['cli', 'plugin-management'] },
     { slug: ['cli', 'universal-commands'] },
     { slug: ['plugins', 'image'] },
+    { slug: ['plugins', 'video'] },
     { slug: ['community', 'creating-plugins'] },
     { slug: ['community', 'plugin-guidelines'] },
     { slug: ['community', 'contributing'] },
