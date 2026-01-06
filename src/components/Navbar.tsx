@@ -14,14 +14,14 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-6">
-        <div className="flex h-16 items-center justify-between">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Terminal className="w-5 h-5 text-white" />
+          <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Terminal className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <span className="text-xl font-bold">MediaProc</span>
+            <span className="text-lg sm:text-xl font-bold">MediaProc</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -62,20 +62,22 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="md:hidden p-2 -mr-2 hover:bg-muted/50 rounded-lg transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? (
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
             )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-4 border-t border-border">
+          <div className="md:hidden py-4 space-y-1 border-t border-border animate-in slide-in-from-top-2 duration-200">
             <Link
               href="/docs/introduction"
               className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"

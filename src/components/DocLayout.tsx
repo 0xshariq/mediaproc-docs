@@ -38,48 +38,48 @@ export function DocLayout({ children }: { children: ReactNode }) {
   const nextPage = currentIndex < allPages.length - 1 ? allPages[currentIndex + 1] : null;
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="flex flex-col md:flex-row md:h-[calc(100vh-4rem)] overflow-hidden">
       <Sidebar />
       <div className="flex-1 overflow-y-auto">
-        <main className="max-w-4xl px-8 py-12 mx-auto">
+        <main className="max-w-4xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 mx-auto">
           <article className="prose prose-lg">
             {children}
           </article>
           
-          <Separator className="my-12" />
+          <Separator className="my-8 sm:my-12" />
           
           {/* Previous/Next Navigation */}
-          <div className="flex items-center justify-between gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
             {prevPage ? (
-              <Link href={`/docs/${prevPage.slug}`} className="flex-1">
-                <Button variant="outline" className="w-full justify-start group h-auto py-3">
-                  <ChevronLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform flex-shrink-0" />
-                  <div className="text-left">
+              <Link href={`/docs/${prevPage.slug}`}>
+                <Button variant="outline" className="w-full justify-start group h-auto py-2.5 sm:py-3">
+                  <ChevronLeft className="mr-1.5 sm:mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform flex-shrink-0" />
+                  <div className="text-left truncate">
                     <div className="text-xs text-muted-foreground">Previous</div>
-                    <div className="text-sm font-medium">{prevPage.title}</div>
+                    <div className="text-xs sm:text-sm font-medium truncate">{prevPage.title}</div>
                   </div>
                 </Button>
               </Link>
             ) : (
-              <div className="flex-1"></div>
+              <div className="hidden sm:block"></div>
             )}
             
             {nextPage ? (
-              <Link href={`/docs/${nextPage.slug}`} className="flex-1">
-                <Button variant="outline" className="w-full justify-end group h-auto py-3">
-                  <div className="text-right">
+              <Link href={`/docs/${nextPage.slug}`}>
+                <Button variant="outline" className="w-full justify-end group h-auto py-2.5 sm:py-3">
+                  <div className="text-right truncate">
                     <div className="text-xs text-muted-foreground">Next</div>
-                    <div className="text-sm font-medium">{nextPage.title}</div>
+                    <div className="text-xs sm:text-sm font-medium truncate">{nextPage.title}</div>
                   </div>
-                  <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                  <ChevronRight className="ml-1.5 sm:ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
                 </Button>
               </Link>
             ) : (
-              <div className="flex-1"></div>
+              <div className="hidden sm:block"></div>
             )}
           </div>
 
-          <div className="flex items-center justify-between text-sm text-muted-foreground mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8">
             <p>Found an issue? Help us improve this page.</p>
             <a 
               href="https://github.com/0xshariq/mediaproc-cli" 

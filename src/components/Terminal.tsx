@@ -88,13 +88,34 @@ export function Terminal({ commands, title = 'Terminal', className = '', showCop
 interface InlineTerminalProps {
     command: string;
     className?: string;
+    showCopy?: boolean;
 }
 
-export function InlineTerminal({ command, className = '' }: InlineTerminalProps) {
+export function InlineTerminal({ command, className = '', showCopy = true }: InlineTerminalProps) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(command);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
     return (
         <div className={`bg-muted/50 px-4 py-3 rounded-lg font-mono text-sm border border-border ${className}`}>
             <span className="text-primary">$</span>{' '}
             <span className="text-foreground">{command}</span>
+            {showCopy && (
+                <button
+                    onClick={handleCopy}
+                    className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted"
+                    aria-label="Copy commands"
+                >
+                    {copied ? (
+                        <Check className="w-4 h-4 text-green-500" />
+                    ) : (
+                        <Copy className="w-4 h-4" />
+                    )}
+                </button>
+            )}
         </div>
     );
 }

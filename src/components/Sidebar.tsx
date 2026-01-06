@@ -26,7 +26,7 @@ export function Sidebar() {
     if (hasChildren) {
       return (
         <AccordionItem key={item.slug} value={item.slug} className="border-none">
-          <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <AccordionTrigger className="px-2 sm:px-3 py-1.5 sm:py-2 hover:no-underline hover:bg-muted/50 rounded-lg text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             {item.title}
           </AccordionTrigger>
           <AccordionContent className="pb-2">
@@ -42,12 +42,12 @@ export function Sidebar() {
       <Link
         key={item.slug}
         href={`/docs/${item.slug}`}
-        className={`block px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative ${
+        className={`block px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 relative ${
           active
             ? 'bg-primary/10 text-primary font-semibold'
             : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:translate-x-1'
         }`}
-        style={{ paddingLeft: `${level * 12 + 12}px` }}
+        style={{ paddingLeft: `${level * 8 + 8}px` }}
       >
         {active && (
           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
@@ -58,9 +58,9 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r border-border/50 bg-card/30 backdrop-blur-sm shrink-0 flex flex-col h-full">
-      <ScrollArea className="flex-1 h-0">
-        <div className="px-3 py-6">
+    <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-border/50 bg-card/30 backdrop-blur-sm shrink-0 flex flex-col md:h-full">
+      <ScrollArea className="flex-1 md:h-0 max-h-[50vh] md:max-h-none">
+        <div className="px-3 py-4 sm:py-6">
             <nav className="space-y-6 pb-6">
             {navigationConfig.map((section) => (
               <div key={section.title}>
@@ -76,9 +76,9 @@ export function Sidebar() {
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t border-border/50 bg-muted/20 shrink-0">
-        <div className="text-xs text-muted-foreground mb-1.5">Version</div>
-        <div className="text-sm font-mono font-semibold text-foreground">v0.5.2</div>
+      <div className="p-3 sm:p-4 border-t border-border/50 bg-muted/20 shrink-0">
+        <div className="text-xs text-muted-foreground mb-1">Version</div>
+        <div className="text-xs sm:text-sm font-mono font-semibold text-foreground">v0.5.2</div>
       </div>
     </aside>
   );
