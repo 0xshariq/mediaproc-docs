@@ -4,34 +4,25 @@ Analyze and display comprehensive image information including dimensions, format
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image stats <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image stats <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Basic image information
-mediaproc image stats photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image stats photo.jpg' },
+  { output: '✓ Analyzed image successfully', isSuccess: true }
+]} />
 
-# Detailed EXIF metadata
-mediaproc image stats image.png --detailed
-
-# Color histogram statistics
-mediaproc image stats photo.jpg --histogram
-
-# Complete analysis
-mediaproc image stats image.raw --detailed --histogram
-
-# Analyze multiple images
-mediaproc image stats "photos/*.jpg" --verbose
-```
+<InlineTerminal command="mediaproc image stats image.png --detailed" />
+<InlineTerminal command="mediaproc image stats photo.jpg --histogram" />
+<InlineTerminal command="mediaproc image stats image.raw --detailed --histogram" />
+<InlineTerminal command='mediaproc image stats "photos/*.jpg" --verbose' />
 
 ## Options
 

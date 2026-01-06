@@ -4,34 +4,33 @@ Rotate images by any angle clockwise or counter-clockwise with customizable back
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image rotate <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image rotate <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Rotate 90° clockwise (default)
-mediaproc image rotate photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image rotate photo.jpg' },
+  { output: '✓ Rotated 90° clockwise', isSuccess: true }
+]} />
 
-# Rotate 180°
-mediaproc image rotate image.png -a 180
+<Terminal commands={[
+  { command: 'mediaproc image rotate image.png -a 180' },
+  { output: '✓ Rotated 180°', isSuccess: true }
+]} />
 
-# Rotate 90° counter-clockwise
-mediaproc image rotate photo.jpg -a -90
+<Terminal commands={[
+  { command: 'mediaproc image rotate photo.jpg -a -90' },
+  { output: '✓ Rotated 90° counter-clockwise', isSuccess: true }
+]} />
 
-# Rotate 45° with custom background
-mediaproc image rotate image.png -a 45 --background white
-
-# Rotate with custom output
-mediaproc image rotate photo.jpg -a 270 -o rotated.jpg
-```
+<InlineTerminal command="mediaproc image rotate image.png -a 45 --background white" />
+<InlineTerminal command="mediaproc image rotate photo.jpg -a 270 -o rotated.jpg" />
 
 ## Options
 
@@ -62,22 +61,14 @@ mediaproc image rotate photo.jpg -a 270 -o rotated.jpg
 
 ### Common Angles
 
-```bash
-# 90° clockwise
-mediaproc image rotate photo.jpg -a 90
+<Terminal commands={[
+  { command: 'mediaproc image rotate photo.jpg -a 90' },
+  { command: 'mediaproc image rotate photo.jpg -a -90' },
+  { command: 'mediaproc image rotate photo.jpg -a 180' }
+]} />
 
-# 90° counter-clockwise
-mediaproc image rotate photo.jpg -a -90
-
-# 180° (upside down)
-mediaproc image rotate photo.jpg -a 180
-
-# 45° tilt
-mediaproc image rotate photo.jpg -a 45
-
-# 30° slight tilt
-mediaproc image rotate photo.jpg -a 30
-```
+<InlineTerminal command="mediaproc image rotate photo.jpg -a 45" />
+<InlineTerminal command="mediaproc image rotate photo.jpg -a 30" />
 
 ## Background Colors
 

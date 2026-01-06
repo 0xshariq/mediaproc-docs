@@ -4,22 +4,19 @@ Add padding or borders around images by extending the canvas in any direction. C
 
 ## Usage
 
-```bash
-mediaproc image extend <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image extend <input> [options]' }
+]} />
 
 ### Basic Syntax
 
-```bash
-# Extend all sides equally
-mediaproc image extend photo.jpg --all 50
+<Terminal commands={[
+  { command: 'mediaproc image extend photo.jpg --all 50' },
+  { output: '✓ Extended all sides by 50px', isSuccess: true }
+]} />
 
-# Extend specific sides
-mediaproc image extend photo.jpg --top 20 --bottom 20 --left 30 --right 30
-
-# Extend with custom background color
-mediaproc image extend photo.jpg --all 40 --background "#FF5733"
-```
+<InlineTerminal command="mediaproc image extend photo.jpg --top 20 --bottom 20 --left 30 --right 30" />
+<InlineTerminal command='mediaproc image extend photo.jpg --all 40 --background "#FF5733"' />
 
 ## Options
 

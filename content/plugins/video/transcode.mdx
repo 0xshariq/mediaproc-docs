@@ -8,9 +8,7 @@ The `transcode` command converts videos from one format/codec to another, enabli
 
 ## Usage
 
-```bash
-mediaproc video transcode <input> [options]
-```
+<Terminal commands={[{ command: 'mediaproc video transcode <input> [options]' }]} />
 
 ## Options
 
@@ -71,82 +69,80 @@ The plugin automatically selects appropriate codecs for each format:
 
 ### Basic Format Conversion
 
-```bash
-# Convert AVI to MP4
-mediaproc video transcode input.avi -f mp4
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.avi -f mp4' },
+  { output: 'Input: input.avi • Format: AVI • Codec: MPEG-4' },
+  { output: 'Audio: MP3 • Duration: 00:03:45' },
+  { output: '' },
+  { output: 'Transcoding to MP4 (H.264 + AAC)...' },
+  { output: '✓ Transcoding complete', isSuccess: true },
+  { output: 'Output: input.mp4 • Size: 125.3 MB', isSuccess: true }
+]} />
 
-# Convert MP4 to WebM
-mediaproc video transcode input.mp4 -f webm
+<InlineTerminal command="mediaproc video transcode input.mp4 -f webm" />
 
-# Convert MOV to MKV
-mediaproc video transcode input.mov -f mkv
-```
-
-Output:
-
-```
-Input file: input.avi
-Format: AVI
-Video codec: MPEG-4
-Audio codec: MP3
-Duration: 00:03:45
-
-Transcoding to MP4 (H.264 + AAC)...
-✓ Transcoding complete
-
-Output file: input.mp4
-Format: MP4
-Size: 125.3 MB
-```
+<InlineTerminal command="mediaproc video transcode input.mov -f mkv" />
 
 ### Specify Output Location
 
-```bash
-# Save to specific file
-mediaproc video transcode input.avi -f mp4 -o output/video.mp4
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.avi -f mp4 -o output/video.mp4' },
+  { output: '✓ Saved to output/video.mp4', isSuccess: true }
+]} />
 
-# Save to directory (auto-generates filename with new extension)
-mediaproc video transcode input.avi -f mp4 -o output/
-```
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.avi -f mp4 -o output/' },
+  { output: '✓ Saved to output/input.mp4', isSuccess: true }
+]} />
 
 ### Codec Selection
 
-```bash
-# Convert to H.265 (HEVC) for better compression
-mediaproc video transcode input.mp4 -c h265
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.mp4 -c h265' },
+  { output: '✓ Transcoded to H.265 (50% better compression)', isSuccess: true }
+]} />
 
-# Convert to VP9 for web delivery
-mediaproc video transcode input.mp4 -c vp9 -f webm
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.mp4 -c vp9 -f webm' },
+  { output: '✓ Transcoded to VP9 WebM', isSuccess: true }
+]} />
 
-# Use AV1 for maximum compression (very slow)
-mediaproc video transcode input.mp4 -c av1 -f mp4
-```
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.mp4 -c av1 -f mp4' },
+  { output: 'Transcoding to AV1 (this may take a while)...' },
+  { output: '✓ Transcoded with maximum compression', isSuccess: true }
+]} />
 
 ### Audio Codec Control
 
-```bash
-# Specify audio codec
-mediaproc video transcode input.avi -f mp4 --audio-codec aac
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.avi -f mp4 --audio-codec aac' },
+  { output: '✓ Transcoded with AAC audio', isSuccess: true }
+]} />
 
-# Use Opus for web (excellent quality at low bitrates)
-mediaproc video transcode input.mp4 -f webm --audio-codec opus
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.mp4 -f webm --audio-codec opus' },
+  { output: '✓ Transcoded with Opus audio (excellent quality)', isSuccess: true }
+]} />
 
-# Keep MP3 audio
-mediaproc video transcode input.mkv -f mp4 --audio-codec mp3
-```
+<InlineTerminal command="mediaproc video transcode input.mkv -f mp4 --audio-codec mp3" />
 
 ### Bitrate Control
 
-```bash
-# Target specific video bitrate
-mediaproc video transcode input.avi -f mp4 --bitrate 2000k
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.avi -f mp4 --bitrate 2000k' },
+  { output: '✓ Transcoded at 2000 kbps', isSuccess: true }
+]} />
 
-# High quality with higher bitrate
-mediaproc video transcode input.avi -f mp4 --bitrate 5M
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.avi -f mp4 --bitrate 5M' },
+  { output: '✓ Transcoded at 5 Mbps (high quality)', isSuccess: true }
+]} />
 
-# Control both video and audio bitrate
-mediaproc video transcode input.avi -f mp4 --bitrate 3000k --audio-bitrate 192k
-```
+<Terminal commands={[
+  { command: 'mediaproc video transcode input.avi -f mp4 --bitrate 3000k --audio-bitrate 192k' },
+  { output: '✓ Video: 3000 kbps • Audio: 192 kbps', isSuccess: true }
+]} />
 
 ### CRF-Based Quality
 

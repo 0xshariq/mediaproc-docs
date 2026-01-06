@@ -8,9 +8,7 @@ The `merge` command joins multiple videos into one continuous file. It intellige
 
 ## Usage
 
-```bash
-mediaproc video merge <input1> <input2> [input3...] [options]
-```
+<Terminal commands={[{ command: 'mediaproc video merge <input1> <input2> [input3...] [options]' }]} />
 
 ## Options
 
@@ -46,107 +44,87 @@ The plugin automatically selects the best concatenation method:
 
 ### Basic Merging
 
-```bash
-# Merge two videos
-mediaproc video merge video1.mp4 video2.mp4
+<Terminal commands={[
+  { command: 'mediaproc video merge video1.mp4 video2.mp4' },
+  { output: 'Input files:' },
+  { output: '1. video1.mp4 (1920x1080, H.264, 00:02:30)' },
+  { output: '2. video2.mp4 (1920x1080, H.264, 00:03:15)' },
+  { output: '' },
+  { output: 'Format check: All videos compatible' },
+  { output: 'Method: Fast concat (no re-encoding)' },
+  { output: '' },
+  { output: 'Merging videos...' },
+  { output: '✓ Merge complete', isSuccess: true },
+  { output: 'Output: merged.mp4 • Duration: 00:05:45 • 180.3 MB', isSuccess: true }
+]} />
 
-# Merge three videos
-mediaproc video merge part1.mp4 part2.mp4 part3.mp4
+<InlineTerminal command="mediaproc video merge part1.mp4 part2.mp4 part3.mp4" />
 
-# Merge with custom output
-mediaproc video merge clip1.mp4 clip2.mp4 clip3.mp4 -o complete.mp4
-```
-
-Output:
-
-```
-Input files:
-1. video1.mp4 (1920x1080, H.264, 00:02:30)
-2. video2.mp4 (1920x1080, H.264, 00:03:15)
-
-Format check: All videos compatible
-Method: Fast concat (no re-encoding)
-
-Merging videos...
-✓ Merge complete
-
-Output file: merged.mp4
-Total duration: 00:05:45
-Size: 180.3 MB
-```
+<Terminal commands={[
+  { command: 'mediaproc video merge clip1.mp4 clip2.mp4 clip3.mp4 -o complete.mp4' },
+  { output: '✓ Merged to complete.mp4', isSuccess: true }
+]} />
 
 ### Specify Output Location
 
-```bash
-# Save to specific file
-mediaproc video merge video1.mp4 video2.mp4 -o output/combined.mp4
+<Terminal commands={[
+  { command: 'mediaproc video merge video1.mp4 video2.mp4 -o output/combined.mp4' },
+  { output: '✓ Saved to output/combined.mp4', isSuccess: true }
+]} />
 
-# Save to directory (uses default filename)
-mediaproc video merge video1.mp4 video2.mp4 -o output/
-```
+<Terminal commands={[
+  { command: 'mediaproc video merge video1.mp4 video2.mp4 -o output/' },
+  { output: '✓ Saved to output/merged.mp4', isSuccess: true }
+]} />
 
 ### Multiple Files
 
-```bash
-# Merge many files
-mediaproc video merge seg1.mp4 seg2.mp4 seg3.mp4 seg4.mp4 seg5.mp4 -o full.mp4
+<Terminal commands={[
+  { command: 'mediaproc video merge seg1.mp4 seg2.mp4 seg3.mp4 seg4.mp4 seg5.mp4 -o full.mp4' },
+  { output: '✓ Merged 5 segments • Total: 00:15:30', isSuccess: true }
+]} />
 
-# Use shell expansion
-mediaproc video merge clip*.mp4 -o compilation.mp4
+<InlineTerminal command="mediaproc video merge clip*.mp4 -o compilation.mp4" />
 
-# Merge all MP4 files in order
-mediaproc video merge *.mp4 -o merged.mp4
-```
+<InlineTerminal command="mediaproc video merge *.mp4 -o merged.mp4" />
 
 ### Different Formats
 
-```bash
-# Merge videos of different formats (will re-encode)
-mediaproc video merge video.mp4 video.avi video.mkv -o combined.mp4
+<Terminal commands={[
+  { command: 'mediaproc video merge video.mp4 video.avi video.mkv -o combined.mp4' },
+  { output: 'Input files:' },
+  { output: '1. video.mp4 (1920x1080, H.264)' },
+  { output: '2. video.avi (1280x720, MPEG-4)' },
+  { output: '3. video.mkv (1920x1080, H.265)' },
+  { output: '' },
+  { output: 'Format check: Videos have different properties' },
+  { output: 'Method: Re-encode mode' },
+  { output: '' },
+  { output: 'Merging with re-encoding...' },
+  { output: '✓ Merge complete (slower due to re-encoding)', isSuccess: true },
+  { output: 'Output: combined.mp4', isSuccess: true }
+]} />
 
-# Merge different resolutions (will re-encode)
-mediaproc video merge 1080p.mp4 720p.mp4 4k.mp4 -o mixed.mp4
+<Terminal commands={[
+  { command: 'mediaproc video merge 1080p.mp4 720p.mp4 4k.mp4 -o mixed.mp4' },
+  { output: '✓ Merged different resolutions (re-encoded)', isSuccess: true }
+]} />
 
-# Merge different codecs
-mediaproc video merge h264.mp4 h265.mp4 -o merged.mp4
-```
-
-Output:
-
-```
-Input files:
-1. video.mp4 (1920x1080, H.264)
-2. video.avi (1280x720, MPEG-4)
-3. video.mkv (1920x1080, H.265)
-
-Format check: Videos have different properties
-Method: Re-encode mode
-
-Merging with re-encoding...
-✓ Merge complete (slower due to re-encoding)
-
-Output file: combined.mp4
-```
+<InlineTerminal command="mediaproc video merge h264.mp4 h265.mp4 -o merged.mp4" />
 
 ### Dry Run Preview
 
-```bash
-# Preview merge operation
-mediaproc video merge video1.mp4 video2.mp4 video3.mp4 --dry-run
-```
-
-Output:
-
-```
-[DRY RUN] Would merge 3 files:
-1. video1.mp4 (00:02:30, 1920x1080, H.264)
-2. video2.mp4 (00:01:45, 1920x1080, H.264)
-3. video3.mp4 (00:03:00, 1920x1080, H.264)
-
-Method: Fast concat (all files compatible)
-Total duration: 00:07:15
-Output: merged.mp4
-```
+<Terminal commands={[
+  { command: 'mediaproc video merge video1.mp4 video2.mp4 video3.mp4 --dry-run' },
+  { output: '[DRY RUN] Would merge 3 files:' },
+  { output: '1. video1.mp4 (00:02:30, 1920x1080, H.264)' },
+  { output: '2. video2.mp4 (00:01:45, 1920x1080, H.264)' },
+  { output: '3. video3.mp4 (00:03:00, 1920x1080, H.264)' },
+  { output: '' },
+  { output: 'Method: Fast concat (all files compatible)' },
+  { output: 'Total duration: 00:07:15' },
+  { output: 'Output: merged.mp4' }
+]} />
 
 ### With Verbose Output
 

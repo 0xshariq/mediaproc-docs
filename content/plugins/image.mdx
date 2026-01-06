@@ -12,9 +12,7 @@ The Image plugin is designed to handle all your image processing needs from the 
 
 ## Installation
 
-```bash
-npm install @mediaproc/plugin-image
-```
+<Install package="@mediaproc/plugin-image" title="To install the Image plugin:" global={true} />
 
 ## Key Features
 
@@ -108,32 +106,40 @@ npm install @mediaproc/plugin-image
 
 ### Install
 
-```bash
-npm install @mediaproc/plugin-image
-```
+<Terminal commands={[
+  { command: 'npm install @mediaproc/plugin-image' },
+  { output: '✓ Installed @mediaproc/plugin-image', isSuccess: true }
+]} />
 
 ### Basic Usage
 
-```bash
-# Resize an image
-mediaproc image resize input.jpg -w 800 -h 600 -o output.jpg
+<Terminal commands={[
+  { command: 'mediaproc image resize input.jpg -w 800 -h 600 -o output.jpg' },
+  { output: '✓ Resized to 800×600 • Saved as output.jpg', isSuccess: true }
+]} />
 
-# Convert format
-mediaproc image convert photo.png -f webp -o photo.webp
+<Terminal commands={[
+  { command: 'mediaproc image convert photo.png -f webp -o photo.webp' },
+  { output: '✓ Converted to WebP • 845 KB → 312 KB', isSuccess: true }
+]} />
 
-# Optimize for web
-mediaproc image optimize large.jpg -q 80 -o optimized.jpg
-```
+<Terminal commands={[
+  { command: 'mediaproc image optimize large.jpg -q 80 -o optimized.jpg' },
+  { output: '✓ Optimized • 3.2 MB → 1.8 MB (44% reduction)', isSuccess: true }
+]} />
 
 ### Batch Processing
 
-```bash
-# Resize all images in a folder
-mediaproc image batch-resize "photos/*.jpg" -w 1920 -h 1080 -o ./resized
+<Terminal commands={[
+  { command: 'mediaproc image batch-resize "photos/*.jpg" -w 1920 -h 1080 -o ./resized' },
+  { output: '✓ Processed 24 images • Saved to ./resized', isSuccess: true }
+]} />
 
-# Convert all PNGs to WebP
-mediaproc image batch-convert "*.png" -f webp -q 85 -o ./webp
-```
+<Terminal commands={[
+  { command: 'mediaproc image batch-convert "*.png" -f webp -q 85 -o ./webp' },
+  { output: '✓ Converted 18 images to WebP', isSuccess: true },
+  { output: '✓ Total size: 12.4 MB → 4.8 MB (61% reduction)', isSuccess: true }
+]} />
 
 ## Links
 

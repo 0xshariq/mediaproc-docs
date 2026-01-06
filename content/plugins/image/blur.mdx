@@ -4,9 +4,9 @@ Apply Gaussian blur effect to images with adjustable intensity.
 
 ## Usage
 
-```bash
-mediaproc image blur <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image blur <input> [options]' }
+]} />
 
 ## Description
 
@@ -39,19 +39,18 @@ The sigma value controls blur intensity:
 
 ### Basic Blur
 
-```bash
-# Default blur (sigma: 10)
-mediaproc image blur photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image blur photo.jpg' },
+  { output: '✓ Applied blur (sigma: 10)', isSuccess: true }
+]} />
 
-# Light blur for subtle effect
-mediaproc image blur portrait.jpg -s 3
+<Terminal commands={[
+  { command: 'mediaproc image blur portrait.jpg -s 3' },
+  { output: '✓ Light blur applied (sigma: 3)', isSuccess: true }
+]} />
 
-# Medium blur for background
-mediaproc image blur background.png -s 15
-
-# Heavy blur for privacy
-mediaproc image blur screenshot.jpg -s 40
-```
+<InlineTerminal command="mediaproc image blur background.png -s 15" />
+<InlineTerminal command="mediaproc image blur screenshot.jpg -s 40" />
 
 ### Custom Output
 

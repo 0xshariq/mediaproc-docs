@@ -4,22 +4,19 @@ Extract individual color channels (red, green, blue, alpha) as grayscale images,
 
 ## Usage
 
-```bash
-mediaproc image extract <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image extract <input> [options]' }
+]} />
 
 ### Basic Syntax
 
-```bash
-# Extract a color channel
-mediaproc image extract photo.jpg -c red
+<Terminal commands={[
+  { command: 'mediaproc image extract photo.jpg -c red' },
+  { output: '✓ Red channel extracted', isSuccess: true }
+]} />
 
-# Extract a rectangular region
-mediaproc image extract photo.jpg --left 100 --top 50 -w 300 -h 200
-
-# Extract alpha channel from PNG
-mediaproc image extract image.png -c alpha
-```
+<InlineTerminal command="mediaproc image extract photo.jpg --left 100 --top 50 -w 300 -h 200" />
+<InlineTerminal command="mediaproc image extract image.png -c alpha" />
 
 ## Options
 

@@ -4,9 +4,9 @@ Crop images to a specified region with precise control over position and dimensi
 
 ## Usage
 
-```bash
-mediaproc image crop <input> -w <width> -h <height> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image crop <input> -w <width> -h <height> [options]' }
+]} />
 
 ## Description
 
@@ -41,85 +41,80 @@ The command uses Sharp's `extract()` method for efficient, high-quality cropping
 
 Crop from top-left corner:
 
-```bash
-# Crop 800x600 from top-left (0,0)
-mediaproc image crop photo.jpg -w 800 -h 600 -o cropped.jpg
+<Terminal commands={[
+  { command: 'mediaproc image crop photo.jpg -w 800 -h 600 -o cropped.jpg' },
+  { output: '✓ Cropped: 800x600 pixels from (0,0)', isSuccess: true }
+]} />
 
-# Crop square 500x500
-mediaproc image crop image.png -w 500 -h 500 -o square.png
+<Terminal commands={[
+  { command: 'mediaproc image crop image.png -w 500 -h 500 -o square.png' },
+  { output: '✓ Created 500x500 square crop', isSuccess: true }
+]} />
 
-# Crop to specific dimensions
-mediaproc image crop picture.jpg -w 1920 -h 1080 -o hd.jpg
+<Terminal commands={[
+  { command: 'mediaproc image crop picture.jpg -w 1920 -h 1080 -o hd.jpg' },
+  { output: '✓ Cropped to 1920x1080 (16:9)', isSuccess: true }
+]} />
 
-# Crop to 4:3 aspect ratio
-mediaproc image crop photo.jpg -w 1600 -h 1200 -o standard.jpg
-```
+<Terminal commands={[
+  { command: 'mediaproc image crop photo.jpg -w 1600 -h 1200 -o standard.jpg' },
+  { output: '✓ Cropped to 1600x1200 (4:3)', isSuccess: true }
+]} />
 
 ### Position-Based Cropping
 
 Crop from specific coordinates:
 
-```bash
-# Crop 500x500 starting at (100, 100)
-mediaproc image crop image.jpg -x 100 -y 100 -w 500 -h 500 -o region.jpg
+<Terminal commands={[
+  { command: 'mediaproc image crop image.jpg -x 100 -y 100 -w 500 -h 500 -o region.jpg' },
+  { output: '✓ Extracted region: 500x500 from position (100,100)', isSuccess: true }
+]} />
 
-# Crop from center-right area
-mediaproc image crop photo.png -x 800 -y 200 -w 400 -h 600 -o sidebar.png
+<Terminal commands={[
+  { command: 'mediaproc image crop photo.png -x 800 -y 200 -w 400 -h 600 -o sidebar.png' },
+  { output: '✓ Cropped: 400x600 from (800,200)', isSuccess: true }
+]} />
 
-# Extract specific region
-mediaproc image crop picture.jpg -x 250 -y 150 -w 800 -h 800 -o extracted.jpg
+<Terminal commands={[
+  { command: 'mediaproc image crop picture.jpg -x 250 -y 150 -w 800 -h 800 -o extracted.jpg' },
+  { output: '✓ Region extracted: 800x800 from (250,150)', isSuccess: true }
+]} />
 
-# Crop bottom-right corner
-mediaproc image crop image.jpg -x 1000 -y 800 -w 920 -h 280 -o corner.jpg
-```
+<Terminal commands={[
+  { command: 'mediaproc image crop image.jpg -x 1000 -y 800 -w 920 -h 280 -o corner.jpg' },
+  { output: '✓ Corner cropped: 920x280 from (1000,800)', isSuccess: true }
+]} />
 
 ### Aspect Ratio Crops
 
 Crop to standard aspect ratios:
 
-```bash
-# 16:9 aspect ratio (Full HD)
-mediaproc image crop photo.jpg -w 1920 -h 1080 -o widescreen.jpg
+<Terminal commands={[
+  { command: 'mediaproc image crop photo.jpg -w 1920 -h 1080 -o widescreen.jpg' },
+  { command: 'mediaproc image crop image.jpg -w 1600 -h 1200 -o standard.jpg' },
+  { command: 'mediaproc image crop picture.jpg -w 1080 -h 1080 -o square_insta.jpg' },
+  { command: 'mediaproc image crop photo.jpg -w 1080 -h 1920 -o story.jpg' }
+]} />
 
-# 4:3 aspect ratio (standard)
-mediaproc image crop image.jpg -w 1600 -h 1200 -o standard.jpg
-
-# 1:1 square (Instagram)
-mediaproc image crop picture.jpg -w 1080 -h 1080 -o square_insta.jpg
-
-# 9:16 portrait (stories)
-mediaproc image crop photo.jpg -w 1080 -h 1920 -o story.jpg
-
-# 21:9 ultrawide
-mediaproc image crop landscape.jpg -w 2560 -h 1080 -o ultrawide.jpg
-
-# 5:4 medium format
-mediaproc image crop photo.jpg -w 1600 -h 1280 -o medium_format.jpg
-```
+<InlineTerminal command="mediaproc image crop landscape.jpg -w 2560 -h 1080 -o ultrawide.jpg" />
+<InlineTerminal command="mediaproc image crop photo.jpg -w 1600 -h 1280 -o medium_format.jpg" />
 
 ### Social Media Crops
 
 Crop for different platforms:
 
-```bash
-# Instagram post (square)
-mediaproc image crop photo.jpg -w 1080 -h 1080 -o instagram.jpg
+<Terminal title="Instagram" commands={[
+  { command: 'mediaproc image crop photo.jpg -w 1080 -h 1080 -o instagram.jpg' },
+  { command: 'mediaproc image crop photo.jpg -w 1080 -h 1920 -o story.jpg' }
+]} />
 
-# Instagram story
-mediaproc image crop photo.jpg -w 1080 -h 1920 -o story.jpg
+<Terminal title="Facebook & Twitter" commands={[
+  { command: 'mediaproc image crop banner.jpg -w 820 -h 312 -o fb_cover.jpg' },
+  { command: 'mediaproc image crop header.jpg -w 1500 -h 500 -o twitter_header.jpg' }
+]} />
 
-# Facebook cover
-mediaproc image crop banner.jpg -w 820 -h 312 -o fb_cover.jpg
-
-# Twitter header
-mediaproc image crop header.jpg -w 1500 -h 500 -o twitter_header.jpg
-
-# YouTube thumbnail
-mediaproc image crop video_frame.jpg -w 1280 -h 720 -o youtube_thumb.jpg
-
-# LinkedIn banner
-mediaproc image crop banner.jpg -w 1584 -h 396 -o linkedin_banner.jpg
-```
+<InlineTerminal command="mediaproc image crop video_frame.jpg -w 1280 -h 720 -o youtube_thumb.jpg" />
+<InlineTerminal command="mediaproc image crop banner.jpg -w 1584 -h 396 -o linkedin_banner.jpg" />
 
 ### Center Cropping
 
@@ -141,19 +136,10 @@ mediaproc image crop large.jpg -x 1000 -y 500 -w 1000 -h 1000 -o square_centered
 
 Adjust output quality:
 
-```bash
-# High quality crop
-mediaproc image crop photo.jpg -w 1920 -h 1080 -q 95 -o high_quality.jpg
-
-# Standard quality
-mediaproc image crop image.png -w 800 -h 600 -q 90 -o standard.png
-
-# Lower quality for web
-mediaproc image crop picture.jpg -w 1200 -h 800 -q 80 -o web_optimized.jpg
-
-# Minimum quality for previews
-mediaproc image crop photo.jpg -w 400 -h 300 -q 70 -o preview.jpg
-```
+<InlineTerminal command="mediaproc image crop photo.jpg -w 1920 -h 1080 -q 95 -o high_quality.jpg" />
+<InlineTerminal command="mediaproc image crop image.png -w 800 -h 600 -q 90 -o standard.png" />
+<InlineTerminal command="mediaproc image crop picture.jpg -w 1200 -h 800 -q 80 -o web_optimized.jpg" />
+<InlineTerminal command="mediaproc image crop photo.jpg -w 400 -h 300 -q 70 -o preview.jpg" />
 
 ### Batch Cropping
 
@@ -219,19 +205,13 @@ mediaproc image crop product_shot.jpg -x 300 -y 400 -w 1000 -h 800 -o product.jp
 
 Extract regions for thumbnails:
 
-```bash
-# Small thumbnail
-mediaproc image crop photo.jpg -w 150 -h 150 -o thumb_small.jpg
+<Terminal commands={[
+  { command: 'mediaproc image crop photo.jpg -w 150 -h 150 -o thumb_small.jpg' },
+  { command: 'mediaproc image crop image.jpg -w 300 -h 300 -o thumb_medium.jpg' },
+  { command: 'mediaproc image crop picture.jpg -w 600 -h 600 -o thumb_large.jpg' }
+]} />
 
-# Medium thumbnail
-mediaproc image crop image.jpg -w 300 -h 300 -o thumb_medium.jpg
-
-# Large thumbnail
-mediaproc image crop picture.jpg -w 600 -h 600 -o thumb_large.jpg
-
-# Thumbnail from specific area
-mediaproc image crop photo.jpg -x 200 -y 200 -w 400 -h 400 -o thumb_region.jpg
-```
+<InlineTerminal command="mediaproc image crop photo.jpg -x 200 -y 200 -w 400 -h 400 -o thumb_region.jpg" />
 
 ### Removing Watermarks/Elements
 

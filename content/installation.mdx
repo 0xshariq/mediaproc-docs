@@ -9,41 +9,22 @@ Get MediaProc up and running in minutes.
 
 ## Install MediaProc CLI
 
-Choose your preferred package manager:
-
-### npm
-
-```bash
-npm install -g @mediaproc/cli
-```
-
-### pnpm (Recommended)
-
-```bash
-pnpm add -g @mediaproc/cli
-```
-
-### yarn
-
-```bash
-yarn global add @mediaproc/cli
-```
-
-### bun
-
-```bash
-bun add -g @mediaproc/cli
-```
+<Install
+  package="@mediaproc/cli"
+  title="To install the MediaProc CLI:"
+  global={true}
+/>
 
 ## Verify Installation
 
 Check that MediaProc is installed correctly:
 
-```bash
-mediaproc --version
-```
-
-You should see the version number displayed.
+<Terminal
+  commands={[
+    { command: "mediaproc --version" },
+    { output: "@mediaproc/cli v1.0.0" },
+  ]}
+/>
 
 ## Install Plugins
 
@@ -51,51 +32,62 @@ MediaProc uses a plugin architecture. Install plugins as needed:
 
 ### Install Image Plugin
 
-```bash
-mediaproc add image
-```
+<Terminal
+  commands={[
+    { command: "mediaproc add image" },
+    { output: "✓ Installing @mediaproc/image plugin...", isSuccess: true },
+    { output: "✓ Plugin installed successfully", isSuccess: true },
+  ]}
+/>
 
 ### Install Multiple Plugins
 
-```bash
-mediaproc add video audio document
-```
+<Terminal
+  commands={[
+    { command: "mediaproc add video audio document" },
+    { output: "✓ Installing 3 plugins...", isSuccess: true },
+    { output: "✓ All plugins installed", isSuccess: true },
+  ]}
+/>
 
 ### Install All Official Plugins
 
-```bash
-mediaproc add image video audio document animation 3d stream ai metadata pipeline
-```
+<InlineTerminal command="mediaproc add image video audio document animation 3d stream ai metadata pipeline" />
 
 ## Update MediaProc
 
 Keep your installation up to date:
 
-```bash
-# Update CLI
-npm update -g @mediaproc/cli
+<InlineTerminal command="npm update -g @mediaproc/cli" />
 
-# Update specific plugin
-mediaproc update image
+<Terminal
+  commands={[
+    { command: "mediaproc update image" },
+    { output: "✓ Updated @mediaproc/image to v1.2.0", isSuccess: true },
+  ]}
+/>
 
-# Update all plugins
-mediaproc update
-```
+<Terminal
+  commands={[
+    { command: "mediaproc update" },
+    { output: "✓ Updated 5 plugins", isSuccess: true },
+  ]}
+/>
 
 ## Uninstall
 
 To remove MediaProc:
 
-```bash
-# Uninstall CLI
-npm uninstall -g @mediaproc/cli
+<InlineTerminal command="npm uninstall -g @mediaproc/cli" />
 
-# Delete specific plugin
-mediaproc delete image
+<Terminal
+  commands={[
+    { command: "mediaproc delete image" },
+    { output: "✓ Removed @mediaproc/image", isSuccess: true },
+  ]}
+/>
 
-# Or uninstall manually
-npm uninstall -g @mediaproc/image
-```
+<InlineTerminal command="npm uninstall -g @mediaproc/image" />
 
 ## Troubleshooting
 

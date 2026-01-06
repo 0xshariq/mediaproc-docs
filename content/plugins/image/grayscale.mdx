@@ -4,25 +4,23 @@ Convert color images to grayscale (black and white), removing all color informat
 
 ## Usage
 
-```bash
-mediaproc image grayscale <input> [options]
+<Terminal commands={[
+  { command: 'mediaproc image grayscale <input> [options]' }
+]} />
 
-# Alternative spelling (UK)
-mediaproc image greyscale <input> [options]
-```
+Alternative spelling (UK):
+
+<InlineTerminal command="mediaproc image greyscale <input> [options]" />
 
 ### Basic Syntax
 
-```bash
-# Convert to grayscale
-mediaproc image grayscale photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image grayscale photo.jpg' },
+  { output: '✓ Converted to grayscale', isSuccess: true }
+]} />
 
-# With custom output
-mediaproc image grayscale photo.jpg -o blackandwhite.jpg
-
-# UK spelling works too
-mediaproc image greyscale photo.jpg
-```
+<InlineTerminal command="mediaproc image grayscale photo.jpg -o blackandwhite.jpg" />
+<InlineTerminal command="mediaproc image greyscale photo.jpg" />
 
 ## Options
 
@@ -37,29 +35,21 @@ mediaproc image greyscale photo.jpg
 
 ### 1. Basic Grayscale Conversion
 
-```bash
-# Simple conversion
-mediaproc image grayscale photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image grayscale photo.jpg' },
+  { output: '✓ Converted to grayscale', isSuccess: true }
+]} />
 
-# With custom output name
-mediaproc image grayscale color-photo.jpg -o bw-photo.jpg
-
-# Using UK spelling
-mediaproc image greyscale portrait.jpg
-```
+<InlineTerminal command="mediaproc image grayscale color-photo.jpg -o bw-photo.jpg" />
+<InlineTerminal command="mediaproc image greyscale portrait.jpg" />
 
 ### 2. High Quality Conversion
 
-```bash
-# Maximum quality for print
-mediaproc image grayscale photo.jpg -q 100 -o print-bw.jpg
-
-# Balanced quality for web
-mediaproc image grayscale photo.jpg -q 85 -o web-bw.jpg
-
-# Lower quality for smaller file size
-mediaproc image grayscale photo.jpg -q 75 -o small-bw.jpg
-```
+<Terminal commands={[
+  { command: 'mediaproc image grayscale photo.jpg -q 100 -o print-bw.jpg' },
+  { command: 'mediaproc image grayscale photo.jpg -q 85 -o web-bw.jpg' },
+  { command: 'mediaproc image grayscale photo.jpg -q 75 -o small-bw.jpg' }
+]} />
 
 ### 3. Portrait Photography
 

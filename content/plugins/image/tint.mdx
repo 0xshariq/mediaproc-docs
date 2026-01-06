@@ -4,34 +4,25 @@ Apply color tint overlay to images. Great for creating artistic effects, adjusti
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image tint <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image tint <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Blue tint (default)
-mediaproc image tint photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image tint photo.jpg' },
+  { output: '✓ Applied blue tint', isSuccess: true }
+]} />
 
-# Named color
-mediaproc image tint image.png -c red
-
-# Hex color
-mediaproc image tint pic.jpg -c "#ff6600"
-
-# RGB color
-mediaproc image tint photo.jpg -c "rgb(255, 0, 128)"
-
-# Batch processing
-mediaproc image tint "photos/*.jpg" -c "#704214"
-```
+<InlineTerminal command="mediaproc image tint image.png -c red" />
+<InlineTerminal command='mediaproc image tint pic.jpg -c "#ff6600"' />
+<InlineTerminal command='mediaproc image tint photo.jpg -c "rgb(255, 0, 128)"' />
+<InlineTerminal command='mediaproc image tint "photos/*.jpg" -c "#704214"' />
 
 ## Options
 

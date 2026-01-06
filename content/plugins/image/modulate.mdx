@@ -4,34 +4,29 @@ Adjust brightness, saturation, and hue of images in a single operation. Modulate
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image modulate <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image modulate <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Increase brightness by 20%
-mediaproc image modulate photo.jpg -b 1.2
+<Terminal commands={[
+  { command: 'mediaproc image modulate photo.jpg -b 1.2' },
+  { output: '✓ Brightness increased by 20%', isSuccess: true }
+]} />
 
-# Boost saturation by 50%
-mediaproc image modulate image.png -s 1.5
+<Terminal commands={[
+  { command: 'mediaproc image modulate image.png -s 1.5' },
+  { output: '✓ Saturation boosted by 50%', isSuccess: true }
+]} />
 
-# Rotate hue by 180 degrees
-mediaproc image modulate pic.jpg --hue 180
-
-# Adjust all parameters
-mediaproc image modulate photo.jpg -b 1.2 -s 1.3 --hue 30
-
-# Preview without executing
-mediaproc image modulate photo.jpg -b 1.5 --dry-run
-```
+<InlineTerminal command="mediaproc image modulate pic.jpg --hue 180" />
+<InlineTerminal command="mediaproc image modulate photo.jpg -b 1.2 -s 1.3 --hue 30" />
+<InlineTerminal command="mediaproc image modulate photo.jpg -b 1.5 --dry-run" />
 
 ## Options
 

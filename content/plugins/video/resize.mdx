@@ -8,9 +8,7 @@ The `resize` command changes video resolution to optimize for different platform
 
 ## Usage
 
-```bash
-mediaproc video resize <input> [options]
-```
+<Terminal commands={[{ command: 'mediaproc video resize <input> [options]' }]} />
 
 ## Options
 
@@ -38,103 +36,93 @@ mediaproc video resize <input> [options]
 
 ### Basic Resizing
 
-```bash
-# Resize to 1080p
-mediaproc video resize 4k-video.mp4 --scale 1080p
+<Terminal commands={[
+  { command: 'mediaproc video resize 4k-video.mp4 --scale 1080p' },
+  { output: 'Input: 4k-video.mp4 • Resolution: 3840x2160' },
+  { output: 'Duration: 00:03:45' },
+  { output: '' },
+  { output: 'Resizing to 1920x1080...' },
+  { output: '✓ Resize complete', isSuccess: true },
+  { output: 'Output: 4k-video_1920x1080.mp4 • Size: 180.5 MB', isSuccess: true }
+]} />
 
-# Resize to 720p
-mediaproc video resize video.mp4 --scale 720p
+<Terminal commands={[
+  { command: 'mediaproc video resize video.mp4 --scale 720p' },
+  { output: '✓ Resized to 1280x720', isSuccess: true }
+]} />
 
-# Resize to 480p for mobile
-mediaproc video resize video.mp4 --scale 480p
-```
-
-Output:
-
-```
-Input file: 4k-video.mp4
-Original resolution: 3840x2160
-Duration: 00:03:45
-
-Resizing to 1920x1080...
-✓ Resize complete
-
-Output file: 4k-video_1920x1080.mp4
-New resolution: 1920x1080
-Size: 180.5 MB
-```
+<Terminal commands={[
+  { command: 'mediaproc video resize video.mp4 --scale 480p' },
+  { output: '✓ Resized to 854x480 (mobile optimized)', isSuccess: true }
+]} />
 
 ### Specify Output Location
 
-```bash
-# Save to specific file
-mediaproc video resize video.mp4 --scale 720p -o optimized.mp4
+<Terminal commands={[
+  { command: 'mediaproc video resize video.mp4 --scale 720p -o optimized.mp4' },
+  { output: '✓ Saved to optimized.mp4', isSuccess: true }
+]} />
 
-# Save to directory
-mediaproc video resize video.mp4 --scale 1080p -o output/
-```
+<Terminal commands={[
+  { command: 'mediaproc video resize video.mp4 --scale 1080p -o output/' },
+  { output: '✓ Saved to output/video_1920x1080.mp4', isSuccess: true }
+]} />
 
 ### Custom Width
 
-```bash
-# Set width, height calculated automatically
-mediaproc video resize video.mp4 -w 1280
+<Terminal commands={[
+  { command: 'mediaproc video resize video.mp4 -w 1280' },
+  { output: '✓ Resized to 1280x720 (auto height)', isSuccess: true }
+]} />
 
-# Downscale to 800px width
-mediaproc video resize video.mp4 -w 800
+<InlineTerminal command="mediaproc video resize video.mp4 -w 800" />
 
-# Ultra-wide width
-mediaproc video resize video.mp4 -w 2560
-```
+<InlineTerminal command="mediaproc video resize video.mp4 -w 2560" />
 
 ### Custom Height
 
-```bash
-# Set height, width calculated automatically
-mediaproc video resize video.mp4 -h 720
+<InlineTerminal command="mediaproc video resize video.mp4 -h 720" />
 
-# Vertical video height
-mediaproc video resize vertical.mp4 -h 1920
-```
+<InlineTerminal command="mediaproc video resize vertical.mp4 -h 1920" />
 
 ### Custom Width and Height
 
-```bash
-# Set both dimensions (maintains aspect ratio)
-mediaproc video resize video.mp4 -w 1280 -h 720
+<Terminal commands={[
+  { command: 'mediaproc video resize video.mp4 -w 1280 -h 720' },
+  { output: '✓ Resized to 1280x720 (aspect ratio maintained)', isSuccess: true }
+]} />
 
-# Square video
-mediaproc video resize video.mp4 -w 1080 -h 1080
+<InlineTerminal command="mediaproc video resize video.mp4 -w 1080 -h 1080" />
 
-# Custom aspect ratio
-mediaproc video resize video.mp4 -w 1920 -h 800
-```
+<InlineTerminal command="mediaproc video resize video.mp4 -w 1920 -h 800" />
 
 ### Padding Mode
 
-```bash
-# Add black bars to maintain exact dimensions
-mediaproc video resize video.mp4 -w 1080 -h 1080 --pad
+<Terminal commands={[
+  { command: 'mediaproc video resize video.mp4 -w 1080 -h 1080 --pad' },
+  { output: '✓ Resized with black bars to maintain 1080x1080', isSuccess: true }
+]} />
 
-# Instagram square with padding
-mediaproc video resize landscape.mp4 -w 1080 -h 1080 --pad
+<Terminal commands={[
+  { command: 'mediaproc video resize landscape.mp4 -w 1080 -h 1080 --pad' },
+  { output: '✓ Instagram square with padding', isSuccess: true }
+]} />
 
-# Letterbox effect
-mediaproc video resize vertical.mp4 -w 1920 -h 1080 --pad
-```
+<Terminal commands={[
+  { command: 'mediaproc video resize vertical.mp4 -w 1920 -h 1080 --pad' },
+  { output: '✓ Letterbox effect applied', isSuccess: true }
+]} />
 
 ### Downscale 4K Content
 
-```bash
-# 4K to 1080p for standard displays
-mediaproc video resize 4k-video.mp4 --scale 1080p
+<Terminal commands={[
+  { command: 'mediaproc video resize 4k-video.mp4 --scale 1080p' },
+  { output: '✓ 4K → 1080p • 3840x2160 → 1920x1080', isSuccess: true }
+]} />
 
-# 4K to 1440p for high-end displays
-mediaproc video resize 4k-video.mp4 --scale 1440p
+<InlineTerminal command="mediaproc video resize 4k-video.mp4 --scale 1440p" />
 
-# 4K to 720p for streaming
-mediaproc video resize 4k-video.mp4 --scale 720p
-```
+<InlineTerminal command="mediaproc video resize 4k-video.mp4 --scale 720p" />
 
 ### Dry Run Preview
 

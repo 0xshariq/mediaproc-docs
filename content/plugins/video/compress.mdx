@@ -8,9 +8,7 @@ The `compress` command uses FFmpeg's Constant Rate Factor (CRF) encoding to inte
 
 ## Usage
 
-```bash
-mediaproc video compress <input> [options]
-```
+<Terminal commands={[{ command: 'mediaproc video compress <input> [options]' }]} />
 
 ## Options
 
@@ -74,76 +72,81 @@ mediaproc video compress <input> [options]
 
 ### Basic Compression
 
-```bash
-# Compress with default settings (medium quality, H.264)
-mediaproc video compress video.mp4
-```
-
-Output:
-
-```
-Input file: video.mp4
-Duration: 00:05:30
-Resolution: 1920x1080
-Original size: 450.5 MB
-
-Compressing with CRF 23 (H.264)...
-✓ Compression complete
-
-Output file: video_compressed.mp4
-New size: 225.3 MB
-Compression ratio: 50.0%
-Saved: 225.2 MB
-```
+<Terminal commands={[
+  { command: 'mediaproc video compress video.mp4' },
+  { output: 'Input file: video.mp4' },
+  { output: 'Duration: 00:05:30 • Resolution: 1920x1080' },
+  { output: 'Original size: 450.5 MB' },
+  { output: '' },
+  { output: 'Compressing with CRF 23 (H.264)...' },
+  { output: '✓ Compression complete', isSuccess: true },
+  { output: '' },
+  { output: 'Output file: video_compressed.mp4' },
+  { output: 'New size: 225.3 MB • Saved: 225.2 MB (50.0%)', isSuccess: true }
+]} />
 
 ### Specify Output Location
 
-```bash
-# Save to specific file
-mediaproc video compress input.mp4 -o output/compressed.mp4
+<Terminal commands={[
+  { command: 'mediaproc video compress input.mp4 -o output/compressed.mp4' },
+  { output: '✓ Saved to output/compressed.mp4', isSuccess: true }
+]} />
 
-# Save to directory (keeps original name with suffix)
-mediaproc video compress input.mp4 -o output/
-```
+<Terminal commands={[
+  { command: 'mediaproc video compress input.mp4 -o output/' },
+  { output: '✓ Saved to output/input_compressed.mp4', isSuccess: true }
+]} />
 
 ### Quality Presets
 
-```bash
-# Low quality - maximum compression
-mediaproc video compress large-video.mp4 -q low
+<Terminal commands={[
+  { command: 'mediaproc video compress large-video.mp4 -q low' },
+  { output: '✓ Compressed with CRF 28 • 600 MB → 180 MB (70% reduction)', isSuccess: true }
+]} />
 
-# High quality - minimal loss
-mediaproc video compress important-video.mp4 -q high
+<Terminal commands={[
+  { command: 'mediaproc video compress important-video.mp4 -q high' },
+  { output: '✓ Compressed with CRF 18 • 450 MB → 315 MB (30% reduction)', isSuccess: true }
+]} />
 
-# Medium quality (default)
-mediaproc video compress video.mp4 -q medium
-```
+<Terminal commands={[
+  { command: 'mediaproc video compress video.mp4 -q medium' },
+  { output: '✓ Compressed with CRF 23 • 450 MB → 225 MB (50% reduction)', isSuccess: true }
+]} />
 
 ### Custom CRF Value
 
-```bash
-# Ultra-high quality (archival)
-mediaproc video compress source.mp4 --crf 15
+<Terminal title="Ultra-high quality" commands={[
+  { command: 'mediaproc video compress source.mp4 --crf 15' },
+  { output: '✓ Compressed with CRF 15 (near-lossless)', isSuccess: true }
+]} />
 
-# Balanced quality
-mediaproc video compress video.mp4 --crf 20
+<Terminal title="Balanced quality" commands={[
+  { command: 'mediaproc video compress video.mp4 --crf 20' },
+  { output: '✓ Compressed with CRF 20', isSuccess: true }
+]} />
 
-# Higher compression
-mediaproc video compress video.mp4 --crf 30
-```
+<Terminal title="Higher compression" commands={[
+  { command: 'mediaproc video compress video.mp4 --crf 30' },
+  { output: '✓ Compressed with CRF 30 (smaller file)', isSuccess: true }
+]} />
 
 ### Different Codecs
 
-```bash
-# H.265 for better compression
-mediaproc video compress 4k-video.mp4 -c h265 -q medium
+<Terminal commands={[
+  { command: 'mediaproc video compress 4k-video.mp4 -c h265 -q medium' },
+  { output: '✓ Compressed with H.265 • 1.2 GB → 600 MB (50% smaller than H.264)', isSuccess: true }
+]} />
 
-# VP9 for WebM output
-mediaproc video compress video.mp4 -c vp9 -q high
+<Terminal commands={[
+  { command: 'mediaproc video compress video.mp4 -c vp9 -q high' },
+  { output: '✓ Compressed with VP9 codec', isSuccess: true }
+]} />
 
-# H.264 for maximum compatibility
-mediaproc video compress video.mp4 -c h264 -q medium
-```
+<Terminal commands={[
+  { command: 'mediaproc video compress video.mp4 -c h264 -q medium' },
+  { output: '✓ Compressed with H.264 (maximum compatibility)', isSuccess: true }
+]} />
 
 ### Audio Bitrate Control
 

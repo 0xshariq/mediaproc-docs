@@ -4,31 +4,24 @@ Create negative (inverted) image by reversing all colors. The negate command tra
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image negate <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image negate <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Create negative image
-mediaproc image negate photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image negate photo.jpg' },
+  { output: '✓ Created negative image', isSuccess: true }
+]} />
 
-# Invert including alpha channel
-mediaproc image negate image.png --alpha
-
-# Specify output location
-mediaproc image negate pic.jpg -o inverted.jpg
-
-# Preview without executing
-mediaproc image negate photo.jpg --dry-run
-```
+<InlineTerminal command="mediaproc image negate image.png --alpha" />
+<InlineTerminal command="mediaproc image negate pic.jpg -o inverted.jpg" />
+<InlineTerminal command="mediaproc image negate photo.jpg --dry-run" />
 
 ## Options
 

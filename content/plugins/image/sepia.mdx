@@ -4,34 +4,25 @@ Apply sepia tone effect to create vintage, antique, or nostalgic photographs wit
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image sepia <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image sepia <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Default sepia (80% intensity)
-mediaproc image sepia photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image sepia photo.jpg' },
+  { output: '✓ Sepia effect applied (80% intensity)', isSuccess: true }
+]} />
 
-# Maximum sepia intensity
-mediaproc image sepia image.png -i 100
-
-# Subtle sepia tone
-mediaproc image sepia photo.jpg -i 50
-
-# Custom output
-mediaproc image sepia photo.jpg -o vintage.jpg
-
-# Preview effect
-mediaproc image sepia image.jpg --dry-run
-```
+<InlineTerminal command="mediaproc image sepia image.png -i 100" />
+<InlineTerminal command="mediaproc image sepia photo.jpg -i 50" />
+<InlineTerminal command="mediaproc image sepia photo.jpg -o vintage.jpg" />
+<InlineTerminal command="mediaproc image sepia image.jpg --dry-run" />
 
 ## Options
 

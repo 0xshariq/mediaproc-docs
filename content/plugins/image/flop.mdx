@@ -4,22 +4,19 @@ Flip images horizontally (mirror left-right) using a dedicated command. This is 
 
 ## Usage
 
-```bash
-mediaproc image flop <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image flop <input> [options]' }
+]} />
 
 ### Basic Syntax
 
-```bash
-# Flip horizontally
-mediaproc image flop photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image flop photo.jpg' },
+  { output: '✓ Flopped (flipped horizontally)', isSuccess: true }
+]} />
 
-# Flip with custom output
-mediaproc image flop photo.jpg -o mirrored.jpg
-
-# Flip with high quality
-mediaproc image flop photo.jpg -q 100 -o high-quality.jpg
-```
+<InlineTerminal command="mediaproc image flop photo.jpg -o mirrored.jpg" />
+<InlineTerminal command="mediaproc image flop photo.jpg -q 100 -o high-quality.jpg" />
 
 ## Options
 

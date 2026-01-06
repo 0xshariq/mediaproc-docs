@@ -4,22 +4,19 @@ Remove the alpha channel (transparency) from images by compositing them onto a s
 
 ## Usage
 
-```bash
-mediaproc image flatten <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image flatten <input> [options]' }
+]} />
 
 ### Basic Syntax
 
-```bash
-# Flatten with white background (default)
-mediaproc image flatten logo.png
+<Terminal commands={[
+  { command: 'mediaproc image flatten logo.png' },
+  { output: '✓ Flattened with white background', isSuccess: true }
+]} />
 
-# Flatten with custom color
-mediaproc image flatten logo.png --background "#2C3E50"
-
-# Flatten and convert to JPEG
-mediaproc image flatten transparent.png -o output.jpg
-```
+<InlineTerminal command='mediaproc image flatten logo.png --background "#2C3E50"' />
+<InlineTerminal command="mediaproc image flatten transparent.png -o output.jpg" />
 
 ## Options
 

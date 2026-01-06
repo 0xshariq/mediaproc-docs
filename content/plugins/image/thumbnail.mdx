@@ -4,34 +4,29 @@ Generate square thumbnails from images with customizable size and fit modes. Per
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image thumbnail <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image thumbnail <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Default 150×150 thumbnail
-mediaproc image thumbnail photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image thumbnail photo.jpg' },
+  { output: '✓ Created 150×150 thumbnail', isSuccess: true }
+]} />
 
-# Custom size
-mediaproc image thumbnail image.png -s 200
+<Terminal commands={[
+  { command: 'mediaproc image thumbnail image.png -s 200' },
+  { output: '✓ Created 200×200 thumbnail', isSuccess: true }
+]} />
 
-# With padding (contain mode)
-mediaproc image thumbnail pic.jpg -s 300 --fit contain
-
-# High quality
-mediaproc image thumbnail photo.jpg -s 512 -q 95
-
-# Batch processing
-mediaproc image thumbnail "photos/*.jpg" -s 200
-```
+<InlineTerminal command="mediaproc image thumbnail pic.jpg -s 300 --fit contain" />
+<InlineTerminal command="mediaproc image thumbnail photo.jpg -s 512 -q 95" />
+<InlineTerminal command='mediaproc image thumbnail "photos/*.jpg" -s 200' />
 
 ## Options
 

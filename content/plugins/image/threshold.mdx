@@ -4,34 +4,25 @@ Convert images to pure black and white by applying a threshold value. Pixels abo
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image threshold <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image threshold <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Default threshold (128)
-mediaproc image threshold document.jpg
+<Terminal commands={[
+  { command: 'mediaproc image threshold document.jpg' },
+  { output: '✓ Applied threshold (128)', isSuccess: true }
+]} />
 
-# Custom threshold
-mediaproc image threshold scan.jpg -t 180
-
-# Lower threshold (more black)
-mediaproc image threshold image.jpg -t 80
-
-# Save as PNG
-mediaproc image threshold photo.jpg -t 128 -o binary.png
-
-# Batch processing
-mediaproc image threshold "scans/*.jpg" -t 200
-```
+<InlineTerminal command="mediaproc image threshold scan.jpg -t 180" />
+<InlineTerminal command="mediaproc image threshold image.jpg -t 80" />
+<InlineTerminal command="mediaproc image threshold photo.jpg -t 128 -o binary.png" />
+<InlineTerminal command='mediaproc image threshold "scans/*.jpg" -t 200' />
 
 ## Options
 

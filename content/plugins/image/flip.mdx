@@ -4,25 +4,20 @@ Flip images along the horizontal axis (mirror left-right), vertical axis (mirror
 
 ## Usage
 
-```bash
-mediaproc image flip <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image flip <input> [options]' }
+]} />
 
 ### Basic Syntax
 
-```bash
-# Flip horizontally (default)
-mediaproc image flip photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image flip photo.jpg' },
+  { output: '✓ Flipped horizontally', isSuccess: true }
+]} />
 
-# Flip vertically
-mediaproc image flip photo.jpg --vertical
-
-# Flip both directions
-mediaproc image flip photo.jpg --both
-
-# Flip horizontally (explicit)
-mediaproc image flip photo.jpg --horizontal
-```
+<InlineTerminal command="mediaproc image flip photo.jpg --vertical" />
+<InlineTerminal command="mediaproc image flip photo.jpg --both" />
+<InlineTerminal command="mediaproc image flip photo.jpg --horizontal" />
 
 ## Options
 

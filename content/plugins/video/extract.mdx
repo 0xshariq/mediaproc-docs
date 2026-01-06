@@ -20,9 +20,7 @@ Extract the audio track from a video file.
 
 ### Usage
 
-```bash
-mediaproc video extract-audio <input> [options]
-```
+<Terminal commands={[{ command: 'mediaproc video extract-audio <input> [options]' }]} />
 
 ### Options
 
@@ -47,80 +45,64 @@ mediaproc video extract-audio <input> [options]
 
 #### Basic Audio Extraction
 
-```bash
-# Extract to MP3 (default)
-mediaproc video extract-audio video.mp4
+<Terminal commands={[
+  { command: 'mediaproc video extract-audio video.mp4' },
+  { output: 'Input: video.mp4 • Duration: 00:03:45' },
+  { output: 'Audio codec: AAC' },
+  { output: '' },
+  { output: 'Extracting audio...' },
+  { output: '✓ Extraction complete', isSuccess: true },
+  { output: 'Output: video.mp3 • Format: MP3 • 192 kbps • 5.4 MB', isSuccess: true }
+]} />
 
-# Extract to AAC
-mediaproc video extract-audio video.mp4 -f aac
+<InlineTerminal command="mediaproc video extract-audio video.mp4 -f aac" />
 
-# Extract to WAV (lossless)
-mediaproc video extract-audio video.mp4 -f wav
+<InlineTerminal command="mediaproc video extract-audio video.mp4 -f wav" />
 
-# Extract to Opus
-mediaproc video extract-audio video.mp4 -f opus
-```
-
-Output:
-
-```
-Input file: video.mp4
-Duration: 00:03:45
-Audio codec: AAC
-
-Extracting audio...
-✓ Extraction complete
-
-Output file: video.mp3
-Format: MP3
-Bitrate: 192 kbps
-Size: 5.4 MB
-```
+<InlineTerminal command="mediaproc video extract-audio video.mp4 -f opus" />
 
 #### Custom Bitrate
 
-```bash
-# High quality (320 kbps)
-mediaproc video extract-audio video.mp4 --bitrate 320k
+<Terminal commands={[
+  { command: 'mediaproc video extract-audio video.mp4 --bitrate 320k' },
+  { output: '✓ Extracted at 320 kbps (high quality)', isSuccess: true }
+]} />
 
-# Standard quality (192 kbps, default)
-mediaproc video extract-audio video.mp4 --bitrate 192k
+<InlineTerminal command="mediaproc video extract-audio video.mp4 --bitrate 192k" />
 
-# Lower quality (128 kbps)
-mediaproc video extract-audio video.mp4 --bitrate 128k
+<InlineTerminal command="mediaproc video extract-audio video.mp4 --bitrate 128k" />
 
-# Podcast quality (64 kbps)
-mediaproc video extract-audio video.mp4 --bitrate 64k -f opus
-```
+<Terminal commands={[
+  { command: 'mediaproc video extract-audio video.mp4 --bitrate 64k -f opus' },
+  { output: '✓ Extracted at 64 kbps (podcast quality)', isSuccess: true }
+]} />
 
 #### Specify Output
 
-```bash
-# Custom filename
-mediaproc video extract-audio video.mp4 -o audio.mp3
+<InlineTerminal command="mediaproc video extract-audio video.mp4 -o audio.mp3" />
 
-# Different directory
-mediaproc video extract-audio video.mp4 -o audio/soundtrack.mp3
+<InlineTerminal command="mediaproc video extract-audio video.mp4 -o audio/soundtrack.mp3" />
 
-# Save to directory with auto name
-mediaproc video extract-audio video.mp4 -o audio/
-```
+<InlineTerminal command="mediaproc video extract-audio video.mp4 -o audio/" />
 
 #### Use Cases
 
-```bash
-# Podcast from video
-mediaproc video extract-audio interview.mp4 -f mp3 --bitrate 128k -o podcast.mp3
+<Terminal title="Podcast from video" commands={[
+  { command: 'mediaproc video extract-audio interview.mp4 -f mp3 --bitrate 128k -o podcast.mp3' },
+  { output: '✓ Podcast created from interview', isSuccess: true }
+]} />
 
-# Music from music video
-mediaproc video extract-audio music-video.mp4 -f mp3 --bitrate 320k -o song.mp3
+<Terminal title="Music extraction" commands={[
+  { command: 'mediaproc video extract-audio music-video.mp4 -f mp3 --bitrate 320k -o song.mp3' },
+  { output: '✓ High-quality music extracted', isSuccess: true }
+]} />
 
-# Voice extraction
-mediaproc video extract-audio lecture.mp4 -f opus --bitrate 64k -o lecture-audio.opus
+<Terminal title="Voice extraction" commands={[
+  { command: 'mediaproc video extract-audio lecture.mp4 -f opus --bitrate 64k -o lecture-audio.opus' },
+  { output: '✓ Voice optimized audio extracted', isSuccess: true }
+]} />
 
-# Archival (lossless)
-mediaproc video extract-audio source.mp4 -f wav -o archive.wav
-```
+<InlineTerminal command="mediaproc video extract-audio source.mp4 -f wav -o archive.wav" />
 
 ---
 
@@ -130,9 +112,7 @@ Extract video frames as an image sequence.
 
 ### Usage
 
-```bash
-mediaproc video extract-frames <input> [options]
-```
+<Terminal commands={[{ command: 'mediaproc video extract-frames <input> [options]' }]} />
 
 ### Options
 

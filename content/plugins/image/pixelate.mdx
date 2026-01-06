@@ -4,34 +4,25 @@ Apply pixelate or mosaic effect to images. Creates retro 8-bit/16-bit gaming sty
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image pixelate <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image pixelate <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Default pixelation (10px blocks)
-mediaproc image pixelate photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image pixelate photo.jpg' },
+  { output: '✓ Pixelated with 10px blocks', isSuccess: true }
+]} />
 
-# Custom pixel size
-mediaproc image pixelate image.png --pixels 20
-
-# Subtle effect
-mediaproc image pixelate photo.jpg -p 5
-
-# Heavy pixelation for privacy
-mediaproc image pixelate face.jpg --pixels 30
-
-# Retro 8-bit gaming style
-mediaproc image pixelate game.jpg -p 8 -o retro.jpg
-```
+<InlineTerminal command="mediaproc image pixelate image.png --pixels 20" />
+<InlineTerminal command="mediaproc image pixelate photo.jpg -p 5" />
+<InlineTerminal command="mediaproc image pixelate face.jpg --pixels 30" />
+<InlineTerminal command="mediaproc image pixelate game.jpg -p 8 -o retro.jpg" />
 
 ## Options
 

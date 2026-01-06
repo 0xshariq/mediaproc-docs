@@ -8,9 +8,7 @@ The `trim` command extracts specific portions of a video by specifying start and
 
 ## Usage
 
-```bash
-mediaproc video trim <input> [options]
-```
+<Terminal commands={[{ command: 'mediaproc video trim <input> [options]' }]} />
 
 ## Options
 
@@ -61,91 +59,82 @@ Time can be specified in two formats:
 
 ### Basic Trimming
 
-```bash
-# Trim from 1 minute to 2 minutes
-mediaproc video trim video.mp4 --start 00:01:00 --end 00:02:00
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 --start 00:01:00 --end 00:02:00' },
+  { output: 'Input: video.mp4 • Duration: 00:05:30' },
+  { output: 'Resolution: 1920x1080' },
+  { output: '' },
+  { output: 'Trimming from 00:01:00 to 00:02:00...' },
+  { output: '✓ Trim complete', isSuccess: true },
+  { output: 'Output: video_trimmed.mp4 • Duration: 00:01:00 • 45.2 MB', isSuccess: true }
+]} />
 
-# Trim from 30 seconds for 1 minute duration
-mediaproc video trim video.mp4 --start 30 --duration 60
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 --start 30 --duration 60' },
+  { output: '✓ Trimmed from 30s for 60s duration', isSuccess: true }
+]} />
 
-# Trim first 10 seconds
-mediaproc video trim video.mp4 --duration 10
-```
-
-Output:
-
-```
-Input file: video.mp4
-Duration: 00:05:30
-Resolution: 1920x1080
-
-Trimming from 00:01:00 to 00:02:00...
-✓ Trim complete
-
-Output file: video_trimmed.mp4
-Duration: 00:01:00
-Size: 45.2 MB
-```
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 --duration 10' },
+  { output: '✓ Extracted first 10 seconds', isSuccess: true }
+]} />
 
 ### Specify Output Location
 
-```bash
-# Save to specific file
-mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 -o highlight.mp4
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 -o highlight.mp4' },
+  { output: '✓ Saved to highlight.mp4', isSuccess: true }
+]} />
 
-# Save to directory
-mediaproc video trim video.mp4 -s 01:00 -d 30 -o clips/
-```
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 -s 01:00 -d 30 -o clips/' },
+  { output: '✓ Saved to clips/video_trimmed.mp4', isSuccess: true }
+]} />
 
 ### Using Seconds
 
-```bash
-# Start at 90 seconds (1:30), end at 180 seconds (3:00)
-mediaproc video trim video.mp4 -s 90 -e 180
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 -s 90 -e 180' },
+  { output: '✓ Trimmed from 1:30 to 3:00', isSuccess: true }
+]} />
 
-# Start at 0, duration 45 seconds
-mediaproc video trim video.mp4 -d 45
+<InlineTerminal command="mediaproc video trim video.mp4 -d 45" />
 
-# Start at 30.5 seconds, duration 15.5 seconds
-mediaproc video trim video.mp4 -s 30.5 -d 15.5
-```
+<InlineTerminal command="mediaproc video trim video.mp4 -s 30.5 -d 15.5" />
 
 ### Fast Mode (Stream Copy)
 
-```bash
-# Quick trim without re-encoding
-mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 --fast
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 --fast' },
+  { output: '✓ Fast trim complete (no re-encoding)', isSuccess: true }
+]} />
 
-# Very fast processing for rough cuts
-mediaproc video trim long-video.mp4 -s 10:00 -d 60 --fast
-```
-
-Output:
-
-```
-Input file: long-video.mp4
-Duration: 01:30:00
-
-[FAST MODE] Stream copy (no re-encoding)
-Trimming from 00:10:00 for 00:01:00...
-✓ Trim complete (2.3 seconds)
-
-Output file: long-video_trimmed.mp4
-```
+<Terminal commands={[
+  { command: 'mediaproc video trim long-video.mp4 -s 10:00 -d 60 --fast' },
+  { output: 'Input: long-video.mp4 • Duration: 01:30:00' },
+  { output: '' },
+  { output: '[FAST MODE] Stream copy (no re-encoding)' },
+  { output: 'Trimming from 00:10:00 for 00:01:00...' },
+  { output: '✓ Trim complete (2.3 seconds)', isSuccess: true },
+  { output: 'Output: long-video_trimmed.mp4', isSuccess: true }
+]} />
 
 ### Extract Specific Segments
 
-```bash
-# Extract intro (first 5 seconds)
-mediaproc video trim video.mp4 -d 5 -o intro.mp4
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 -d 5 -o intro.mp4' },
+  { output: '✓ Extracted intro (first 5 seconds)', isSuccess: true }
+]} />
 
-# Extract middle section
-mediaproc video trim video.mp4 -s 00:01:00 -e 00:03:00 -o middle.mp4
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 -s 00:01:00 -e 00:03:00 -o middle.mp4' },
+  { output: '✓ Extracted middle section (1:00 - 3:00)', isSuccess: true }
+]} />
 
-# Extract outro (last 10 seconds - requires knowing duration)
-# If video is 5:30 long, start at 5:20
-mediaproc video trim video.mp4 -s 00:05:20 -o outro.mp4
-```
+<Terminal commands={[
+  { command: 'mediaproc video trim video.mp4 -s 00:05:20 -o outro.mp4' },
+  { output: '✓ Extracted outro (last 10 seconds)', isSuccess: true }
+]} />
 
 ### Dry Run Preview
 

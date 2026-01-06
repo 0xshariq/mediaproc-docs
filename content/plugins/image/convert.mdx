@@ -4,9 +4,7 @@ Convert images between different formats with quality and compression control.
 
 ## Usage
 
-```bash
-mediaproc image convert <input> -f <format> [options]
-```
+<Terminal commands={[{ command: 'mediaproc image convert <input> -f <format> [options]' }]} />
 
 ## Description
 
@@ -39,46 +37,49 @@ Supports intelligent format-specific options like progressive rendering, compres
 
 Convert between formats:
 
-```bash
-# Convert JPG to WebP (default, recommended for web)
-mediaproc image convert photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image convert photo.jpg' },
+  { output: '✓ Converted to WebP • 2.4 MB → 1.1 MB', isSuccess: true }
+]} />
 
-# Convert PNG to AVIF (best compression)
-mediaproc image convert image.png -f avif -o image.avif
+<Terminal commands={[
+  { command: 'mediaproc image convert image.png -f avif -o image.avif' },
+  { output: '✓ Converted to AVIF • 892 KB → 312 KB', isSuccess: true }
+]} />
 
-# Convert WebP to JPG (for compatibility)
-mediaproc image convert modern.webp -f jpg -o legacy.jpg
+<Terminal commands={[
+  { command: 'mediaproc image convert modern.webp -f jpg -o legacy.jpg' },
+  { output: '✓ Converted to JPEG', isSuccess: true }
+]} />
 
-# Convert to PNG for transparency
-mediaproc image convert photo.jpg -f png -o photo.png
+<InlineTerminal command="mediaproc image convert photo.jpg -f png -o photo.png" />
 
-# Convert to TIFF for print
-mediaproc image convert image.jpg -f tiff -o print_ready.tiff
+<InlineTerminal command="mediaproc image convert image.jpg -f tiff -o print_ready.tiff" />
 
-# Convert to GIF
-mediaproc image convert image.png -f gif -o animation.gif
-```
+<InlineTerminal command="mediaproc image convert image.png -f gif -o animation.gif" />
 
 ### Quality Control
 
 Adjust output quality:
 
-```bash
-# High quality (larger file)
-mediaproc image convert photo.jpg -f webp -q 95 -o high_quality.webp
+<Terminal commands={[
+  { command: 'mediaproc image convert photo.jpg -f webp -q 95 -o high_quality.webp' },
+  { output: '✓ Converted • Quality: 95 • Size: 2.8 MB', isSuccess: true }
+]} />
 
-# Standard quality (balanced)
-mediaproc image convert image.png -f jpg -q 90 -o standard.jpg
+<Terminal commands={[
+  { command: 'mediaproc image convert image.png -f jpg -q 90 -o standard.jpg' },
+  { output: '✓ Converted • Quality: 90 • Size: 1.2 MB', isSuccess: true }
+]} />
 
-# Medium quality (smaller file)
-mediaproc image convert photo.jpg -f avif -q 80 -o medium.avif
+<Terminal commands={[
+  { command: 'mediaproc image convert photo.jpg -f avif -q 80 -o medium.avif' },
+  { output: '✓ Converted • Quality: 80 • Size: 420 KB', isSuccess: true }
+]} />
 
-# Lower quality (much smaller)
-mediaproc image convert image.jpg -f webp -q 70 -o compressed.webp
+<InlineTerminal command="mediaproc image convert image.jpg -f webp -q 70 -o compressed.webp" />
 
-# Minimal quality (maximum compression)
-mediaproc image convert photo.png -f jpg -q 60 -o low_quality.jpg
-```
+<InlineTerminal command="mediaproc image convert photo.png -f jpg -q 60 -o low_quality.jpg" />
 
 ### PNG Compression
 

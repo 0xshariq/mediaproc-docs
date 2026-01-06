@@ -4,25 +4,24 @@ Apply gamma correction to adjust image brightness, particularly in midtone regio
 
 ## Usage
 
-```bash
-mediaproc image gamma <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image gamma <input> [options]' }
+]} />
 
 ### Basic Syntax
 
-```bash
-# Apply standard gamma correction (2.2 - sRGB default)
-mediaproc image gamma photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image gamma photo.jpg' },
+  { output: '✓ Applied gamma correction (2.2)', isSuccess: true }
+]} />
 
-# Brighten image (lower gamma)
-mediaproc image gamma photo.jpg -g 1.8
+<Terminal commands={[
+  { command: 'mediaproc image gamma photo.jpg -g 1.8' },
+  { output: '✓ Image brightened (gamma 1.8)', isSuccess: true }
+]} />
 
-# Darken image (higher gamma)
-mediaproc image gamma photo.jpg -g 2.8
-
-# Apply gamma with output gamma
-mediaproc image gamma photo.jpg -g 2.2 --gamma-out 1.8
-```
+<InlineTerminal command="mediaproc image gamma photo.jpg -g 2.8" />
+<InlineTerminal command="mediaproc image gamma photo.jpg -g 2.2 --gamma-out 1.8" />
 
 ## Options
 

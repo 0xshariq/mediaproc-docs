@@ -21,39 +21,28 @@ The video plugin requires FFmpeg to be installed on your system:
 
 **macOS:**
 
-```bash
-brew install ffmpeg
-```
+<InlineTerminal command="brew install ffmpeg" />
 
 **Ubuntu/Debian:**
 
-```bash
-sudo apt update
-sudo apt install ffmpeg
-```
+<InlineTerminal command="sudo apt update && sudo apt install ffmpeg" />
 
 **Windows:**
 
-```bash
-choco install ffmpeg
-```
+<InlineTerminal command="choco install ffmpeg" />
 
 Verify installation:
 
-```bash
-ffmpeg -version
-ffprobe -version
-```
+<Terminal commands={[
+  { command: 'ffmpeg -version' },
+  { output: 'ffmpeg version 6.0' },
+  { command: 'ffprobe -version' },
+  { output: 'ffprobe version 6.0' }
+]} />
 
 ## Installation
 
-```bash
-# Using MediaProc CLI
-mediaproc add video
-
-# Or install standalone
-npm install -g @mediaproc/video
-```
+<Install package="@mediaproc/video" title="To install the Video plugin:" global={true} />
 
 ## Commands
 

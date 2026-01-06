@@ -4,34 +4,38 @@ Resize images to specified dimensions with advanced options for fit modes, quali
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image resize <input> [options]
-```
+<Terminal commands={[{ command: 'mediaproc image resize <input> [options]' }]} />
 
 ### Basic Usage
 
-```bash
-# Resize width, auto height
-mediaproc image resize photo.jpg -w 800
+<Terminal commands={[
+  { command: 'mediaproc image resize photo.jpg -w 800' },
+  { output: '✓ Resized to 800×600 • Saved as photo-resized.jpg', isSuccess: true }
+]} />
 
-# Resize height, auto width
-mediaproc image resize image.png -h 600
+<Terminal commands={[
+  { command: 'mediaproc image resize image.png -h 600' },
+  { output: '✓ Resized to 800×600 • Saved as image-resized.png', isSuccess: true }
+]} />
 
-# Resize both dimensions
-mediaproc image resize photo.jpg -w 1920 -h 1080
+<Terminal commands={[
+  { command: 'mediaproc image resize photo.jpg -w 1920 -h 1080' },
+  { output: '✓ Resized to 1920×1080 • Saved as photo-resized.jpg', isSuccess: true }
+]} />
 
-# Exact dimensions (crop to fit)
-mediaproc image resize photo.jpg -w 500 -h 500 --fit cover
+<Terminal commands={[
+  { command: 'mediaproc image resize photo.jpg -w 500 -h 500 --fit cover' },
+  { output: '✓ Resized to 500×500 (cover mode) • Saved as photo-resized.jpg', isSuccess: true }
+]} />
 
-# Fit within dimensions (add padding)
-mediaproc image resize logo.png -w 200 -h 200 --fit contain
-```
+<Terminal commands={[
+  { command: 'mediaproc image resize logo.png -w 200 -h 200 --fit contain' },
+  { output: '✓ Resized to 200×200 (contain mode) • Saved as logo-resized.png', isSuccess: true }
+]} />
 
 ## Options
 
@@ -57,9 +61,10 @@ mediaproc image resize logo.png -w 200 -h 200 --fit contain
 
 **Crop to fill dimensions**, maintaining aspect ratio:
 
-```bash
-mediaproc image resize photo.jpg -w 500 -h 500 --fit cover
-```
+<Terminal commands={[
+  { command: 'mediaproc image resize photo.jpg -w 500 -h 500 --fit cover' },
+  { output: '✓ Cropped to 500×500 • Aspect ratio maintained', isSuccess: true }
+]} />
 
 - Image fills entire area
 - Crops overflow
@@ -70,9 +75,10 @@ mediaproc image resize photo.jpg -w 500 -h 500 --fit cover
 
 **Fit within dimensions**, add padding if needed:
 
-```bash
-mediaproc image resize logo.png -w 500 -h 500 --fit contain --background transparent
-```
+<Terminal commands={[
+  { command: 'mediaproc image resize logo.png -w 500 -h 500 --fit contain --background transparent' },
+  { output: '✓ Fit to 500×500 • Transparent padding added', isSuccess: true }
+]} />
 
 - Entire image visible
 - May add padding

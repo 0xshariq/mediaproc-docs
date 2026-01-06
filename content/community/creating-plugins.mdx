@@ -31,18 +31,24 @@ my-plugin/
 
 Create a new directory and initialize package.json:
 
-```bash
-mkdir my-plugin
-cd my-plugin
-npm init -y
-```
+<Terminal commands={[
+  { command: 'mkdir my-plugin' },
+  { command: 'cd my-plugin' },
+  { command: 'npm init -y' },
+  { output: '✓ Created package.json', isSuccess: true }
+]} />
 
 ### 2. Install Dependencies
 
-```bash
-npm install commander chalk ora
-npm install -D typescript @types/node
-```
+<Terminal commands={[
+  { command: 'npm install commander chalk ora' },
+  { output: '✓ Installed runtime dependencies', isSuccess: true }
+]} />
+
+<Terminal commands={[
+  { command: 'npm install -D typescript @types/node' },
+  { output: '✓ Installed dev dependencies', isSuccess: true }
+]} />
 
 ### 3. Configure TypeScript
 

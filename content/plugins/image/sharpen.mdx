@@ -4,34 +4,29 @@ Sharpen images to enhance details and edges. Perfect for improving slightly blur
 
 ## Installation
 
-```bash
-npm install -g @mediaproc/image
-```
+<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
 
 ## Usage
 
-```bash
-mediaproc image sharpen <input> [options]
-```
+<Terminal commands={[
+  { command: 'mediaproc image sharpen <input> [options]' }
+]} />
 
 ### Basic Usage
 
-```bash
-# Default sharpening
-mediaproc image sharpen photo.jpg
+<Terminal commands={[
+  { command: 'mediaproc image sharpen photo.jpg' },
+  { output: '✓ Sharpened (sigma: 1.0)', isSuccess: true }
+]} />
 
-# Strong sharpening
-mediaproc image sharpen image.png -s 2
+<Terminal commands={[
+  { command: 'mediaproc image sharpen image.png -s 2' },
+  { output: '✓ Strong sharpening applied', isSuccess: true }
+]} />
 
-# Subtle sharpening
-mediaproc image sharpen photo.jpg -s 0.5
-
-# Custom parameters
-mediaproc image sharpen image.jpg -s 1.5 --flat 1.5 --jagged 2.5
-
-# High quality output
-mediaproc image sharpen photo.jpg -s 1.2 -q 95
-```
+<InlineTerminal command="mediaproc image sharpen photo.jpg -s 0.5" />
+<InlineTerminal command="mediaproc image sharpen image.jpg -s 1.5 --flat 1.5 --jagged 2.5" />
+<InlineTerminal command="mediaproc image sharpen photo.jpg -s 1.2 -q 95" />
 
 ## Options
 
