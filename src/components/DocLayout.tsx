@@ -38,10 +38,10 @@ export function DocLayout({ children }: { children: ReactNode }) {
   const nextPage = currentIndex < allPages.length - 1 ? allPages[currentIndex + 1] : null;
 
   return (
-    <div className="flex flex-1 min-h-0">
+    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 max-w-4xl px-8 py-12">
+      <div className="flex-1 overflow-y-auto">
+        <main className="max-w-4xl px-8 py-12 mx-auto">
           <article className="prose prose-lg">
             {children}
           </article>

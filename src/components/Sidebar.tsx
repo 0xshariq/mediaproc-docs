@@ -58,10 +58,9 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r border-border/50 bg-card/30 backdrop-blur-sm flex flex-col">
-      <div className="max-h-[calc(100vh-5rem)] flex flex-col">
-        <ScrollArea className="h-full">
-          <div className="px-3 py-6">
+    <aside className="w-64 border-r border-border/50 bg-card/30 backdrop-blur-sm shrink-0 flex flex-col h-full">
+      <ScrollArea className="flex-1 h-0">
+        <div className="px-3 py-6">
             <nav className="space-y-6 pb-6">
             {navigationConfig.map((section) => (
               <div key={section.title}>
@@ -74,13 +73,12 @@ export function Sidebar() {
               </div>
             ))}
           </nav>
-          </div>
-        </ScrollArea>
-
-        <div className="p-4 border-t border-border/50 bg-muted/20 flex-shrink-0">
-          <div className="text-xs text-muted-foreground mb-1.5">Version</div>
-          <div className="text-sm font-mono font-semibold text-foreground">v0.5.2</div>
         </div>
+      </ScrollArea>
+
+      <div className="p-4 border-t border-border/50 bg-muted/20 shrink-0">
+        <div className="text-xs text-muted-foreground mb-1.5">Version</div>
+        <div className="text-sm font-mono font-semibold text-foreground">v0.5.2</div>
       </div>
     </aside>
   );

@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Terminal, Zap, Package, Code2, Sparkles } from "lucide-react";
+import { ArrowRight, Terminal as TerminalIcon, Zap, Package, Code2, Sparkles } from "lucide-react";
+import { Terminal, InlineTerminal } from "@/components/Terminal";
 
 export default function Home() {
   return (
-    <div className="flex-1 bg-gradient-to-b from-background to-background/50">
+    <div className="flex-1 bg-linear-to-b from-background to-background/50">
         {/* Hero Section */}
         <section className="container mx-auto px-6 pt-24 pb-16 text-center">
           <div className="inline-flex items-center space-x-2 bg-muted px-4 py-2 rounded-full text-sm mb-8">
@@ -16,7 +17,7 @@ export default function Home() {
           <h1 className="text-6xl font-bold tracking-tight mb-6">
             One CLI to Process
             <br />
-            <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
               All Your Media
             </span>
           </h1>
@@ -41,28 +42,15 @@ export default function Home() {
           </div>
 
           {/* Terminal Demo */}
-          <Card className="max-w-3xl mx-auto p-6 bg-card border-border hover-lift">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              </div>
-              <span className="text-sm text-muted-foreground ml-4">Terminal</span>
-            </div>
-            <div className="text-left font-mono text-sm space-y-2">
-              <div>
-                <span className="text-primary">$</span> <span className="text-foreground">npm install -g @mediaproc/cli</span>
-              </div>
-              <div>
-                <span className="text-primary">$</span> <span className="text-foreground">mediaproc add image</span>
-              </div>
-              <div>
-                <span className="text-primary">$</span> <span className="text-foreground">mediaproc image resize photo.jpg --width 1920</span>
-              </div>
-              <div className="text-green-400">✓ Resized to 1920x1080 • Saved as photo.jpg</div>
-            </div>
-          </Card>
+          <Terminal
+            className="max-w-3xl mx-auto"
+            commands={[
+              { command: 'npm install -g @mediaproc/cli' },
+              { command: 'mediaproc add image' },
+              { command: 'mediaproc image resize photo.jpg --width 1920' },
+              { output: '✓ Resized to 1920x1080 • Saved as photo.jpg', isSuccess: true }
+            ]}
+          />
         </section>
 
         {/* Features */}
@@ -76,7 +64,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="p-6 hover-lift">
-              <Terminal className="w-12 h-12 text-primary mb-4" />
+              <TerminalIcon className="w-12 h-12 text-primary mb-4" />
               <h3 className="text-xl font-semibold mb-2">Unified Interface</h3>
               <p className="text-muted-foreground">
                 One consistent CLI for images, videos, audio, documents, and more. Learn once, use everywhere.
@@ -108,7 +96,7 @@ export default function Home() {
             </Card>
 
             <Card className="p-6 hover-lift">
-              <Terminal className="w-12 h-12 text-primary mb-4" />
+              <TerminalIcon className="w-12 h-12 text-primary mb-4" />
               <h3 className="text-xl font-semibold mb-2">Automation Ready</h3>
               <p className="text-muted-foreground">
                 Perfect for CI/CD pipelines, batch processing, and scripted workflows.
@@ -133,43 +121,39 @@ export default function Home() {
             <div className="space-y-6">
               <Card className="p-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold shrink-0">
                     1
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold mb-2">Install MediaProc</h3>
-                    <div className="bg-background p-4 rounded font-mono text-sm">
-                      npm install -g @mediaproc/cli
-                    </div>
+                    <InlineTerminal command="npm install -g @mediaproc/cli" />
                   </div>
                 </div>
               </Card>
 
               <Card className="p-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold shrink-0">
                     2
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold mb-2">Add Plugins (Coming Soon...)</h3>
-                    <div className="bg-background p-4 rounded font-mono text-sm">
-                      mediaproc add image video audio
-                    </div>
+                    <InlineTerminal command="mediaproc add image video audio" />
                   </div>
                 </div>
               </Card>
 
               <Card className="p-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold shrink-0">
                     3
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold mb-2">Start Processing</h3>
-                    <div className="bg-background p-4 rounded font-mono text-sm space-y-1">
-                      <div>mediaproc image resize photo.jpg --width 1920</div>
-                      <div>mediaproc video transcode video.mp4 --codec h264</div>
-                      <div>mediaproc audio convert song.mp3 --format wav</div>
+                    <div className="bg-muted/50 px-4 py-3 rounded-lg font-mono text-sm border border-border space-y-1">
+                      <div><span className="text-primary">$</span> mediaproc image resize photo.jpg --width 1920</div>
+                      <div><span className="text-primary">$</span> mediaproc video transcode video.mp4 --codec h264</div>
+                      <div><span className="text-primary">$</span> mediaproc audio convert song.mp3 --format wav</div>
                     </div>
                   </div>
                 </div>
