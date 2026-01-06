@@ -8,6 +8,7 @@ import { compileMDX } from 'next-mdx-remote/rsc';
 import { CodeBlock, InlineCode, Alert } from '@/components/CodeBlock';
 import { Terminal, InlineTerminal } from '@/components/Terminal';
 import { Install } from '@/components/Install';
+import { Callout } from '@/components/Callout';
 import {
   Accordion,
   AccordionContent,
@@ -43,6 +44,7 @@ const components = {
   Terminal,
   InlineTerminal,
   Install,
+  Callout,
   Accordion,
   AccordionContent,
   AccordionItem,

@@ -10,6 +10,12 @@ Compress images with advanced quality control. Reduce file sizes significantly w
 
 The `compress` command provides aggressive image compression with fine-grained quality control. Unlike `optimize` which focuses on balanced size/quality trade-offs, `compress` allows you to push compression further for maximum file size reduction. Perfect for thumbnails, backgrounds, or situations where smaller file sizes are prioritized.
 
+<Callout type="warning" title="Quality vs File Size Trade-off">
+
+Lower quality settings (below 60) can significantly reduce file size but may introduce visible artifacts. Always preview compressed images before using them in production. Use the `--dry-run` flag to see potential savings without modifying files.
+
+</Callout>
+
 ## Options
 
 | Option          | Type   | Default                    | Description                                    |

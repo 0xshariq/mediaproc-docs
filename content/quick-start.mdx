@@ -2,6 +2,16 @@
 
 Get up and running with MediaProc in 5 minutes.
 
+<Callout type="success" title="You'll Learn">
+
+In this quick start guide, you'll:
+
+- Install MediaProc CLI and the Image plugin
+- Process your first image with resize, convert, and optimize commands
+- Learn common batch processing tasks
+
+</Callout>
+
 ## 1. Install MediaProc
 
 <Terminal
@@ -157,53 +167,90 @@ Process all images in a directory:
 
 ## Plugin Management
 
-### List Installed Plugins
+### List Installed Plugins (Only Installed Plugins)
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc list",
+    }
+  ]}
+/>
 
-```bash
-mediaproc list
-```
+### View Available Plugins (All Official Plugins)
 
-### View Available Plugins
-
-```bash
-mediaproc plugins
-```
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc plugins",
+    }
+  ]}
+/>
 
 ### Update Plugins
 
-```bash
 # Update specific plugin
-mediaproc update image
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc update image",
+    }
+  ]}
+/>
 
-# Update all plugins
-mediaproc update
-```
+# Update all plugins (Coming Soon...)
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc update",
+    }
+  ]}
+/>
 
-### Delete Plugins
-
-```bash
-mediaproc delete image
-```
+### Delete Specific 
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc delete image",
+    }
+  ]}
+/>
 
 ## Get Help
 
 ### CLI Help
-
-```bash
-mediaproc --help
-```
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc help",
+    }
+  ]}
+/>
 
 ### Plugin Help
-
-```bash
-mediaproc image --help
-```
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image --help",
+    }
+  ]}
+/>
 
 ### Command Help
-
-```bash
-mediaproc image resize --help
-```
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image resize --help",
+    }
+  ]}
+/>
 
 ## What's Next?
 

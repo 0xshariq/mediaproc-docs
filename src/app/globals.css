@@ -148,81 +148,166 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Prose styles for markdown */
+/* Prose styles for markdown - Enhanced Typography */
 .prose {
   @apply text-foreground max-w-none;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Improved Heading Hierarchy */
 .prose h1 {
-  @apply text-4xl font-bold mb-6 mt-8 tracking-tight;
+  @apply text-4xl md:text-5xl font-bold mb-6 mt-10 tracking-tight leading-tight;
+  background: linear-gradient(135deg, oklch(0.7 0.2 264), oklch(0.6 0.25 303));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .prose h2 {
-  @apply text-3xl font-semibold mb-4 mt-8 tracking-tight border-b border-border pb-2;
+  @apply text-3xl md:text-4xl font-semibold mb-5 mt-12 tracking-tight border-b-2 border-border/50 pb-3 leading-tight;
+  scroll-margin-top: 100px;
 }
 
 .prose h3 {
-  @apply text-2xl font-semibold mb-3 mt-6;
+  @apply text-2xl md:text-3xl font-semibold mb-4 mt-8 leading-snug;
+  scroll-margin-top: 100px;
 }
 
 .prose h4 {
-  @apply text-xl font-semibold mb-2 mt-4;
+  @apply text-xl md:text-2xl font-semibold mb-3 mt-6 leading-snug;
+  scroll-margin-top: 100px;
 }
 
+.prose h5 {
+  @apply text-lg md:text-xl font-medium mb-2 mt-5 leading-normal;
+  scroll-margin-top: 100px;
+}
+
+.prose h6 {
+  @apply text-base md:text-lg font-medium mb-2 mt-4 leading-normal;
+  scroll-margin-top: 100px;
+}
+
+/* Improved Line Heights & Spacing */
 .prose p {
-  @apply text-muted-foreground mb-4 leading-7;
+  @apply text-muted-foreground mb-6 leading-8 tracking-normal;
+  font-size: 1.0625rem;
+  max-width: 75ch;
 }
 
 .prose a {
-  @apply text-primary hover:underline transition-colors;
+  @apply text-primary hover:text-primary/80 underline decoration-primary/30 hover:decoration-primary/60 underline-offset-4 transition-all duration-200;
 }
 
+/* Enhanced Code Styling with Syntax Highlighting */
 .prose code {
-  @apply bg-muted px-2 py-0.5 rounded text-sm font-mono border border-border;
+  @apply bg-muted/60 dark:bg-muted/40 px-2 py-1 rounded text-[0.9em] font-mono border border-border/50;
+  color: oklch(0.6 0.2 264);
+  font-weight: 500;
 }
 
 .prose pre {
-  @apply bg-card p-6 rounded-lg overflow-x-auto mb-6 border border-border;
+  @apply bg-gradient-to-br from-card to-muted/10 p-6 rounded-xl overflow-x-auto mb-6 border-2 border-border/50 shadow-lg;
+  tab-size: 2;
 }
 
 .prose pre code {
-  @apply bg-transparent p-0 border-0;
+  @apply bg-transparent p-0 border-0 text-foreground;
+  font-size: 0.9rem;
+  line-height: 1.7;
 }
 
+/* Syntax Highlighting Colors */
+.prose pre code .keyword {
+  color: oklch(0.7 0.2 303); /* Purple */
+  font-weight: 600;
+}
+
+.prose pre code .string {
+  color: oklch(0.65 0.2 145); /* Green */
+}
+
+.prose pre code .number {
+  color: oklch(0.65 0.22 41); /* Orange */
+}
+
+.prose pre code .function {
+  color: oklch(0.7 0.2 264); /* Blue */
+  font-weight: 500;
+}
+
+.prose pre code .comment {
+  color: oklch(0.5 0.05 0); /* Gray */
+  font-style: italic;
+}
+
+.prose pre code .operator {
+  color: oklch(0.6 0.15 70); /* Yellow-Orange */
+}
+
+/* Improved Lists */
 .prose ul {
-  @apply list-disc list-inside mb-4 space-y-2;
+  @apply list-disc list-inside mb-6 space-y-3;
+  padding-left: 1.5rem;
 }
 
 .prose ol {
-  @apply list-decimal list-inside mb-4 space-y-2;
+  @apply list-decimal list-inside mb-6 space-y-3;
+  padding-left: 1.5rem;
 }
 
 .prose li {
-  @apply text-muted-foreground;
+  @apply text-muted-foreground leading-7;
+  padding-left: 0.5rem;
 }
 
+.prose li::marker {
+  @apply text-primary/70;
+  font-weight: 600;
+}
+
+/* Enhanced Tables */
 .prose table {
-  @apply w-full border-collapse mb-6 text-sm;
+  @apply w-full border-collapse mb-8 text-sm rounded-lg overflow-hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .prose thead {
-  @apply bg-muted/50;
+  @apply bg-gradient-to-r from-muted/70 to-muted/50;
 }
 
 .prose th {
-  @apply px-4 py-3 text-left font-semibold border border-border;
+  @apply px-5 py-4 text-left font-bold border border-border/30 tracking-wide uppercase text-xs;
 }
 
 .prose td {
-  @apply px-4 py-3 border border-border;
+  @apply px-5 py-4 border border-border/30 leading-relaxed;
 }
 
+.prose tbody tr:hover {
+  @apply bg-muted/30 transition-colors duration-150;
+}
+
+/* Enhanced Blockquotes */
 .prose blockquote {
-  @apply border-l-4 border-primary pl-6 py-2 italic my-6;
+  @apply border-l-4 border-primary/60 bg-muted/20 pl-6 pr-4 py-4 italic my-6 rounded-r-lg;
+  font-size: 1.05rem;
+  line-height: 1.8;
 }
 
+.prose blockquote p {
+  @apply mb-0;
+}
+
+/* Horizontal Rules */
 .prose hr {
-  @apply my-8 border-border;
+  @apply my-12 border-t-2 border-border/30;
+  background: linear-gradient(to right, transparent, oklch(0.5 0.1 264), transparent);
+  height: 2px;
+  border: none;
 }
 
 /* Hover animations */
