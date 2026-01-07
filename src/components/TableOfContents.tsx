@@ -56,7 +56,7 @@ export function TableOfContents() {
     if (!article) return;
 
     const elements = Array.from(article.querySelectorAll('h2, h3'));
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -65,7 +65,7 @@ export function TableOfContents() {
           }
         });
       },
-      { 
+      {
         rootMargin: '-100px 0px -66% 0px',
         threshold: 1.0
       }
@@ -82,44 +82,43 @@ export function TableOfContents() {
   if (headings.length === 0) return null;
 
   return (
-    <aside className="hidden xl:block w-64 border-l border-border/50 bg-card/30 backdrop-blur-sm shrink-0 sticky top-0 self-start">
-      <div className="h-screen overflow-y-auto py-6 px-4">
-        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/50">
-          <svg 
-            className="w-4 h-4 text-primary" 
-            fill="none" 
-            stroke="currentColor" 
+    <aside className="hidden xl:block w-64 border-l border-border/50 shrink-0 self-start">
+      <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto py-6 px-4">
+        <div className="flex items-center gap-2 mb-4">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M4 6h16M4 12h16M4 18h16" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
             />
           </svg>
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">
+          <h2 className="text-sm font-semibold uppercase tracking-wide">
             On this page
           </h2>
         </div>
-        
-        <nav className="space-y-1">
+
+        <nav className="space-y-0.5">
           {headings.map((heading) => {
             const isActive = activeId === heading.id;
             const isH3 = heading.level === 3;
-            
+
             return (
               <a
                 key={heading.id}
                 href={`#${heading.id}`}
                 className={`
-                  block text-sm py-2 px-3 transition-all duration-200 rounded-md
-                  border-l-2
+                  block text-sm py-1.5 px-2 transition-all duration-200 rounded
                   ${isActive
-                    ? 'border-primary text-primary font-medium bg-primary/10'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 hover:bg-muted/50'
+                    ? 'text-primary font-medium bg-primary/5'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }
-                  ${isH3 ? 'ml-4 text-xs' : ''}
+                  ${isH3 ? 'ml-3 text-xs' : ''}
                 `}
                 onClick={(e) => {
                   e.preventDefault();

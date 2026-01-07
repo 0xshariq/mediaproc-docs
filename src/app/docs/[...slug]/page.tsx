@@ -16,6 +16,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 const components = {
   pre: ({ children }: any) => children,
@@ -93,6 +95,10 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
       parseFrontmatter: true,
       mdxOptions: {
         remarkPlugins: [remarkGfm],
+        rehypePlugins: [
+          rehypeSlug,
+          [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+        ],
       },
     },
   });
