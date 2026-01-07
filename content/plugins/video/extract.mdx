@@ -102,7 +102,29 @@ Extract the audio track from a video file.
   { output: '✓ Voice optimized audio extracted', isSuccess: true }
 ]} />
 
-<InlineTerminal command="mediaproc video extract-audio source.mp4 -f wav -o archive.wav" />
+<Terminal title="Batch audio extraction" commands={[
+  { command: 'for file in *.mp4; do mediaproc video extract-audio "$file" -f mp3 -o audio/; done' },
+  { output: 'Extracting audio from all videos...' },
+  { output: '✓ 8 audio files extracted', isSuccess: true }
+]} />
+
+#### Folder Processing
+
+<Terminal commands={[
+  { command: 'mediaproc video extract-audio videos/ -f mp3 -o audio/' },
+  { output: 'Processing 10 video files...' },
+  { output: '✓ video1.mp4 → audio/video1.mp3', isSuccess: true },
+  { output: '✓ video2.mp4 → audio/video2.mp3', isSuccess: true },
+  { output: '✓ All audio extracted', isSuccess: true }
+]} />
+
+```bash
+# Extract audio from all videos in folder
+mediaproc video extract-audio raw-footage/ -f aac --bitrate 192k -o audio/
+
+# Batch extract with opus for podcasts
+mediaproc video extract-audio lectures/ -f opus --bitrate 64k -o podcasts/
+```
 
 ---
 

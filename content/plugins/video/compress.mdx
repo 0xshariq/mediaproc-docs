@@ -12,15 +12,27 @@ The `compress` command uses FFmpeg's Constant Rate Factor (CRF) encoding to inte
 
 ## Options
 
-| Option            | Alias | Type    | Default  | Description                             |
-| ----------------- | ----- | ------- | -------- | --------------------------------------- |
-| `--output`        | `-o`  | string  | Auto     | Output file path                        |
-| `--quality`       | `-q`  | string  | `medium` | Quality preset: `low`, `medium`, `high` |
-| `--codec`         | `-c`  | string  | `h264`   | Video codec: `h264`, `h265`, `vp9`      |
-| `--crf`           |       | number  | Auto     | Custom CRF value (0-51)                 |
-| `--audio-bitrate` | `-ab` | string  | `128k`   | Audio bitrate (e.g., `128k`, `192k`)    |
-| `--dry-run`       |       | boolean | false    | Preview without executing               |
-| `--verbose`       | `-v`  | boolean | false    | Show detailed FFmpeg output             |
+| Option              | Alias | Type    | Default  | Description                                              |
+| ------------------- | ----- | ------- | -------- | -------------------------------------------------------- |
+| `--output`          | `-o`  | string  | Auto     | Output file or directory path                            |
+| `--quality`         | `-q`  | string  | `medium` | Quality preset: `low`, `medium`, `high`, `extreme`       |
+| `--codec`           | `-c`  | string  | `h264`   | Video codec: `h264`, `h265`, `vp9`, `av1`                |
+| `--crf`             |       | number  | Auto     | Custom CRF value (0-51, lower=better quality)            |
+| `--preset`          |       | string  | `medium` | Encoding: ultrafast, fast, medium, slow, veryslow        |
+| `--bitrate`         | `-b`  | string  |          | Target bitrate (e.g., 2M, 5M)                            |
+| `--min-bitrate`     |       | string  |          | Minimum bitrate (e.g., 1M)                               |
+| `--max-bitrate`     |       | string  |          | Maximum bitrate (e.g., 8M)                               |
+| `--audio-bitrate`   |       | string  | `128k`   | Audio bitrate (default: 128k)                            |
+| `--audio-codec`     |       | string  | `aac`    | Audio codec: aac, mp3, opus                              |
+| `--format`          |       | string  | `mp4`    | Output format: mp4, mkv, webm                            |
+| `--optimize-for`    |       | string  |          | Optimize for: web, streaming, archive, mobile            |
+| `--resize`          |       | string  |          | Also resize during compression (e.g., 720p, 1080p)       |
+| `--threads`         |       | number  | auto     | Number of threads for encoding                           |
+| `--hw-accel`        |       | boolean | false    | Enable hardware acceleration (GPU)                       |
+| `--strip-metadata`  |       | boolean | false    | Remove all metadata from output                          |
+| `--two-pass`        |       | boolean | false    | Use two-pass encoding for better quality                 |
+| `--dry-run`         |       | boolean | false    | Preview without executing                                |
+| `--verbose`         | `-v`  | boolean | false    | Show detailed FFmpeg output                              |
 
 ## Quality Presets
 
@@ -38,12 +50,19 @@ The `compress` command uses FFmpeg's Constant Rate Factor (CRF) encoding to inte
 - **Quality**: High quality, minimal artifacts
 - **Encoding speed**: Moderate (default)
 
-### High Quality (CRF 18)
+### High Quality (CRF 20)
 
-- **Use case**: Archival, professional delivery
+- **Use case**: Professional delivery, high-quality streaming
+- **File size**: ~30-40% smaller than source
+- **Quality**: Near-lossless quality
+- **Encoding speed**: Slow
+
+### Extreme Quality (CRF 18)
+
+- **Use case**: Archival, master copies, cinema-grade
 - **File size**: ~20-30% smaller than source
 - **Quality**: Visually lossless
-- **Encoding speed**: Slower
+- **Encoding speed**: Very slow
 
 ## Codec Comparison
 

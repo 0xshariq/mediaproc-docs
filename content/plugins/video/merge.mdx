@@ -12,11 +12,21 @@ The `merge` command joins multiple videos into one continuous file. It intellige
 
 ## Options
 
-| Option      | Alias | Type    | Default      | Description                 |
-| ----------- | ----- | ------- | ------------ | --------------------------- |
-| `--output`  | `-o`  | string  | `merged.mp4` | Output file path            |
-| `--dry-run` |       | boolean | false        | Preview without executing   |
-| `--verbose` | `-v`  | boolean | false        | Show detailed FFmpeg output |
+| Option                  | Alias | Type    | Default      | Description                                      |
+| ----------------------- | ----- | ------- | ------------ | ------------------------------------------------ |
+| `--output`              | `-o`  | string  | `merged.mp4` | Output file path                                 |
+| `--re-encode`           |       | boolean | false        | Force re-encoding (handles different formats)    |
+| `--transition`          |       | string  | `none`       | Transition effect: fade, wipe, dissolve, none    |
+| `--transition-duration` |       | number  | 1            | Transition duration in seconds                   |
+| `--codec`               | `-c`  | string  | `h264`       | Video codec: h264, h265, vp9                     |
+| `--quality`             |       | number  | 23           | CRF quality if re-encoding                       |
+| `--scale`               |       | string  |              | Scale all videos to same resolution (e.g., 1080p)|
+| `--audio-track`         |       | number  | 1            | Select audio track from videos (1-based)         |
+| `--audio-codec`         |       | string  | `aac`        | Audio codec: aac, mp3, opus                      |
+| `--normalize-audio`     |       | boolean | false        | Normalize audio levels across videos             |
+| `--format`              |       | string  | `mp4`        | Output format: mp4, mkv, avi, webm              |
+| `--dry-run`             |       | boolean | false        | Preview without executing                        |
+| `--verbose`             | `-v`  | boolean | false        | Show detailed FFmpeg output                      |
 
 ## Concat Modes
 

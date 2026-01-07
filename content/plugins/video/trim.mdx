@@ -12,15 +12,24 @@ The `trim` command extracts specific portions of a video by specifying start and
 
 ## Options
 
-| Option       | Alias | Type    | Default | Description                                         |
-| ------------ | ----- | ------- | ------- | --------------------------------------------------- |
-| `--output`   | `-o`  | string  | Auto    | Output file path                                    |
-| `--start`    | `-s`  | string  | `0`     | Start time (HH:MM:SS or seconds)                    |
-| `--end`      | `-e`  | string  |         | End time (HH:MM:SS or seconds)                      |
-| `--duration` | `-d`  | string  |         | Duration from start (HH:MM:SS or seconds)           |
-| `--fast`     |       | boolean | false   | Fast mode (stream copy, may be slightly inaccurate) |
-| `--dry-run`  |       | boolean | false   | Preview without executing                           |
-| `--verbose`  | `-v`  | boolean | false   | Show detailed FFmpeg output                         |
+| Option         | Alias | Type    | Default | Description                                         |
+| -------------- | ----- | ------- | ------- | --------------------------------------------------- |
+| `--output`     | `-o`  | string  | Auto    | Output file or directory path                       |
+| `--start`      | `-s`  | string  | `0`     | Start time (HH:MM:SS or seconds)                    |
+| `--end`        | `-e`  | string  |         | End time (HH:MM:SS or seconds)                      |
+| `--duration`   | `-d`  | string  |         | Duration from start (HH:MM:SS or seconds)           |
+| `--fast`       |       | boolean | false   | Fast mode (stream copy, may be slightly inaccurate) |
+| `--accurate`   |       | boolean | false   | Accurate mode (re-encode for frame accuracy)        |
+| `--codec`      | `-c`  | string  | `copy`  | Video codec: h264, h265, copy                       |
+| `--format`     |       | string  |         | Output format: mp4, mkv, webm                       |
+| `--fade-in`    |       | number  |         | Add fade-in effect (seconds)                        |
+| `--fade-out`   |       | number  |         | Add fade-out effect (seconds)                       |
+| `--speed`      |       | number  |         | Adjust playback speed (0.5-2.0)                     |
+| `--volume`     |       | number  | 1.0     | Adjust audio volume (0.0-2.0)                       |
+| `--quality`    |       | number  | 23      | CRF quality if re-encoding (default: 23)            |
+| `--no-audio`   |       | boolean | false   | Remove audio track from output                      |
+| `--dry-run`    |       | boolean | false   | Preview without executing                           |
+| `--verbose`    | `-v`  | boolean | false   | Show detailed FFmpeg output                         |
 
 ## Time Format
 

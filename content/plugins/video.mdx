@@ -8,12 +8,15 @@ The MediaProc video plugin delivers industry-standard video processing capabilit
 
 ### Key Features
 
-- **Compression** - Reduce file size with CRF-based quality control
-- **Transcoding** - Convert between formats and codecs (MP4, WebM, MKV, H.264, H.265, VP9)
-- **Trimming** - Cut video segments with precise frame-accurate timing
-- **Resizing** - Scale resolution with preset sizes or custom dimensions
-- **Merging** - Concatenate multiple videos with smart format detection
+- **Compression** - Reduce file size with CRF-based quality control and 4 quality presets
+- **Transcoding** - Convert between formats and codecs (MP4, WebM, MKV, H.264, H.265, VP9, AV1)
+- **Trimming** - Cut video segments with precise frame-accurate timing plus fade effects
+- **Resizing** - Scale resolution from 360p to 8K with advanced codec support
+- **Merging** - Concatenate multiple videos with transitions and audio normalization
 - **Extraction** - Pull audio tracks, image frames, and thumbnails
+- **Folder Support** - Process entire directories of videos automatically
+- **Hardware Acceleration** - GPU-accelerated encoding for faster processing
+- **Advanced Effects** - Rotate, flip, crop, deinterlace, and adjust playback speed
 
 ## Requirements
 
@@ -56,7 +59,7 @@ Verify installation:
     </AccordionTrigger>
     <AccordionContent>
       <div className="space-y-2 pt-2">
-        <p className="text-sm">CRF-based compression with quality presets (low, medium, high). Supports H.264, H.265, and VP9 codecs.</p>
+        <p className="text-sm">CRF-based compression with 4 quality presets (low, medium, high, extreme). Supports H.264, H.265, VP9, and AV1 codecs. Features hardware acceleration, bitrate control, and optimization presets for web, streaming, archive, and mobile.</p>
         <div className="text-sm text-muted-foreground">
           <strong>Use Cases:</strong> Web optimization, email attachments, storage space recovery, social media uploads
         </div>
@@ -92,7 +95,7 @@ Verify installation:
     </AccordionTrigger>
     <AccordionContent>
       <div className="space-y-2 pt-2">
-        <p className="text-sm">Extract specific time ranges with frame-perfect accuracy. Fast mode available for quick cuts without re-encoding.</p>
+        <p className="text-sm">Extract specific time ranges with frame-perfect accuracy. Fast mode available for quick cuts without re-encoding. Includes fade in/out effects, playback speed adjustment, volume control, and audio removal options.</p>
         <div className="text-sm text-muted-foreground">
           <strong>Use Cases:</strong> Remove intro/outro, create highlights, social media clips, tutorial sections
         </div>
@@ -110,9 +113,9 @@ Verify installation:
     </AccordionTrigger>
     <AccordionContent>
       <div className="space-y-2 pt-2">
-        <p className="text-sm">Scale to preset resolutions (480p-4K) or custom dimensions. Maintains aspect ratio with optional padding.</p>
+        <p className="text-sm">Scale to preset resolutions (360p-8K) or custom dimensions. Supports 4 codecs (H.264, H.265, VP9, AV1), multiple scaling algorithms (lanczos, bicubic, bilinear, spline), rotation, flipping, cropping, deinterlacing, and hardware acceleration. Maintains aspect ratio with configurable frame rates and bitrates.</p>
         <div className="text-sm text-muted-foreground">
-          <strong>Use Cases:</strong> Mobile optimization, 4K downscaling, social media sizing, adaptive streaming
+          <strong>Use Cases:</strong> Mobile optimization, 4K/8K downscaling, social media sizing, adaptive streaming
         </div>
         <a href="./video/resize" className="text-sm text-primary hover:underline">View full documentation →</a>
       </div>
@@ -128,7 +131,7 @@ Verify installation:
     </AccordionTrigger>
     <AccordionContent>
       <div className="space-y-2 pt-2">
-        <p className="text-sm">Concatenate videos with smart format detection. Uses fast concat for identical formats or re-encodes when needed.</p>
+        <p className="text-sm">Concatenate videos with smart format detection. Uses fast concat for identical formats or re-encodes when needed. Supports transitions (fade, wipe, dissolve), resolution scaling, audio track selection, audio normalization, and multiple output formats.</p>
         <div className="text-sm text-muted-foreground">
           <strong>Use Cases:</strong> Join split videos, create compilations, combine lecture segments, multi-camera assembly
         </div>
@@ -195,23 +198,144 @@ Verify installation:
 ## Quick Start
 
 ```bash
-# Compress a video
+# Compress a video with high quality
 mediaproc video compress input.mp4 -q high
+
+# Compress entire folder
+mediaproc video compress videos/ -q medium -o compressed/
 
 # Convert to different format
 mediaproc video transcode input.avi -f mp4
 
-# Trim a segment
-mediaproc video trim input.mp4 --start 00:01:00 --end 00:02:30
+# Trim a segment with fade effects
+mediaproc video trim input.mp4 --start 00:01:00 --end 00:02:30 --fade-in 1 --fade-out 1
 
-# Resize to 720p
-mediaproc video resize input.mp4 --scale 720p
+# Resize to 720p with GPU acceleration
+mediaproc video resize input.mp4 -s 720p --hw-accel
 
-# Merge videos
-mediaproc video merge video1.mp4 video2.mp4 video3.mp4
+# Resize to 8K
+mediaproc video resize input.mp4 -s 4320p -c h265
+
+# Merge videos with fade transition
+mediaproc video merge video1.mp4 video2.mp4 --transition fade
 
 # Extract audio
 mediaproc video extract-audio input.mp4 --format mp3
+
+# Rotate and flip video
+mediaproc video resize input.mp4 -s 1080p --rotate 90 --flip horizontal
+```
+
+## Advanced Features
+
+### Folder Processing
+
+Process entire directories of videos with a single command:
+
+```bash
+# Compress all videos in folder
+mediaproc video compress videos/ -q high -o output/
+
+# Resize all videos to 1080p
+mediaproc video resize raw-footage/ -s 1080p -o processed/
+
+# Trim all videos
+mediaproc video trim clips/ -s 5 -d 30 -o trimmed/
+```
+
+### Hardware Acceleration
+
+Enable GPU encoding for 3-5x faster processing:
+
+```bash
+# GPU-accelerated resize
+mediaproc video resize 8k-video.mp4 -s 2160p --hw-accel
+
+# GPU-accelerated compression
+mediaproc video compress large-file.mp4 -q high --hw-accel
+```
+
+### Quality Presets
+
+Four comprehensive quality levels for different use cases:
+
+```bash
+# Low - Maximum compression (CRF 28)
+mediaproc video compress video.mp4 -q low
+
+# Medium - Balanced (CRF 23) - Default
+mediaproc video compress video.mp4 -q medium
+
+# High - Near lossless (CRF 20)
+mediaproc video compress video.mp4 -q high
+
+# Extreme - Visually lossless (CRF 18)
+mediaproc video compress video.mp4 -q extreme
+```
+
+### Optimization Targets
+
+Optimize compression for specific platforms:
+
+```bash
+# Web delivery
+mediaproc video compress video.mp4 --optimize-for web
+
+# Streaming platforms
+mediaproc video compress video.mp4 --optimize-for streaming
+
+# Mobile devices
+mediaproc video compress video.mp4 --optimize-for mobile --resize 720p
+
+# Long-term archive
+mediaproc video compress video.mp4 --optimize-for archive -c h265
+```
+
+### Advanced Effects
+
+```bash
+# Fade in and out
+mediaproc video trim video.mp4 -s 0 -d 60 --fade-in 2 --fade-out 3
+
+# Slow motion (50% speed)
+mediaproc video trim video.mp4 -s 10 -d 30 --speed 0.5
+
+# Fast forward (2x speed)
+mediaproc video trim video.mp4 -s 10 -d 30 --speed 2.0
+
+# Adjust audio volume
+mediaproc video trim video.mp4 -s 0 -e end --volume 1.5
+
+# Remove audio
+mediaproc video trim video.mp4 -s 10 -d 30 --no-audio
+```
+
+### Video Transformations
+
+```bash
+# Rotate 90 degrees
+mediaproc video resize video.mp4 -s 1080p --rotate 90
+
+# Flip horizontal
+mediaproc video resize video.mp4 -s 1080p --flip horizontal
+
+# Crop to 16:9
+mediaproc video resize video.mp4 -s 1080p --crop 16:9
+
+# Deinterlace old footage
+mediaproc video resize old-video.avi -s 720p --deinterlace
+```
+
+### Two-Pass Encoding
+
+Achieve optimal quality at target bitrate:
+
+```bash
+# Two-pass compression
+mediaproc video compress video.mp4 --two-pass -b 5M
+
+# Two-pass resize
+mediaproc video resize video.mp4 -s 1080p --two-pass
 ```
 
 ## Common Workflows

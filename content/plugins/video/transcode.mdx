@@ -202,16 +202,40 @@ Output: input.mp4 (Format: MP4, Codec: H.264)
 
 ### Batch Transcoding
 
-```bash
-# Convert all AVI files to MP4
-for file in *.avi; do
-  mediaproc video transcode "$file" -f mp4 -o converted/
-done
+<Terminal commands={[
+  { command: 'for file in *.avi; do mediaproc video transcode "$file" -f mp4 -o converted/; done' },
+  { output: 'Converting all AVI files to MP4...' },
+  { output: '✓ Processed 5 files', isSuccess: true }
+]} />
 
+```bash
 # Create WebM versions of all MP4 files
 for file in *.mp4; do
   mediaproc video transcode "$file" -f webm -o webm/
 done
+
+# Batch convert with specific codec
+for file in *.mov; do
+  mediaproc video transcode "$file" -f mp4 -c h265 -o h265/
+done
+```
+
+### Folder Processing
+
+<Terminal commands={[
+  { command: 'mediaproc video transcode raw-footage/ -f mp4 -o converted/' },
+  { output: 'Processing 12 video files...' },
+  { output: '✓ video1.mov → video1.mp4', isSuccess: true },
+  { output: '✓ video2.avi → video2.mp4', isSuccess: true },
+  { output: '✓ All files transcoded', isSuccess: true }
+]} />
+
+```bash
+# Convert entire folder to WebM
+mediaproc video transcode videos/ -f webm -c vp9 -o output/
+
+# Batch convert with quality control
+mediaproc video transcode source/ -f mp4 -c h265 --crf 20 -o output/
 ```
 
 ## Use Cases
