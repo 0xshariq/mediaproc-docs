@@ -40,16 +40,16 @@ export function DocLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col md:flex-row md:h-[calc(100vh-4rem)] overflow-hidden">
       <Sidebar />
-      <div className="flex-1 overflow-y-auto">
-        <main className="max-w-4xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 mx-auto">
-          <article className="prose prose-lg">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+          <article className="prose prose-lg max-w-4xl mx-auto">
             {children}
           </article>
           
-          <Separator className="my-8 sm:my-12" />
+          <Separator className="my-8 sm:my-12 max-w-4xl mx-auto" />
           
           {/* Previous/Next Navigation */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8 max-w-4xl mx-auto">
             {prevPage ? (
               <Link href={`/docs/${prevPage.slug}`}>
                 <Button variant="outline" className="w-full justify-start group h-auto py-2.5 sm:py-3">
@@ -79,7 +79,7 @@ export function DocLayout({ children }: { children: ReactNode }) {
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8 max-w-4xl mx-auto">
             <p>Found an issue? Help us improve this page.</p>
             <a 
               href="https://github.com/0xshariq/mediaproc-cli" 
@@ -91,8 +91,9 @@ export function DocLayout({ children }: { children: ReactNode }) {
             </a>
           </div>
         </main>
+        
+        <TableOfContents />
       </div>
-      <TableOfContents />
     </div>
   );
 }
