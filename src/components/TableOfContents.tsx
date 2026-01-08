@@ -82,8 +82,8 @@ export function TableOfContents() {
   if (headings.length === 0) return null;
 
   return (
-    <aside className="hidden xl:block w-72 border-l border-border/50 shrink-0 h-screen sticky top-0 overflow-hidden">
-      <div className="h-full flex flex-col py-6 px-4">
+    <aside className="hidden xl:block w-72 border-l border-border/50 shrink-0">
+      <div className="sticky top-0 h-screen flex flex-col py-6 px-4">
         <div className="flex items-center gap-2 mb-6 px-2">
           <svg
             className="w-4 h-4 text-muted-foreground"
