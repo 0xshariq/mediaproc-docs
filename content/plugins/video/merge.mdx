@@ -1,10 +1,30 @@
 # merge
 
-Concatenate multiple video files into a single video.
+Concatenate multiple video files into a single continuous video with optional transitions.
 
-## Description
+## Overview
 
-The `merge` command joins multiple videos into one continuous file. It intelligently detects format compatibility and uses either fast concat mode (no re-encoding) or re-encode mode for mixed formats.
+The `merge` command intelligently joins multiple videos into one seamless file. It automatically detects format compatibility and chooses the optimal method: **fast concat** (instant, lossless) for identical formats, or **re-encode** mode for mixed formats. Perfect for combining video segments, creating compilations, or assembling multi-part recordings.
+
+**Key Features:**
+- 🚀 Auto-detection of compatible formats (fast concat)
+- 🔄 Smart re-encoding for mixed formats
+- ✨ Transition effects (fade, wipe, dissolve)
+- 📐 Automatic resolution matching
+- 🎵 Audio normalization across clips
+- 📁 Batch processing with wildcards
+
+**Common Use Cases:**
+- Joining multi-part recordings
+- Creating video compilations or montages
+- Combining screen recordings
+- Merging camera footage from multiple takes
+- Assembling split downloads
+- Creating highlight reels
+
+<Callout type="info">
+**Auto-Detection:** The command analyzes all input videos and automatically selects fast concat (lossless) if formats match, or re-encode mode if they differ in resolution, codec, or frame rate.
+</Callout>
 
 ## Usage
 
@@ -27,6 +47,196 @@ The `merge` command joins multiple videos into one continuous file. It intellige
 | `--format`              |       | string  | `mp4`        | Output format: mp4, mkv, avi, webm              |
 | `--dry-run`             |       | boolean | false        | Preview without executing                        |
 | `--verbose`             | `-v`  | boolean | false        | Show detailed FFmpeg output                      |
+
+## Flag Details
+
+### `--re-encode` - Force Re-encoding
+
+Force re-encoding even if videos are compatible for fast concat.
+
+**When to Use:**
+- Want to apply effects/filters during merge
+- Need to change codec/resolution
+- Videos technically compatible but want quality consistency
+- Adding transitions between clips
+
+**Trade-offs:**
+- ⏱️ Slower (re-processes all video)
+- 📉 Slight quality loss (minimized with CRF 23)
+- ✨ Enables advanced features (transitions, filters)
+
+**Example:**
+```bash
+# Force re-encode to apply transition
+mediaproc video merge video1.mp4 video2.mp4 --re-encode --transition fade
+```
+
+---
+
+### `--transition` - Transition Effects
+
+Add smooth transitions between video clips (requires re-encoding).
+
+**Available Transitions:**
+
+**`none`** - Default
+- Direct cut, no transition
+- Instant switch between clips
+
+**`fade`** - Crossfade
+- First video fades out while second fades in
+- Smooth, professional look
+- Best for: General use, presentations
+
+**`wipe`** - Directional wipe
+- Second video "wipes" over first
+- Dynamic, modern feel
+- Best for: Action sequences, energetic content
+
+**`dissolve`** - Dissolve/blend
+- Gradual blend between clips
+- Subtle, elegant transition
+- Best for: Slow-paced content, documentaries
+
+**Duration Control:**
+Use `--transition-duration` to set transition length (default: 1 second).
+
+**Examples:**
+```bash
+# 1-second fade between clips
+mediaproc video merge clip1.mp4 clip2.mp4 clip3.mp4 --transition fade
+
+# 2-second dissolve
+mediaproc video merge part1.mp4 part2.mp4 --transition dissolve --transition-duration 2
+
+# Quick 0.5s wipe
+mediaproc video merge video1.mp4 video2.mp4 --transition wipe --transition-duration 0.5
+```
+
+<Callout type="tip">
+**Professional Touch:** Use 1-2 second transitions for most content. Shorter (0.3-0.5s) for fast-paced videos, longer (2-3s) for dramatic effect.
+</Callout>
+
+---
+
+### `--scale` - Resolution Matching
+
+Scale all videos to same resolution before merging.
+
+**Format:** Resolution preset or dimensions
+- Presets: `360p`, `480p`, `720p`, `1080p`, `1440p`, `2160p`
+- Custom: `1920x1080`, `1280x720`
+
+**When to Use:**
+- Videos have different resolutions
+- Want consistent output resolution
+- Preparing for specific platform requirements
+
+**Behavior:**
+- Videos are scaled to match specified resolution
+- Aspect ratios preserved with letterboxing if needed
+- Automatically enables re-encoding
+
+**Example:**
+```bash
+# Mix of 720p and 1080p videos → all scaled to 1080p
+mediaproc video merge 720p-clip.mp4 1080p-clip.mp4 --scale 1080p
+
+# Scale everything to 720p for web delivery
+mediaproc video merge *.mp4 --scale 720p -o web-version.mp4
+```
+
+---
+
+### `--audio-track` - Audio Track Selection
+
+Select which audio track to use from multi-track videos.
+
+**Format:** Track number (1-based)
+- `1` = First audio track (default)
+- `2` = Second audio track
+- etc.
+
+**Use Cases:**
+- Videos have multiple audio tracks (commentary, music, original)
+- Want specific language track
+- Select music-only or voice-only track
+
+---
+
+### `--normalize-audio` - Audio Level Normalization
+
+Normalize audio levels across all videos for consistent volume.
+
+**Problem It Solves:**
+Different videos often have different audio levels (some loud, some quiet), creating jarring volume changes during playback.
+
+**How It Works:**
+- Analyzes peak levels in all input videos
+- Adjusts gain to match target level (-23 LUFS standard)
+- Prevents clipping while maximizing volume
+
+**Example:**
+```bash
+# Merge with normalized audio
+mediaproc video merge loud-video.mp4 quiet-video.mp4 --normalize-audio
+```
+
+<Callout type="info">
+**Audio Standards:** Normalization targets -23 LUFS (Loudness Units Full Scale), the broadcast standard for consistent audio levels.
+</Callout>
+
+**Learn More:**
+- [Understanding LUFS](https://en.wikipedia.org/wiki/LKFS)
+- [FFmpeg Loudnorm Filter](https://ffmpeg.org/ffmpeg-filters.html#loudnorm)
+
+---
+
+### `--codec` / `--audio-codec` - Codec Selection
+
+Specify video and audio codecs when re-encoding.
+
+**Video Codecs:**
+- `h264` - Universal compatibility (default)
+- `h265` - Better compression, modern devices
+- `vp9` - WebM format, web streaming
+
+**Audio Codecs:**
+- `aac` - Best for MP4 (default)
+- `mp3` - Universal compatibility
+- `opus` - Best quality-to-bitrate, modern browsers
+
+**Example:**
+```bash
+# H.265 for better compression
+mediaproc video merge video1.mp4 video2.mp4 -c h265 -o output.mp4
+
+# WebM with VP9 + Opus
+mediaproc video merge clip1.mp4 clip2.mp4 -c vp9 --audio-codec opus --format webm
+```
+
+---
+
+### `--quality` - Encoding Quality
+
+Set CRF quality when re-encoding (0-51, lower = better).
+
+**Recommended Values:**
+- `18-20` - High quality, large files
+- `23` - Default, good balance
+- `26-28` - Smaller files, acceptable quality
+
+---
+
+### `--format` - Output Container
+
+Specify output container format.
+
+**Options:**
+- `mp4` - Universal (default)
+- `mkv` - Advanced features, multi-track support
+- `webm` - Web streaming
+- `avi` - Legacy compatibility
 
 ## Concat Modes
 

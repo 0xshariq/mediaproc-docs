@@ -1,10 +1,30 @@
 # extract
 
-Extract audio, frames, or thumbnails from video files.
+Extract audio tracks, image frames, or thumbnails from video files.
 
-## Description
+## Overview
 
-The `extract` command provides three sub-commands for extracting content from videos: audio tracks, image frame sequences, and single-frame thumbnails.
+The `extract` command provides powerful extraction capabilities for videos, offering three specialized sub-commands: **extract-audio** (save soundtrack separately), **extract-frames** (create image sequences), and **extract-thumbnail** (generate preview images). Essential for content repurposing, thumbnail creation, and media analysis.
+
+**Key Features:**
+- 🎵 Audio extraction in multiple formats (MP3, AAC, WAV, Opus)
+- 🖼️ Frame sequence export (JPEG, PNG, WebP)
+- 📸 Smart thumbnail generation (scene analysis)
+- ⚡ Fast stream copy when possible (lossless)
+- 🎯 Precise frame selection (timecode, intervals, frame numbers)
+- 📁 Batch processing support
+
+**Common Use Cases:**
+- Creating podcast/music tracks from videos
+- Generating thumbnails for video galleries
+- Extracting frames for animation/VFX work
+- Creating image sequences for analysis
+- Saving video stills for presentations
+- Archiving audio separately
+
+<Callout type="info">
+**Performance:** Audio extraction uses stream copy when format matches (instant, lossless). Format conversion requires re-encoding (fast, minimal quality loss at high bitrates).
+</Callout>
 
 ## Sub-commands
 
@@ -31,6 +51,91 @@ Extract the audio track from a video file.
 | `--bitrate` | `-b`  | string  | `192k`  | Audio bitrate (e.g., `128k`, `256k`, `320k`) |
 | `--dry-run` |       | boolean | false   | Preview without executing                    |
 | `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output                  |
+
+### Flag Details
+
+#### `--format` - Audio Format
+
+Choose output audio format based on compatibility and quality needs.
+
+**MP3** - Universal Compatibility
+- **Quality:** Good
+- **File Size:** Medium
+- **Compatibility:** All devices, all platforms
+- **Best For:** General distribution, podcasts, music sharing
+- **Bitrate:** 128k (acceptable), 192k (good), 320k (excellent)
+
+**AAC** - Modern Efficient
+- **Quality:** Better than MP3 at same bitrate
+- **File Size:** Smaller than MP3
+- **Compatibility:** All modern devices (2010+)
+- **Best For:** Mobile devices, streaming, modern platforms
+- **Bitrate:** 128k (good), 192k (high quality), 256k (excellent)
+
+**WAV** - Lossless Quality
+- **Quality:** Perfect (no compression)
+- **File Size:** Very large (~10 MB per minute)
+- **Compatibility:** Universal
+- **Best For:** Professional editing, archival, mastering
+- **Bitrate:** N/A (uncompressed)
+
+**Opus** - Best Efficiency
+- **Quality:** Excellent at low bitrates
+- **File Size:** Smallest
+- **Compatibility:** Modern browsers, limited device support
+- **Best For:** Voice, podcasts, web streaming, low bandwidth
+- **Bitrate:** 64k (voice), 96k (music), 128k (transparent)
+
+**Selection Guide:**
+- **General use:** MP3 at 192k
+- **Modern platforms:** AAC at 128-192k
+- **Professional work:** WAV
+- **Podcasts/voice:** Opus at 64-96k
+- **Archival:** WAV or AAC at 256k
+
+**Learn More:**
+- [Audio Format Comparison](https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats)
+
+---
+
+#### `--bitrate` - Audio Quality
+
+Set audio bitrate (quality vs file size trade-off).
+
+**Bitrate Guide:**
+
+| Bitrate | Quality | Use Case |
+|---------|---------|----------|
+| 64k | Acceptable | Voice, podcasts (Opus) |
+| 96k | Good | Podcasts, audiobooks |
+| 128k | High | General music, streaming |
+| 192k | Very High | Music distribution **← default** |
+| 256k | Excellent | High-quality music |
+| 320k | Maximum | Archival, professional |
+
+**Format-Specific Recommendations:**
+
+**MP3:**
+- 128k minimum for music
+- 192k recommended
+- 320k for archival
+
+**AAC:**
+- 96k acceptable for music
+- 128-192k recommended
+- 256k for professional
+
+**Opus:**
+- 64k excellent for voice
+- 96k transparent for music
+- 128k overkill for most content
+
+<Callout type="tip">
+**Sweet Spot:** 192k provides excellent quality for most music content. Going higher (256k, 320k) offers minimal perceptible improvement.
+</Callout>
+
+**Learn More:**
+- [Understanding Audio Bitrates](https://www.lifewire.com/what-is-audio-bitrate-2438527)
 
 ### Audio Formats
 
