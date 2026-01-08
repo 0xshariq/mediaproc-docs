@@ -44,9 +44,9 @@ export function DocLayout({ children }: { children: ReactNode }) {
       
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto scroll-smooth">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-            <article className="prose prose-lg dark:prose-invert max-w-none">
+            <article className="prose prose-lg dark:prose-invert max-w-none docs-content">
               {children}
             </article>
             

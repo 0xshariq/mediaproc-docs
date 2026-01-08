@@ -82,11 +82,11 @@ export function TableOfContents() {
   if (headings.length === 0) return null;
 
   return (
-    <aside className="hidden xl:block w-64 border-l border-border/50 shrink-0 self-start">
-      <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto py-6 px-4">
-        <div className="flex items-center gap-2 mb-4">
+    <aside className="hidden xl:block w-72 border-l border-border/50 shrink-0 h-screen sticky top-0 overflow-hidden">
+      <div className="h-full flex flex-col py-6 px-4">
+        <div className="flex items-center gap-2 mb-6 px-2">
           <svg
-            className="w-4 h-4"
+            className="w-4 h-4 text-muted-foreground"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -98,12 +98,12 @@ export function TableOfContents() {
               d="M4 6h16M4 12h16M4 18h16"
             />
           </svg>
-          <h2 className="text-sm font-semibold uppercase tracking-wide">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             On this page
           </h2>
         </div>
 
-        <nav className="space-y-0.5">
+        <nav className="space-y-1 overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
           {headings.map((heading) => {
             const isActive = activeId === heading.id;
             const isH3 = heading.level === 3;
@@ -113,12 +113,12 @@ export function TableOfContents() {
                 key={heading.id}
                 href={`#${heading.id}`}
                 className={`
-                  block text-sm py-1.5 px-2 transition-all duration-200 rounded
+                  block text-sm py-2 px-3 transition-all duration-200 rounded-lg border-l-2
                   ${isActive
-                    ? 'text-primary font-medium bg-primary/5'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    ? 'text-foreground font-medium border-primary bg-primary/5'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 border-transparent'
                   }
-                  ${isH3 ? 'ml-3 text-xs' : ''}
+                  ${isH3 ? 'ml-4 text-xs py-1.5' : ''}
                 `}
                 onClick={(e) => {
                   e.preventDefault();
