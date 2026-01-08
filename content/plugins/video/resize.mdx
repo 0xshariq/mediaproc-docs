@@ -1,39 +1,424 @@
 # resize
 
-Change video resolution with preset scales or custom dimensions.
+Change video resolution with preset scales or custom dimensions while preserving quality.
 
-## Description
+## Overview
 
-The `resize` command changes video resolution to optimize for different platforms, devices, or bandwidth constraints. It maintains aspect ratios, handles custom dimensions, and provides common resolution presets.
+The `resize` command is your go-to tool for changing video resolution, whether you're optimizing for specific platforms (YouTube, Instagram, TikTok), reducing file sizes for mobile devices, or upscaling content for high-resolution displays. It intelligently maintains aspect ratios, provides industry-standard resolution presets, and offers advanced controls for professional-grade output.
+
+**Key Features:**
+
+- 🎯 Preset resolutions from 360p to 8K (4320p)
+- 🔄 Custom dimensions with automatic aspect ratio handling
+- 🎬 Multiple codec support (H.264, H.265, VP9, AV1)
+- ⚡ Hardware acceleration for faster processing
+- 🎨 Built-in rotation, flipping, and cropping tools
+- 📐 Smart padding to ensure codec compatibility
+
+**Common Use Cases:**
+
+- Preparing videos for social media platforms
+- Creating mobile-optimized versions for bandwidth savings
+- Upscaling old content to modern standards
+- Converting between aspect ratios (16:9 ↔ 4:3 ↔ 1:1)
+- Batch processing entire video libraries
+
+<Callout type="info">
+  **Upscaling vs Downscaling:** Downscaling (e.g., 4K → 1080p) preserves quality
+  well. Upscaling (e.g., 480p → 1080p) cannot create detail that wasn't in the
+  original - use higher bitrates and better codecs for best results when
+  upscaling.
+</Callout>
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc video resize <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc video resize <input> [options]" }]}
+/>
 
 ## Options
 
-| Option              | Alias | Type    | Default   | Description                                                      |
-| ------------------- | ----- | ------- | --------- | ---------------------------------------------------------------- |
-| `--output`          | `-o`  | string  | Auto      | Output file or directory path                                    |
-| `--scale`           | `-s`  | string  | 1080p     | Resolution: 360p, 480p, 720p, 1080p, 1440p, 2160p (4K), 4320p (8K), or WxH |
-| `--codec`           | `-c`  | string  | h264      | Video codec: h264, h265, vp9, av1                                |
-| `--quality`         | `-q`  | number  | 23        | CRF quality: 0-51, lower is better                               |
-| `--preset`          |       | string  | medium    | Encoding preset: ultrafast, fast, medium, slow, veryslow         |
-| `--bitrate`         | `-b`  | string  |           | Target bitrate (e.g., 5M, 10M)                                   |
-| `--aspect`          | `-a`  | string  |           | Aspect ratio: 16:9, 4:3, 21:9, 1:1                              |
-| `--fps`             |       | number  |           | Output frame rate (e.g., 24, 30, 60)                             |
-| `--format`          |       | string  |           | Output format: mp4, mkv, webm, avi                               |
-| `--scale-algo`      |       | string  | lanczos   | Scaling algorithm: bilinear, bicubic, lanczos, spline            |
-| `--deinterlace`     |       | boolean | false     | Deinterlace video (for interlaced sources)                       |
-| `--rotate`          |       | number  |           | Rotate video: 90, 180, 270 degrees                               |
-| `--flip`            |       | string  |           | Flip video: horizontal, vertical, both                           |
-| `--crop`            |       | string  |           | Crop video (width:height:x:y or preset: 16:9, 4:3, 1:1)         |
-| `--threads`         |       | number  | auto      | Number of threads for encoding                                   |
-| `--hw-accel`        |       | boolean | false     | Enable hardware acceleration (GPU)                               |
-| `--no-audio`        |       | boolean | false     | Remove audio from output                                         |
-| `--two-pass`        |       | boolean | false     | Use two-pass encoding for better quality                         |
-| `--dry-run`         |       | boolean | false     | Preview without executing                                        |
-| `--verbose`         | `-v`  | boolean | false     | Show detailed FFmpeg output                                      |
+### Basic Options
+
+| Option      | Alias | Type    | Default | Description                                                                |
+| ----------- | ----- | ------- | ------- | -------------------------------------------------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file or directory path                                              |
+| `--scale`   | `-s`  | string  | 1080p   | Resolution: 360p, 480p, 720p, 1080p, 1440p, 2160p (4K), 4320p (8K), or WxH |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output                                                |
+| `--dry-run` |       | boolean | false   | Preview command without executing                                          |
+
+### Video Codec & Quality
+
+| Option       | Alias | Type    | Default | Description                                                        |
+| ------------ | ----- | ------- | ------- | ------------------------------------------------------------------ |
+| `--codec`    | `-c`  | string  | h264    | Video codec: `h264`, `h265`, `vp9`, `av1`                          |
+| `--quality`  | `-q`  | number  | 23      | CRF quality: 0-51, lower is better quality                         |
+| `--preset`   |       | string  | medium  | Encoding preset: `ultrafast`, `fast`, `medium`, `slow`, `veryslow` |
+| `--bitrate`  | `-b`  | string  |         | Target bitrate (e.g., `5M` for 5 Mbps, `10M` for 10 Mbps)          |
+| `--two-pass` |       | boolean | false   | Use two-pass encoding for optimal quality distribution             |
+
+### Resolution & Aspect Ratio
+
+| Option         | Alias | Type   | Default | Description                                                   |
+| -------------- | ----- | ------ | ------- | ------------------------------------------------------------- |
+| `--aspect`     | `-a`  | string |         | Force aspect ratio: `16:9`, `4:3`, `21:9`, `1:1`              |
+| `--fps`        |       | number |         | Output frame rate (e.g., `24`, `30`, `60`)                    |
+| `--scale-algo` |       | string | lanczos | Scaling algorithm: `bilinear`, `bicubic`, `lanczos`, `spline` |
+
+### Transformation
+
+| Option          | Alias | Type    | Default | Description                                                     |
+| --------------- | ----- | ------- | ------- | --------------------------------------------------------------- |
+| `--rotate`      |       | number  |         | Rotate video: `90`, `180`, `270` degrees                        |
+| `--flip`        |       | string  |         | Flip video: `horizontal`, `vertical`, `both`                    |
+| `--crop`        |       | string  |         | Crop video (`width:height:x:y` or preset: `16:9`, `4:3`, `1:1`) |
+| `--deinterlace` |       | boolean | false   | Deinterlace video (for interlaced sources like old DVDs)        |
+
+### Performance & Output
+
+| Option       | Alias | Type    | Default | Description                                               |
+| ------------ | ----- | ------- | ------- | --------------------------------------------------------- |
+| `--format`   |       | string  |         | Output format: `mp4`, `mkv`, `webm`, `avi`                |
+| `--threads`  |       | number  | auto    | Number of CPU threads for encoding (default: auto-detect) |
+| `--hw-accel` |       | boolean | false   | Enable hardware acceleration (GPU encoding, 5-10x faster) |
+| `--no-audio` |       | boolean | false   | Remove audio track from output                            |
+
+## Flag Details
+
+### `--scale` - Resolution Control
+
+Specify target resolution using presets or custom dimensions:
+
+**Preset Values:**
+
+- `360p` = 640×360 (mobile, low bandwidth)
+- `480p` = 854×480 (SD quality)
+- `720p` = 1280×720 (HD)
+- `1080p` = 1920×1080 (Full HD) **← default**
+- `1440p` = 2560×1440 (QHD)
+- `2160p` = 3840×2160 (4K UHD)
+- `4320p` = 7680×4320 (8K UHD)
+
+**Custom Dimensions:**
+
+- Format: `WIDTHxHEIGHT` (e.g., `1920x1080`, `1280x720`)
+- Dimensions are automatically rounded to even numbers (required for H.264/H.265)
+- Aspect ratio is preserved with letterboxing/pillarboxing if needed
+
+**Learn More:**
+
+- [Video Resolution Standards](https://en.wikipedia.org/wiki/Display_resolution)
+- [FFmpeg Scale Filter](https://ffmpeg.org/ffmpeg-filters.html#scale)
+
+---
+
+### `--codec` - Video Encoder
+
+Choose the video codec based on compatibility, quality, and file size needs:
+
+**H.264 (`h264`)** - Default
+
+- **Compatibility:** Universal (all devices, browsers, players)
+- **Encoding Speed:** Fast
+- **Compression:** Good
+- **File Size:** Baseline reference
+- **Use When:** Maximum compatibility needed, live streaming, quick encoding
+
+**H.265 (`h265`)** - HEVC
+
+- **Compatibility:** Modern devices (2016+), some browsers
+- **Encoding Speed:** Slow (2-3x longer than H.264)
+- **Compression:** Excellent (40-50% smaller than H.264 at same quality)
+- **File Size:** Much smaller
+- **Use When:** 4K video, storage optimization, modern device distribution
+
+**VP9 (`vp9`)**
+
+- **Compatibility:** Web browsers, YouTube
+- **Encoding Speed:** Very slow
+- **Compression:** Excellent (similar to H.265)
+- **File Size:** Small
+- **Use When:** WebM format, YouTube uploads, open-source projects
+
+**AV1 (`av1`)**
+
+- **Compatibility:** Latest browsers/devices (2020+)
+- **Encoding Speed:** Extremely slow
+- **Compression:** Best (20-30% better than H.265)
+- **File Size:** Smallest
+- **Use When:** Future-proofing, maximum compression, latest platforms
+
+**Learn More:**
+
+- [H.264 vs H.265 Comparison](https://www.adobe.com/creativecloud/video/discover/hevc-vs-h264.html)
+- [FFmpeg Codecs Documentation](https://ffmpeg.org/ffmpeg-codecs.html)
+
+---
+
+### `--quality` - CRF (Constant Rate Factor)
+
+CRF controls encoding quality from 0 (lossless) to 51 (worst quality). Unlike bitrate, CRF adapts to video complexity.
+
+**Recommended Values:**
+
+- **15-18:** Near-lossless, master copies, archival (very large files)
+- **20-23:** High quality, professional distribution, streaming **← 23 is default**
+- **24-28:** Good quality, web delivery, mobile
+- **29-35:** Low quality, preview/draft, maximum compression
+
+**Quality vs File Size:**
+
+- Each +6 CRF roughly halves file size
+- Visual quality degrades more noticeably above CRF 28
+- H.265/VP9 can use +4-6 CRF higher than H.264 for same perceived quality
+
+<Callout type="warning">
+  **When Upscaling:** Use lower CRF values (18-20) to compensate for quality
+  loss. Upscaling cannot create detail that wasn't in the original source.
+</Callout>
+
+**Learn More:**
+
+- [FFmpeg CRF Guide](https://trac.ffmpeg.org/wiki/Encode/H.264#crf)
+
+---
+
+### `--preset` - Encoding Speed vs Compression
+
+Presets control how much time FFmpeg spends optimizing compression. Slower = better compression.
+
+**Available Presets:**
+
+- `ultrafast` - 10x faster, +20-30% larger files
+- `superfast` - 5x faster, +15-20% larger files
+- `veryfast` - 3x faster, +10-15% larger files
+- `faster` - 2x faster, +5-10% larger files
+- `fast` - 1.5x faster, +5% larger files
+- `medium` - Balanced speed/quality **← default**
+- `slow` - 1.5x slower, 5-10% smaller files, better quality
+- `slower` - 2x slower, 10-15% smaller files, better quality
+- `veryslow` - 3x+ slower, 15-20% smaller files, best quality
+
+**Recommendations:**
+
+- **Quick tests:** `fast` or `faster`
+- **Production:** `slow` or `veryslow`
+- **Live streaming:** `ultrafast` or `veryfast`
+- **Archival/Distribution:** `veryslow` + two-pass
+
+**Learn More:**
+
+- [FFmpeg Preset Documentation](https://trac.ffmpeg.org/wiki/Encode/H.264#Preset)
+
+---
+
+### `--bitrate` - Target Bitrate
+
+Set a target bitrate in Mbps. Overrides CRF-based quality control.
+
+**Format:**
+
+- `2M` = 2 Mbps (megabits per second)
+- `5M` = 5 Mbps
+- `10M` = 10 Mbps
+
+**Recommended Bitrates by Resolution:**
+
+| Resolution | H.264 Bitrate | H.265 Bitrate | Use Case     |
+| ---------- | ------------- | ------------- | ------------ |
+| 360p       | 0.5-1 Mbps    | 0.3-0.7 Mbps  | Mobile 3G    |
+| 480p       | 1-2 Mbps      | 0.7-1.5 Mbps  | Mobile 4G    |
+| 720p       | 2.5-5 Mbps    | 1.5-3 Mbps    | HD streaming |
+| 1080p      | 5-8 Mbps      | 3-5 Mbps      | Full HD      |
+| 1440p      | 10-15 Mbps    | 6-10 Mbps     | QHD          |
+| 4K (2160p) | 20-40 Mbps    | 15-25 Mbps    | Ultra HD     |
+
+<Callout type="info">
+  **CRF vs Bitrate:** CRF provides better quality distribution (more bits for
+  complex scenes). Use bitrate when you need predictable file sizes or streaming
+  compliance.
+</Callout>
+
+---
+
+### `--aspect` - Force Aspect Ratio
+
+Override the output aspect ratio, adding letterboxing/pillarboxing as needed.
+
+**Common Ratios:**
+
+- `16:9` - Widescreen (YouTube, TV, monitors)
+- `4:3` - Classic TV, older content
+- `21:9` - Ultrawide cinema
+- `1:1` - Square (Instagram posts, profile videos)
+- `9:16` - Vertical (Instagram Stories, TikTok, Reels)
+
+**Behavior:**
+
+- Content is scaled to fit within the specified ratio
+- Black bars (letterboxing/pillarboxing) added if necessary
+- Original video is never stretched or distorted
+
+---
+
+### `--fps` - Frame Rate
+
+Change the output frame rate (frames per second).
+
+**Common Frame Rates:**
+
+- `24` - Cinema standard, film look
+- `25` - PAL video standard
+- `30` - NTSC video standard, most web content
+- `60` - High frame rate, smooth motion, gaming
+- `120` - Very smooth, gaming, sports
+
+**Note:** Increasing FPS requires interpolation (creating new frames) which may introduce artifacts. Decreasing FPS is straightforward but may appear choppy.
+
+---
+
+### `--scale-algo` - Scaling Algorithm
+
+Choose the algorithm used for resizing pixels.
+
+**Available Algorithms:**
+
+**Lanczos** (default) - Best Quality
+
+- Highest quality, sharpest results
+- Slightly slower
+- Best for: Downscaling, professional work
+
+**Bicubic** - Balanced
+
+- Good quality, smooth results
+- Moderate speed
+- Best for: General use, slight softness preferred
+
+**Bilinear** - Fast
+
+- Lower quality, softer results
+- Fastest algorithm
+- Best for: Quick previews, when speed matters
+
+**Spline** - Smooth
+
+- Very smooth, can be slightly soft
+- Good speed
+- Best for: Artistic looks, reducing aliasing
+
+**Learn More:**
+
+- [Image Scaling Algorithms](https://en.wikipedia.org/wiki/Image_scaling)
+
+---
+
+### `--rotate` - Rotation
+
+Rotate video by specified degrees. Metadata-based rotation is automatically corrected.
+
+**Values:** `90`, `180`, `270` (degrees clockwise)
+
+**Examples:**
+
+- Portrait to landscape: `--rotate 90`
+- Upside-down correction: `--rotate 180`
+- Landscape to portrait: `--rotate 270`
+
+---
+
+### `--flip` - Mirroring
+
+Flip video horizontally, vertically, or both.
+
+**Values:**
+
+- `horizontal` - Mirror left/right
+- `vertical` - Mirror top/bottom
+- `both` - Both axes (equivalent to 180° rotation + horizontal flip)
+
+---
+
+### `--crop` - Cropping
+
+Remove portions of the video frame.
+
+**Format Options:**
+
+**Preset Ratios:**
+
+- `16:9` - Widescreen crop
+- `4:3` - Classic crop
+- `1:1` - Square crop (centered)
+
+**Custom Crop:**
+
+- Format: `width:height:x:y`
+- `width` - Crop width in pixels
+- `height` - Crop height in pixels
+- `x` - X offset from left
+- `y` - Y offset from top
+
+**Example:** `--crop 1920:1080:0:140` (crop 1920×1080 starting at top-left with 140px offset from top)
+
+---
+
+### `--two-pass` - Two-Pass Encoding
+
+Enable two-pass encoding for optimal quality at a target bitrate.
+
+**How It Works:**
+
+1. **First Pass:** Analyzes entire video, collects statistics
+2. **Second Pass:** Encodes video using statistics for optimal bit distribution
+
+**Advantages:**
+
+- Better quality at same file size
+- More efficient bitrate usage
+- Smoother quality across entire video
+
+**Disadvantages:**
+
+- Takes 2x time (processes video twice)
+- Requires temporary disk space for pass data
+
+**When to Use:**
+
+- Target bitrate is specified (`--bitrate`)
+- Quality is critical (final distribution)
+- File size must meet strict requirements
+
+---
+
+### `--hw-accel` - Hardware Acceleration
+
+Enable GPU-accelerated encoding (NVIDIA, AMD, Intel, Apple Silicon).
+
+**Speed Improvement:** 5-10x faster encoding
+
+**Requirements:**
+
+- Compatible GPU with hardware encoder
+- Proper drivers installed
+- FFmpeg compiled with hardware support
+
+**Limitations:**
+
+- Slightly lower quality than CPU encoding
+- Not all codecs supported on all GPUs
+- May have limited preset/option support
+
+**Supported:**
+
+- NVIDIA NVENC (h264, h265)
+- Intel Quick Sync (h264, h265)
+- AMD VCE (h264, h265)
+- Apple VideoToolbox (h264, h265)
+
+**Learn More:**
+
+- [FFmpeg Hardware Acceleration](https://trac.ffmpeg.org/wiki/HWAccelIntro)
 
 ## Resolution Presets
 
@@ -51,114 +436,159 @@ The `resize` command changes video resolution to optimize for different platform
 
 ### Basic Resizing
 
-<Terminal commands={[
-  { command: 'mediaproc video resize 4k-video.mp4 --scale 1080p' },
-  { output: 'Input: 4k-video.mp4 • Resolution: 3840x2160' },
-  { output: 'Duration: 00:03:45' },
-  { output: '' },
-  { output: 'Resizing to 1920x1080...' },
-  { output: '✓ Resize complete', isSuccess: true },
-  { output: 'Output: 4k-video_1920x1080.mp4 • Size: 180.5 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize 4k-video.mp4 --scale 1080p" },
+    { output: "Input: 4k-video.mp4 • Resolution: 3840x2160" },
+    { output: "Duration: 00:03:45" },
+    { output: "" },
+    { output: "Resizing to 1920x1080..." },
+    { output: "✓ Resize complete", isSuccess: true },
+    {
+      output: "Output: 4k-video_1920x1080.mp4 • Size: 180.5 MB",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 720p' },
-  { output: '✓ Resized to 1280x720', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 720p" },
+    { output: "✓ Resized to 1280x720", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 4K -c h265' },
-  { output: '✓ Resized to 4K with HEVC codec', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 4K -c h265" },
+    { output: "✓ Resized to 4K with HEVC codec", isSuccess: true },
+  ]}
+/>
 
 ### Folder Support
 
-<Terminal commands={[
-  { command: 'mediaproc video resize videos/ -s 1080p -o output/' },
-  { output: 'Processing 5 videos...' },
-  { output: '✓ video1.mp4 → 1920x1080', isSuccess: true },
-  { output: '✓ video2.mp4 → 1920x1080', isSuccess: true },
-  { output: '✓ All videos processed', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize videos/ -s 1080p -o output/" },
+    { output: "Processing 5 videos..." },
+    { output: "✓ video1.mp4 → 1920x1080", isSuccess: true },
+    { output: "✓ video2.mp4 → 1920x1080", isSuccess: true },
+    { output: "✓ All videos processed", isSuccess: true },
+  ]}
+/>
 
 ### Advanced Codec Options
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 2160p -c h265 --preset slow' },
-  { output: '✓ Resized to 4K using HEVC with high quality', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc video resize video.mp4 -s 2160p -c h265 --preset slow",
+    },
+    { output: "✓ Resized to 4K using HEVC with high quality", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1080p -c av1 --two-pass' },
-  { output: '✓ Resized with AV1 codec (two-pass encoding)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 1080p -c av1 --two-pass" },
+    { output: "✓ Resized with AV1 codec (two-pass encoding)", isSuccess: true },
+  ]}
+/>
 
 ### Custom Aspect Ratio
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1920x1080 -a 16:9' },
-  { output: '✓ Resized to Full HD with 16:9 aspect ratio', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 1920x1080 -a 16:9" },
+    { output: "✓ Resized to Full HD with 16:9 aspect ratio", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1080x1080 -a 1:1' },
-  { output: '✓ Square format for Instagram', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 1080x1080 -a 1:1" },
+    { output: "✓ Square format for Instagram", isSuccess: true },
+  ]}
+/>
 
 ### Frame Rate Control
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1080p --fps 60' },
-  { output: '✓ Resized to 1080p at 60fps', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 1080p --fps 60" },
+    { output: "✓ Resized to 1080p at 60fps", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 720p --fps 24' },
-  { output: '✓ Cinematic 24fps output', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 720p --fps 24" },
+    { output: "✓ Cinematic 24fps output", isSuccess: true },
+  ]}
+/>
 
 ### Rotation and Flip
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1080p --rotate 90' },
-  { output: '✓ Resized and rotated 90 degrees', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 1080p --rotate 90" },
+    { output: "✓ Resized and rotated 90 degrees", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 720p --flip horizontal' },
-  { output: '✓ Resized with horizontal flip', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 720p --flip horizontal" },
+    { output: "✓ Resized with horizontal flip", isSuccess: true },
+  ]}
+/>
 
 ### Cropping
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1080p --crop 16:9' },
-  { output: '✓ Resized and cropped to 16:9', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 1080p --crop 16:9" },
+    { output: "✓ Resized and cropped to 16:9", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1080p --crop 1920:1080:0:0' },
-  { output: '✓ Custom crop applied', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video resize video.mp4 -s 1080p --crop 1920:1080:0:0",
+    },
+    { output: "✓ Custom crop applied", isSuccess: true },
+  ]}
+/>
 
 ### Hardware Acceleration
 
-<Terminal commands={[
-  { command: 'mediaproc video resize 8k-video.mp4 -s 2160p --hw-accel' },
-  { output: '✓ GPU-accelerated resize complete (10x faster)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize 8k-video.mp4 -s 2160p --hw-accel" },
+    {
+      output: "✓ GPU-accelerated resize complete (10x faster)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Bitrate Control
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 1080p -b 10M' },
-  { output: '✓ Resized with 10 Mbps bitrate', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 1080p -b 10M" },
+    { output: "✓ Resized with 10 Mbps bitrate", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video resize video.mp4 -s 2160p -b 15M --fps 60' },
-  { output: '✓ 4K 60fps with 15 Mbps', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video resize video.mp4 -s 2160p -b 15M --fps 60" },
+    { output: "✓ 4K 60fps with 15 Mbps", isSuccess: true },
+  ]}
+/>
 
 ### Dry Run Preview
 
