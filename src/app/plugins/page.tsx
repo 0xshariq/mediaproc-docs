@@ -60,8 +60,8 @@ const plugins: Plugin[] = [
     name: 'Audio Plugin',
     description: 'Audio processing for conversion, normalization, merging, and extraction.',
     icon: Music,
-    status: 'coming-soon',
-    commandCount: 15,
+    status: 'available',
+    commandCount: 5,
     link: '/docs/plugins/audio',
     features: ['Format Conversion', 'Normalize', 'Merge & Split', 'Extract Audio', 'Trim']
   },

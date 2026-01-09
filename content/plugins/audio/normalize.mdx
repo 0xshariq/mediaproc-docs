@@ -1,0 +1,435 @@
+# normalize
+
+Normalize audio levels to consistent loudness using industry-standard EBU R128 loudness normalization.
+
+## Overview
+
+The `normalize` command ensures consistent audio levels across your files using professional loudness standards. Unlike simple peak normalization, it uses the EBU R128 loudness normalization (loudnorm) filter which measures perceived loudness and adjusts audio to match professional broadcast and streaming standards.
+
+**Key Features:**
+
+- EBU R128 loudness normalization (LUFS-based)
+- Peak normalization option
+- Industry-standard target levels for broadcast, streaming, and podcasts
+- True peak limiting to prevent clipping
+- Batch processing for consistent album or podcast volumes
+
+**Common Use Cases:**
+
+- Normalizing podcast episodes for consistent volume
+- Preparing audio for streaming platforms (Spotify, YouTube, Apple Music)
+- Broadcast audio preparation (TV, radio)
+- Album mastering for consistent track volumes
+- Fixing quiet or loud recordings
+
+<Callout type="info">
+  **LUFS vs dB:** LUFS (Loudness Units relative to Full Scale) measures
+  perceived loudness, while dB measures signal level. LUFS normalization sounds
+  more consistent to human ears than simple peak normalization.
+</Callout>
+
+## Usage
+
+<Terminal
+  commands={[{ command: "mediaproc audio normalize <input> [options]" }]}
+/>
+
+## Options
+
+### Basic Options
+
+| Option      | Alias | Type    | Default | Description                       |
+| ----------- | ----- | ------- | ------- | --------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file or directory path     |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output       |
+| `--dry-run` |       | boolean | false   | Preview command without executing |
+
+### Normalization Settings
+
+| Option        | Alias | Type   | Default  | Description                                         |
+| ------------- | ----- | ------ | -------- | --------------------------------------------------- |
+| `--target`    | `-t`  | number | -16      | Target loudness in LUFS (-70 to -5)                 |
+| `--max-level` | `-l`  | number | -1.5     | Maximum true peak in dB (prevents clipping)         |
+| `--method`    | `-m`  | string | loudnorm | Normalization method: `loudnorm` (EBU R128), `peak` |
+| `--format`    |       | string |          | Output format (default: same as input)              |
+
+## Flag Details
+
+### `--target` - Target Loudness
+
+Set the target loudness level in LUFS (Loudness Units relative to Full Scale).
+
+**Industry Standards:**
+
+**-16 LUFS** - EBU R128 Broadcast Standard (Default)
+
+- European broadcast standard
+- TV and radio broadcasting
+- General streaming (Amazon Music, Deezer)
+- Balanced loudness for most content
+
+**-23 LUFS** - ATSC A/85 Streaming Standard
+
+- Spotify loudness normalization
+- YouTube audio leveling
+- Apple Music normalization
+- Most streaming platforms
+
+**-14 LUFS** - Podcast Standard
+
+- Podcast industry recommendation
+- Spoken word content
+- Audiobook standard
+- Clear and present voice
+
+**-9 to -11 LUFS** - Mastering Reference
+
+- Loud commercial sound
+- Club/dance music
+- Maximum impact (aggressive)
+- Used for competitive loudness
+
+**Recommendations by Content:**
+
+| Content Type | Target LUFS | Use Case                   |
+| ------------ | ----------- | -------------------------- |
+| Broadcast TV | -16         | European TV/radio standard |
+| Streaming    | -23         | Spotify, YouTube, Apple    |
+| Podcasts     | -14 to -16  | Speech-focused content     |
+| Audiobooks   | -16 to -18  | Clear narration            |
+| Music Master | -9 to -14   | Commercial music releases  |
+| Film Dialog  | -24 to -27  | Movie/TV dialogue tracks   |
+
+<Callout type="warning">
+  **Streaming Platform Note:** Most platforms apply their own normalization.
+  Spotify normalizes to -14 LUFS, YouTube to -13 LUFS. Using -23 LUFS gives them
+  headroom to boost without distortion.
+</Callout>
+
+---
+
+### `--max-level` - True Peak Limiting
+
+Set the maximum true peak level in dB to prevent clipping during playback.
+
+**Common Values:**
+
+**-1.5 dB** (Default)
+
+- Safe for most use cases
+- Prevents inter-sample peaks
+- Broadcast-safe
+
+**-1.0 dB**
+
+- Slightly more headroom
+- Professional mastering
+- Hi-fi playback systems
+
+**-2.0 dB**
+
+- Very conservative
+- Streaming services
+- Guaranteed no clipping
+
+**-3.0 dB**
+
+- Maximum safety
+- Podcast distribution
+- Legacy playback systems
+
+**True Peak vs Sample Peak:**
+
+- **Sample Peak:** Measures individual samples
+- **True Peak:** Measures actual analog waveform between samples
+- True peak limiting prevents distortion on consumer devices
+
+---
+
+### `--method` - Normalization Method
+
+Choose between loudness-based and peak-based normalization.
+
+**loudnorm** (EBU R128) - Recommended
+
+- Measures perceived loudness
+- Industry standard for broadcast and streaming
+- More consistent perceived volume
+- Adjusts dynamics intelligently
+- Use for: All professional content, streaming, broadcast
+
+**peak** (Peak Normalization)
+
+- Normalizes to maximum sample peak
+- Simple but less sophisticated
+- Can make quiet content sound louder without improving clarity
+- Use for: Quick fixes, legacy workflows
+
+<Callout type="info">
+  **Why loudnorm is better:** Peak normalization only looks at the loudest
+  moment. Loudnorm analyzes the entire file's perceived loudness, resulting in
+  more consistent volume across different tracks.
+</Callout>
+
+---
+
+## Examples
+
+### Normalize for Streaming Platforms
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio normalize song.mp3 -t -23" },
+    { output: "Analyzing loudness: song.mp3", isSuccess: false },
+    { output: "Current loudness: -12.4 LUFS", isSuccess: false },
+    { output: "Target loudness: -23.0 LUFS", isSuccess: false },
+    { output: "Adjustment: -10.6 dB", isSuccess: false },
+    { output: "True peak limited to -1.5 dB", isSuccess: false },
+    { output: "Normalized successfully", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Normalize Podcast Episode
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio normalize episode.mp3 -t -16 -l -2.0" },
+    { output: "EBU R128 loudness normalization", isSuccess: false },
+    { output: "Input loudness: -21.3 LUFS", isSuccess: false },
+    { output: "Normalizing to: -16.0 LUFS", isSuccess: false },
+    { output: "Peak limiting: -2.0 dB", isSuccess: false },
+    { output: "Output: episode-normalized.mp3", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Batch Normalize Album Tracks
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio normalize *.flac -t -14 -o normalized/" },
+    { output: "Processing 12 tracks...", isSuccess: false },
+    { output: "Track 01: -18.5 LUFS → -14.0 LUFS (+4.5 dB)", isSuccess: false },
+    { output: "Track 02: -16.2 LUFS → -14.0 LUFS (+2.2 dB)", isSuccess: false },
+    { output: "...", isSuccess: false },
+    { output: "Album normalized to consistent -14 LUFS", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Normalize with Format Conversion
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio normalize raw-audio.wav -t -23 --format mp3" },
+    { output: "Normalizing and converting: WAV → MP3", isSuccess: false },
+    { output: "Loudness: -19.8 → -23.0 LUFS", isSuccess: false },
+    { output: "Encoded: 192k MP3", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Simple Peak Normalization
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio normalize audio.mp3 -m peak" },
+    { output: "Peak normalization mode", isSuccess: false },
+    { output: "Original peak: -3.2 dB", isSuccess: false },
+    { output: "Normalized to: -1.5 dB", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Common Workflows
+
+### Podcast Production
+
+```bash
+# Normalize episode to podcast standard
+mediaproc audio normalize episode.mp3 -t -16
+
+# Process entire season
+mediaproc audio normalize season-01/*.mp3 -t -16 -o normalized/
+
+# Extra safe for all platforms
+mediaproc audio normalize episode.mp3 -t -16 -l -2.0
+```
+
+### Music Mastering
+
+```bash
+# Streaming-ready master
+mediaproc audio normalize master.wav -t -14 --format flac
+
+# Loud master for clubs
+mediaproc audio normalize master.wav -t -9 -l -1.0
+
+# Consistent album volume
+for file in *.flac; do
+  mediaproc audio normalize "$file" -t -14 -o masters/
+done
+```
+
+### Broadcast Preparation
+
+```bash
+# EBU R128 broadcast standard
+mediaproc audio normalize program.wav -t -23 -l -1.0
+
+# Radio-ready file
+mediaproc audio normalize ad.mp3 -t -16 -m loudnorm
+```
+
+### Video Audio Preparation
+
+```bash
+# YouTube audio normalization
+mediaproc audio extract video.mp4 -f wav
+mediaproc audio normalize video-audio.wav -t -13
+
+# Consistent volume for playlist
+mediaproc audio normalize clips/*.mp3 -t -16 -o ready/
+```
+
+---
+
+## Understanding Loudness
+
+**What is LUFS?**
+
+LUFS (Loudness Units relative to Full Scale) is an international standard for measuring perceived loudness:
+
+- Based on human hearing perception
+- Accounts for frequency sensitivity
+- More accurate than simple dB peak measurements
+- Industry standard for broadcast and streaming
+
+**Integrated Loudness:**
+
+Measures the average loudness of the entire file, weighted by time and frequency.
+
+**Momentary Loudness:**
+
+Short-term loudness (400ms windows) to prevent sudden loud peaks.
+
+**True Peak:**
+
+The actual maximum level of the analog waveform, including inter-sample peaks that can cause clipping on playback devices.
+
+---
+
+## Platform-Specific Guidelines
+
+**Spotify:**
+
+- Target: -14 LUFS integrated
+- True Peak: -2 dB
+- If louder than -14, Spotify will turn it down
+- If quieter than -14, Spotify will turn it up
+
+**YouTube:**
+
+- Target: -13 to -15 LUFS
+- True Peak: -1 dB
+- Applies normalization automatically
+
+**Apple Music / iTunes:**
+
+- Target: -16 LUFS (Sound Check enabled)
+- True Peak: -1 dB
+- Sound Check is optional for users
+
+**Amazon Music:**
+
+- Target: -14 to -16 LUFS
+- True Peak: -2 dB
+
+**Podcast Platforms:**
+
+- Target: -16 to -19 LUFS
+- True Peak: -1 to -2 dB
+- Consistency matters more than absolute level
+
+<Callout type="info">
+  **Best Practice:** Master to -23 LUFS for streaming platforms. This gives them
+  headroom to boost without introducing distortion, and ensures your audio
+  sounds good even if users disable normalization.
+</Callout>
+
+---
+
+## Quality Considerations
+
+**Dynamic Range:**
+
+Loudness normalization preserves dynamic range better than simple compression:
+
+- Quiet parts stay relatively quiet
+- Loud parts stay relatively loud
+- Overall perceived loudness is consistent
+
+**Two-Pass vs One-Pass:**
+
+EBU R128 loudnorm uses two-pass processing:
+
+1. First pass: Analyze loudness
+2. Second pass: Apply correction
+
+This ensures accurate loudness measurement and adjustment.
+
+**Format Preservation:**
+
+By default, normalization preserves the input format. Use `--format` to convert while normalizing.
+
+---
+
+## Performance Tips
+
+**Preview Analysis:**
+
+See what changes will be made without processing:
+
+```bash
+mediaproc audio normalize audio.mp3 --dry-run -v
+```
+
+**Verbose Output:**
+
+Monitor loudness measurements:
+
+```bash
+mediaproc audio normalize audio.mp3 -v
+```
+
+**Batch Processing:**
+
+Process directories efficiently:
+
+```bash
+# Process all MP3s in a folder
+mediaproc audio normalize *.mp3 -t -16 -o normalized/
+```
+
+---
+
+## Related Commands
+
+- [`convert`](/docs/plugins/audio/convert) - Convert normalized audio to other formats
+- [`merge`](/docs/plugins/audio/merge) - Merge with automatic normalization option
+- [`trim`](/docs/plugins/audio/trim) - Trim and then normalize
+
+---
+
+## Learn More
+
+- [EBU R128 Loudness Standard](https://tech.ebu.ch/docs/r/r128.pdf)
+- [Loudness Normalization Explained](https://en.wikipedia.org/wiki/Audio_normalization)
+- [FFmpeg Loudnorm Filter](https://ffmpeg.org/ffmpeg-filters.html#loudnorm)
+- [Streaming Loudness Standards](https://www.masteringthemix.com/blogs/learn/76296773-mastering-audio-for-soundcloud-itunes-spotify-and-youtube)

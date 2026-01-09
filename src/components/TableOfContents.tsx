@@ -52,31 +52,38 @@ export function TableOfContents() {
   useEffect(() => {
     if (headings.length === 0) return;
 
-    const article = document.querySelector('article');
-    if (!article) return;
+    const handleScroll = () => {
+      const mainContent = document.querySelector('main');
+      if (!mainContent) return;
 
-    const elements = Array.from(article.querySelectorAll('h2, h3'));
+      const scrollTop = mainContent.scrollTop;
+      let currentId = '';
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.target.id) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      {
-        rootMargin: '-100px 0px -66% 0px',
-        threshold: 1.0
+      for (const heading of headings) {
+        const element = document.getElementById(heading.id);
+        if (!element) continue;
+
+        const rect = element.getBoundingClientRect();
+        const mainRect = mainContent.getBoundingClientRect();
+        const relativeTop = rect.top - mainRect.top;
+
+        if (relativeTop <= 150) {
+          currentId = heading.id;
+        }
       }
-    );
 
-    elements.forEach((el) => {
-      if (el.id) observer.observe(el);
-    });
+      if (currentId && currentId !== activeId) {
+        setActiveId(currentId);
+      }
+    };
 
-    return () => observer.disconnect();
-  }, [headings]);
+    const mainContent = document.querySelector('main');
+    if (mainContent) {
+      mainContent.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+      return () => mainContent.removeEventListener('scroll', handleScroll);
+    }
+  }, [headings, activeId]);
 
   // Don't render on mobile or if no headings
   if (headings.length === 0) return null;
@@ -84,20 +91,7 @@ export function TableOfContents() {
   return (
     <aside className="hidden xl:block w-72 border-l border-border/50 shrink-0">
       <div className="sticky top-0 h-screen flex flex-col py-6 px-4">
-        <div className="flex items-center gap-2 mb-6 px-2">
-          <svg
-            className="w-4 h-4 text-muted-foreground"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+        <div className="mb-6 px-2">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             On this page
           </h2>
@@ -123,10 +117,15 @@ export function TableOfContents() {
                 onClick={(e) => {
                   e.preventDefault();
                   const element = document.getElementById(heading.id);
-                  if (element) {
-                    const offsetTop = element.getBoundingClientRect().top + window.scrollY - 100;
-                    window.scrollTo({
-                      top: offsetTop,
+                  const mainContent = document.querySelector('main');
+                  if (element && mainContent) {
+                    const rect = element.getBoundingClientRect();
+                    const mainRect = mainContent.getBoundingClientRect();
+                    const scrollTop = mainContent.scrollTop;
+                    const elementTop = rect.top - mainRect.top + scrollTop;
+                    
+                    mainContent.scrollTo({
+                      top: elementTop - 100,
                       behavior: 'smooth',
                     });
                     setActiveId(heading.id);

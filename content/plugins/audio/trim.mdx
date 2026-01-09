@@ -1,0 +1,557 @@
+# trim
+
+Cut audio segments with precise timing control and optional fade effects.
+
+## Overview
+
+The `trim` command extracts specific time ranges from audio files with frame-accurate precision. Whether you're cutting interview highlights, removing unwanted segments, or creating short clips for social media, this command provides precise control with professional fade options.
+
+**Key Features:**
+
+- Time-based trimming (HH:MM:SS format or seconds)
+- Duration-based extraction
+- Optional fade-in and fade-out effects
+- Fast mode (stream copy without re-encoding)
+- Frame-accurate cutting
+- Batch processing for multiple files
+
+**Common Use Cases:**
+
+- Creating podcast highlights or clips
+- Removing intro/outro from recordings
+- Extracting music choruses or verses
+- Creating social media audio clips
+- Removing unwanted sections (coughs, background noise)
+- Batch trimming multiple recordings to same length
+
+<Callout type="info">
+  **Fast vs Accurate:** Fast mode uses stream copying (no re-encoding) which is
+  instant but only accurate to keyframe boundaries. Accurate mode re-encodes for
+  frame-perfect cuts but takes longer.
+</Callout>
+
+## Usage
+
+<Terminal commands={[{ command: "mediaproc audio trim <input> [options]" }]} />
+
+## Options
+
+### Basic Options
+
+| Option      | Alias | Type    | Default | Description                       |
+| ----------- | ----- | ------- | ------- | --------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file or directory path     |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output       |
+| `--dry-run` |       | boolean | false   | Preview command without executing |
+
+### Time Selection
+
+| Option       | Alias | Type   | Default  | Description                               |
+| ------------ | ----- | ------ | -------- | ----------------------------------------- |
+| `--start`    | `-s`  | string | 00:00:00 | Start time (HH:MM:SS or seconds)          |
+| `--end`      | `-e`  | string |          | End time (HH:MM:SS or seconds)            |
+| `--duration` | `-d`  | string |          | Duration from start (HH:MM:SS or seconds) |
+
+### Effects & Output
+
+| Option       | Alias | Type    | Default | Description                            |
+| ------------ | ----- | ------- | ------- | -------------------------------------- |
+| `--fade-in`  |       | number  |         | Fade-in duration in seconds (0.1-10)   |
+| `--fade-out` |       | number  |         | Fade-out duration in seconds (0.1-10)  |
+| `--format`   |       | string  |         | Output format (default: same as input) |
+| `--fast`     |       | boolean | false   | Fast mode: stream copy, no re-encoding |
+
+## Flag Details
+
+### `--start` - Start Time
+
+Specify where to begin the trim. Accepts multiple time formats.
+
+**Time Formats:**
+
+**Seconds** (Numeric)
+
+- Examples: `30`, `90`, `125.5`
+- Use for: Quick cuts, simple ranges
+
+**HH:MM:SS** (Time format)
+
+- Examples: `00:01:30`, `00:02:45.500`
+- Use for: Precise timing, longer content
+
+**MM:SS** (Shortened format)
+
+- Examples: `01:30`, `02:45`
+- Use for: Content under 1 hour
+
+**Examples:**
+
+```bash
+# Start at 30 seconds
+--start 30
+
+# Start at 1 minute 30 seconds
+--start 00:01:30
+--start 90
+
+# Start at 2 hours 15 minutes
+--start 02:15:00
+```
+
+---
+
+### `--end` - End Time
+
+Specify where to stop the trim (inclusive). Uses same time formats as `--start`.
+
+**Usage:**
+
+You must specify either `--end` OR `--duration`, but not both:
+
+- Use `--end` when you know the exact end timestamp
+- Use `--duration` when you know how long the clip should be
+
+**Examples:**
+
+```bash
+# Trim from 30s to 90s (60 seconds total)
+--start 30 --end 90
+
+# Trim from 1:00 to 2:30
+--start 00:01:00 --end 00:02:30
+
+# Extract first 30 seconds
+--start 0 --end 30
+```
+
+---
+
+### `--duration` - Duration
+
+Specify the length of the extracted segment. Uses same time formats.
+
+**Usage:**
+
+Alternative to `--end`. The trim will start at `--start` and continue for this duration.
+
+**Examples:**
+
+```bash
+# Extract 60 seconds starting from 30s
+--start 30 --duration 60
+
+# Extract 2 minutes starting from the beginning
+--duration 120
+--duration 00:02:00
+
+# Extract 30 seconds starting from 1 minute
+--start 60 --duration 30
+```
+
+**Tip:** Duration is often more intuitive than calculating end times.
+
+---
+
+### `--fade-in` - Fade-In Effect
+
+Apply a gradual volume increase at the start of the trimmed audio.
+
+**Duration Range:** 0.1 to 10 seconds
+
+**Common Values:**
+
+**0.5-1 second** - Quick fade
+
+- Music transitions
+- Hiding cut marks
+- Smooth starts
+
+**2-3 seconds** - Standard fade
+
+- Radio-style intros
+- Podcast episode starts
+- Professional feel
+
+**4-5 seconds** - Slow fade
+
+- Cinematic effect
+- Ambient tracks
+- Gradual introductions
+
+**Examples:**
+
+```bash
+# Quick 1-second fade-in
+--fade-in 1
+
+# Professional 2.5-second fade
+--fade-in 2.5
+
+# Cinematic 5-second fade
+--fade-in 5
+```
+
+---
+
+### `--fade-out` - Fade-Out Effect
+
+Apply a gradual volume decrease at the end of the trimmed audio.
+
+**Duration Range:** 0.1 to 10 seconds
+
+**Common Values:**
+
+Same as fade-in. Typically matched (e.g., 2s fade-in + 2s fade-out).
+
+**Examples:**
+
+```bash
+# Fade in and out
+--fade-in 2 --fade-out 2
+
+# Quick ending
+--fade-out 1
+
+# Slow cinematic ending
+--fade-out 5
+```
+
+**Audio Fade Curves:**
+
+Fades use a linear volume curve by default, which sounds natural for most content.
+
+---
+
+### `--fast` - Fast Mode
+
+Enable stream copy mode for instant trimming without re-encoding.
+
+**How It Works:**
+
+- Copies audio data directly without decoding/re-encoding
+- Nearly instant processing
+- No quality loss
+- Only cuts at keyframe boundaries (may be slightly imprecise)
+
+**When to Use:**
+
+- Large files where re-encoding would take too long
+- Format and codec don't need to change
+- Precision within ~1 second is acceptable
+- Quick previews or rough cuts
+
+**When NOT to Use:**
+
+- Need frame-accurate cuts
+- Applying fade effects (requires re-encoding)
+- Changing format or codec
+- Professional/broadcast work requiring exact timing
+
+**Examples:**
+
+```bash
+# Fast trim (stream copy)
+mediaproc audio trim podcast.mp3 --start 60 --duration 300 --fast
+
+# Accurate trim (re-encode)
+mediaproc audio trim podcast.mp3 --start 60 --duration 300
+```
+
+<Callout type="info">
+  **Fast Mode Trade-off:** Stream copying is 10-100x faster but may not be
+  frame-accurate. For most podcast and music editing, this difference is
+  imperceptible.
+</Callout>
+
+---
+
+## Examples
+
+### Extract 60 Seconds from Middle
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio trim song.mp3 --start 90 --duration 60" },
+    { output: "Trimming: song.mp3 → song-trimmed.mp3", isSuccess: false },
+    { output: "Start: 00:01:30 | Duration: 00:01:00", isSuccess: false },
+    { output: "Output: 60s @ 192k MP3 | 1.4 MB", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Trim with Fade Effects
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio trim interview.mp3 -s 300 -e 900 --fade-in 2 --fade-out 3",
+    },
+    { output: "Trimming: 00:05:00 → 00:15:00 (10 minutes)", isSuccess: false },
+    { output: "Applying fade-in: 2.0s", isSuccess: false },
+    { output: "Applying fade-out: 3.0s", isSuccess: false },
+    { output: "Clip created with smooth transitions", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Fast Trim for Quick Preview
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio trim long-recording.mp3 --start 0 --duration 30 --fast",
+    },
+    { output: "Fast mode: stream copying (no re-encode)", isSuccess: false },
+    { output: "Trimmed in 0.2 seconds", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Batch Trim Multiple Files
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio trim *.mp3 -s 0 -d 180 -o clips/" },
+    { output: "Processing 8 files...", isSuccess: false },
+    {
+      output: "episode01.mp3 → clips/episode01-trimmed.mp3 (3:00)",
+      isSuccess: false,
+    },
+    {
+      output: "episode02.mp3 → clips/episode02-trimmed.mp3 (3:00)",
+      isSuccess: false,
+    },
+    { output: "...", isSuccess: false },
+    { output: "Created 8 clips of 3:00 each", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Remove Intro and Outro
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio trim podcast.mp3 --start 30 --end -45" },
+    { output: "Removing first 30s and last 45s", isSuccess: false },
+    { output: "Original: 60:15 | Trimmed: 59:00", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Extract Chorus with Fades
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio trim song.flac -s 01:35 -d 00:45 --fade-in 1 --fade-out 2",
+    },
+    { output: "Extracting: 01:35:00 for 45 seconds", isSuccess: false },
+    { output: "Adding 1s fade-in, 2s fade-out", isSuccess: false },
+    { output: "Chorus clip: 45s | FLAC lossless", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Common Workflows
+
+### Podcast Editing
+
+```bash
+# Remove intro music (starts at 30s)
+mediaproc audio trim episode.mp3 --start 30
+
+# Extract highlight clip
+mediaproc audio trim episode.mp3 --start 15:30 --duration 120 --fade-in 1 --fade-out 2
+
+# Create teaser (first 60s with fade-out)
+mediaproc audio trim episode.mp3 --duration 60 --fade-out 3
+```
+
+### Music Editing
+
+```bash
+# Extract chorus
+mediaproc audio trim song.flac --start 90 --duration 45
+
+# Create radio edit (trim long intro/outro)
+mediaproc audio trim album-version.flac --start 15 --end -20
+
+# Make loop with crossfade
+mediaproc audio trim beat.wav --start 8 --duration 16 --fade-in 0.5 --fade-out 0.5
+```
+
+### Social Media Clips
+
+```bash
+# Create 15-second TikTok clip
+mediaproc audio trim song.mp3 --start 60 --duration 15 --format mp3
+
+# Instagram Story audio (15s with fades)
+mediaproc audio trim track.mp3 -s 75 -d 15 --fade-in 0.5 --fade-out 1
+
+# Twitter audio clip (2:20 max)
+mediaproc audio trim audio.mp3 --duration 140 --format mp3
+```
+
+### Interview Editing
+
+```bash
+# Remove preparation time at start
+mediaproc audio trim interview.wav --start 120
+
+# Extract specific answer
+mediaproc audio trim interview.wav --start 15:30 --end 18:45
+
+# Quick rough cut for review
+mediaproc audio trim interview.wav -s 300 -d 600 --fast
+```
+
+---
+
+## Time Calculation Tips
+
+**Converting to Seconds:**
+
+- 1 minute = 60 seconds
+- 10 minutes = 600 seconds
+- 1 hour = 3600 seconds
+
+**Useful Conversions:**
+
+```bash
+# 1:30 (1 min 30 sec)
+--start 90
+
+# 5:45 (5 min 45 sec)
+--start 345
+
+# 15:00 (15 minutes)
+--start 900
+```
+
+**Duration Calculations:**
+
+```bash
+# Extract from 1:00 to 3:30 (2min 30sec)
+--start 60 --end 210
+--start 60 --duration 150
+
+# Extract from 10:00 to 15:00 (5 minutes)
+--start 600 --end 900
+--start 600 --duration 300
+```
+
+---
+
+## Quality Considerations
+
+**Re-encoding:**
+
+When not using `--fast`, audio is re-encoded:
+
+- Lossy formats (MP3, AAC): Slight quality loss
+- Lossless formats (FLAC, WAV): No quality loss
+
+**Multiple Trims:**
+
+Avoid trimming already-trimmed lossy files repeatedly:
+
+- Each trim re-encodes (lossy → lossy)
+- Quality degrades with each generation
+- Always trim from original source when possible
+
+**Format Preservation:**
+
+By default, output format matches input. Use `--format` to convert while trimming.
+
+---
+
+## Performance Tips
+
+**Fast Mode for Large Files:**
+
+```bash
+# Instant trim for previews
+mediaproc audio trim large-file.mp3 --start 300 --duration 60 --fast
+```
+
+**Preview Before Processing:**
+
+```bash
+# See the command before running
+mediaproc audio trim audio.mp3 --start 60 --duration 120 --dry-run
+```
+
+**Verbose Output:**
+
+```bash
+# Monitor progress for long files
+mediaproc audio trim audio.mp3 --start 300 -d 600 -v
+```
+
+**Batch Processing:**
+
+```bash
+# Trim all files to same length
+for file in *.mp3; do
+  mediaproc audio trim "$file" --start 0 --duration 180
+done
+
+# Or use globbing
+mediaproc audio trim *.mp3 -s 0 -d 180 -o trimmed/
+```
+
+---
+
+## Precision Notes
+
+**Frame Accuracy:**
+
+- Audio is sampled at specific rates (44.1kHz, 48kHz, etc.)
+- Each sample is 1/44100 or 1/48000 of a second
+- Trimming is accurate to the sample level when re-encoding
+- Fast mode (stream copy) is accurate to codec frame boundaries (~26ms for MP3)
+
+**Fade Timing:**
+
+Fade effects are applied AFTER trimming:
+
+- Fade-in starts at the trim start time
+- Fade-out ends at the trim end time
+- Fades do not extend beyond the trimmed boundaries
+
+**Negative Times:**
+
+Some players support negative end times (trim from end):
+
+```bash
+# Remove last 30 seconds
+--start 0 --end -30
+```
+
+Note: This feature depends on FFmpeg version and may not work in all cases.
+
+---
+
+## Related Commands
+
+- [`convert`](/docs/plugins/audio/convert) - Convert trimmed audio to other formats
+- [`normalize`](/docs/plugins/audio/normalize) - Normalize after trimming
+- [`merge`](/docs/plugins/audio/merge) - Combine multiple trimmed clips
+
+---
+
+## Learn More
+
+- [FFmpeg Trim Filter](https://ffmpeg.org/ffmpeg-filters.html#trim)
+- [Audio Fade Effects](https://ffmpeg.org/ffmpeg-filters.html#afade)
+- [Stream Copy Explained](https://trac.ffmpeg.org/wiki/StreamCopy)

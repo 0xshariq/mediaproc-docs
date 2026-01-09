@@ -1,0 +1,354 @@
+# extract
+
+Extract audio tracks from video files in multiple formats with quality control.
+
+## Overview
+
+The `extract` command extracts audio streams from video files, converting them to standalone audio files in your chosen format. Perfect for creating podcast episodes from video recordings, extracting music from music videos, or creating audio-only versions for mobile consumption.
+
+**Key Features:**
+
+- Extract from all major video formats (MP4, MKV, AVI, MOV, WebM)
+- Output to MP3, AAC, WAV, FLAC, Opus, or OGG
+- Quality presets and custom bitrate control
+- Sample rate and channel configuration
+- Batch processing for multiple videos
+
+**Common Use Cases:**
+
+- Creating podcast episodes from video recordings
+- Extracting music from music videos or concerts
+- Creating audio-only versions for offline listening
+- Extracting dialogue for transcription
+- Archiving audio from video sources
+
+<Callout type="info">
+  **Quality Retention:** Extracting audio does not degrade the original audio
+  quality unless you convert to a lower bitrate format. Use lossless formats
+  (FLAC/WAV) to preserve original quality.
+</Callout>
+
+## Usage
+
+<Terminal
+  commands={[{ command: "mediaproc audio extract <input> [options]" }]}
+/>
+
+## Options
+
+### Basic Options
+
+| Option      | Alias | Type    | Default | Description                                               |
+| ----------- | ----- | ------- | ------- | --------------------------------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file or directory path                             |
+| `--format`  | `-f`  | string  | mp3     | Output format: `mp3`, `aac`, `wav`, `flac`, `opus`, `ogg` |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output                               |
+| `--dry-run` |       | boolean | false   | Preview command without executing                         |
+
+### Quality & Encoding
+
+| Option          | Alias | Type   | Default | Description                                         |
+| --------------- | ----- | ------ | ------- | --------------------------------------------------- |
+| `--quality`     | `-q`  | string | medium  | Quality preset: `low`, `medium`, `high`, `lossless` |
+| `--bitrate`     | `-b`  | string | 192k    | Audio bitrate (e.g., `128k`, `192k`, `320k`)        |
+| `--sample-rate` |       | number |         | Sample rate in Hz (e.g., `44100`, `48000`)          |
+| `--channels`    |       | number |         | Number of channels: `1` (mono), `2` (stereo)        |
+
+## Flag Details
+
+### `--format` - Output Format
+
+Choose the output format based on quality needs and compatibility.
+
+**Lossy Formats (Compressed):**
+
+**MP3** - Universal compatibility
+
+- Best for: General distribution, podcasts, music
+- Bitrate range: 96k-320k
+- File size: Moderate
+
+**AAC/M4A** - Better quality per bitrate
+
+- Best for: iOS, iTunes, modern devices
+- Bitrate range: 96k-320k
+- File size: 20-30% smaller than MP3
+
+**Opus** - Modern, efficient codec
+
+- Best for: Streaming, web apps, podcasts
+- Bitrate range: 32k-256k
+- File size: Best compression
+
+**OGG Vorbis** - Open source
+
+- Best for: Open source projects, web
+- Bitrate range: 96k-320k
+- File size: Similar to AAC
+
+**Lossless Formats:**
+
+**FLAC** - Compressed lossless
+
+- Preserves original audio quality exactly
+- File size: 40-50% of WAV
+- Best for: Archival, hi-fi playback
+
+**WAV** - Uncompressed
+
+- Preserves original audio quality exactly
+- File size: Largest
+- Best for: Professional editing, mastering
+
+---
+
+### `--quality` - Quality Presets
+
+Convenient presets for common extraction scenarios.
+
+**low** (96k)
+
+- Podcast speech
+- Voice recordings
+- Low bandwidth needs
+
+**medium** (192k) - Default
+
+- Music extraction
+- General use
+- Good quality/size balance
+
+**high** (320k)
+
+- High-quality music
+- Critical listening
+- Near-transparent quality
+
+**lossless** (FLAC)
+
+- Archival purposes
+- Professional work
+- Bit-perfect extraction
+
+---
+
+### `--bitrate` - Audio Bitrate
+
+Control the output quality and file size for lossy formats.
+
+**Recommended Bitrates:**
+
+| Content Type | Low  | Medium | High |
+| ------------ | ---- | ------ | ---- |
+| Speech/Voice | 64k  | 96k    | 128k |
+| Podcast      | 96k  | 128k   | 192k |
+| Music        | 128k | 192k   | 320k |
+| Hi-Fi Music  | 256k | 320k   | FLAC |
+
+---
+
+## Examples
+
+### Extract Audio to MP3
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio extract video.mp4 -f mp3 -b 192k" },
+    {
+      output: "Extracting audio: video.mp4 → video-audio.mp3",
+      isSuccess: false,
+    },
+    { output: "Original codec: AAC | 256k | 48000 Hz", isSuccess: false },
+    { output: "Duration: 05:32 | Size: 8.4 MB", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Extract Lossless Audio
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio extract concert.mkv -f flac -q lossless" },
+    {
+      output: "Extracting: concert.mkv → concert-audio.flac",
+      isSuccess: false,
+    },
+    {
+      output: "Lossless extraction | 24-bit/96kHz preserved",
+      isSuccess: false,
+    },
+    { output: "File size: 124.5 MB", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Extract and Convert to Opus
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio extract podcast.mp4 -f opus -b 96k" },
+    {
+      output: "Extracting: podcast.mp4 → podcast-audio.opus",
+      isSuccess: false,
+    },
+    { output: "Opus encoder optimized for speech", isSuccess: false },
+    {
+      output: "Original: 45.2 MB | Extracted: 5.8 MB (87% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
+
+---
+
+### Batch Extract from Multiple Videos
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio extract *.mp4 -f mp3 -b 256k -o audio/" },
+    { output: "Processing 8 video files...", isSuccess: false },
+    { output: "episode01.mp4 → audio/episode01-audio.mp3", isSuccess: false },
+    { output: "episode02.mp4 → audio/episode02-audio.mp3", isSuccess: false },
+    { output: "...", isSuccess: false },
+    { output: "Completed 8/8 extractions", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Extract with Custom Sample Rate
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio extract video.mkv -f wav --sample-rate 48000" },
+    { output: "Resampling: 44100 Hz → 48000 Hz", isSuccess: false },
+    { output: "Professional 48kHz WAV created", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Common Workflows
+
+### Podcast Production
+
+```bash
+# Extract interview from video recording
+mediaproc audio extract interview.mp4 -f mp3 -b 128k
+
+# Create high-quality master
+mediaproc audio extract interview.mp4 -f flac -q lossless
+```
+
+### Music Archival
+
+```bash
+# Extract concert audio in lossless format
+mediaproc audio extract concert.mkv -f flac
+
+# Create distribution MP3
+mediaproc audio extract concert.mkv -f mp3 -b 320k
+```
+
+### Mobile Optimization
+
+```bash
+# Small file size for mobile
+mediaproc audio extract video.mp4 -f opus -b 96k
+
+# Mono for voice content
+mediaproc audio extract lecture.mp4 -f mp3 -b 96k --channels 1
+```
+
+---
+
+## Video Format Support
+
+**Supported Input Formats:**
+
+- **MP4** - MPEG-4 containers (most common)
+- **MKV** - Matroska containers (high quality)
+- **AVI** - Audio Video Interleave
+- **MOV** - QuickTime format
+- **WebM** - Web video format
+- **FLV** - Flash video (legacy)
+- **WMV** - Windows Media Video
+- **M4V** - iTunes video format
+
+**Audio Codec Detection:**
+
+The command automatically detects the original audio codec:
+
+- AAC, MP3, Opus, Vorbis, AC3, DTS, PCM, FLAC
+
+---
+
+## Performance Tips
+
+**Stream Copy (No Re-encoding):**
+
+If the video already contains the desired audio format, you can copy it directly without re-encoding:
+
+```bash
+# Extract MP3 audio without re-encoding
+mediaproc audio extract video.mp4 -f mp3 --codec copy
+```
+
+Note: This only works if the video's audio codec matches your output format.
+
+**Preview Before Extracting:**
+
+```bash
+# See what the command will do
+mediaproc audio extract video.mp4 -f mp3 --dry-run
+```
+
+**Verbose Output:**
+
+```bash
+# Show detailed FFmpeg progress
+mediaproc audio extract video.mp4 -f mp3 -v
+```
+
+---
+
+## Quality Considerations
+
+**Original Audio Codec:**
+
+Video files contain audio in various codecs:
+
+- AAC (most common in MP4)
+- AC3/Dolby Digital (DVDs, Blu-rays)
+- DTS (high-quality movies)
+- Opus (WebM videos)
+- Vorbis (older WebM/OGG)
+
+**Re-encoding Impact:**
+
+- Extracting to a lossy format (MP3, AAC) will re-encode and may reduce quality
+- Extracting to lossless (FLAC, WAV) preserves original quality
+- Multiple lossy conversions degrade quality (avoid converting lossy → lossy → lossy)
+
+<Callout type="warning">
+  **Generational Loss:** Each time you convert between lossy formats, quality
+  degrades. Always keep lossless masters and convert from those.
+</Callout>
+
+---
+
+## Related Commands
+
+- [`convert`](/docs/plugins/audio/convert) - Convert between audio formats
+- [`normalize`](/docs/plugins/audio/normalize) - Normalize extracted audio levels
+- [`trim`](/docs/plugins/audio/trim) - Trim extracted audio
+
+---
+
+## Learn More
+
+- [Audio Codecs Explained](https://en.wikipedia.org/wiki/Audio_codec)
+- [FFmpeg Audio Stream Selection](https://trac.ffmpeg.org/wiki/Map)
+- [Video Container Formats](https://en.wikipedia.org/wiki/Container_format)

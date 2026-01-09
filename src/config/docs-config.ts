@@ -83,7 +83,13 @@ export const videoCommands: Command[] = [
   { name: 'transcode', slug: 'transcode', description: 'Transcode video to different formats' },
 ];
 
-export const audioCommands: Command[] = [];
+export const audioCommands: Command[] = [
+  { name: 'convert', slug: 'convert', description: 'Convert audio between formats' },
+  { name: 'normalize', slug: 'normalize', description: 'Normalize audio volume levels' },
+  { name: 'merge', slug: 'merge', description: 'Merge multiple audio files' },
+  { name: 'extract', slug: 'extract', description: 'Extract audio from video files' },
+  { name: 'trim', slug: 'trim', description: 'Trim audio segments' }
+];
 
 export const documentCommands: Command[] = [];
 

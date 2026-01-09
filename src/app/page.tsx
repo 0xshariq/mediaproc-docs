@@ -9,8 +9,7 @@ export default function Home() {
     <div className="flex-1 bg-linear-to-b from-background to-background/50">
         {/* Hero Section */}
         <section className="container mx-auto px-4 sm:px-6 pt-12 sm:pt-16 lg:pt-24 pb-8 sm:pb-12 lg:pb-16 text-center">
-          <div className="inline-flex items-center space-x-2 bg-muted px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm mb-6 sm:mb-8">
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+          <div className="inline-flex items-center bg-muted px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm mb-6 sm:mb-8">
             <span>Universal Media Processing CLI</span>
           </div>
 

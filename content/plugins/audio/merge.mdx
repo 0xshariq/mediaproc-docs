@@ -1,0 +1,710 @@
+# merge
+
+Concatenate multiple audio files with automatic format normalization and optional crossfade.
+
+## Overview
+
+The `merge` command combines multiple audio files into a single continuous track. Whether you're assembling podcast episodes, creating playlists, or building soundscapes, this command handles format differences automatically with professional crossfade options.
+
+**Key Features:**
+
+- Concatenate unlimited audio files
+- Automatic format and sample rate normalization
+- Optional crossfade transitions between tracks
+- Gapless playback support
+- Batch processing capabilities
+- Smart metadata handling
+
+**Common Use Cases:**
+
+- Combining podcast segments
+- Creating album medleys
+- Assembling audiobook chapters
+- Building continuous DJ mixes
+- Merging recorded takes
+- Creating compilation albums
+
+<Callout type="info">
+  **Format Handling:** The merge command automatically normalizes different
+  formats, sample rates, and channel counts. No pre-processing required.
+</Callout>
+
+## Usage
+
+<Terminal
+  commands={[{ command: "mediaproc audio merge <input...> [options]" }]}
+/>
+
+## Options
+
+### Basic Options
+
+| Option      | Alias | Type    | Default | Description                       |
+| ----------- | ----- | ------- | ------- | --------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file path                  |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output       |
+| `--dry-run` |       | boolean | false   | Preview command without executing |
+
+### Merge Settings
+
+| Option        | Alias | Type   | Default | Description                                    |
+| ------------- | ----- | ------ | ------- | ---------------------------------------------- |
+| `--crossfade` | `-c`  | number |         | Crossfade duration in seconds (0.1-10)         |
+| `--format`    | `-f`  | string | mp3     | Output format (mp3, aac, opus, ogg, flac, wav) |
+| `--quality`   | `-q`  | string | high    | Output quality preset (low, medium, high, max) |
+
+### Advanced Options
+
+| Option      | Type    | Default | Description                                   |
+| ----------- | ------- | ------- | --------------------------------------------- |
+| `--gapless` | boolean | false   | Enable gapless playback (no silence at joins) |
+| `--list`    | string  |         | Read file list from text file (one per line)  |
+
+## Flag Details
+
+### `--crossfade` - Crossfade Duration
+
+Apply a smooth audio crossfade between tracks. During the fade, the outgoing track gradually decreases in volume while the incoming track increases.
+
+**Duration Range:** 0.1 to 10 seconds
+
+**Common Values:**
+
+**0.5-1 second** - Quick transition
+
+- Podcast segments
+- Radio-style cuts
+- Fast-paced content
+
+**2-3 seconds** - Standard crossfade
+
+- Music mixes
+- Album medleys
+- Professional productions
+
+**4-5 seconds** - Long blend
+
+- Ambient music
+- DJ mixes
+- Cinematic soundscapes
+
+**Examples:**
+
+```bash
+# Quick 1-second crossfade
+--crossfade 1
+
+# Standard music transition
+--crossfade 2.5
+
+# Long ambient blend
+--crossfade 5
+```
+
+**How Crossfade Works:**
+
+```
+Track 1: ========[fade out]
+Track 2:            [fade in]========
+Result:  ===============[blend]======
+```
+
+The total output duration is:
+
+```
+Total = Track1 + Track2 - Crossfade Duration
+```
+
+---
+
+### `--format` - Output Format
+
+Specify the output audio format.
+
+**Supported Formats:**
+
+**MP3** (Default)
+
+- Universal compatibility
+- Good quality-to-size ratio
+- Ideal for: podcasts, music libraries
+
+**AAC** (.m4a)
+
+- Better quality than MP3 at same bitrate
+- Apple ecosystem preferred
+- Ideal for: iTunes, Apple devices
+
+**Opus** (.opus)
+
+- Best quality per bitrate
+- Modern codec
+- Ideal for: streaming, voice
+
+**OGG** (.ogg)
+
+- Open source format
+- Good quality
+- Ideal for: games, web streaming
+
+**FLAC** (.flac)
+
+- Lossless compression
+- Large file sizes
+- Ideal for: archival, audiophile use
+
+**WAV** (.wav)
+
+- Uncompressed
+- Very large files
+- Ideal for: editing, mastering
+
+**Examples:**
+
+```bash
+# High-quality MP3 (default)
+--format mp3
+
+# Lossless merge
+--format flac
+
+# Modern streaming codec
+--format opus
+```
+
+---
+
+### `--quality` - Quality Preset
+
+Control the output quality using presets.
+
+**Available Presets:**
+
+**low** - Compact files
+
+- MP3: 128 kbps
+- AAC: 96 kbps
+- Opus: 64 kbps
+- Use for: voice content, previews, mobile
+
+**medium** - Balanced
+
+- MP3: 192 kbps
+- AAC: 128 kbps
+- Opus: 96 kbps
+- Use for: standard podcasts, general music
+
+**high** (Default) - Excellent quality
+
+- MP3: 256 kbps
+- AAC: 192 kbps
+- Opus: 128 kbps
+- Use for: music, professional audio
+
+**max** - Maximum quality
+
+- MP3: 320 kbps
+- AAC: 256 kbps
+- Opus: 192 kbps
+- Use for: archival, critical listening
+
+**Examples:**
+
+```bash
+# High quality (default)
+--quality high
+
+# Compact for web delivery
+--quality medium
+
+# Maximum quality archive
+--quality max --format flac
+```
+
+---
+
+### `--gapless` - Gapless Playback
+
+Enable gapless playback by removing encoder delays and padding.
+
+**What It Does:**
+
+- Removes silent samples added by encoders
+- Ensures perfect alignment at join points
+- Critical for DJ mixes and continuous albums
+- Works best with modern players
+
+**When to Use:**
+
+- DJ mixes or continuous sets
+- Classical music movements
+- Concept albums
+- Live recordings split into tracks
+
+**Example:**
+
+```bash
+# Gapless DJ mix
+mediaproc audio merge track1.mp3 track2.mp3 track3.mp3 --gapless --crossfade 2
+```
+
+<Callout type="warning">
+  **Player Support:** Gapless playback requires player support. Most modern
+  players (iTunes, Spotify, VLC) support it, but some older players may still
+  introduce gaps.
+</Callout>
+
+---
+
+### `--list` - Input File List
+
+Read input files from a text file instead of listing them on the command line.
+
+**File Format:**
+
+Plain text file with one file path per line:
+
+```
+audio1.mp3
+audio2.mp3
+audio3.mp3
+```
+
+**Usage:**
+
+Useful when merging many files or when file paths contain spaces.
+
+**Example:**
+
+```bash
+# Create file list
+echo "segment1.mp3" > files.txt
+echo "segment2.mp3" >> files.txt
+echo "segment3.mp3" >> files.txt
+
+# Merge from list
+mediaproc audio merge --list files.txt --output episode.mp3
+```
+
+**Benefits:**
+
+- Cleaner commands for many files
+- Easy to reorder files
+- Can include files with spaces in names
+- Scriptable and version-controllable
+
+---
+
+## Examples
+
+### Simple Concatenation
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio merge intro.mp3 main.mp3 outro.mp3 -o episode.mp3",
+    },
+    { output: "Merging 3 files...", isSuccess: false },
+    { output: "intro.mp3 (0:30)", isSuccess: false },
+    { output: "main.mp3 (25:00)", isSuccess: false },
+    { output: "outro.mp3 (1:00)", isSuccess: false },
+    { output: "Output: episode.mp3 (26:30) @ 256k MP3", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Merge with Crossfade
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio merge track1.mp3 track2.mp3 track3.mp3 --crossfade 2 -o mix.mp3",
+    },
+    { output: "Applying 2.0s crossfades...", isSuccess: false },
+    { output: "Track 1 (3:45) → [2s fade] → Track 2 (4:10)", isSuccess: false },
+    { output: "Track 2 (4:10) → [2s fade] → Track 3 (3:30)", isSuccess: false },
+    {
+      output: "Total duration: 11:21 (4s saved via crossfades)",
+      isSuccess: true,
+    },
+  ]}
+/>
+
+---
+
+### Merge Different Formats
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio merge song1.flac song2.mp3 song3.wav -o album.flac",
+    },
+    { output: "Normalizing formats...", isSuccess: false },
+    { output: "Converting MP3 → FLAC 44.1kHz", isSuccess: false },
+    { output: "Converting WAV → FLAC 44.1kHz", isSuccess: false },
+    { output: "Merging 3 tracks → album.flac (lossless)", isSuccess: true },
+  ]}
+/>
+
+---
+
+### DJ Mix with Gapless Playback
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio merge set*.mp3 --crossfade 3 --gapless -o djmix.mp3",
+    },
+    { output: "Processing 12 tracks...", isSuccess: false },
+    { output: "Applying 3.0s crossfades between tracks", isSuccess: false },
+    { output: "Enabling gapless playback", isSuccess: false },
+    { output: "DJ Mix: 62:45 | Seamless transitions", isSuccess: true },
+  ]}
+/>
+
+---
+
+### Merge from File List
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio merge --list chapters.txt -o audiobook.m4a" },
+    { output: "Reading file list: chapters.txt", isSuccess: false },
+    { output: "Found 15 chapters", isSuccess: false },
+    { output: "Merging with gapless joins...", isSuccess: false },
+    { output: "Audiobook: 8:32:15 | AAC 128k", isSuccess: true },
+  ]}
+/>
+
+---
+
+### High-Quality Archive Merge
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio merge part*.flac --format flac --quality max -o complete.flac",
+    },
+    { output: "Merging lossless FLAC files...", isSuccess: false },
+    { output: "Quality: Maximum (lossless)", isSuccess: false },
+    {
+      output: "Output: complete.flac | 24-bit 96kHz | 2.4 GB",
+      isSuccess: true,
+    },
+  ]}
+/>
+
+---
+
+## Common Workflows
+
+### Podcast Production
+
+```bash
+# Basic episode assembly
+mediaproc audio merge intro.mp3 interview.mp3 outro.mp3 -o episode.mp3
+
+# With crossfades for smooth transitions
+mediaproc audio merge intro.mp3 segment1.mp3 ad.mp3 segment2.mp3 outro.mp3 \
+  --crossfade 1 -o episode.mp3
+
+# Normalize and merge recorded segments
+mediaproc audio merge raw-*.wav --format mp3 --quality high -o final.mp3
+```
+
+### Music Production
+
+```bash
+# Create album medley
+mediaproc audio merge track1.flac track2.flac track3.flac \
+  --crossfade 2.5 --gapless -o medley.flac
+
+# DJ mix with long transitions
+mediaproc audio merge set*.mp3 --crossfade 4 --gapless -o djset.mp3
+
+# Live performance from splits
+mediaproc audio merge concert-part*.wav --gapless -o concert-full.wav
+```
+
+### Audiobook Assembly
+
+```bash
+# Merge chapters from file list
+mediaproc audio merge --list chapters.txt --format m4a -o audiobook.m4a
+
+# Combine with intro/outro
+mediaproc audio merge intro.mp3 --list chapters.txt outro.mp3 -o book-complete.m4a
+
+# High-quality archive version
+mediaproc audio merge chapter*.flac --format flac --gapless -o audiobook-master.flac
+```
+
+### Radio Production
+
+```bash
+# Hourly show compilation
+mediaproc audio merge segment*.mp3 --crossfade 0.5 -o show.mp3
+
+# Music and voice blend
+mediaproc audio merge music-bed.mp3 voiceover.mp3 music-outro.mp3 \
+  --crossfade 2 -o radio-spot.mp3
+```
+
+---
+
+## Format Normalization
+
+**Automatic Handling:**
+
+The merge command automatically handles:
+
+**Sample Rate Differences:**
+
+- 44.1kHz, 48kHz, 96kHz → Converted to most common rate
+- Resampling with high-quality algorithms
+
+**Channel Count:**
+
+- Mono + Stereo → All converted to stereo
+- 5.1 surround → Downmixed to stereo if needed
+
+**Bit Depth:**
+
+- 16-bit, 24-bit, 32-bit → Normalized to highest depth
+- Prevents quality loss
+
+**Codec Differences:**
+
+- MP3 + FLAC + WAV → All decoded and re-encoded uniformly
+
+**Examples:**
+
+```bash
+# Mix of formats, sample rates, and channels
+file1.mp3: 44.1kHz stereo
+file2.wav: 48kHz mono
+file3.flac: 96kHz stereo
+
+# Result automatically normalizes to:
+output.mp3: 48kHz stereo (highest common denominator)
+```
+
+---
+
+## Crossfade Techniques
+
+**Standard Crossfade:**
+
+Equal power fade (linear):
+
+- Track 1 fades out linearly
+- Track 2 fades in linearly
+- Overlap maintains perceived volume
+
+**Crossfade Duration Guide:**
+
+**Music Genres:**
+
+| Genre            | Recommended Fade |
+| ---------------- | ---------------- |
+| Electronic/Dance | 4-5 seconds      |
+| Rock/Pop         | 2-3 seconds      |
+| Classical        | 1-2 seconds      |
+| Jazz             | 2-3 seconds      |
+| Hip-Hop          | 1-2 seconds      |
+
+**Content Types:**
+
+| Type               | Recommended Fade |
+| ------------------ | ---------------- |
+| Podcast segments   | 0.5-1 second     |
+| DJ mixes           | 3-5 seconds      |
+| Audiobooks         | 0 (no fade)      |
+| Sound effects      | 0.1-0.5 seconds  |
+| Ambient/Soundscape | 5-10 seconds     |
+
+---
+
+## Performance Considerations
+
+**Processing Speed:**
+
+Merge speed depends on:
+
+- Number of files
+- Total duration
+- Output format and quality
+- Whether re-encoding is needed
+
+**Approximate Times:**
+
+```bash
+# 3 files, 30 minutes total → MP3 high quality
+Real-time ratio: ~5-10x (3-6 minutes processing)
+
+# 10 files, 2 hours total → FLAC lossless
+Real-time ratio: ~2-3x (40-60 minutes processing)
+
+# 50 files, 10 hours total → MP3 medium quality
+Real-time ratio: ~8-15x (40-75 minutes processing)
+```
+
+**Memory Usage:**
+
+- Minimal: streaming processing
+- Safe for very large merges
+- No need to load entire files into RAM
+
+---
+
+## File Order Control
+
+**Command Line Order:**
+
+Files are merged in the order listed:
+
+```bash
+# Order: intro → main → outro
+mediaproc audio merge intro.mp3 main.mp3 outro.mp3
+```
+
+**Globbing Order:**
+
+Shell globbing is alphabetical:
+
+```bash
+# Alphabetical order
+mediaproc audio merge track*.mp3
+
+# Numeric sorting (careful!)
+track1.mp3, track10.mp3, track2.mp3  # Wrong order!
+track01.mp3, track02.mp3, track10.mp3  # Correct order
+```
+
+**File List Order:**
+
+Use `--list` for precise control:
+
+```bash
+# files.txt (in desired order)
+intro.mp3
+segment-1.mp3
+segment-2.mp3
+outro.mp3
+
+mediaproc audio merge --list files.txt
+```
+
+**Tip:** Use zero-padded numbering for correct sorting (01, 02, 03 instead of 1, 2, 3).
+
+---
+
+## Quality Preservation
+
+**Lossless to Lossy:**
+
+When merging lossless sources (FLAC, WAV) to lossy output (MP3, AAC):
+
+- Use `--quality max` for minimal quality loss
+- Consider keeping FLAC archive version
+
+**Lossy to Lossy:**
+
+Merging already-compressed files (MP3 → MP3):
+
+- Results in re-encoding (generation loss)
+- Use highest quality preset
+- Avoid multiple merge operations on same files
+
+**Best Practices:**
+
+```bash
+# Archive version (lossless)
+mediaproc audio merge sources/*.flac --format flac --gapless -o archive.flac
+
+# Distribution version (lossy)
+mediaproc audio merge sources/*.flac --format mp3 --quality high -o distribution.mp3
+
+# Keep both versions for future edits
+```
+
+---
+
+## Metadata Handling
+
+**Default Behavior:**
+
+- First file's metadata is preserved (title, artist, album)
+- Subsequent files' metadata is discarded
+- Duration and bitrate are recalculated
+
+**Custom Metadata:**
+
+For custom metadata, use a separate tool after merging:
+
+```bash
+# Merge files
+mediaproc audio merge files*.mp3 -o merged.mp3
+
+# Add metadata with FFmpeg
+ffmpeg -i merged.mp3 -metadata title="My Mix" -metadata artist="DJ Name" -c copy final.mp3
+```
+
+---
+
+## Troubleshooting
+
+**Different Sample Rates:**
+
+Automatic normalization handles this, but you can specify:
+
+```bash
+# Force specific sample rate (advanced)
+# Use FFmpeg directly for fine control
+```
+
+**Very Long Processing:**
+
+For huge merges:
+
+```bash
+# Use lower quality for faster processing
+--quality medium
+
+# Monitor progress
+--verbose
+```
+
+**Out of Order Files:**
+
+Use file list for precise control:
+
+```bash
+# Create ordered list
+ls -1 track*.mp3 | sort -V > files.txt
+
+# Merge in correct order
+mediaproc audio merge --list files.txt
+```
+
+---
+
+## Related Commands
+
+- [`trim`](/docs/plugins/audio/trim) - Trim files before merging
+- [`normalize`](/docs/plugins/audio/normalize) - Normalize after merging
+- [`convert`](/docs/plugins/audio/convert) - Convert format after merging
+
+---
+
+## Learn More
+
+- [FFmpeg Concatenate](https://trac.ffmpeg.org/wiki/Concatenate)
+- [Audio Crossfade Filter](https://ffmpeg.org/ffmpeg-filters.html#acrossfade)
+- [Gapless Playback](https://wiki.hydrogenaud.io/index.php?title=Gapless_playback)
