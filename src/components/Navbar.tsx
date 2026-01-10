@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Terminal, Github, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { Search } from '@/components/Search';
+import { VersionSelector } from '@/components/VersionSelector';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -25,7 +27,9 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
+            <VersionSelector />
+            <Search />
             <Link
               href="/docs/introduction"
               className={`text-sm font-medium transition-colors hover:text-foreground ${isDocsPage ? 'text-foreground' : 'text-muted-foreground'

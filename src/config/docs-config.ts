@@ -179,7 +179,6 @@ export const navigationConfig: NavSection[] = [
       { title: 'Basic Concepts', slug: 'basic-concepts' },
       { title: 'Quick Start', slug: 'quick-start' },
       { title: 'Use Cases', slug: 'use-cases' },
-      { title: 'Troubleshooting', slug: 'troubleshooting' },
     ],
   },
   {
@@ -219,6 +218,21 @@ export const navigationConfig: NavSection[] = [
       { title: 'Contributing', slug: 'community/contributing' },
       { title: 'Plugin Integration', slug: 'community/plugin-integration' },
       { title: 'Plugin Ideas', slug: 'community/plugin-ideas' },
+      { title: 'Migration: ImageMagick to MediaProc', slug: 'community/migration-sharp' },
+      { title: 'Migration: FFmpeg to MediaProc', slug: 'community/migration-ffmpeg' },
+    ],
+  },
+  {
+    title: 'Performance',
+    items: [
+      { title: 'Benchmarks', slug: 'performance' },
+    ],
+  },
+  {
+    title: 'Help',
+    items: [
+      { title: 'FAQ', slug: 'faq' },
+      { title: 'Troubleshooting', slug: 'troubleshooting' },
     ],
   },
 ];

@@ -1,0 +1,427 @@
+# Migration Guide: FFmpeg to MediaProc Video Plugin
+
+Migrate your video processing workflows from FFmpeg to MediaProc's video plugin for simplified syntax and enhanced features.
+
+## Why Migrate?
+
+| Feature            | FFmpeg             | MediaProc             |
+| ------------------ | ------------------ | --------------------- |
+| Installation       | Complex multi-step | Single command        |
+| CLI Syntax         | Complex flags      | Intuitive parameters  |
+| Learning Curve     | Steep              | Gentle                |
+| Batch Operations   | Manual scripting   | Native support        |
+| Performance        | Excellent          | Excellent + Optimized |
+| Error Handling     | Minimal            | Comprehensive         |
+| Progress Reporting | Basic              | Real-time with ETA    |
+
+## Installation
+
+### Before: FFmpeg
+
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt update && sudo apt install ffmpeg
+
+# Windows
+choco install ffmpeg
+
+# Verify
+ffmpeg -version
+ffprobe -version
+```
+
+### Now: MediaProc Video Plugin
+
+```bash
+# One-line installation
+npm install -g @mediaproc/video
+
+# Verify installation
+mediaproc video --version
+```
+
+## Common FFmpeg Patterns to MediaProc
+
+### Compress/Encode Video
+
+#### FFmpeg
+
+```bash
+# Basic compression (CRF method)
+ffmpeg -i input.mp4 -crf 23 -preset medium output.mp4
+
+# With bitrate control
+ffmpeg -i input.mp4 -b:v 5000k -b:a 192k output.mp4
+
+# Multiple quality levels
+ffmpeg -i input.mp4 -crf 18 hq.mp4
+ffmpeg -i input.mp4 -crf 28 lq.mp4
+```
+
+#### MediaProc
+
+```bash
+# Basic compression with quality preset
+mediaproc video compress --input input.mp4 --quality medium --output output.mp4
+
+# With bitrate
+mediaproc video compress --input input.mp4 --bitrate 5000k --output output.mp4
+
+# Multiple quality levels
+mediaproc video compress --input input.mp4 --quality high --output hq.mp4
+mediaproc video compress --input input.mp4 --quality low --output lq.mp4
+```
+
+### Convert/Transcode Video
+
+#### FFmpeg
+
+```bash
+# MP4 to WebM
+ffmpeg -i input.mp4 -c:v libvpx-vp9 -c:a libopus output.webm
+
+# MP4 to MKV
+ffmpeg -i input.mp4 -c copy output.mkv
+
+# MP4 to H.265
+ffmpeg -i input.mp4 -c:v libx265 -crf 23 output.mp4
+```
+
+#### MediaProc
+
+```bash
+# MP4 to WebM
+mediaproc video transcode --input input.mp4 --format webm --codec vp9 --output output.webm
+
+# MP4 to MKV (lossless)
+mediaproc video transcode --input input.mp4 --format mkv --codec copy --output output.mkv
+
+# MP4 to H.265
+mediaproc video transcode --input input.mp4 --codec h265 --quality high --output output.mp4
+```
+
+### Resize/Scale Video
+
+#### FFmpeg
+
+```bash
+# Scale to 1080p
+ffmpeg -i input.mp4 -vf scale=1920:1080 output.mp4
+
+# Scale with aspect ratio preservation
+ffmpeg -i input.mp4 -vf scale=1280:-1 output.mp4
+
+# Scale 4K to 1080p with high quality
+ffmpeg -i input.4k.mp4 -vf scale=1920:1080:flags=lanczos -preset slow output.mp4
+```
+
+#### MediaProc
+
+```bash
+# Scale to 1080p
+mediaproc video resize --input input.mp4 --width 1920 --height 1080 --output output.mp4
+
+# Scale with aspect ratio
+mediaproc video resize --input input.mp4 --width 1280 --output output.mp4
+
+# 4K to 1080p with quality
+mediaproc video resize --input input.4k.mp4 --width 1920 --height 1080 --quality high --output output.mp4
+```
+
+### Trim Video
+
+#### FFmpeg
+
+```bash
+# Trim 10s to 30s
+ffmpeg -i input.mp4 -ss 10 -to 30 -c copy output.mp4
+
+# Trim 10s duration of 20s
+ffmpeg -i input.mp4 -ss 10 -t 20 -c copy output.mp4
+
+# With fade effects
+ffmpeg -i input.mp4 -ss 10 -to 30 -vf fade=t=in:st=10:d=1,fade=t=out:st=29:d=1 output.mp4
+```
+
+#### MediaProc
+
+```bash
+# Trim 10s to 30s
+mediaproc video trim --input input.mp4 --start 10 --end 30 --output output.mp4
+
+# Trim with duration
+mediaproc video trim --input input.mp4 --start 10 --duration 20 --output output.mp4
+
+# With fade effects
+mediaproc video trim --input input.mp4 --start 10 --end 30 --fade-in 1 --fade-out 1 --output output.mp4
+```
+
+### Extract Audio/Frames
+
+#### FFmpeg
+
+```bash
+# Extract audio
+ffmpeg -i input.mp4 -q:a 0 -map a output.mp3
+
+# Extract frames
+ffmpeg -i input.mp4 -vf fps=1 frame_%04d.png
+
+# Extract specific frame
+ffmpeg -i input.mp4 -ss 00:00:30 -vframes 1 frame.jpg
+
+# Generate thumbnail
+ffmpeg -i input.mp4 -ss 00:00:05 -vframes 1 -vf scale=320:-1 thumb.jpg
+```
+
+#### MediaProc
+
+```bash
+# Extract audio
+mediaproc video extract --input input.mp4 --type audio --output output.mp3
+
+# Extract frames (1 per second)
+mediaproc video extract --input input.mp4 --type frames --fps 1 --output-dir frames/
+
+# Extract specific frame
+mediaproc video extract --input input.mp4 --type frame --time 30 --output frame.jpg
+
+# Generate thumbnail
+mediaproc video extract --input input.mp4 --type thumbnail --time 5 --width 320 --output thumb.jpg
+```
+
+### Merge/Concatenate Videos
+
+#### FFmpeg
+
+```bash
+# Create concat file
+echo "file '1.mp4'" > list.txt
+echo "file '2.mp4'" >> list.txt
+echo "file '3.mp4'" >> list.txt
+
+# Merge using concat demuxer
+ffmpeg -f concat -safe 0 -i list.txt -c copy output.mp4
+```
+
+#### MediaProc
+
+```bash
+# Direct merge with automatic normalization
+mediaproc video merge --input 1.mp4 2.mp4 3.mp4 --output output.mp4
+
+# With transition effect
+mediaproc video merge --input "*.mp4" --transition fade --transition-duration 0.5 --output output.mp4
+```
+
+## Batch Processing
+
+### Before: FFmpeg Shell Scripts
+
+```bash
+#!/bin/bash
+# Compress all videos in directory
+for video in *.mp4; do
+  echo "Processing: $video"
+  ffmpeg -i "$video" \
+    -crf 23 \
+    -preset medium \
+    -c:a aac \
+    -b:a 192k \
+    "compressed/$video"
+done
+```
+
+### Now: MediaProc
+
+```bash
+#!/bin/bash
+# Batch compress with parallel processing
+mediaproc video batch \
+  --input "*.mp4" \
+  --command compress \
+  --quality medium \
+  --output-dir compressed/ \
+  --workers 4 \
+  --verbose
+```
+
+**Benefits:**
+
+- ✅ 4x faster with 4 parallel workers
+- ✅ Automatic error recovery
+- ✅ Real-time progress bar with ETA
+- ✅ Failed file retry
+
+### Complex Batch Workflow
+
+#### FFmpeg (Multiple Scripts)
+
+```bash
+#!/bin/bash
+# Step 1: Extract thumbnails
+for video in *.mp4; do
+  ffmpeg -i "$video" -ss 00:00:05 -vframes 1 "thumbs/${video%.mp4}.jpg"
+done
+
+# Step 2: Compress videos
+for video in *.mp4; do
+  ffmpeg -i "$video" -crf 23 "compressed/$video"
+done
+
+# Step 3: Extract audio
+for video in *.mp4; do
+  ffmpeg -i "$video" -q:a 0 -map a "audio/${video%.mp4}.mp3"
+done
+```
+
+#### MediaProc (Single Pipeline)
+
+```bash
+#!/bin/bash
+mediaproc video batch \
+  --input "*.mp4" \
+  --tasks extract,compress,extract-audio \
+  --compress-quality high \
+  --output-dir results/ \
+  --workers 4 \
+  --manifest manifest.json
+```
+
+## Advanced Conversions
+
+### HLS Streaming Preparation
+
+#### FFmpeg
+
+```bash
+ffmpeg -i input.mp4 \
+  -c:v libx264 -preset slow -crf 20 \
+  -c:a aac -b:a 128k \
+  -f hls -hls_time 10 -hls_list_size 0 \
+  output.m3u8
+```
+
+#### MediaProc
+
+```bash
+mediaproc video transcode \
+  --input input.mp4 \
+  --format hls \
+  --segment-duration 10 \
+  --bitrate 5000k \
+  --output output.m3u8
+```
+
+### Multi-bitrate Encoding (ABR)
+
+#### FFmpeg
+
+```bash
+# Requires multiple commands
+ffmpeg -i input.mp4 -c:v libx264 -crf 18 -b:v 5000k hq.mp4
+ffmpeg -i input.mp4 -c:v libx264 -crf 23 -b:v 2500k mq.mp4
+ffmpeg -i input.mp4 -c:v libx264 -crf 28 -b:v 1000k lq.mp4
+```
+
+#### MediaProc
+
+```bash
+mediaproc video compress \
+  --input input.mp4 \
+  --generate-profiles hq,mq,lq \
+  --output-template profile_{profile}.mp4
+```
+
+## Hardware Acceleration
+
+### FFmpeg with GPU
+
+```bash
+# NVIDIA CUDA
+ffmpeg -hwaccel cuda -i input.mp4 -c:v hevc_nvenc output.mp4
+
+# Intel QuickSync
+ffmpeg -hwaccel qsv -i input.mp4 -c:v hevc_qsv output.mp4
+```
+
+### MediaProc with GPU
+
+```bash
+# Automatic GPU detection
+mediaproc video compress --input input.mp4 --gpu auto --output output.mp4
+
+# Specific GPU
+mediaproc video compress --input input.mp4 --gpu nvidia --output output.mp4
+mediaproc video compress --input input.mp4 --gpu intel --output output.mp4
+```
+
+## Troubleshooting
+
+### Issue: Audio sync issues after merge
+
+**FFmpeg Solution:**
+
+```bash
+ffmpeg -i input.mp4 -c:v copy -c:a aac -async 1 output.mp4
+```
+
+**MediaProc Solution:**
+
+```bash
+mediaproc video merge --input *.mp4 --audio-sync default --output output.mp4
+```
+
+### Issue: Video plays but no sound
+
+**Check and fix:**
+
+```bash
+# Check audio streams
+mediaproc video info --input video.mp4
+
+# Add audio from file
+mediaproc video merge --input video.mp4 --audio audio.mp3 --output output.mp4
+```
+
+## Command Reference
+
+Quick mapping of common FFmpeg operations:
+
+| Task           | FFmpeg              | MediaProc                  |
+| -------------- | ------------------- | -------------------------- |
+| Compress       | `ffmpeg -crf`       | `compress --quality`       |
+| Transcode      | `ffmpeg -c:v`       | `transcode --codec`        |
+| Resize         | `ffmpeg -vf scale`  | `resize --width --height`  |
+| Trim           | `ffmpeg -ss -to`    | `trim --start --end`       |
+| Extract Audio  | `ffmpeg -map a`     | `extract --type audio`     |
+| Extract Frames | `ffmpeg -vf fps`    | `extract --type frames`    |
+| Merge          | `ffmpeg -concat`    | `merge --input`            |
+| Thumbnail      | `ffmpeg -vframes 1` | `extract --type thumbnail` |
+
+## Migration Checklist
+
+- [ ] Install MediaProc: `npm install -g @mediaproc/video`
+- [ ] Test single video conversion
+- [ ] Verify output quality matches your FFmpeg settings
+- [ ] Update batch processing scripts
+- [ ] Enable GPU acceleration if available
+- [ ] Set up logging for monitoring
+- [ ] Configure workers for your CPU
+- [ ] Test error handling with `--skip-errors`
+- [ ] Verify output formats and codecs
+- [ ] Update documentation and runbooks
+
+## Next Steps
+
+- [Video Plugin Overview](/docs/plugins/video) - Full command reference
+- [Performance Benchmarks](/docs/performance) - See speed improvements
+- [Troubleshooting](/docs/troubleshooting) - Common FFmpeg to MediaProc issues
+
+---
+
+**Migration Version**: 1.0.0  
+**Last Updated**: January 2026

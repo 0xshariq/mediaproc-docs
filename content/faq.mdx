@@ -1,0 +1,409 @@
+# Frequently Asked Questions (FAQ)
+
+Common questions and answers about MediaProc CLI, plugins, and workflows.
+
+## General Questions
+
+### What is MediaProc?
+
+MediaProc is a universal media processing CLI tool with a plugin-based architecture. It provides a consistent interface for processing images, videos, audio, and other media types through specialized plugins.
+
+### Why use MediaProc instead of FFmpeg or ImageMagick directly?
+
+While FFmpeg and ImageMagick are powerful tools, they have steep learning curves and complex syntax. MediaProc provides:
+
+- **Simplified syntax** with intuitive parameters
+- **Consistent interface** across all media types
+- **Better error handling** and progress reporting
+- **Native batch processing** without scripting
+- **Automatic optimization** and smart defaults
+- **Plugin ecosystem** for extensibility
+
+You still get the power of FFmpeg and Sharp under the hood, but with a better developer experience.
+
+### Is MediaProc free to use?
+
+Yes! MediaProc is **100% open-source** under the MIT license. You can use it for personal and commercial projects without any restrictions.
+
+## Installation & Setup
+
+### What are the system requirements?
+
+- **Node.js**: v18.0.0 or higher
+- **Operating System**: macOS, Linux, or Windows
+- **Disk Space**: ~100MB for CLI + plugins
+- **Memory**: 2GB minimum, 8GB+ recommended for video processing
+
+### How do I install MediaProc?
+
+```bash
+# Install globally via npm
+npm install -g @mediaproc/cli
+
+# Or via pnpm
+pnpm add -g @mediaproc/cli
+
+# Verify installation
+mediaproc --version
+```
+
+### Do I need to install plugins separately?
+
+**Yes**, plugins are installed separately to keep the core CLI lightweight:
+
+```bash
+# Install specific plugins
+npm install -g @mediaproc/image
+npm install -g @mediaproc/video
+npm install -g @mediaproc/audio
+
+# Check installed plugins
+mediaproc list
+```
+
+### How do I update MediaProc?
+
+```bash
+# Update CLI
+npm update -g @mediaproc/cli
+
+# Update all plugins
+npm update -g @mediaproc/image @mediaproc/video @mediaproc/audio
+```
+
+### Can I use MediaProc in CI/CD pipelines?
+
+Absolutely! MediaProc works great in CI/CD environments:
+
+```yaml
+# GitHub Actions example
+- name: Install MediaProc
+  run: npm install -g @mediaproc/cli @mediaproc/image
+
+- name: Process images
+  run: mediaproc image batch --input assets/*.jpg --command optimize
+```
+
+## Plugin Questions
+
+### Which plugins are available?
+
+Currently available official plugins:
+
+- **Image** (49 commands) - Image processing with Sharp
+- **Video** (6 commands) - Video processing with FFmpeg
+- **Audio** (5 commands) - Audio processing with FFmpeg
+
+Coming soon: Document, Animation, 3D, Stream, AI, Metadata, Pipeline
+
+### How do I know which plugin to use?
+
+Use the format/media type to determine the plugin:
+
+- Images (jpg, png, webp, etc.) → `image` plugin
+- Videos (mp4, webm, mkv, etc.) → `video` plugin
+- Audio files (mp3, wav, flac, etc.) → `audio` plugin
+
+### Can I create my own plugin?
+
+Yes! MediaProc has a plugin API for creating custom plugins. See:
+
+- [Creating Plugins Guide](/docs/community/creating-plugins)
+- [Plugin Guidelines](/docs/community/plugin-guidelines)
+- [Plugin API Reference](/docs/architecture/cli-plugins)
+
+### Where can I find plugin documentation?
+
+- [Image Plugin Documentation](/docs/plugins/image)
+- [Video Plugin Documentation](/docs/plugins/video)
+- [Audio Plugin Documentation](/docs/plugins/audio)
+
+## Usage Questions
+
+### How do I process multiple files at once?
+
+Use glob patterns or the batch command:
+
+```bash
+# Using glob patterns
+mediaproc image resize --input "photos/*.jpg" --width 1920 --height 1080
+
+# Using batch command with parallel processing
+mediaproc image batch --input "photos/*.jpg" --command resize --width 1920 --workers 4
+```
+
+### Can I process entire folders?
+
+Yes, use the folder input pattern:
+
+```bash
+# Process all images in a folder
+mediaproc image optimize --input photos/ --output-dir optimized/
+
+# Recursive folder processing
+mediaproc image batch --input "photos/**/*.jpg" --command compress --quality 85
+```
+
+### How do I chain multiple operations?
+
+Currently, you need to run commands sequentially:
+
+```bash
+# Resize then optimize
+mediaproc image resize --input photo.jpg --width 1920 --output temp.jpg
+mediaproc image optimize --input temp.jpg --quality 85 --output final.jpg
+```
+
+A pipeline plugin for chaining operations is coming soon!
+
+### What's the fastest way to process thousands of files?
+
+Use the batch command with parallel workers:
+
+```bash
+mediaproc image batch \
+  --input "photos/**/*.jpg" \
+  --command resize \
+  --width 1920 \
+  --height 1080 \
+  --workers 8 \
+  --skip-errors
+```
+
+Adjust `--workers` based on your CPU cores (typically use 75% of available cores).
+
+### How do I preserve the original file?
+
+Always specify a different output path:
+
+```bash
+# Specify output file
+mediaproc image resize --input original.jpg --width 1920 --output resized.jpg
+
+# Use output directory for batch operations
+mediaproc image batch --input "*.jpg" --command resize --output-dir processed/
+```
+
+## Performance Questions
+
+### How fast is MediaProc compared to direct FFmpeg/Sharp usage?
+
+MediaProc has **minimal overhead** (typically <5%) because it directly calls FFmpeg and Sharp. The real performance gains come from:
+
+- **Optimized defaults** that balance speed and quality
+- **Parallel processing** for batch operations
+- **Smart caching** to avoid redundant processing
+
+See [Performance Benchmarks](/docs/performance) for detailed metrics.
+
+### Why is video processing so slow?
+
+Video encoding is CPU-intensive. Tips to improve speed:
+
+1. **Enable GPU acceleration**: `--gpu nvidia` or `--gpu intel`
+2. **Lower quality preset**: `--quality medium` instead of `high`
+3. **Reduce resolution first**: 4K → 1080p before other operations
+4. **Use hardware codecs**: H.264 is faster than H.265/AV1
+
+### Can I use my GPU for processing?
+
+Yes! GPU acceleration is available for video processing:
+
+```bash
+# Automatic GPU detection
+mediaproc video compress --input video.mp4 --gpu auto
+
+# Specific GPU
+mediaproc video compress --input video.mp4 --gpu nvidia
+```
+
+GPU support requires proper drivers and FFmpeg compiled with GPU support.
+
+### How much memory does MediaProc use?
+
+Memory usage depends on the operation:
+
+- **Image resize (4K)**: ~150-200MB
+- **Video encode (1080p)**: ~250-500MB
+- **Batch processing**: ~150MB per worker
+
+For batch operations, reduce `--workers` if you encounter memory issues.
+
+## Troubleshooting
+
+### I get "command not found" after installation
+
+This usually means the npm global bin directory isn't in your PATH:
+
+```bash
+# Add to your shell profile (~/.bashrc, ~/.zshrc)
+export PATH="$PATH:$(npm config get prefix)/bin"
+
+# Or reinstall with --force
+npm install -g --force @mediaproc/cli
+```
+
+### Plugin commands don't work
+
+Ensure the plugin is installed:
+
+```bash
+# Check installed plugins
+mediaproc list
+
+# Install missing plugin
+npm install -g @mediaproc/image
+```
+
+### "FFmpeg not found" error
+
+The video/audio plugins require FFmpeg:
+
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt update && sudo apt install ffmpeg
+
+# Windows
+choco install ffmpeg
+
+# Verify
+ffmpeg -version
+```
+
+### Output quality is poor
+
+Adjust quality settings:
+
+```bash
+# For images (JPEG quality 1-100)
+mediaproc image convert --input photo.jpg --quality 90
+
+# For videos (CRF 0-51, lower = better)
+mediaproc video compress --input video.mp4 --crf 18
+```
+
+### Batch processing stops on first error
+
+Use `--skip-errors` flag:
+
+```bash
+mediaproc image batch \
+  --input "*.jpg" \
+  --command resize \
+  --skip-errors \
+  --verbose
+```
+
+### How do I report bugs?
+
+- **GitHub Issues**: [github.com/0xshariq/mediaproc-cli/issues](https://github.com/0xshariq/mediaproc-cli/issues)
+- **Include**: Version number, command used, error message, and system info
+- **Run with verbose**: Add `--verbose` flag for detailed logs
+
+## Publishing & Version Questions
+
+### How do I publish a prerelease version to npm?
+
+If your version has a prerelease tag (e.g., `0.6.0-beta`), you must specify a tag:
+
+```bash
+# Publish beta version
+npm publish --tag beta
+
+# Install beta version
+npm install -g @mediaproc/cli@beta
+```
+
+Without the `--tag` flag, npm will reject prerelease versions.
+
+### Should I use stable or beta versions?
+
+- **Stable versions** (e.g., `1.0.0`): Production-ready, well-tested
+- **Beta versions** (e.g., `0.6.0-beta`): Latest features, may have bugs
+
+For production use, stick with stable versions:
+
+```bash
+npm install -g @mediaproc/cli@latest
+```
+
+### How do I check my current version?
+
+```bash
+# Check CLI version
+mediaproc --version
+
+# Check plugin versions
+mediaproc list
+```
+
+## Advanced Questions
+
+### Can I use MediaProc programmatically in Node.js?
+
+Yes! MediaProc exports a programmatic API:
+
+```javascript
+import { PluginManager } from "@mediaproc/cli";
+
+const manager = new PluginManager();
+await manager.loadPlugin("image");
+
+// Use plugin methods directly
+```
+
+See [Plugin API Documentation](/docs/architecture/cli-plugins) for details.
+
+### Does MediaProc support custom formats?
+
+MediaProc supports all formats supported by its underlying tools:
+
+- **Images**: All Sharp-supported formats (JPEG, PNG, WebP, AVIF, TIFF, GIF, SVG)
+- **Videos**: All FFmpeg-supported formats (MP4, WebM, MKV, AVI, MOV, etc.)
+- **Audio**: All FFmpeg-supported formats (MP3, WAV, FLAC, AAC, OGG, etc.)
+
+### How do I contribute to MediaProc?
+
+We welcome contributions! See:
+
+- [Contributing Guide](/docs/community/contributing)
+- [Plugin Guidelines](/docs/community/plugin-guidelines)
+- [Architecture Overview](/docs/architecture/overview)
+
+### Where can I get help?
+
+- **Documentation**: [mediaproc.dev](https://mediaproc.dev)
+- **GitHub Discussions**: Community Q&A
+- **GitHub Issues**: Bug reports and feature requests
+- **Twitter**: [@0xshariq](https://twitter.com/0xshariq)
+
+## Migration Questions
+
+### I'm currently using ImageMagick/PIL, how do I migrate?
+
+See our comprehensive migration guides:
+
+- [ImageMagick to MediaProc Migration Guide](/docs/community/migration-sharp)
+- [FFmpeg to MediaProc Migration Guide](/docs/community/migration-ffmpeg)
+
+### Will my existing scripts work with MediaProc?
+
+You'll need to update command syntax, but the workflow remains similar. Our migration guides provide side-by-side command comparisons.
+
+### Can I run MediaProc alongside FFmpeg/ImageMagick?
+
+Yes! MediaProc doesn't replace or conflict with FFmpeg or ImageMagick. You can use them together.
+
+---
+
+## Still have questions?
+
+- Check the [Troubleshooting Guide](/docs/troubleshooting)
+- Read the [Full Documentation](/docs/introduction)
+- [Open a GitHub Issue](https://github.com/0xshariq/mediaproc-cli/issues/new)
+
+**Last Updated**: January 2026  
+**Version**: 1.0.0

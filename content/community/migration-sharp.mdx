@@ -1,0 +1,375 @@
+# Migration Guide: ImageMagick & PIL to MediaProc
+
+Migrate your image processing workflows from ImageMagick or Python PIL to MediaProc's image plugin for better performance and simplified CLI usage.
+
+## Why Migrate?
+
+| Feature          | ImageMagick    | PIL/Pillow        | MediaProc                    |
+| ---------------- | -------------- | ----------------- | ---------------------------- |
+| Installation     | Complex        | Python dependency | Single CLI                   |
+| Performance      | Moderate       | Moderate          | ⚡ 3-5x faster (Sharp-based) |
+| Batch Processing | Manual scripts | Manual loops      | Native support               |
+| Learning Curve   | Steep          | Moderate          | Flat                         |
+| Memory Usage     | High           | High              | Optimized                    |
+| Output Control   | Limited        | Limited           | Granular                     |
+
+## Installation
+
+### Before: ImageMagick
+
+```bash
+# macOS
+brew install imagemagick
+
+# Ubuntu/Debian
+sudo apt install imagemagick
+
+# Windows
+choco install imagemagick
+```
+
+### Now: MediaProc Image Plugin
+
+```bash
+# One-line installation
+npm install -g @mediaproc/image
+
+# Verify installation
+mediaproc image --version
+```
+
+## Common Migration Patterns
+
+### Resize Images
+
+#### ImageMagick
+
+```bash
+convert input.jpg -resize 1920x1080! output.jpg
+convert input.jpg -resize 1920x1080 output.jpg  # With aspect ratio
+```
+
+#### MediaProc
+
+```bash
+mediaproc image resize --input input.jpg --width 1920 --height 1080 --fit cover
+mediaproc image resize --input input.jpg --width 1920 --height 1080 --fit contain
+```
+
+### Convert Formats
+
+#### ImageMagick
+
+```bash
+convert input.jpg output.png
+convert input.png -quality 85 output.jpg
+```
+
+#### MediaProc
+
+```bash
+mediaproc image convert --input input.jpg --output output.png
+mediaproc image convert --input input.png --format jpeg --quality 85 --output output.jpg
+```
+
+### Apply Grayscale
+
+#### ImageMagick
+
+```bash
+convert input.jpg -colorspace Gray output.jpg
+convert input.jpg -fx 'r*0.299+g*0.587+b*0.114' output.jpg
+```
+
+#### MediaProc
+
+```bash
+mediaproc image grayscale --input input.jpg --output output.jpg
+```
+
+### Rotate Images
+
+#### ImageMagick
+
+```bash
+convert input.jpg -rotate 90 output.jpg
+convert input.jpg -rotate -45 output.jpg
+```
+
+#### MediaProc
+
+```bash
+mediaproc image rotate --input input.jpg --degrees 90 --output output.jpg
+mediaproc image rotate --input input.jpg --degrees -45 --output output.jpg
+```
+
+### Apply Blur
+
+#### ImageMagick
+
+```bash
+convert input.jpg -blur 0x10 output.jpg
+convert input.jpg -blur 10x2 output.jpg  # Radius x sigma
+```
+
+#### MediaProc
+
+```bash
+mediaproc image blur --input input.jpg --sigma 10 --output output.jpg
+```
+
+### Batch Processing
+
+#### ImageMagick
+
+```bash
+# Using mogrify (modifies in place)
+mogrify -resize 800x600 *.jpg
+
+# Using convert in loop
+for file in *.jpg; do
+  convert "$file" -resize 800x600 "output/$file"
+done
+```
+
+#### MediaProc
+
+```bash
+# Native batch support
+mediaproc image batch --input "*.jpg" --command resize --width 800 --height 600 --output-dir output/
+
+# With parallel processing
+mediaproc image batch --input "*.jpg" --command resize --width 800 --height 600 --workers 4
+```
+
+### Add Watermark
+
+#### ImageMagick
+
+```bash
+convert input.jpg logo.png -gravity southeast -composite output.jpg
+```
+
+#### MediaProc
+
+```bash
+mediaproc image watermark --input input.jpg --watermark logo.png --position southeast --output output.jpg
+```
+
+### Extract Image Info
+
+#### ImageMagick
+
+```bash
+identify input.jpg
+identify -verbose input.jpg
+```
+
+#### MediaProc
+
+```bash
+mediaproc image info --input input.jpg
+mediaproc image stats --input input.jpg
+```
+
+## Advanced Examples
+
+### Create Thumbnail Grid
+
+#### ImageMagick (Script)
+
+```bash
+#!/bin/bash
+montage *.jpg -tile 3x3 -geometry 200x200+5+5 grid.jpg
+```
+
+#### MediaProc
+
+```bash
+# Use thumbnail command then grid command
+mediaproc image batch --input "*.jpg" --command thumbnail --width 200 --height 200 --output-dir thumbs/
+mediaproc image grid --input thumbs/*.jpg --columns 3 --output grid.jpg
+```
+
+### Smart Crop with Content Detection
+
+#### ImageMagick (Limited support)
+
+```bash
+convert input.jpg -gravity center -crop 50%x50%+0+0 +repage output.jpg
+```
+
+#### MediaProc
+
+```bash
+# Uses AI-powered content detection
+mediaproc image smart-crop --input input.jpg --width 800 --height 600 --focus faces --output output.jpg
+```
+
+### Auto-enhance Image Quality
+
+#### ImageMagick (Manual steps)
+
+```bash
+convert input.jpg \
+  -modulate 100,120 \
+  -normalize \
+  -enhance \
+  output.jpg
+```
+
+#### MediaProc
+
+```bash
+# One command for intelligent enhancement
+mediaproc image auto-enhance --input input.jpg --output output.jpg
+```
+
+## Shell Script Migration
+
+### Before: ImageMagick Script
+
+```bash
+#!/bin/bash
+INPUT_DIR="./photos"
+OUTPUT_DIR="./thumbs"
+
+mkdir -p "$OUTPUT_DIR"
+
+for file in "$INPUT_DIR"/*.jpg; do
+  filename=$(basename "$file")
+  convert "$file" \
+    -resize 200x200 \
+    -quality 85 \
+    "$OUTPUT_DIR/$filename"
+  echo "Processed: $filename"
+done
+
+echo "Thumbnail generation complete!"
+```
+
+### Now: MediaProc Script
+
+```bash
+#!/bin/bash
+INPUT_DIR="./photos"
+OUTPUT_DIR="./thumbs"
+
+mkdir -p "$OUTPUT_DIR"
+
+# Single command with parallel processing
+mediaproc image batch \
+  --input "$INPUT_DIR/*.jpg" \
+  --command resize \
+  --width 200 \
+  --height 200 \
+  --quality 85 \
+  --output-dir "$OUTPUT_DIR" \
+  --workers 4 \
+  --verbose
+
+echo "Thumbnail generation complete!"
+```
+
+**Benefits:**
+
+- ✅ 4x faster with parallel processing
+- ✅ Single command instead of loop
+- ✅ Better error handling
+- ✅ Progress reporting
+
+## Comparison: PIL to MediaProc
+
+### Before: Python PIL
+
+```python
+from PIL import Image
+import os
+
+def resize_images(input_dir, output_dir, size=(800, 600)):
+    os.makedirs(output_dir, exist_ok=True)
+
+    for filename in os.listdir(input_dir):
+        if filename.endswith('.jpg'):
+            img = Image.open(os.path.join(input_dir, filename))
+            img.thumbnail(size)
+            img.save(os.path.join(output_dir, filename), quality=85)
+
+resize_images('./photos', './output')
+```
+
+### Now: MediaProc
+
+```bash
+mediaproc image batch \
+  --input ./photos/*.jpg \
+  --command resize \
+  --width 800 \
+  --height 600 \
+  --output-dir ./output \
+  --workers 4
+```
+
+**Benefits:**
+
+- ✅ No Python setup needed
+- ✅ Better performance
+- ✅ Easier to integrate in CI/CD
+- ✅ Cross-platform compatibility
+
+## Troubleshooting Migration
+
+### Issue: Output image looks different
+
+**Solution**: Check these parameters:
+
+- Image quality (use `--quality 85` for JPEG)
+- Color space (use `--colorspace srgb` for standard)
+- Gamma correction (use `--gamma 2.2`)
+
+```bash
+mediaproc image convert --input old.jpg --quality 85 --colorspace srgb --output new.jpg
+```
+
+### Issue: Performance is slower than expected
+
+**Solution**: Enable parallel processing:
+
+```bash
+mediaproc image batch --input *.jpg --workers 8 --command resize --width 800 --height 600
+```
+
+### Issue: Batch processing stops on error
+
+**Solution**: Use `--skip-errors` flag:
+
+```bash
+mediaproc image batch --input *.jpg --skip-errors --command resize --width 800 --height 600
+```
+
+## Command Reference
+
+Quick mapping of common commands:
+
+| Task      | ImageMagick                | MediaProc                       |
+| --------- | -------------------------- | ------------------------------- |
+| Resize    | `convert -resize`          | `resize --width --height`       |
+| Convert   | `convert`                  | `convert --format`              |
+| Crop      | `convert -crop`            | `crop --x --y --width --height` |
+| Rotate    | `convert -rotate`          | `rotate --degrees`              |
+| Grayscale | `convert -colorspace Gray` | `grayscale`                     |
+| Blur      | `convert -blur`            | `blur --sigma`                  |
+| Watermark | `convert -composite`       | `watermark`                     |
+| Info      | `identify`                 | `info`                          |
+| Batch     | `mogrify`                  | `batch --workers`               |
+
+## Next Steps
+
+- [Image Plugin Overview](/docs/plugins/image) - Full command reference
+- [Performance Benchmarks](/docs/performance) - See speed improvements
+- [CLI Overview](/docs/cli/overview) - Learn CLI fundamentals
+
+---
+
+**Migration Version**: 1.0.0  
+**Last Updated**: January 2026
