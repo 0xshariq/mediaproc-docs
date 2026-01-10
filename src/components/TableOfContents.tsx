@@ -92,7 +92,7 @@ export function TableOfContents() {
     <aside className="hidden xl:block w-72 border-l border-border/50 shrink-0">
       <div className="sticky top-0 h-screen flex flex-col py-6 px-4">
         <div className="mb-6 px-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <h2 className="text-sm font-semibold tracking-wider text-muted-foreground">
             On this page
           </h2>
         </div>

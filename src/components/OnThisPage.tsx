@@ -112,10 +112,10 @@ export function OnThisPage() {
   if (headings.length === 0) return null;
 
   return (
-    <aside className="hidden xl:block w-64 shrink-0">
-      <div className="fixed w-64 h-[calc(100vh-4rem)] flex flex-col py-8 pr-8">
-        <div className="mb-4">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-1">
+    <aside className="hidden xl:block w-64 shrink-0 h-screen overflow-hidden">
+      <div className="flex flex-col h-full py-8 pr-8">
+        <div className="mb-4 shrink-0">
+          <h2 className="text-xs font-semibold tracking-wider text-muted-foreground px-1">
             On this page
           </h2>
         </div>
@@ -142,7 +142,7 @@ export function OnThisPage() {
                 onClick={(e) => {
                   e.preventDefault();
                   const element = document.getElementById(heading.id);
-                  const mainContent = document.querySelector('main');
+                  const mainContent = document.getElementById('main-content');
                   if (element && mainContent) {
                     const rect = element.getBoundingClientRect();
                     const mainRect = mainContent.getBoundingClientRect();
@@ -150,7 +150,7 @@ export function OnThisPage() {
                     const elementTop = rect.top - mainRect.top + scrollTop;
                     
                     mainContent.scrollTo({
-                      top: elementTop - 100,
+                      top: elementTop - 80,
                       behavior: 'smooth',
                     });
                     setActiveId(heading.id);

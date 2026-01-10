@@ -83,7 +83,7 @@ export function VersionSelector() {
             {isOpen && (
                 <div className="absolute top-full left-0 mt-2 w-56 rounded-lg border border-border bg-background shadow-lg overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="p-2">
-                        <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        <div className="px-3 py-2 text-xs font-semibold text-muted-foreground tracking-wider">
                             Available Versions
                         </div>
                         <div role="listbox" className="space-y-1">

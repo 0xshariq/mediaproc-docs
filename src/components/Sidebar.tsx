@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { navigationConfig, type NavItem } from '@/config/docs-config';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Accordion,
   AccordionContent,
@@ -58,13 +57,13 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-border/50 bg-card/30 backdrop-blur-sm shrink-0 flex flex-col md:h-full">
-      <ScrollArea className="flex-1 md:h-0 max-h-[50vh] md:max-h-none">
+    <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-border/50 bg-card/30 backdrop-blur-sm shrink-0 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
         <div className="px-3 py-4 sm:py-6">
             <nav className="space-y-6 pb-6">
             {navigationConfig.map((section) => (
               <div key={section.title}>
-                <h3 className="px-3 mb-3 text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider">
+                <h3 className="px-3 mb-3 text-xs font-semibold text-muted-foreground/70 tracking-wider">
                   {section.title}
                 </h3>
                 <Accordion type="single" collapsible className="space-y-0.5">
@@ -74,7 +73,7 @@ export function Sidebar() {
             ))}
           </nav>
         </div>
-      </ScrollArea>
+      </div>
 
       <div className="p-3 sm:p-4 border-t border-border/50 bg-muted/20 shrink-0">
         <div className="text-xs text-muted-foreground mb-1">Version</div>

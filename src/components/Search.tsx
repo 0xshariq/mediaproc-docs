@@ -50,7 +50,7 @@ export function Search() {
         return index;
     }, []);
 
-    // Search function
+    // Search function with improved scoring
     const search = useCallback((query: string) => {
         if (!query.trim()) {
             setResults([]);
@@ -59,16 +59,47 @@ export function Search() {
 
         const index = buildSearchIndex();
         const searchQuery = query.toLowerCase();
+        const searchWords = searchQuery.split(' ').filter(w => w.length > 0);
 
-        const filtered = index
-            .filter((item) =>
-                item.title.toLowerCase().includes(searchQuery) ||
-                item.slug.toLowerCase().includes(searchQuery) ||
-                (item.section && item.section.toLowerCase().includes(searchQuery))
-            )
-            .slice(0, 8); // Limit to 8 results
+        // Score and filter results
+        const scored = index
+            .map((item) => {
+                const title = item.title.toLowerCase();
+                const slug = item.slug.toLowerCase();
+                const section = (item.section || '').toLowerCase();
+                
+                let score = 0;
+                
+                // Exact match gets highest score
+                if (title === searchQuery) score += 100;
+                
+                // Title starts with query
+                if (title.startsWith(searchQuery)) score += 50;
+                
+                // Title contains query
+                if (title.includes(searchQuery)) score += 30;
+                
+                // All words match
+                const allWordsMatch = searchWords.every(word => 
+                    title.includes(word) || slug.includes(word) || section.includes(word)
+                );
+                if (allWordsMatch) score += 20;
+                
+                // Individual word matches
+                searchWords.forEach(word => {
+                    if (title.includes(word)) score += 10;
+                    if (slug.includes(word)) score += 5;
+                    if (section.includes(word)) score += 3;
+                });
+                
+                return { item, score };
+            })
+            .filter(({ score }) => score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 10) // Increase limit to 10
+            .map(({ item }) => item);
 
-        setResults(filtered);
+        setResults(scored);
         setSelectedIndex(0);
     }, [buildSearchIndex]);
 
