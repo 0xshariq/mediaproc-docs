@@ -3,7 +3,7 @@
 Universal media processing CLI with an extensible plugin architecture. One tool to process all your media - images, videos, audio, documents, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.5.2-blue.svg)](https://www.npmjs.com/package/@mediaproc/cli)
+[![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)](https://www.npmjs.com/package/@mediaproc/cli)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
 [![Status](https://img.shields.io/badge/status-beta-green)](https://github.com/0xshariq/mediaproc)
@@ -128,8 +128,8 @@ mediaproc document compress input.pdf --quality high
 
 ## 📊 Current Status
 
-**Version**: 0.5.2 (Beta - Production Ready!)  
-**Status**: ✅ Image plugin (49 commands) + ✅ Video plugin (6 commands) + Universal CLI  
+**Version**: 0.6.0 (Beta - Production Ready!)  
+**Status**: ✅ Image plugin (51 commands) + ✅ Video plugin (6 commands) + Audio plugin (5 commands) + Universal CLI  
 **Next Release**: Audio & Document plugins (Q1 2026)  
 **Expected v1.0**: Q2 2026
 
@@ -155,11 +155,13 @@ MediaProc provides comprehensive plugin lifecycle management:
 Core CLI commands available immediately after installation:
 
 **Media Operations:**
+
 - `mediaproc convert <input> <output>` - Auto-detect and suggest the conversion
 - `mediaproc info <file>` - Display comprehensive file information
 - `mediaproc optimize <file>` - Analyze and suggest optimization strategies
 
 **Help & Configuration:**
+
 - `mediaproc help [command]` - Show help for commands
 - `mediaproc init` - Initialize configuration file
 - `mediaproc config` - Manage configuration settings
@@ -169,7 +171,7 @@ Core CLI commands available immediately after installation:
 
 **Install:** `mediaproc add image`
 
-**49 Professional Commands Available:**
+**51 Professional Commands Available:**
 
 **Transform & Resize** (10 commands)
 
@@ -229,11 +231,11 @@ Core CLI commands available immediately after installation:
 
 **Utility** (10 commands)
 
+- `compress` - Advanced compression with quality control
 - `convert` - Format conversion (JPG, PNG, WebP, AVIF, TIFF, GIF)
 - `optimize` - Size optimization (up to 70% reduction, lossless/lossy)
-- `compress` - Advanced compression with quality control
-- `watermark` - Add watermarks with positioning and opacity
 - `info` - Display detailed image metadata
+- `watermark` - Add watermarks with positioning and opacity
 - `stats` - Technical image statistics (channels, depth, color space)
 - `split` - Split image into grid tiles
 - `stack` - Stack images horizontally/vertically
@@ -262,6 +264,7 @@ Core CLI commands available immediately after installation:
 **6 Professional Commands Available:**
 
 **Format & Quality**
+
 - `compress` - CRF-based compression with presets (ultrafast to veryslow)
   - H.264/H.265 codec support
   - Quality control via CRF (0-51)
@@ -274,6 +277,7 @@ Core CLI commands available immediately after installation:
   - Custom bitrate and quality settings
 
 **Editing & Manipulation**
+
 - `trim` - Cut videos by time or percentage
   - Start/end time specification (HH:MM:SS)
   - Duration-based trimming
@@ -285,6 +289,7 @@ Core CLI commands available immediately after installation:
   - Multiple scaling algorithms (fast/quality)
 
 **Merging & Extraction**
+
 - `merge` - Concatenate multiple videos
   - Fast concat mode (no re-encode)
   - Re-encode mode for different formats
@@ -295,6 +300,7 @@ Core CLI commands available immediately after installation:
   - `extract-thumbnail` - Generate video thumbnails
 
 **Technical Features:**
+
 - FFmpeg-powered processing
 - Hardware acceleration (when available)
 - Progress tracking with ETA
@@ -303,22 +309,80 @@ Core CLI commands available immediately after installation:
 - File size reporting
 - Quality presets for common use cases
 
+### Audio Processing (@mediaproc/audio)
+
+**Install:** Built-in with CLI (or standalone: `npm install -g @mediaproc/audio`)
+
+**5 Professional Commands Available:**
+
+**Format Conversion**
+
+- `convert` - Convert between audio formats
+  - Formats: MP3, AAC, WAV, FLAC, OGG, Opus, M4A
+  - Quality presets: low, medium, high, lossless
+  - Bitrate control (128k, 192k, 256k, 320k)
+  - Sample rate adjustment (44.1kHz, 48kHz, 96kHz)
+  - Channel control (mono/stereo)
+
+**Extraction & Processing**
+
+- `extract` - Extract audio from video files
+  - Support for all major video formats
+  - Multiple output formats
+  - Quality and bitrate control
+  - Preserves audio metadata
+
+**Audio Enhancement**
+
+- `normalize` - Audio level normalization
+  - EBU R128 loudness standard (loudnorm)
+  - Peak normalization method
+  - Target LUFS: -16 (broadcast), -23 (streaming), -14 (podcasts)
+  - True peak limiting to prevent clipping
+  - Consistent volume across files
+
+**Editing**
+
+- `trim` - Cut audio segments
+  - Time-based trimming (HH:MM:SS or seconds)
+  - Duration-based cutting
+  - Optional fade-in/fade-out effects
+  - Fast mode (stream copy, no re-encoding)
+  - Frame-accurate cutting
+
+**Merging**
+
+- `merge` - Concatenate multiple audio files
+  - Seamless joining of audio files
+  - Optional crossfade between tracks
+  - Automatic format normalization
+  - Multi-file batch processing
+
+**Technical Features:**
+
+- FFmpeg/FFprobe powered processing
+- Comprehensive format support
+- Quality presets for common use cases
+- Progress tracking with detailed output
+- Dry-run mode for command preview
+- Metadata preservation
+- File size reporting
+- Built-in help for every command
+
 ✅ **Architecture** - Plugin system designed and implemented  
 ✅ **Core CLI** - Command framework with plugin discovery  
-✅ **Built-in Plugins** - Image & Video plugins ship with CLI  
+✅ **Built-in Plugins** - Image, Video, and Audio plugins ship with CLI  
 ✅ **Plugin Registry** - Smart plugin management  
 ✅ **Documentation** - Comprehensive guides and standards  
 ✅ **Community Guidelines** - Contributing, security, code of conduct
 
 ### 🚧 In Development
 
-🚧 **Audio Plugin** - Format conversion, normalization, trimming  
 🚧 **Testing** - Comprehensive test coverage  
 🚧 **Examples** - Real-world usage examples
 
 ### What's Next
 
-📋 **Audio Plugin** - Format conversion, normalization (Q1 2026)  
 📋 **Document Plugin** - PDF processing, OCR (Q2 2026)  
 📋 **Advanced Plugins** - 3D, streaming, AI features (Q2-Q3 2026)  
 📋 **Plugin Marketplace** - Community plugin directory (Q3 2026)
@@ -336,20 +400,27 @@ See [Upcoming Features](docs/upcoming-features.md) for detailed roadmap.
 MediaProc ships with essential plugins pre-installed, giving you immediate productivity:
 
 - **@mediaproc/image** - Professional image processing (49 commands)
+
   - Resize, crop, rotate, flip, convert formats
   - Filters: blur, sharpen, tint, grayscale, median
   - Color adjustments: modulate, gamma, normalize
   - Utilities: thumbnail, watermark, optimize, trim, extend
 
-- **@mediaproc/video** - Professional video processing (6 commands)
+- **@mediaproc/video** - Professional video processing (7 commands)
   - Compress: CRF-based compression with quality presets
   - Transcode: Format conversion (MP4, WebM, AVI, MKV)
+  - Convert: Simple format conversion with remux support
   - Trim: Time-based cutting and clipping
   - Resize: Scale to 4K, 1080p, 720p, or custom
   - Merge: Concatenate multiple videos
   - Extract: Audio tracks, frame sequences, thumbnails
 
-_More built-in plugins coming soon: audio, document_
+- **@mediaproc/audio** - Professional audio processing (5 commands)
+  - Convert: Format conversion (MP3, AAC, WAV, FLAC, OGG, Opus)
+  - Extract: Extract audio from video files
+  - Normalize: Audio level normalization (EBU R128 standard)
+  - Trim: Cut audio segments with fade effects
+  - Merge: Concatenate multiple audio files with crossfade
 
 #### 🔌 **Add-on Plugins** (Install as Needed)
 
@@ -501,30 +572,7 @@ See [plugins/image/README.md](plugins/image/README.md) for complete image plugin
 
 ### Planned Features (Add-on Plugins)
 
-#### Video Processing (@mediaproc/video) - Q1 2026
-
-- Format transcoding (MP4, WebM, AVI, MKV)
-- Codec conversion (H.264, H.265, VP9, AV1)
-- Quality presets (web, mobile, high-quality)
-- Frame extraction
-- Trimming and cutting
-- Video merging
-- Audio track management
-
-#### Audio Processing (@mediaproc/audio) - Q1 2026
-
-- Format conversion (MP3, AAC, FLAC, WAV, OGG)
-- Normalization and loudness adjustment
-- Trimming and splitting
-- Audio extraction from video
-- Multi-track merging
-- Bitrate control
-
 #### Document Processing (@mediaproc/document) - Q2 2026
-
-- Bitrate control
-
-#### Document Processing (Q2 2026)
 
 - PDF compression
 - Page extraction and splitting
