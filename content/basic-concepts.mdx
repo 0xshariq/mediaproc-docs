@@ -1,0 +1,576 @@
+# Basic Concepts
+
+Understanding MediaProc's core concepts and terminology.
+
+## Overview
+
+Before diving into MediaProc, it's helpful to understand some fundamental concepts that will make working with the CLI more intuitive and productive.
+
+---
+
+## Core Concepts
+
+### Plugins
+
+**What are plugins?**
+
+Plugins are modular components that add processing capabilities to MediaProc. Each plugin focuses on a specific media type (images, videos, audio, etc.) and provides a set of commands.
+
+**Built-in Plugins:**
+
+- **Image** - Powered by Sharp (49 commands)
+- **Video** - Powered by FFmpeg (6 commands)
+- **Audio** - Powered by FFmpeg (5 commands)
+- **Document** - PDF and document processing
+- **Animation** - GIF and animation tools
+- **3D** - 3D model processing
+- **AI** - AI-powered enhancements
+- **Metadata** - Metadata extraction
+- **Stream** - Streaming processing
+- **Pipeline** - Complex workflows
+
+**Plugin Architecture:**
+
+```
+MediaProc CLI
+    │
+    ├── Image Plugin → Sharp → libvips
+    ├── Video Plugin → FFmpeg → libavcodec
+    ├── Audio Plugin → FFmpeg → libavcodec
+    └── Custom Plugins → Your Tools
+```
+
+---
+
+### Commands
+
+**What are commands?**
+
+Commands are specific operations that a plugin can perform. For example, the Image plugin has commands like `resize`, `convert`, `optimize`, etc.
+
+**Command Pattern:**
+
+```bash
+mediaproc <plugin> <command> <input> [options]
+```
+
+**Examples:**
+
+```bash
+# Plugin: image, Command: resize
+mediaproc image resize photo.jpg --width 1920
+
+# Plugin: video, Command: trim
+mediaproc video trim movie.mp4 --start 30 --duration 60
+
+# Plugin: audio, Command: normalize
+mediaproc audio normalize song.mp3 --loudness -16
+```
+
+---
+
+### Options & Flags
+
+**Options** are parameters that modify how commands behave.
+
+**Types of Options:**
+
+**Boolean Flags:**
+
+```bash
+--verbose      # Enable detailed output
+--dry-run      # Preview without executing
+--overwrite    # Overwrite existing files
+```
+
+**Value Options:**
+
+```bash
+--width 1920         # Numeric value
+--format webp        # String value
+--quality high       # Preset/choice
+--output result.jpg  # File path
+```
+
+**Option Syntax:**
+
+```bash
+# Long form
+--width 1920
+
+# Short form (alias)
+-w 1920
+
+# Boolean (no value needed)
+--verbose
+```
+
+---
+
+### Input Patterns
+
+MediaProc accepts various input patterns for flexible file processing.
+
+**Single File:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+```
+
+**Multiple Files:**
+
+```bash
+mediaproc image resize photo1.jpg photo2.jpg photo3.jpg --width 1920
+```
+
+**Glob Patterns:**
+
+```bash
+# All JPGs in current directory
+mediaproc image resize *.jpg --width 1920
+
+# All JPGs in subdirectories
+mediaproc image resize **/*.jpg --width 1920
+
+# Multiple patterns
+mediaproc image resize *.jpg *.png --width 1920
+```
+
+**From Directory:**
+
+```bash
+# Process all supported images in directory
+mediaproc image resize ./photos/ --width 1920
+```
+
+---
+
+### Output Strategies
+
+MediaProc offers multiple ways to handle output files.
+
+**Automatic Naming (Default):**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+# Output: photo-resized.jpg
+```
+
+**Explicit Output:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920 --output result.jpg
+# Output: result.jpg
+```
+
+**Directory Output:**
+
+```bash
+mediaproc image resize *.jpg --width 1920 --output ./resized/
+# Outputs: ./resized/photo1-resized.jpg, ./resized/photo2-resized.jpg, ...
+```
+
+**In-Place (Overwrite):**
+
+```bash
+mediaproc image resize photo.jpg --width 1920 --in-place
+# Overwrites: photo.jpg
+```
+
+---
+
+## Media Processing Fundamentals
+
+### Image Processing
+
+**Key Concepts:**
+
+**Resolution** - Image dimensions (width × height in pixels)
+
+- **HD:** 1920×1080
+- **4K:** 3840×2160
+- **8K:** 7680×4320
+
+**Format** - File type and compression
+
+- **Lossy:** JPEG, WebP (smaller, some quality loss)
+- **Lossless:** PNG, WebP (larger, perfect quality)
+- **Vector:** SVG (scalable, no pixels)
+
+**Color Space** - How colors are represented
+
+- **RGB:** Red, Green, Blue (screens)
+- **CMYK:** Cyan, Magenta, Yellow, Black (print)
+- **Grayscale:** Black and white
+
+**Aspect Ratio** - Width-to-height ratio
+
+- **16:9** - Widescreen (1920×1080)
+- **4:3** - Standard (1024×768)
+- **1:1** - Square (1080×1080)
+
+---
+
+### Video Processing
+
+**Key Concepts:**
+
+**Codec** - Compression algorithm
+
+- **H.264:** Universal compatibility
+- **H.265:** Better compression, modern devices
+- **VP9:** Open-source, web streaming
+- **AV1:** Best compression, emerging
+
+**Container** - File format wrapper
+
+- **MP4:** Universal (.mp4)
+- **MKV:** Feature-rich (.mkv)
+- **WebM:** Web-optimized (.webm)
+
+**Bitrate** - Data per second
+
+- **High bitrate:** Better quality, larger file
+- **Low bitrate:** Lower quality, smaller file
+- **Variable bitrate (VBR):** Optimizes per scene
+
+**Frame Rate (FPS)** - Frames per second
+
+- **24 fps:** Cinematic
+- **30 fps:** Standard video
+- **60 fps:** Smooth motion, gaming
+
+---
+
+### Audio Processing
+
+**Key Concepts:**
+
+**Sample Rate** - Samples per second
+
+- **44.1 kHz:** CD quality
+- **48 kHz:** Professional/video
+- **96 kHz:** High-resolution
+
+**Bit Depth** - Dynamic range
+
+- **16-bit:** Standard audio
+- **24-bit:** Professional recording
+- **32-bit float:** Studio mastering
+
+**Bitrate** - Compression level (lossy formats)
+
+- **128 kbps:** Acceptable quality
+- **192 kbps:** Good quality
+- **320 kbps:** Maximum quality
+
+**Loudness (LUFS)** - Perceived volume
+
+- **-16 LUFS:** Music streaming
+- **-23 LUFS:** Broadcast standard
+- **-14 LUFS:** Podcast/YouTube
+
+---
+
+## Processing Workflows
+
+### Basic Workflow
+
+```
+1. Input Files
+   ↓
+2. MediaProc Command
+   ↓
+3. Processing (Sharp/FFmpeg)
+   ↓
+4. Output Files
+```
+
+### Advanced Workflow
+
+```
+1. Source Files
+   ↓
+2. Batch Processing (multiple files)
+   ↓
+3. Plugin Processing
+   ↓
+4. Quality Validation
+   ↓
+5. Output Organization
+```
+
+---
+
+## Quality vs Performance
+
+Understanding the trade-offs:
+
+### Speed Priority
+
+**When you need:**
+
+- Quick previews
+- Fast iteration
+- Testing workflows
+
+**Use:**
+
+- Lower quality settings
+- Fast presets
+- Stream copy (no re-encode)
+- Smaller resolutions
+
+**Example:**
+
+```bash
+# Fast image processing
+mediaproc image resize photo.jpg --width 1920 --quality 70
+
+# Fast video transcoding
+mediaproc video transcode video.mp4 --preset ultrafast
+```
+
+---
+
+### Quality Priority
+
+**When you need:**
+
+- Final production
+- Archival
+- Professional delivery
+- Print quality
+
+**Use:**
+
+- High quality settings
+- Slow presets
+- Lossless formats
+- Original resolutions
+
+**Example:**
+
+```bash
+# High-quality image
+mediaproc image resize photo.jpg --width 1920 --quality 100 --format png
+
+# High-quality video
+mediaproc video transcode video.mp4 --preset slow --crf 18
+```
+
+---
+
+## File Size Management
+
+### Reducing File Size
+
+**Images:**
+
+```bash
+# Convert to modern format
+mediaproc image convert photo.jpg --format webp
+
+# Optimize for web
+mediaproc image optimize photo.jpg --quality 85
+
+# Resize dimensions
+mediaproc image resize photo.jpg --width 1920
+```
+
+**Videos:**
+
+```bash
+# Compress with H.265
+mediaproc video transcode video.mp4 --codec h265
+
+# Lower resolution
+mediaproc video resize video.mp4 --width 1280
+
+# Reduce bitrate
+mediaproc video transcode video.mp4 --bitrate 2000k
+```
+
+**Audio:**
+
+```bash
+# Convert to efficient format
+mediaproc audio convert song.wav --format opus
+
+# Lower bitrate
+mediaproc audio convert song.flac --format mp3 --quality medium
+```
+
+---
+
+## Error Handling
+
+### Common Errors
+
+**File not found:**
+
+```bash
+Error: File not found: photo.jpg
+```
+
+**Solution:** Check file path and spelling
+
+**Unsupported format:**
+
+```bash
+Error: Unsupported format: .xyz
+```
+
+**Solution:** Use supported format (jpg, png, mp4, etc.)
+
+**Permission denied:**
+
+```bash
+Error: Permission denied: protected.jpg
+```
+
+**Solution:** Check file permissions
+
+**Invalid option:**
+
+```bash
+Error: Unknown option: --invalid
+```
+
+**Solution:** Check command help: `mediaproc image resize --help`
+
+---
+
+### Validation
+
+**Always validate:**
+
+1. **Input files exist**
+2. **File format is supported**
+3. **Sufficient disk space**
+4. **Required tools installed** (FFmpeg, Sharp dependencies)
+
+**Use dry-run:**
+
+```bash
+# Preview command without executing
+mediaproc image resize photo.jpg --width 1920 --dry-run
+```
+
+---
+
+## Best Practices
+
+### 1. Work on Copies
+
+**Never work on originals:**
+
+```bash
+# Good: Creates new file
+mediaproc image resize photo.jpg --width 1920
+
+# Dangerous: Overwrites original
+mediaproc image resize photo.jpg --width 1920 --in-place
+```
+
+---
+
+### 2. Use Version Control
+
+**For important projects:**
+
+```bash
+# Keep originals in separate directory
+project/
+  ├── originals/     # Never modify
+  ├── processed/     # MediaProc output
+  └── final/         # Final delivery
+```
+
+---
+
+### 3. Test First
+
+**Test on a few files before batch processing:**
+
+```bash
+# Test on one file
+mediaproc image resize test.jpg --width 1920
+
+# Verify output looks good
+
+# Then batch process
+mediaproc image resize *.jpg --width 1920
+```
+
+---
+
+### 4. Use Configuration Files
+
+**For repeated operations:**
+
+```json
+// mediaproc.json
+{
+  "image": {
+    "resize": {
+      "width": 1920,
+      "quality": 85,
+      "format": "webp"
+    }
+  }
+}
+```
+
+```bash
+# Uses config defaults
+mediaproc image resize photo.jpg
+```
+
+---
+
+### 5. Monitor Progress
+
+**For long operations:**
+
+```bash
+# Use verbose mode
+mediaproc video transcode long-video.mp4 --codec h265 --verbose
+```
+
+---
+
+## Next Steps
+
+Now that you understand the basics:
+
+1. **Try the [Quick Start](/docs/quick-start)** - Hands-on examples
+2. **Explore [CLI Commands](/docs/cli/overview)** - Detailed command reference
+3. **Read [Plugin Guides](/docs/plugins/image)** - Deep dives into each plugin
+4. **Check [Troubleshooting](/docs/troubleshooting)** - Common issues and solutions
+
+---
+
+## Terminology Reference
+
+**CLI** - Command Line Interface  
+**Plugin** - Modular processing component  
+**Command** - Specific operation (resize, convert, etc.)  
+**Option/Flag** - Command parameter  
+**Codec** - Compression algorithm  
+**Container** - File format wrapper  
+**Bitrate** - Data per second  
+**Resolution** - Image/video dimensions  
+**Sample Rate** - Audio samples per second  
+**LUFS** - Loudness Units Full Scale  
+**CRF** - Constant Rate Factor (quality)  
+**Lossless** - Perfect quality preservation  
+**Lossy** - Quality loss for smaller size
+
+---
+
+**Ready to start processing?**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+```

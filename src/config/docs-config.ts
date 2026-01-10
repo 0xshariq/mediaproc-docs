@@ -175,7 +175,11 @@ export const navigationConfig: NavSection[] = [
     items: [
       { title: 'Introduction', slug: 'introduction' },
       { title: 'Installation', slug: 'installation' },
+      { title: 'First Steps', slug: 'first-steps' },
+      { title: 'Basic Concepts', slug: 'basic-concepts' },
       { title: 'Quick Start', slug: 'quick-start' },
+      { title: 'Use Cases', slug: 'use-cases' },
+      { title: 'Troubleshooting', slug: 'troubleshooting' },
     ],
   },
   {
@@ -185,6 +189,16 @@ export const navigationConfig: NavSection[] = [
       { title: 'Plugin Management', slug: 'cli/plugin-management' },
       { title: 'Universal Commands', slug: 'cli/universal-commands' },
     ],
+  },
+  {
+    title: 'Architecture',
+    items: [
+      { title: 'Overview', slug: 'architecture/overview' },
+      { title: 'CLI Plugins', slug: 'architecture/cli-plugins' },
+      { title: 'Image Plugin Architecture', slug: 'architecture/image-plugin' },
+      { title: 'Video Plugin Architecture', slug: 'architecture/video-plugin' },
+      { title: 'Audio Plugin Architecture', slug: 'architecture/audio-plugin' },
+    ]
   },
   {
     title: 'Official Plugins',

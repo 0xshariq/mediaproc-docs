@@ -1,0 +1,456 @@
+# First Steps
+
+Your first hands-on experience with MediaProc.
+
+## Welcome!
+
+Let's process your first media file with MediaProc. This guide will walk you through the basics step-by-step.
+
+---
+
+## Prerequisites Check
+
+Before starting, ensure you have:
+
+✅ MediaProc installed (run `mediaproc --version`)  
+✅ FFmpeg installed (run `ffmpeg -version`)  
+✅ A terminal/command prompt open  
+✅ Sample media files to process
+
+<Callout type="info">
+  **Need to install?** See the [Installation Guide](/docs/installation) for
+  detailed setup instructions.
+</Callout>
+
+---
+
+## Your First Command
+
+Let's start with the simplest possible command - getting help:
+
+<Terminal
+  commands={[
+    { command: "mediaproc --help" },
+    { output: "MediaProc CLI v1.0.0", isSuccess: false },
+    { output: "Universal media processing toolkit", isSuccess: false },
+    { output: "", isSuccess: false },
+    { output: "Available plugins: image, video, audio, ...", isSuccess: true },
+  ]}
+/>
+
+**What you should see:**
+
+- MediaProc version number
+- List of available plugins
+- Global command options
+
+---
+
+## Processing Your First Image
+
+### Step 1: Find an Image
+
+Any image file will work. For this example, let's say you have `photo.jpg`.
+
+### Step 2: Resize the Image
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920" },
+    { output: "Processing: photo.jpg", isSuccess: false },
+    { output: "Resizing to 1920×1080", isSuccess: false },
+    { output: "✓ Created: photo-resized.jpg", isSuccess: true },
+  ]}
+/>
+
+**What happened:**
+
+- MediaProc read `photo.jpg`
+- Resized it to 1920 pixels wide (maintaining aspect ratio)
+- Saved as `photo-resized.jpg`
+
+### Step 3: Verify the Result
+
+Open `photo-resized.jpg` in any image viewer to see the result!
+
+---
+
+## Understanding the Command
+
+Let's break down what we just did:
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+    │      │      │       │           │
+    │      │      │       │           └─ Option: Target width
+    │      │      │       └───────────── Input file
+    │      │      └───────────────────── Command: What to do
+    │      └──────────────────────────── Plugin: Media type
+    └─────────────────────────────────── CLI tool
+```
+
+---
+
+## Try Different Options
+
+### Change Output Format
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920 --format webp" },
+    { output: "✓ Created: photo-resized.webp", isSuccess: true },
+  ]}
+/>
+
+### Specify Both Width and Height
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920 --height 1080" },
+    { output: "✓ Created: photo-resized.jpg (1920×1080)", isSuccess: true },
+  ]}
+/>
+
+### Custom Output Name
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image resize photo.jpg --width 1920 --output thumbnail.jpg",
+    },
+    { output: "✓ Created: thumbnail.jpg", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Processing Multiple Files
+
+### Batch Processing
+
+Process all JPGs in the current directory:
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize *.jpg --width 1920" },
+    { output: "Processing 5 files...", isSuccess: false },
+    { output: "  photo1.jpg → photo1-resized.jpg", isSuccess: false },
+    { output: "  photo2.jpg → photo2-resized.jpg", isSuccess: false },
+    { output: "  photo3.jpg → photo3-resized.jpg", isSuccess: false },
+    { output: "  photo4.jpg → photo4-resized.jpg", isSuccess: false },
+    { output: "  photo5.jpg → photo5-resized.jpg", isSuccess: false },
+    { output: "✓ Successfully processed 5 files", isSuccess: true },
+  ]}
+/>
+
+### Output to Directory
+
+<Terminal
+  commands={[
+    {
+      command: "mediaproc image resize *.jpg --width 1920 --output ./resized/",
+    },
+    { output: "✓ Created 5 files in ./resized/", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Exploring Other Plugins
+
+### Video Processing
+
+Trim a video segment:
+
+<Terminal
+  commands={[
+    { command: "mediaproc video trim movie.mp4 --start 30 --duration 60" },
+    { output: "Trimming: 00:00:30 for 1:00", isSuccess: false },
+    { output: "✓ Created: movie-trimmed.mp4 (60 seconds)", isSuccess: true },
+  ]}
+/>
+
+### Audio Processing
+
+Convert audio format:
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio convert song.mp3 --format flac" },
+    { output: "Converting: song.mp3 → FLAC lossless", isSuccess: false },
+    { output: "✓ Created: song.flac", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Getting Help
+
+### Plugin Help
+
+See all available image commands:
+
+<Terminal
+  commands={[
+    { command: "mediaproc image --help" },
+    { output: "Image Plugin Commands:", isSuccess: false },
+    {
+      output: "  resize      Resize images to specified dimensions",
+      isSuccess: false,
+    },
+    {
+      output: "  convert     Convert images between formats",
+      isSuccess: false,
+    },
+    { output: "  optimize    Optimize images for web", isSuccess: false },
+    { output: "  ...and 46 more commands", isSuccess: true },
+  ]}
+/>
+
+### Command Help
+
+See options for a specific command:
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize --help" },
+    { output: "Resize images to specified dimensions", isSuccess: false },
+    { output: "", isSuccess: false },
+    { output: "Options:", isSuccess: false },
+    { output: "  --width, -w     Target width in pixels", isSuccess: false },
+    { output: "  --height, -h    Target height in pixels", isSuccess: false },
+    {
+      output: "  --fit           How to fit the image (cover, contain, fill)",
+      isSuccess: false,
+    },
+    {
+      output: "  --format, -f    Output format (jpg, png, webp)",
+      isSuccess: true,
+    },
+  ]}
+/>
+
+---
+
+## Common Beginner Mistakes
+
+### 1. Forgetting the Plugin Name
+
+❌ **Wrong:**
+
+```bash
+mediaproc resize photo.jpg --width 1920
+# Error: Unknown command 'resize'
+```
+
+✅ **Correct:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+```
+
+---
+
+### 2. Using Wrong Option Names
+
+❌ **Wrong:**
+
+```bash
+mediaproc image resize photo.jpg --size 1920
+# Error: Unknown option '--size'
+```
+
+✅ **Correct:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+```
+
+---
+
+### 3. Forgetting Input File
+
+❌ **Wrong:**
+
+```bash
+mediaproc image resize --width 1920
+# Error: No input files specified
+```
+
+✅ **Correct:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+```
+
+---
+
+## Preview Before Processing
+
+Use `--dry-run` to see what will happen without actually processing:
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920 --dry-run" },
+    { output: "Would process: photo.jpg", isSuccess: false },
+    { output: "Would create: photo-resized.jpg", isSuccess: false },
+    { output: "Operation: resize to 1920px width", isSuccess: false },
+    { output: "(Dry run - no files modified)", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Verbose Output
+
+See detailed processing information with `--verbose`:
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920 --verbose" },
+    { output: "Loading image: photo.jpg", isSuccess: false },
+    { output: "Original size: 4000×3000 (12 MP)", isSuccess: false },
+    { output: "Target size: 1920×1440", isSuccess: false },
+    { output: "Using Sharp 0.32.0", isSuccess: false },
+    { output: "Resizing with Lanczos3 resampling", isSuccess: false },
+    { output: "Writing: photo-resized.jpg", isSuccess: false },
+    { output: "✓ Completed in 0.8s", isSuccess: true },
+  ]}
+/>
+
+---
+
+## Practice Exercises
+
+Try these commands to practice:
+
+### Exercise 1: Image Formats
+
+Convert an image to different formats:
+
+```bash
+# Original to WebP
+mediaproc image convert photo.jpg --format webp
+
+# Original to PNG
+mediaproc image convert photo.jpg --format png
+
+# Original to AVIF
+mediaproc image convert photo.jpg --format avif
+```
+
+### Exercise 2: Video Trimming
+
+Extract different segments from a video:
+
+```bash
+# First 30 seconds
+mediaproc video trim movie.mp4 --duration 30
+
+# From 1 minute to 2 minutes
+mediaproc video trim movie.mp4 --start 60 --end 120
+
+# Last 30 seconds (requires knowing duration)
+mediaproc video trim movie.mp4 --start -30
+```
+
+### Exercise 3: Audio Conversion
+
+Convert audio to different formats:
+
+```bash
+# MP3 to FLAC (lossless)
+mediaproc audio convert song.mp3 --format flac
+
+# WAV to Opus (modern compression)
+mediaproc audio convert recording.wav --format opus
+
+# FLAC to MP3 (for compatibility)
+mediaproc audio convert master.flac --format mp3 --quality high
+```
+
+---
+
+## Quick Reference Card
+
+**Basic Pattern:**
+
+```bash
+mediaproc <plugin> <command> <input> [options]
+```
+
+**Common Commands:**
+
+```bash
+# Image
+mediaproc image resize photo.jpg --width 1920
+mediaproc image convert photo.jpg --format webp
+mediaproc image optimize photo.jpg
+
+# Video
+mediaproc video trim video.mp4 --start 30 --duration 60
+mediaproc video resize video.mp4 --width 1280
+mediaproc video transcode video.mp4 --codec h265
+
+# Audio
+mediaproc audio convert song.mp3 --format flac
+mediaproc audio normalize podcast.mp3 --loudness -16
+mediaproc audio trim song.mp3 --start 30 --duration 60
+```
+
+**Helpful Options:**
+
+```bash
+--help        Show help
+--verbose     Detailed output
+--dry-run     Preview only
+--output      Specify output file/directory
+```
+
+---
+
+## What's Next?
+
+You've successfully run your first MediaProc commands! 🎉
+
+### Continue Learning:
+
+1. **[Basic Concepts](/docs/basic-concepts)** - Understand key terminology
+2. **[Quick Start](/docs/quick-start)** - More comprehensive examples
+3. **[Plugin Guides](/docs/plugins/image)** - Deep dive into each plugin
+4. **[CLI Overview](/docs/cli/overview)** - Master the command-line interface
+
+### Try Advanced Features:
+
+- **Batch processing** multiple files
+- **Chaining commands** in workflows
+- **Custom configurations** for repeated operations
+- **Creating plugins** for custom processing
+
+---
+
+## Getting Help
+
+Stuck? Here's how to get help:
+
+**Command Help:**
+
+```bash
+mediaproc --help                    # General help
+mediaproc image --help              # Plugin help
+mediaproc image resize --help       # Command help
+```
+
+**Online Resources:**
+
+- [Documentation](/)
+- [GitHub Discussions](https://github.com/your-org/mediaproc/discussions)
+- [Discord Server](https://discord.gg/mediaproc)
+- [Troubleshooting Guide](/docs/troubleshooting)
+
+---
+
+**Ready to explore more?**
+
+[View All Plugins →](/docs/plugins/image) | [Read CLI Guide →](/docs/cli/overview)

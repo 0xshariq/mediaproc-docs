@@ -1,0 +1,653 @@
+# Architecture Overview
+
+Understanding MediaProc's modular design and plugin system.
+
+## System Architecture
+
+MediaProc follows a **plugin-based architecture** that separates core functionality from media processing capabilities. This design enables extensibility, maintainability, and independent plugin development.
+
+```
+┌─────────────────────────────────────────────────┐
+│              MediaProc Core CLI                  │
+│                                                  │
+│  ┌──────────────────────────────────────────┐  │
+│  │     Plugin Manager & Registry            │  │
+│  │  • Discovery  • Loading  • Validation    │  │
+│  └──────────────────────────────────────────┘  │
+│                                                  │
+│  ┌──────────────────────────────────────────┐  │
+│  │         Command Router                   │  │
+│  │  • Parsing  • Dispatch  • Error Handling │  │
+│  └──────────────────────────────────────────┘  │
+│                                                  │
+│  ┌──────────────────────────────────────────┐  │
+│  │         Plugin API                       │  │
+│  │  • Registration  • Lifecycle  • Hooks    │  │
+│  └──────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────┘
+                      │
+         ┌────────────┴────────────┐
+         │                         │
+    ┌────▼─────┐            ┌─────▼────┐
+    │  Plugins │            │  Plugins │
+    │  (Built-in)          │  (Custom) │
+    └──────────┘            └──────────┘
+         │                         │
+    ┌────┴─────────────────────────┴────┐
+    │                                    │
+┌───▼────┐  ┌────────┐  ┌──────┐  ┌────▼───┐
+│ Image  │  │ Video  │  │ Audio│  │ Custom │
+│ Plugin │  │ Plugin │  │Plugin│  │ Plugin │
+└────────┘  └────────┘  └──────┘  └────────┘
+     │           │          │           │
+┌────▼───┐  ┌───▼────┐ ┌───▼───┐  ┌───▼────┐
+│ Sharp  │  │ FFmpeg │ │FFmpeg │  │  Your  │
+│        │  │        │ │       │  │  Tool  │
+└────────┘  └────────┘ └───────┘  └────────┘
+```
+
+---
+
+## Core Components
+
+### 1. CLI Core
+
+The main command-line interface entry point.
+
+**Responsibilities:**
+
+- Parse command-line arguments
+- Load configuration files
+- Initialize plugin system
+- Route commands to appropriate plugins
+- Handle global options (--help, --version, --verbose)
+- Error handling and user feedback
+
+**Key Files:**
+
+- `src/cli.ts` - Main CLI entry point
+- `src/index.ts` - Core exports
+- `src/types.ts` - TypeScript type definitions
+
+**Command Flow:**
+
+```
+User Input → CLI Parser → Plugin Manager → Plugin → Processing Tool → Output
+```
+
+---
+
+### 2. Plugin Manager
+
+Discovers, loads, and manages plugins.
+
+**Features:**
+
+- **Auto-discovery:** Automatically finds plugins in `plugins/` directory
+- **Lazy loading:** Plugins load only when needed
+- **Validation:** Ensures plugins implement required interfaces
+- **Dependency management:** Handles plugin dependencies
+- **Error isolation:** Plugin errors don't crash the CLI
+
+**Plugin Discovery:**
+
+```typescript
+// Searches for plugins in:
+1. ./plugins/*/package.json (monorepo structure)
+2. node_modules/@mediaproc/plugin-*
+3. Custom plugin directories (via config)
+```
+
+**Validation:**
+
+Each plugin must export:
+- `name: string` - Unique plugin identifier
+- `commands: Command[]` - Available commands
+- `register()` - Registration function
+
+---
+
+### 3. Plugin Registry
+
+Central registry of all available plugins and commands.
+
+**Data Structure:**
+
+```typescript
+interface PluginRegistry {
+  plugins: Map<string, Plugin>;
+  commands: Map<string, Command>;
+  aliases: Map<string, string>;
+}
+```
+
+**Command Registration:**
+
+```typescript
+// Example: registering the 'resize' command
+registry.registerCommand({
+  name: 'resize',
+  plugin: 'image',
+  handler: resizeHandler,
+  options: [...],
+  description: 'Resize images to specified dimensions'
+});
+```
+
+---
+
+### 4. Plugin API
+
+Interface for plugin development.
+
+**Core API Methods:**
+
+```typescript
+interface PluginAPI {
+  // Register plugin with CLI
+  registerPlugin(plugin: Plugin): void;
+  
+  // Register commands
+  registerCommand(command: Command): void;
+  
+  // Access configuration
+  getConfig(key: string): any;
+  
+  // Logging utilities
+  log(message: string, level: LogLevel): void;
+  
+  // File system helpers
+  resolveInputFiles(pattern: string): string[];
+  
+  // Progress reporting
+  createProgressBar(total: number): ProgressBar;
+}
+```
+
+**Lifecycle Hooks:**
+
+```typescript
+interface Plugin {
+  // Called when plugin is loaded
+  onLoad?(): Promise<void>;
+  
+  // Called before any command
+  beforeCommand?(context: CommandContext): Promise<void>;
+  
+  // Called after command completes
+  afterCommand?(context: CommandContext): Promise<void>;
+  
+  // Cleanup on CLI exit
+  onUnload?(): Promise<void>;
+}
+```
+
+---
+
+## Plugin Architecture
+
+### Plugin Structure
+
+Each plugin follows a consistent structure:
+
+```
+plugins/
+└── image/                    # Plugin directory
+    ├── package.json          # Plugin metadata
+    ├── tsconfig.json         # TypeScript config
+    ├── bin/
+    │   └── cli.js           # Standalone CLI (optional)
+    └── src/
+        ├── index.ts         # Main plugin export
+        ├── register.ts      # Plugin registration
+        ├── types.ts         # Plugin-specific types
+        └── commands/        # Command implementations
+            ├── resize.ts
+            ├── convert.ts
+            └── optimize.ts
+```
+
+---
+
+### Plugin Metadata
+
+**package.json:**
+
+```json
+{
+  "name": "@mediaproc/plugin-image",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "mediaproc": {
+    "plugin": true,
+    "category": "image",
+    "dependencies": ["sharp"],
+    "provides": ["resize", "convert", "optimize"]
+  }
+}
+```
+
+---
+
+### Command Implementation
+
+**Anatomy of a Command:**
+
+```typescript
+// plugins/image/src/commands/resize.ts
+
+import type { Command, CommandContext } from '@mediaproc/core';
+
+export const resizeCommand: Command = {
+  name: 'resize',
+  description: 'Resize images to specified dimensions',
+  
+  options: [
+    {
+      name: 'width',
+      alias: 'w',
+      type: 'number',
+      description: 'Target width in pixels'
+    },
+    {
+      name: 'height',
+      alias: 'h',
+      type: 'number',
+      description: 'Target height in pixels'
+    }
+  ],
+  
+  async handler(context: CommandContext) {
+    const { input, options, logger } = context;
+    
+    // Validate inputs
+    if (!options.width && !options.height) {
+      throw new Error('Provide at least width or height');
+    }
+    
+    // Process files
+    for (const file of input) {
+      logger.info(`Resizing: ${file}`);
+      await resizeImage(file, options);
+    }
+    
+    return { success: true, processed: input.length };
+  }
+};
+```
+
+---
+
+## Data Flow
+
+### Command Execution Flow
+
+```
+1. User Input
+   └─> mediaproc image resize photo.jpg --width 1920
+
+2. CLI Parser
+   └─> Parse: plugin=image, command=resize, args=[photo.jpg], options={width: 1920}
+
+3. Plugin Manager
+   └─> Load 'image' plugin (if not loaded)
+
+4. Plugin Registry
+   └─> Lookup 'resize' command
+   └─> Validate options
+
+5. Command Handler
+   └─> Execute resize logic
+   └─> Call Sharp library
+
+6. Processing Tool
+   └─> Sharp processes the image
+
+7. Output
+   └─> Write result file
+   └─> Display success message
+```
+
+---
+
+### Error Handling Flow
+
+```
+Error occurs
+    │
+    ├─> Plugin Error
+    │   └─> Caught by plugin wrapper
+    │       └─> Logged with context
+    │           └─> User-friendly message
+    │
+    ├─> Validation Error
+    │   └─> Caught before execution
+    │       └─> Show usage help
+    │
+    └─> System Error
+        └─> Caught by global handler
+            └─> Clean exit with error code
+```
+
+---
+
+## Configuration System
+
+### Configuration Hierarchy
+
+MediaProc looks for configuration in this order (later overrides earlier):
+
+```
+1. Global defaults (built-in)
+2. Global config: ~/.mediaproc/config.json
+3. Project config: ./mediaproc.json
+4. Environment variables: MEDIAPROC_*
+5. Command-line flags: --option value
+```
+
+### Configuration File Format
+
+```json
+{
+  "plugins": {
+    "image": {
+      "defaultFormat": "webp",
+      "quality": 85
+    },
+    "video": {
+      "codec": "h264",
+      "preset": "medium"
+    }
+  },
+  
+  "output": {
+    "directory": "./output",
+    "overwrite": false
+  },
+  
+  "logging": {
+    "level": "info",
+    "format": "pretty"
+  }
+}
+```
+
+---
+
+## Plugin Communication
+
+### Shared Context
+
+Plugins can share data through the command context:
+
+```typescript
+interface CommandContext {
+  // Input files
+  input: string[];
+  
+  // Parsed options
+  options: Record<string, any>;
+  
+  // Shared state (between plugins)
+  state: Map<string, any>;
+  
+  // Logger instance
+  logger: Logger;
+  
+  // Configuration
+  config: Config;
+}
+```
+
+### Inter-Plugin Dependencies
+
+```typescript
+// Plugin A registers a utility
+context.state.set('imageMetadata', extractMetadata);
+
+// Plugin B uses it
+const getMetadata = context.state.get('imageMetadata');
+const metadata = getMetadata(file);
+```
+
+---
+
+## Extension Points
+
+### Custom Plugins
+
+Create your own plugins:
+
+```typescript
+// my-plugin/src/index.ts
+
+export const plugin = {
+  name: 'my-custom-plugin',
+  version: '1.0.0',
+  
+  commands: [
+    {
+      name: 'process',
+      handler: async (context) => {
+        // Your custom logic
+      }
+    }
+  ],
+  
+  register(api) {
+    api.registerPlugin(this);
+  }
+};
+```
+
+### Custom Processing Tools
+
+Plugins can wrap any command-line tool:
+
+```typescript
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
+
+async function customTool(input: string, options: any) {
+  const cmd = `custom-tool ${input} --option ${options.value}`;
+  const { stdout, stderr } = await execAsync(cmd);
+  return stdout;
+}
+```
+
+---
+
+## Performance Considerations
+
+### Lazy Loading
+
+Plugins load only when needed:
+
+```typescript
+// Not loaded until 'image' command is used
+const plugin = await import(`./plugins/${pluginName}`);
+```
+
+### Parallel Processing
+
+Commands can process multiple files in parallel:
+
+```typescript
+async handler(context: CommandContext) {
+  const results = await Promise.all(
+    context.input.map(file => processFile(file, context.options))
+  );
+  return { processed: results.length };
+}
+```
+
+### Caching
+
+Plugin manager caches loaded plugins:
+
+```typescript
+private pluginCache = new Map<string, Plugin>();
+
+async loadPlugin(name: string): Promise<Plugin> {
+  if (this.pluginCache.has(name)) {
+    return this.pluginCache.get(name)!;
+  }
+  
+  const plugin = await this.discover(name);
+  this.pluginCache.set(name, plugin);
+  return plugin;
+}
+```
+
+---
+
+## Security Model
+
+### Input Validation
+
+All user inputs are validated:
+
+```typescript
+// Sanitize file paths
+const safePath = path.normalize(path.resolve(userInput));
+
+// Validate against directory traversal
+if (!safePath.startsWith(projectRoot)) {
+  throw new Error('Path outside project root');
+}
+```
+
+### Plugin Sandboxing
+
+Plugins run in isolated contexts:
+
+```typescript
+// Limited API access
+const safeAPI = {
+  registerCommand,
+  log,
+  getConfig: (key) => allowedConfigs[key]
+  // No direct file system access
+};
+
+plugin.register(safeAPI);
+```
+
+### Command Injection Prevention
+
+All external commands use parameterized execution:
+
+```typescript
+// BAD: Vulnerable to injection
+exec(`convert ${userInput} output.jpg`);
+
+// GOOD: Parameterized
+execFile('convert', [userInput, 'output.jpg']);
+```
+
+---
+
+## Testing Architecture
+
+### Unit Tests
+
+Each component is independently testable:
+
+```typescript
+describe('Plugin Manager', () => {
+  it('should load plugins', async () => {
+    const manager = new PluginManager();
+    const plugin = await manager.load('image');
+    expect(plugin.name).toBe('image');
+  });
+});
+```
+
+### Integration Tests
+
+Test plugin interactions:
+
+```typescript
+it('should execute image resize command', async () => {
+  const result = await cli.execute([
+    'image', 'resize', 'test.jpg', '--width', '1920'
+  ]);
+  expect(result.success).toBe(true);
+});
+```
+
+### End-to-End Tests
+
+Test complete workflows:
+
+```bash
+#!/bin/bash
+# e2e test
+
+mediaproc image resize input.jpg --width 1920
+test -f input-resized.jpg && echo "PASS" || echo "FAIL"
+```
+
+---
+
+## Monitoring & Observability
+
+### Logging
+
+Structured logging throughout:
+
+```typescript
+logger.info('Processing file', {
+  file: 'image.jpg',
+  command: 'resize',
+  options: { width: 1920 }
+});
+```
+
+### Metrics
+
+Track command usage:
+
+```typescript
+metrics.increment('command.executed', {
+  plugin: 'image',
+  command: 'resize'
+});
+```
+
+### Error Tracking
+
+Comprehensive error context:
+
+```typescript
+try {
+  await processFile(file);
+} catch (error) {
+  logger.error('Processing failed', {
+    file,
+    error: error.message,
+    stack: error.stack,
+    context: { ...context }
+  });
+}
+```
+
+---
+
+## Related Documentation
+
+- [Plugin Development Guide](/docs/architecture/plugin-development)
+- [CLI Plugin Architecture](/docs/architecture/cli-plugins)
+- [Image Plugin Architecture](/docs/architecture/image-plugin)
+- [Video Plugin Architecture](/docs/architecture/video-plugin)
+- [Audio Plugin Architecture](/docs/architecture/audio-plugin)
+
+---
+
+## Learn More
+
+- [TypeScript Plugin System](https://www.typescriptlang.org/docs/handbook/declaration-files/plugins.html)
+- [CLI Design Patterns](https://clig.dev/)
+- [Node.js Child Process](https://nodejs.org/api/child_process.html)

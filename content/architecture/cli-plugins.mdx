@@ -1,0 +1,872 @@
+# CLI Plugin Architecture
+
+Understanding MediaProc's universal CLI architecture and how plugins integrate.
+
+## Universal CLI Design
+
+MediaProc's CLI is built on a **universal command pattern** that provides consistency across all media types:
+
+```bash
+mediaproc <plugin> <command> <input> [options]
+```
+
+This pattern makes the CLI predictable and easy to learn.
+
+---
+
+## Command Pattern
+
+### Structure
+
+Every command follows the same structure:
+
+```
+mediaproc [global-options] <plugin> <command> <input...> [command-options]
+```
+
+**Components:**
+
+- **`mediaproc`** - The CLI binary
+- **`[global-options]`** - Options affecting the entire CLI (--verbose, --config)
+- **`<plugin>`** - The plugin namespace (image, video, audio, etc.)
+- **`<command>`** - The specific command to run (resize, convert, trim, etc.)
+- **`<input...>`** - One or more input files or patterns
+- **`[command-options]`** - Command-specific flags and options
+
+---
+
+### Examples Across Plugins
+
+**Image Plugin:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920 --height 1080
+```
+
+**Video Plugin:**
+
+```bash
+mediaproc video transcode movie.mp4 --codec h264 --preset medium
+```
+
+**Audio Plugin:**
+
+```bash
+mediaproc audio normalize song.mp3 --loudness -16
+```
+
+**Pattern is identical:**
+
+```
+mediaproc <plugin> <command> <file> --<option> <value>
+```
+
+---
+
+## Global Options
+
+Options available for all commands:
+
+### `--help, -h`
+
+Display help information.
+
+```bash
+# CLI help
+mediaproc --help
+
+# Plugin help
+mediaproc image --help
+
+# Command help
+mediaproc image resize --help
+```
+
+---
+
+### `--version, -V`
+
+Show version information.
+
+```bash
+mediaproc --version
+# @mediaproc/cli v1.0.0
+```
+
+---
+
+### `--verbose, -v`
+
+Enable detailed output.
+
+```bash
+mediaproc image resize photo.jpg --width 1920 --verbose
+# Shows: FFmpeg/Sharp output, file paths, timing
+```
+
+---
+
+### `--dry-run`
+
+Preview the command without executing.
+
+```bash
+mediaproc video transcode video.mp4 --codec h264 --dry-run
+# Would run: ffmpeg -i video.mp4 -c:v h264 ...
+```
+
+---
+
+### `--config`
+
+Specify custom configuration file.
+
+```bash
+mediaproc --config ./my-config.json image resize photo.jpg --width 1920
+```
+
+---
+
+### `--output, -o`
+
+Specify output location (available on most commands).
+
+```bash
+# Single file
+mediaproc image resize photo.jpg --output resized.jpg
+
+# Directory for batch processing
+mediaproc image resize *.jpg --output ./resized/
+```
+
+---
+
+## Plugin CLI Integration
+
+### Auto-Generated CLI
+
+Each plugin automatically generates its own CLI binary:
+
+```bash
+# Via main CLI
+mediaproc image resize photo.jpg --width 1920
+
+# Via plugin CLI
+mediaproc-image resize photo.jpg --width 1920
+```
+
+**Package Structure:**
+
+```json
+{
+  "name": "@mediaproc/plugin-image",
+  "bin": {
+    "mediaproc-image": "./bin/cli.js"
+  }
+}
+```
+
+---
+
+### Plugin Registration
+
+Plugins register with the main CLI:
+
+```typescript
+// plugins/image/src/register.ts
+
+import { Plugin } from '@mediaproc/core';
+import { resizeCommand } from './commands/resize';
+import { convertCommand } from './commands/convert';
+
+export const plugin: Plugin = {
+  name: 'image',
+  version: '1.0.0',
+  description: 'Image processing plugin powered by Sharp',
+  
+  commands: [
+    resizeCommand,
+    convertCommand,
+    // ... more commands
+  ],
+  
+  register(api) {
+    api.registerPlugin(this);
+    
+    // Register all commands
+    this.commands.forEach(cmd => {
+      api.registerCommand(cmd);
+    });
+  }
+};
+```
+
+---
+
+### Command Handler Interface
+
+All command handlers follow the same interface:
+
+```typescript
+interface Command {
+  name: string;
+  description: string;
+  options: CommandOption[];
+  examples?: string[];
+  
+  handler(context: CommandContext): Promise<CommandResult>;
+}
+
+interface CommandContext {
+  // Input files
+  input: string[];
+  
+  // Parsed options
+  options: Record<string, any>;
+  
+  // Plugin API access
+  api: PluginAPI;
+  
+  // Logger
+  logger: Logger;
+  
+  // Configuration
+  config: Config;
+}
+
+interface CommandResult {
+  success: boolean;
+  processed?: number;
+  failed?: number;
+  message?: string;
+}
+```
+
+---
+
+## Input Handling
+
+### File Patterns
+
+The CLI supports multiple input patterns:
+
+**Single File:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+```
+
+**Multiple Files:**
+
+```bash
+mediaproc image resize photo1.jpg photo2.jpg photo3.jpg --width 1920
+```
+
+**Glob Patterns:**
+
+```bash
+# All JPGs in current directory
+mediaproc image resize *.jpg --width 1920
+
+# All JPGs in subdirectories
+mediaproc image resize **/*.jpg --width 1920
+
+# Multiple patterns
+mediaproc image resize *.jpg *.png --width 1920
+```
+
+**From stdin:**
+
+```bash
+find . -name "*.jpg" | mediaproc image resize --stdin --width 1920
+```
+
+---
+
+### Input Validation
+
+CLI validates inputs before processing:
+
+```typescript
+async function validateInputs(files: string[]): Promise<void> {
+  for (const file of files) {
+    // Check if file exists
+    if (!await fileExists(file)) {
+      throw new Error(`File not found: ${file}`);
+    }
+    
+    // Check if readable
+    if (!await isReadable(file)) {
+      throw new Error(`Cannot read file: ${file}`);
+    }
+    
+    // Check file extension
+    if (!hasValidExtension(file, allowedExtensions)) {
+      throw new Error(`Invalid file type: ${file}`);
+    }
+  }
+}
+```
+
+---
+
+## Output Handling
+
+### Output Strategies
+
+The CLI supports multiple output strategies:
+
+**1. Automatic Naming (Default):**
+
+```bash
+# input: photo.jpg → output: photo-resized.jpg
+mediaproc image resize photo.jpg --width 1920
+```
+
+**2. Explicit Output:**
+
+```bash
+# Specify exact output filename
+mediaproc image resize photo.jpg --width 1920 --output result.jpg
+```
+
+**3. Directory Output:**
+
+```bash
+# All outputs go to directory
+mediaproc image resize *.jpg --width 1920 --output ./resized/
+```
+
+**4. In-Place (Dangerous):**
+
+```bash
+# Overwrite original file
+mediaproc image resize photo.jpg --width 1920 --in-place
+```
+
+---
+
+### Naming Conventions
+
+Default output naming patterns:
+
+```typescript
+function generateOutputName(input: string, command: string): string {
+  const { name, ext } = path.parse(input);
+  
+  // Pattern: <name>-<command><ext>
+  return `${name}-${command}${ext}`;
+}
+
+// Examples:
+// photo.jpg → photo-resized.jpg
+// video.mp4 → video-transcoded.mp4
+// song.mp3 → song-normalized.mp3
+```
+
+---
+
+## Option Parsing
+
+### Option Types
+
+The CLI supports multiple option types:
+
+**Boolean Flags:**
+
+```bash
+--verbose
+--dry-run
+--overwrite
+```
+
+**String Options:**
+
+```bash
+--format webp
+--codec h264
+--output result.jpg
+```
+
+**Number Options:**
+
+```bash
+--width 1920
+--quality 85
+--bitrate 128
+```
+
+**Array Options:**
+
+```bash
+--formats webp jpg png
+--sizes 1920 1280 800
+```
+
+---
+
+### Option Validation
+
+Options are validated before execution:
+
+```typescript
+interface CommandOption {
+  name: string;
+  alias?: string;
+  type: 'boolean' | 'string' | 'number' | 'array';
+  required?: boolean;
+  default?: any;
+  choices?: any[];
+  validate?: (value: any) => boolean;
+}
+
+// Example validation
+{
+  name: 'quality',
+  type: 'number',
+  validate: (v) => v >= 1 && v <= 100,
+  default: 85
+}
+```
+
+---
+
+## Error Handling
+
+### Error Types
+
+The CLI handles different error categories:
+
+**1. User Errors (Exit code 1):**
+
+```bash
+# Missing required option
+mediaproc image resize photo.jpg
+# Error: Either --width or --height required
+
+# Invalid option value
+mediaproc image resize photo.jpg --quality 150
+# Error: Quality must be between 1-100
+```
+
+**2. System Errors (Exit code 2):**
+
+```bash
+# File not found
+mediaproc image resize missing.jpg --width 1920
+# Error: File not found: missing.jpg
+
+# Permission denied
+mediaproc image resize protected.jpg --width 1920
+# Error: Permission denied: protected.jpg
+```
+
+**3. Processing Errors (Exit code 3):**
+
+```bash
+# Corrupted file
+mediaproc image resize corrupted.jpg --width 1920
+# Error: Failed to decode image: corrupted.jpg
+
+# Unsupported format
+mediaproc video transcode movie.xyz --codec h264
+# Error: Unsupported format: xyz
+```
+
+---
+
+### Error Messages
+
+Error messages are user-friendly and actionable:
+
+```typescript
+class CLIError extends Error {
+  constructor(
+    message: string,
+    public code: number,
+    public suggestions?: string[]
+  ) {
+    super(message);
+  }
+}
+
+// Example usage
+throw new CLIError(
+  'File not found: photo.jpg',
+  1,
+  [
+    'Check if the file path is correct',
+    'Ensure the file exists in the current directory',
+    'Try using an absolute path'
+  ]
+);
+```
+
+**Output:**
+
+```
+Error: File not found: photo.jpg
+
+Suggestions:
+  • Check if the file path is correct
+  • Ensure the file exists in the current directory
+  • Try using an absolute path
+```
+
+---
+
+## Progress Reporting
+
+### Progress Bars
+
+For long-running operations:
+
+```typescript
+const progress = context.api.createProgressBar({
+  total: files.length,
+  format: 'Processing [{bar}] {percentage}% | {value}/{total} files'
+});
+
+for (const file of files) {
+  await processFile(file);
+  progress.increment();
+}
+
+progress.stop();
+```
+
+**Output:**
+
+```
+Processing [====================] 100% | 25/25 files
+```
+
+---
+
+### Status Messages
+
+Real-time status updates:
+
+```bash
+mediaproc image resize *.jpg --width 1920 --verbose
+
+# Output:
+Processing 15 files...
+  [1/15] photo1.jpg → photo1-resized.jpg (1.2 MB)
+  [2/15] photo2.jpg → photo2-resized.jpg (1.5 MB)
+  [3/15] photo3.jpg → photo3-resized.jpg (1.1 MB)
+  ...
+✓ Successfully processed 15 files in 3.2s
+```
+
+---
+
+## Batch Processing
+
+### Parallel Execution
+
+Process multiple files in parallel:
+
+```typescript
+async function processBatch(
+  files: string[],
+  handler: ProcessHandler,
+  concurrency: number = 4
+): Promise<Result[]> {
+  const chunks = chunkArray(files, concurrency);
+  const results: Result[] = [];
+  
+  for (const chunk of chunks) {
+    const batchResults = await Promise.all(
+      chunk.map(file => handler(file))
+    );
+    results.push(...batchResults);
+  }
+  
+  return results;
+}
+```
+
+---
+
+### Batch Statistics
+
+Summary statistics after batch processing:
+
+```bash
+mediaproc image resize *.jpg --width 1920
+
+# Output:
+Processing 100 files...
+
+Summary:
+  ✓ Processed: 97 files
+  ✗ Failed: 3 files
+  ⏱ Duration: 12.5s
+  📦 Total size: 245 MB → 89 MB (63% reduction)
+```
+
+---
+
+## Configuration Integration
+
+### Configuration Cascade
+
+Configuration merges from multiple sources:
+
+```
+1. Built-in defaults
+   ↓
+2. Global config (~/.mediaproc/config.json)
+   ↓
+3. Project config (./mediaproc.json)
+   ↓
+4. Environment variables (MEDIAPROC_*)
+   ↓
+5. Command-line options
+```
+
+### Example Configuration
+
+```json
+{
+  "image": {
+    "defaultFormat": "webp",
+    "quality": 85,
+    "resize": {
+      "width": 1920,
+      "fit": "cover"
+    }
+  },
+  
+  "video": {
+    "codec": "h264",
+    "preset": "medium",
+    "bitrate": "5000k"
+  },
+  
+  "output": {
+    "directory": "./output",
+    "overwrite": false,
+    "preserveStructure": true
+  }
+}
+```
+
+**Using Configuration:**
+
+```bash
+# Uses configured defaults
+mediaproc image resize photo.jpg
+# Applies: format=webp, quality=85, width=1920
+
+# Override via CLI
+mediaproc image resize photo.jpg --quality 95
+# Applies: format=webp, quality=95, width=1920
+```
+
+---
+
+## Plugin Discovery
+
+### Discovery Process
+
+The CLI discovers plugins automatically:
+
+```typescript
+async function discoverPlugins(): Promise<Plugin[]> {
+  const discovered: Plugin[] = [];
+  
+  // 1. Built-in plugins (monorepo)
+  const builtIn = await discoverBuiltInPlugins('./plugins');
+  discovered.push(...builtIn);
+  
+  // 2. Installed npm packages
+  const installed = await discoverNpmPlugins('node_modules');
+  discovered.push(...installed);
+  
+  // 3. Custom plugin directories
+  const custom = await discoverCustomPlugins(config.pluginDirs);
+  discovered.push(...custom);
+  
+  return discovered;
+}
+```
+
+---
+
+### Plugin Loading
+
+Plugins are loaded lazily:
+
+```typescript
+class PluginManager {
+  private cache = new Map<string, Plugin>();
+  
+  async load(pluginName: string): Promise<Plugin> {
+    // Check cache
+    if (this.cache.has(pluginName)) {
+      return this.cache.get(pluginName)!;
+    }
+    
+    // Dynamic import
+    const module = await import(`./plugins/${pluginName}`);
+    const plugin = module.plugin;
+    
+    // Validate
+    this.validate(plugin);
+    
+    // Cache and return
+    this.cache.set(pluginName, plugin);
+    return plugin;
+  }
+}
+```
+
+---
+
+## Extensibility
+
+### Custom Commands
+
+Add custom commands to any plugin:
+
+```typescript
+// mediaproc.config.js
+
+module.exports = {
+  plugins: {
+    image: {
+      commands: {
+        // Add custom command
+        watermark: {
+          handler: './custom/watermark.js',
+          description: 'Add watermark to images'
+        }
+      }
+    }
+  }
+};
+```
+
+---
+
+### Command Aliases
+
+Create command aliases:
+
+```json
+{
+  "aliases": {
+    "img": "image",
+    "vid": "video",
+    "aud": "audio",
+    "opt": "optimize"
+  }
+}
+```
+
+**Usage:**
+
+```bash
+# Instead of:
+mediaproc image optimize photo.jpg
+
+# Use alias:
+mediaproc img opt photo.jpg
+```
+
+---
+
+## Performance Optimization
+
+### Caching
+
+The CLI caches expensive operations:
+
+```typescript
+// Plugin metadata cache
+const metadataCache = new Map<string, Metadata>();
+
+// File hash cache for duplicate detection
+const hashCache = new Map<string, string>();
+
+// Processing result cache
+const resultCache = new Map<string, Result>();
+```
+
+---
+
+### Incremental Processing
+
+Only process changed files:
+
+```bash
+# Skip already processed files
+mediaproc image resize *.jpg --incremental
+
+# Output:
+Scanning 100 files...
+  ✓ 75 files already processed (skipped)
+  → 25 files to process
+```
+
+---
+
+## Testing
+
+### CLI Testing
+
+Test CLI commands end-to-end:
+
+```typescript
+import { runCLI } from '@mediaproc/test-utils';
+
+test('should resize image', async () => {
+  const result = await runCLI([
+    'image', 'resize', 'test.jpg', '--width', '1920'
+  ]);
+  
+  expect(result.exitCode).toBe(0);
+  expect(result.stdout).toContain('Successfully processed');
+});
+```
+
+---
+
+### Mock Plugins
+
+Test plugin system:
+
+```typescript
+const mockPlugin = {
+  name: 'test-plugin',
+  commands: [{
+    name: 'test-command',
+    handler: jest.fn().mockResolvedValue({ success: true })
+  }],
+  register: jest.fn()
+};
+
+const cli = new CLI({ plugins: [mockPlugin] });
+await cli.execute(['test-plugin', 'test-command']);
+
+expect(mockPlugin.commands[0].handler).toHaveBeenCalled();
+```
+
+---
+
+## Related Documentation
+
+- [Architecture Overview](/docs/architecture/overview)
+- [Image Plugin Architecture](/docs/architecture/image-plugin)
+- [Video Plugin Architecture](/docs/architecture/video-plugin)
+- [Audio Plugin Architecture](/docs/architecture/audio-plugin)
+
+---
+
+## Learn More
+
+- [Commander.js](https://github.com/tj/commander.js) - CLI framework inspiration
+- [Yargs](https://yargs.js.org/) - Alternative CLI parser
+- [Inquirer.js](https://github.com/SBoudrias/Inquirer.js) - Interactive prompts

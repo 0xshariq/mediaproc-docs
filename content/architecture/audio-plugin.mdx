@@ -1,0 +1,863 @@
+# Audio Plugin Architecture
+
+Deep dive into the Audio Plugin's architecture, powered by FFmpeg.
+
+## Overview
+
+The Audio Plugin provides comprehensive audio processing capabilities through [FFmpeg](https://ffmpeg.org/), leveraging its powerful audio processing libraries.
+
+**Key Technologies:**
+
+- **FFmpeg:** Core audio processing engine
+- **Node.js child_process:** FFmpeg command execution
+- **Streaming:** Efficient handling of large audio files
+
+---
+
+## Plugin Structure
+
+```
+plugins/audio/
+├── package.json                 # Plugin metadata
+├── tsconfig.json               # TypeScript configuration
+├── README.md                   # Plugin documentation
+├── bin/
+│   └── cli.js                 # Standalone CLI entry
+└── src/
+    ├── index.ts               # Plugin exports
+    ├── register.ts            # Plugin registration
+    ├── types.ts               # Type definitions
+    ├── utils/
+    │   ├── ffmpeg-helpers.ts  # FFmpeg utility functions
+    │   ├── validation.ts      # Input validation
+    │   ├── metadata.ts        # Audio metadata extraction
+    │   └── loudness.ts        # Loudness analysis (EBU R128)
+    └── commands/
+        ├── convert.ts         # Format conversion
+        ├── extract.ts         # Extract from video
+        ├── normalize.ts       # Loudness normalization
+        ├── trim.ts            # Cut audio segments
+        └── merge.ts           # Concatenate files
+```
+
+---
+
+## Core Dependencies
+
+### FFmpeg Audio Libraries
+
+FFmpeg includes several audio processing libraries:
+
+**libavcodec:** Audio codec support
+- MP3 (libmp3lame)
+- AAC (libfdk-aac, aac)
+- Opus (libopus)
+- Vorbis (libvorbis)
+- FLAC (flac)
+
+**libavfilter:** Audio filters
+- Volume adjustment
+- Equalization
+- Normalization
+- Effects (reverb, echo, etc.)
+
+**libavformat:** Container formats
+- MP4, MKV (audio tracks)
+- OGG, WebM
+- WAV, AIFF
+
+---
+
+### FFmpeg Audio Processing
+
+```
+Input → Demuxer → Decoder → Audio Filters → Encoder → Muxer → Output
+```
+
+**Components:**
+
+- **Demuxer:** Reads container (MP4, OGG, etc.)
+- **Decoder:** Decodes audio codec (MP3, AAC, etc.)
+- **Audio Filters:** Applies transformations (volume, normalize, etc.)
+- **Encoder:** Encodes to target codec
+- **Muxer:** Writes container format
+
+---
+
+## Command Architecture
+
+### Command Pattern
+
+All audio commands follow this pattern:
+
+```typescript
+import type { Command, CommandContext } from '@mediaproc/core';
+import { execFFmpeg } from '../utils/ffmpeg-helpers';
+
+export const normalizeCommand: Command = {
+  name: 'normalize',
+  description: 'Normalize audio loudness to target LUFS',
+  
+  options: [
+    {
+      name: 'loudness',
+      alias: 'l',
+      type: 'number',
+      default: -16,
+      description: 'Target loudness in LUFS'
+    },
+    {
+      name: 'true-peak',
+      alias: 'tp',
+      type: 'number',
+      default: -1.5,
+      description: 'True peak maximum in dBTP'
+    },
+    {
+      name: 'lra',
+      type: 'number',
+      default: 11,
+      description: 'Loudness range in LU'
+    }
+  ],
+  
+  async handler(context: CommandContext) {
+    const { input, options, logger } = context;
+    
+    // Validate options
+    validateNormalizeOptions(options);
+    
+    // Process each input file
+    const results = await Promise.all(
+      input.map(file => normalizeAudio(file, options, logger))
+    );
+    
+    // Return summary
+    return {
+      success: true,
+      processed: results.filter(r => r.success).length,
+      failed: results.filter(r => !r.success).length
+    };
+  }
+};
+```
+
+---
+
+### FFmpeg Command Builder
+
+Build FFmpeg commands for audio processing:
+
+```typescript
+function buildConvertCommand(
+  input: string,
+  output: string,
+  options: ConvertOptions
+): string[] {
+  const args: string[] = [];
+  
+  // Input
+  args.push('-i', input);
+  
+  // Audio codec
+  args.push('-c:a', getAudioCodec(options.format));
+  
+  // Quality/bitrate
+  if (options.quality) {
+    const bitrate = getQualityBitrate(options.format, options.quality);
+    args.push('-b:a', bitrate);
+  }
+  
+  // Sample rate
+  if (options.sampleRate) {
+    args.push('-ar', String(options.sampleRate));
+  }
+  
+  // Channels
+  if (options.channels) {
+    args.push('-ac', String(options.channels));
+  }
+  
+  // Output
+  args.push(output);
+  
+  return args;
+}
+```
+
+---
+
+## Audio Formats
+
+### Supported Formats
+
+| Format | Extension | Codec | Type | Quality | Use Case |
+|--------|-----------|-------|------|---------|----------|
+| MP3 | .mp3 | LAME | Lossy | Good | Universal compatibility |
+| AAC | .m4a | AAC | Lossy | Excellent | Apple ecosystem, streaming |
+| Opus | .opus | Opus | Lossy | Best | Modern web, VoIP |
+| OGG | .ogg | Vorbis | Lossy | Good | Open source, games |
+| FLAC | .flac | FLAC | Lossless | Perfect | Archival, audiophile |
+| WAV | .wav | PCM | Uncompressed | Perfect | Editing, mastering |
+| ALAC | .m4a | ALAC | Lossless | Perfect | Apple lossless |
+
+---
+
+### Codec Selection
+
+```typescript
+function getAudioCodec(format: string): string {
+  const codecMap: Record<string, string> = {
+    'mp3': 'libmp3lame',
+    'aac': 'aac',
+    'm4a': 'aac',
+    'opus': 'libopus',
+    'ogg': 'libvorbis',
+    'flac': 'flac',
+    'wav': 'pcm_s16le',
+    'alac': 'alac'
+  };
+  
+  return codecMap[format] || 'aac';
+}
+```
+
+---
+
+### Quality Presets
+
+Map quality levels to bitrates:
+
+```typescript
+const qualityPresets = {
+  mp3: {
+    low: '128k',
+    medium: '192k',
+    high: '256k',
+    max: '320k'
+  },
+  
+  aac: {
+    low: '96k',
+    medium: '128k',
+    high: '192k',
+    max: '256k'
+  },
+  
+  opus: {
+    voice: '32k',
+    low: '64k',
+    medium: '96k',
+    high: '128k',
+    max: '192k'
+  },
+  
+  ogg: {
+    low: '96k',
+    medium: '160k',
+    high: '224k',
+    max: '320k'
+  }
+};
+```
+
+---
+
+## Loudness Normalization
+
+### EBU R128 Standard
+
+The Audio Plugin uses EBU R128 for loudness normalization:
+
+**Key Metrics:**
+
+- **LUFS:** Loudness Units relative to Full Scale
+- **LRA:** Loudness Range (dynamic range)
+- **True Peak:** Maximum sample peak in dBTP
+
+**Standards:**
+
+```typescript
+const loudnessStandards = {
+  broadcast: {
+    target: -23,      // EBU R128
+    truePeak: -1,
+    lra: 15
+  },
+  
+  streaming: {
+    spotify: -14,
+    youtube: -13,
+    apple: -16,
+    amazon: -14
+  },
+  
+  podcast: {
+    target: -14,
+    truePeak: -1,
+    lra: 12
+  },
+  
+  film: {
+    target: -24,      // ATSC A/85
+    truePeak: -2,
+    lra: 20
+  }
+};
+```
+
+---
+
+### Two-Pass Normalization
+
+Normalize using two-pass analysis:
+
+```typescript
+async function normalizeAudio(
+  input: string,
+  output: string,
+  options: NormalizeOptions
+): Promise<void> {
+  // Pass 1: Analyze loudness
+  const analysis = await analyzeLoudness(input);
+  
+  // Calculate adjustment
+  const adjustment = options.loudness - analysis.integrated;
+  
+  // Pass 2: Apply normalization
+  await execFFmpeg([
+    '-i', input,
+    '-af', `loudnorm=I=${options.loudness}:TP=${options.truePeak}:LRA=${options.lra}`,
+    '-ar', '48000',
+    output
+  ]);
+}
+```
+
+---
+
+### Loudness Analysis
+
+Analyze audio loudness:
+
+```typescript
+async function analyzeLoudness(file: string): Promise<LoudnessInfo> {
+  const { stderr } = await execFFmpeg([
+    '-i', file,
+    '-af', 'loudnorm=print_format=json',
+    '-f', 'null',
+    '-'
+  ]);
+  
+  // Parse JSON output from stderr
+  const jsonMatch = stderr.match(/\{[^}]+\}/);
+  if (!jsonMatch) {
+    throw new Error('Failed to analyze loudness');
+  }
+  
+  const data = JSON.parse(jsonMatch[0]);
+  
+  return {
+    integrated: parseFloat(data.input_i),  // Integrated loudness
+    truePeak: parseFloat(data.input_tp),   // True peak
+    lra: parseFloat(data.input_lra),       // Loudness range
+    threshold: parseFloat(data.input_thresh)
+  };
+}
+```
+
+---
+
+## Audio Filters
+
+### Filter Types
+
+FFmpeg provides extensive audio filters:
+
+**Volume Adjustment:**
+
+```typescript
+// Volume in dB
+'-af volume=+5dB'
+
+// Volume multiplier
+'-af volume=2.0'
+
+// Fade in/out
+'-af afade=t=in:d=2,afade=t=out:st=58:d=2'
+```
+
+**Equalization:**
+
+```typescript
+// Bass boost
+'-af equalizer=f=100:t=q:w=1:g=10'
+
+// Treble reduction
+'-af equalizer=f=8000:t=q:w=1:g=-5'
+```
+
+**Effects:**
+
+```typescript
+// Echo
+'-af aecho=0.8:0.9:1000:0.3'
+
+// Reverb
+'-af afreqshift=shift=200'
+
+// Tempo change (without pitch)
+'-af atempo=1.5'
+```
+
+---
+
+### Filter Graph Builder
+
+Build complex filter graphs:
+
+```typescript
+function buildAudioFilterGraph(options: FilterOptions): string {
+  const filters: string[] = [];
+  
+  // Volume
+  if (options.volume) {
+    filters.push(`volume=${options.volume}dB`);
+  }
+  
+  // Fade in
+  if (options.fadeIn) {
+    filters.push(`afade=t=in:d=${options.fadeIn}`);
+  }
+  
+  // Fade out
+  if (options.fadeOut && options.duration) {
+    const start = options.duration - options.fadeOut;
+    filters.push(`afade=t=out:st=${start}:d=${options.fadeOut}`);
+  }
+  
+  // Normalize
+  if (options.normalize) {
+    filters.push(`loudnorm=I=${options.loudness}:TP=${options.truePeak}`);
+  }
+  
+  return filters.join(',');
+}
+```
+
+---
+
+## Metadata Handling
+
+### Reading Audio Metadata
+
+Extract audio metadata using ffprobe:
+
+```typescript
+async function getAudioMetadata(file: string): Promise<AudioMetadata> {
+  const { stdout } = await execFileAsync('ffprobe', [
+    '-v', 'quiet',
+    '-print_format', 'json',
+    '-show_format',
+    '-show_streams',
+    file
+  ]);
+  
+  const probe = JSON.parse(stdout);
+  const audioStream = probe.streams.find(s => s.codec_type === 'audio');
+  
+  return {
+    // Format
+    format: probe.format.format_name,
+    duration: parseFloat(probe.format.duration),
+    bitrate: parseInt(probe.format.bit_rate),
+    size: parseInt(probe.format.size),
+    
+    // Audio stream
+    codec: audioStream.codec_name,
+    sampleRate: parseInt(audioStream.sample_rate),
+    channels: audioStream.channels,
+    channelLayout: audioStream.channel_layout,
+    bitDepth: audioStream.bits_per_sample,
+    
+    // Metadata tags
+    title: probe.format.tags?.title,
+    artist: probe.format.tags?.artist,
+    album: probe.format.tags?.album,
+    year: probe.format.tags?.date
+  };
+}
+```
+
+---
+
+### Preserving Metadata
+
+Copy metadata to output:
+
+```typescript
+const args = [
+  '-i', input,
+  '-map_metadata', '0',      // Copy all metadata
+  '-id3v2_version', '3',     // ID3v2.3 for MP3
+  '-metadata', `title=${title}`,
+  '-metadata', `artist=${artist}`,
+  output
+];
+```
+
+---
+
+## Extraction from Video
+
+### Audio Stream Extraction
+
+Extract audio from video files:
+
+```typescript
+async function extractAudio(
+  videoFile: string,
+  audioFile: string,
+  options: ExtractOptions
+): Promise<void> {
+  const args: string[] = [
+    '-i', videoFile
+  ];
+  
+  // Stream copy (fast, no re-encode)
+  if (options.fast) {
+    args.push('-vn');           // No video
+    args.push('-acodec', 'copy'); // Copy audio stream
+  } else {
+    // Re-encode to specific format/quality
+    args.push('-vn');
+    args.push('-c:a', getAudioCodec(options.format));
+    args.push('-b:a', options.bitrate || '192k');
+  }
+  
+  args.push(audioFile);
+  
+  await execFFmpeg(args);
+}
+```
+
+---
+
+### Multi-Track Extraction
+
+Extract specific audio tracks:
+
+```typescript
+async function extractTrack(
+  input: string,
+  output: string,
+  trackIndex: number
+): Promise<void> {
+  await execFFmpeg([
+    '-i', input,
+    '-map', `0:a:${trackIndex}`,  // Select audio track
+    '-c:a', 'copy',                // Copy without re-encode
+    output
+  ]);
+}
+```
+
+---
+
+## Trimming & Editing
+
+### Time-Based Trimming
+
+Cut audio segments with precision:
+
+```typescript
+async function trimAudio(
+  input: string,
+  output: string,
+  options: TrimOptions
+): Promise<void> {
+  const args: string[] = ['-i', input];
+  
+  // Start time
+  if (options.start) {
+    args.push('-ss', formatTime(options.start));
+  }
+  
+  // Duration or end time
+  if (options.duration) {
+    args.push('-t', formatTime(options.duration));
+  } else if (options.end) {
+    args.push('-to', formatTime(options.end));
+  }
+  
+  // Fast mode (stream copy)
+  if (options.fast) {
+    args.push('-c', 'copy');
+  } else {
+    args.push('-c:a', 'copy');
+  }
+  
+  args.push(output);
+  
+  await execFFmpeg(args);
+}
+```
+
+---
+
+### Fade Effects
+
+Add fade in/out:
+
+```typescript
+async function addFades(
+  input: string,
+  output: string,
+  options: FadeOptions
+): Promise<void> {
+  const filters: string[] = [];
+  
+  // Fade in
+  if (options.fadeIn) {
+    filters.push(`afade=t=in:d=${options.fadeIn}`);
+  }
+  
+  // Fade out
+  if (options.fadeOut) {
+    const metadata = await getAudioMetadata(input);
+    const start = metadata.duration - options.fadeOut;
+    filters.push(`afade=t=out:st=${start}:d=${options.fadeOut}`);
+  }
+  
+  await execFFmpeg([
+    '-i', input,
+    '-af', filters.join(','),
+    output
+  ]);
+}
+```
+
+---
+
+## Concatenation
+
+### Merge Multiple Files
+
+Concatenate audio files:
+
+```typescript
+async function mergeAudio(
+  inputs: string[],
+  output: string,
+  options: MergeOptions
+): Promise<void> {
+  // Create concat file list
+  const listFile = await createConcatList(inputs);
+  
+  const args: string[] = [
+    '-f', 'concat',
+    '-safe', '0',
+    '-i', listFile
+  ];
+  
+  // Crossfade between tracks
+  if (options.crossfade) {
+    const filterComplex = buildCrossfadeFilter(inputs.length, options.crossfade);
+    args.push('-filter_complex', filterComplex);
+  } else {
+    args.push('-c', 'copy');
+  }
+  
+  args.push(output);
+  
+  await execFFmpeg(args);
+}
+```
+
+---
+
+### Crossfade
+
+Apply crossfade between tracks:
+
+```typescript
+function buildCrossfadeFilter(numTracks: number, duration: number): string {
+  const filters: string[] = [];
+  
+  for (let i = 0; i < numTracks - 1; i++) {
+    const input1 = i === 0 ? `[0:a]` : `[a${i}]`;
+    const input2 = `[${i + 1}:a]`;
+    const output = i === numTracks - 2 ? '' : `[a${i + 1}]`;
+    
+    filters.push(
+      `${input1}${input2}acrossfade=d=${duration}:c1=tri:c2=tri${output}`
+    );
+  }
+  
+  return filters.join(';');
+}
+```
+
+---
+
+## Performance Optimization
+
+### Stream Copy
+
+Avoid re-encoding when possible:
+
+```typescript
+// Fast: stream copy (no re-encode)
+await execFFmpeg([
+  '-i', input,
+  '-c', 'copy',
+  output
+]);
+
+// Slow: re-encode
+await execFFmpeg([
+  '-i', input,
+  '-c:a', 'libmp3lame',
+  '-b:a', '192k',
+  output
+]);
+```
+
+---
+
+### Parallel Processing
+
+Process multiple files in parallel:
+
+```typescript
+async function processBatch(
+  files: string[],
+  handler: ProcessHandler,
+  concurrency: number = 4
+): Promise<Result[]> {
+  const chunks = chunkArray(files, concurrency);
+  const results: Result[] = [];
+  
+  for (const chunk of chunks) {
+    const batchResults = await Promise.all(
+      chunk.map(file => handler(file))
+    );
+    results.push(...batchResults);
+  }
+  
+  return results;
+}
+```
+
+---
+
+## Error Handling
+
+### FFmpeg Errors
+
+Parse audio-specific errors:
+
+```typescript
+function parseAudioError(stderr: string): string {
+  const patterns = [
+    /Invalid audio stream/,
+    /Sample rate .* not supported/,
+    /Audio codec .* not found/,
+    /Invalid channel layout/
+  ];
+  
+  for (const pattern of patterns) {
+    if (pattern.test(stderr)) {
+      return stderr.match(pattern)[0];
+    }
+  }
+  
+  return 'Unknown audio processing error';
+}
+```
+
+---
+
+### Validation
+
+Validate audio files:
+
+```typescript
+async function validateAudio(file: string): Promise<void> {
+  try {
+    const metadata = await getAudioMetadata(file);
+    
+    if (!metadata.codec) {
+      throw new Error('Invalid audio file');
+    }
+    
+    if (metadata.duration === 0) {
+      throw new Error('Audio has zero duration');
+    }
+    
+    if (metadata.sampleRate < 8000 || metadata.sampleRate > 192000) {
+      throw new Error('Invalid sample rate');
+    }
+    
+  } catch (error) {
+    throw new Error(`Validation failed: ${error.message}`);
+  }
+}
+```
+
+---
+
+## Testing
+
+### Unit Tests
+
+Test command logic:
+
+```typescript
+describe('Normalize Command', () => {
+  it('should build correct FFmpeg command', () => {
+    const args = buildNormalizeCommand('input.mp3', 'output.mp3', {
+      loudness: -16,
+      truePeak: -1.5
+    });
+    
+    expect(args).toContain('loudnorm');
+    expect(args).toContain('I=-16');
+  });
+});
+```
+
+---
+
+### Integration Tests
+
+Test with actual audio:
+
+```typescript
+describe('Audio Processing', () => {
+  it('should normalize audio', async () => {
+    await normalizeAudio('test.mp3', {
+      loudness: -16
+    });
+    
+    const analysis = await analyzeLoudness('test-normalized.mp3');
+    expect(analysis.integrated).toBeCloseTo(-16, 0.5);
+  });
+});
+```
+
+---
+
+## Related Documentation
+
+- [Architecture Overview](/docs/architecture/overview)
+- [CLI Plugin Architecture](/docs/architecture/cli-plugins)
+- [Audio Commands](/docs/plugins/audio)
+
+---
+
+## Learn More
+
+- [FFmpeg Audio Documentation](https://ffmpeg.org/ffmpeg-filters.html#Audio-Filters)
+- [EBU R128 Standard](https://tech.ebu.ch/docs/r/r128.pdf)
+- [Audio Codecs Comparison](https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats)

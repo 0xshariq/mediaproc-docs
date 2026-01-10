@@ -1,0 +1,608 @@
+# Use Cases
+
+Real-world scenarios where MediaProc shines.
+
+## Overview
+
+MediaProc is designed to solve real-world media processing challenges. This guide showcases common use cases across different industries and workflows.
+
+---
+
+## Web Development
+
+### Responsive Image Generation
+
+Generate multiple sizes for responsive images:
+
+```bash
+# Create thumbnail, medium, and full-size versions
+mediaproc image resize product.jpg --width 400 --output product-thumb.jpg
+mediaproc image resize product.jpg --width 800 --output product-medium.jpg
+mediaproc image resize product.jpg --width 1920 --output product-full.jpg
+
+# Or batch process
+for size in 400 800 1920; do
+  mediaproc image resize product.jpg --width $size --output "product-${size}.jpg"
+done
+```
+
+**Perfect for:**
+
+- E-commerce product images
+- Blog post images
+- Portfolio galleries
+- Landing page assets
+
+---
+
+### WebP Conversion
+
+Convert all images to WebP for better performance:
+
+```bash
+# Single file
+mediaproc image convert banner.jpg --format webp --quality 85
+
+# Batch convert entire directory
+mediaproc image convert ./assets/images/*.{jpg,png} --format webp --output ./assets/images-webp/
+```
+
+**Benefits:**
+
+- 25-35% smaller file sizes
+- Faster page load times
+- Better SEO scores
+- Modern browser support
+
+---
+
+### Image Optimization
+
+Optimize images for web without quality loss:
+
+```bash
+# Optimize for web
+mediaproc image optimize hero.jpg --quality 85
+
+# Batch optimize
+mediaproc image optimize ./public/images/*.jpg --quality 85 --output ./public/images-optimized/
+```
+
+**Results:**
+
+- Reduced file sizes (30-70%)
+- Maintained visual quality
+- Removed unnecessary metadata
+- Progressive JPEG encoding
+
+---
+
+## Content Creation
+
+### YouTube Video Preparation
+
+Prepare videos for YouTube upload:
+
+```bash
+# 1. Trim intro/outro
+mediaproc video trim raw-video.mp4 --start 5 --end -3 --output trimmed.mp4
+
+# 2. Resize to 1080p
+mediaproc video resize trimmed.mp4 --width 1920 --height 1080 --output resized.mp4
+
+# 3. Transcode to H.264
+mediaproc video transcode resized.mp4 --codec h264 --preset medium --output final.mp4
+
+# 4. Extract audio for podcast
+mediaproc audio extract final.mp4 --format mp3 --quality high --output podcast.mp3
+```
+
+---
+
+### Social Media Content
+
+Create platform-specific versions:
+
+**Instagram Posts (1:1):**
+
+```bash
+mediaproc image resize photo.jpg --width 1080 --height 1080 --fit cover --output instagram.jpg
+```
+
+**Instagram Stories (9:16):**
+
+```bash
+mediaproc image resize photo.jpg --width 1080 --height 1920 --fit cover --output story.jpg
+```
+
+**Twitter Posts (16:9):**
+
+```bash
+mediaproc image resize photo.jpg --width 1200 --height 675 --fit cover --output twitter.jpg
+```
+
+**TikTok Videos (9:16):**
+
+```bash
+mediaproc video resize video.mp4 --width 1080 --height 1920 --output tiktok.mp4
+```
+
+---
+
+### Podcast Production
+
+Complete podcast workflow:
+
+```bash
+# 1. Extract audio from video interview
+mediaproc audio extract interview.mp4 --format wav --output raw-audio.wav
+
+# 2. Normalize loudness for streaming
+mediaproc audio normalize raw-audio.wav --loudness -16 --output normalized.wav
+
+# 3. Trim intro/outro timestamps
+mediaproc audio trim normalized.wav --start 45 --end -30 --output trimmed.wav
+
+# 4. Convert to MP3 for distribution
+mediaproc audio convert trimmed.wav --format mp3 --quality high --output episode-final.mp3
+
+# 5. Create 30-second teaser
+mediaproc audio trim episode-final.mp3 --start 300 --duration 30 --fade-in 1 --fade-out 2 --output teaser.mp3
+```
+
+---
+
+## E-Commerce
+
+### Product Image Workflow
+
+Standardize product photos:
+
+```bash
+# Batch process all product photos
+for photo in products/*.jpg; do
+  # 1. Resize to standard dimensions
+  mediaproc image resize "$photo" --width 2000 --height 2000 --fit contain --output "processed/$(basename $photo)"
+
+  # 2. Create thumbnail
+  mediaproc image resize "$photo" --width 400 --height 400 --fit cover --output "thumbnails/$(basename $photo)"
+
+  # 3. Create WebP version
+  mediaproc image convert "processed/$(basename $photo)" --format webp --output "processed-webp/$(basename $photo .jpg).webp"
+done
+```
+
+---
+
+### Image Variants
+
+Generate all required variants:
+
+```bash
+# Product listing page (800x800)
+mediaproc image resize product.jpg --width 800 --height 800 --fit cover --output product-listing.jpg
+
+# Product detail page (2000x2000)
+mediaproc image resize product.jpg --width 2000 --height 2000 --fit contain --output product-detail.jpg
+
+# Zoom view (4000x4000)
+mediaproc image resize product.jpg --width 4000 --height 4000 --fit contain --output product-zoom.jpg
+
+# Email thumbnail (200x200)
+mediaproc image resize product.jpg --width 200 --height 200 --fit cover --output product-email.jpg
+```
+
+---
+
+## Marketing & Advertising
+
+### Ad Creative Preparation
+
+Create platform-specific ad creatives:
+
+**Facebook/Instagram Ads:**
+
+```bash
+# Square (1:1)
+mediaproc image resize ad-creative.jpg --width 1080 --height 1080 --fit cover --output fb-square.jpg
+
+# Landscape (1.91:1)
+mediaproc image resize ad-creative.jpg --width 1200 --height 628 --fit cover --output fb-landscape.jpg
+
+# Story/Reels (9:16)
+mediaproc image resize ad-creative.jpg --width 1080 --height 1920 --fit cover --output fb-story.jpg
+```
+
+**Google Display Ads:**
+
+```bash
+# Leaderboard (728x90)
+mediaproc image resize ad-creative.jpg --width 728 --height 90 --fit cover --output google-leaderboard.jpg
+
+# Medium Rectangle (300x250)
+mediaproc image resize ad-creative.jpg --width 300 --height 250 --fit cover --output google-medium.jpg
+
+# Large Mobile Banner (320x100)
+mediaproc image resize ad-creative.jpg --width 320 --height 100 --fit cover --output google-mobile.jpg
+```
+
+---
+
+### Video Ads
+
+Prepare video ads for different platforms:
+
+```bash
+# Facebook Feed (Square)
+mediaproc video resize ad.mp4 --width 1080 --height 1080 --output fb-feed.mp4
+
+# YouTube (16:9)
+mediaproc video resize ad.mp4 --width 1920 --height 1080 --output youtube-ad.mp4
+
+# Instagram Stories (9:16)
+mediaproc video resize ad.mp4 --width 1080 --height 1920 --output ig-story.mp4
+
+# TikTok (9:16)
+mediaproc video resize ad.mp4 --width 1080 --height 1920 --output tiktok-ad.mp4
+```
+
+---
+
+## Photography
+
+### RAW Processing
+
+Process RAW photos for delivery:
+
+```bash
+# Convert RAW to JPEG
+mediaproc image convert photo.raw --format jpg --quality 95 --output photo.jpg
+
+# Create web version
+mediaproc image resize photo.jpg --width 1920 --quality 85 --format webp --output photo-web.webp
+
+# Create thumbnail
+mediaproc image resize photo.jpg --width 400 --height 400 --fit cover --output photo-thumb.jpg
+```
+
+---
+
+### Batch Processing
+
+Process an entire photoshoot:
+
+```bash
+# Process all photos
+for photo in photoshoot/*.jpg; do
+  # Full resolution export
+  mediaproc image resize "$photo" --width 5000 --quality 95 --output "exports/full/$(basename $photo)"
+
+  # Web resolution
+  mediaproc image resize "$photo" --width 2000 --quality 85 --format webp --output "exports/web/$(basename $photo .jpg).webp"
+
+  # Client preview
+  mediaproc image resize "$photo" --width 1200 --quality 80 --output "exports/preview/$(basename $photo)"
+
+  # Thumbnail
+  mediaproc image resize "$photo" --width 400 --height 400 --fit cover --output "exports/thumbs/$(basename $photo)"
+done
+```
+
+---
+
+### Watermarking
+
+Add watermarks to photos:
+
+```bash
+# Single image
+mediaproc image watermark photo.jpg --watermark logo.png --position bottom-right --opacity 0.7
+
+# Batch watermark
+mediaproc image watermark *.jpg --watermark logo.png --position bottom-right --opacity 0.7 --output watermarked/
+```
+
+---
+
+## Video Production
+
+### Video Compression
+
+Compress videos for different platforms:
+
+**High Quality (Vimeo, YouTube):**
+
+```bash
+mediaproc video transcode video.mp4 --codec h264 --preset medium --crf 18 --output high-quality.mp4
+```
+
+**Medium Quality (Social Media):**
+
+```bash
+mediaproc video transcode video.mp4 --codec h264 --preset fast --crf 23 --output medium-quality.mp4
+```
+
+**Low Bandwidth (Mobile):**
+
+```bash
+mediaproc video transcode video.mp4 --codec h264 --preset fast --crf 28 --bitrate 1000k --output mobile.mp4
+```
+
+---
+
+### Video Editing
+
+Basic video editing workflow:
+
+```bash
+# 1. Trim unwanted parts
+mediaproc video trim raw.mp4 --start 10 --end -5 --output trimmed.mp4
+
+# 2. Merge multiple clips
+mediaproc video merge clip1.mp4 clip2.mp4 clip3.mp4 --output merged.mp4
+
+# 3. Add transitions (crossfade)
+mediaproc video merge clip1.mp4 clip2.mp4 --crossfade 1 --output final.mp4
+
+# 4. Extract thumbnail
+mediaproc video thumbnail final.mp4 --time 00:00:15 --output thumbnail.jpg
+```
+
+---
+
+## Music & Audio
+
+### Music Production
+
+Prepare tracks for distribution:
+
+```bash
+# Master WAV to distribution formats
+mediaproc audio convert master.wav --format flac --output master.flac  # Lossless
+mediaproc audio convert master.wav --format mp3 --quality max --output master-320.mp3  # MP3
+mediaproc audio convert master.wav --format aac --quality high --output master.m4a  # AAC
+
+# Create preview clips
+mediaproc audio trim master.mp3 --start 60 --duration 30 --fade-in 1 --fade-out 2 --output preview.mp3
+```
+
+---
+
+### Audiobook Production
+
+Process audiobook chapters:
+
+```bash
+# Normalize all chapters
+for chapter in chapters/*.wav; do
+  mediaproc audio normalize "$chapter" --loudness -16 --output "normalized/$(basename $chapter)"
+done
+
+# Merge chapters
+mediaproc audio merge normalized/*.wav --output audiobook-complete.mp3
+
+# Create chapter markers (manual or scripted)
+mediaproc audio trim audiobook-complete.mp3 --start 0 --duration 1200 --output chapter-01.mp3
+mediaproc audio trim audiobook-complete.mp3 --start 1200 --duration 1500 --output chapter-02.mp3
+```
+
+---
+
+## Education & Training
+
+### Course Content
+
+Prepare educational content:
+
+**Video Lectures:**
+
+```bash
+# 1. Trim recording
+mediaproc video trim lecture.mp4 --start 120 --end -60 --output lecture-trimmed.mp4
+
+# 2. Add intro/outro
+mediaproc video merge intro.mp4 lecture-trimmed.mp4 outro.mp4 --output lecture-final.mp4
+
+# 3. Create multiple resolutions
+mediaproc video resize lecture-final.mp4 --width 1920 --output lecture-1080p.mp4
+mediaproc video resize lecture-final.mp4 --width 1280 --output lecture-720p.mp4
+mediaproc video resize lecture-final.mp4 --width 854 --output lecture-480p.mp4
+```
+
+---
+
+### Course Materials
+
+Process course images:
+
+```bash
+# Diagrams and slides
+mediaproc image convert diagram.png --format webp --quality 90 --output diagram.webp
+
+# Screenshots with compression
+mediaproc image optimize screenshot.png --quality 85 --output screenshot-optimized.png
+
+# Create presentation thumbnails
+mediaproc image resize slide.jpg --width 400 --height 300 --fit cover --output slide-thumb.jpg
+```
+
+---
+
+## Archive & Preservation
+
+### Media Archival
+
+Archive media in lossless formats:
+
+```bash
+# Images to lossless TIFF
+mediaproc image convert photo.jpg --format tiff --output archive/photo.tiff
+
+# Audio to FLAC
+mediaproc audio convert recording.mp3 --format flac --output archive/recording.flac
+
+# Video to high-quality H.265
+mediaproc video transcode video.mp4 --codec h265 --crf 15 --output archive/video.mp4
+```
+
+---
+
+### Format Migration
+
+Migrate old formats to modern ones:
+
+```bash
+# Old image formats to WebP
+mediaproc image convert *.bmp --format webp --output modern/
+
+# Old video codecs to H.265
+mediaproc video transcode *.avi --codec h265 --preset slow --output modern/
+
+# Old audio to Opus
+mediaproc audio convert *.wma --format opus --output modern/
+```
+
+---
+
+## Automation Scripts
+
+### Automated Workflow
+
+Example automated workflow script:
+
+```bash
+#!/bin/bash
+# Process incoming media files
+
+WATCH_DIR="./incoming"
+OUTPUT_DIR="./processed"
+
+# Monitor directory for new files
+while true; do
+  for file in "$WATCH_DIR"/*.{jpg,png,mp4,mp3}; do
+    [ -f "$file" ] || continue
+
+    filename=$(basename "$file")
+    extension="${filename##*.}"
+
+    case $extension in
+      jpg|png)
+        # Process images
+        mediaproc image optimize "$file" --quality 85 --output "$OUTPUT_DIR/$filename"
+        mediaproc image convert "$file" --format webp --output "$OUTPUT_DIR/${filename%.*}.webp"
+        ;;
+      mp4)
+        # Process videos
+        mediaproc video transcode "$file" --codec h265 --output "$OUTPUT_DIR/$filename"
+        ;;
+      mp3)
+        # Process audio
+        mediaproc audio normalize "$file" --loudness -16 --output "$OUTPUT_DIR/$filename"
+        ;;
+    esac
+
+    # Move processed file
+    mv "$file" "$OUTPUT_DIR/originals/"
+  done
+
+  sleep 10
+done
+```
+
+---
+
+## Integration Examples
+
+### Node.js Integration
+
+```javascript
+const { exec } = require("child_process");
+const { promisify } = require("util");
+const execAsync = promisify(exec);
+
+async function processUploadedImage(filePath) {
+  // Generate web version
+  await execAsync(
+    `mediaproc image resize ${filePath} --width 1920 --format webp --output web/${filePath}`
+  );
+
+  // Generate thumbnail
+  await execAsync(
+    `mediaproc image resize ${filePath} --width 400 --height 400 --fit cover --output thumbs/${filePath}`
+  );
+
+  console.log("Image processed successfully");
+}
+```
+
+---
+
+### Python Integration
+
+```python
+import subprocess
+import os
+
+def process_video(input_path, output_dir):
+    # Transcode to H.265
+    output_path = os.path.join(output_dir, os.path.basename(input_path))
+
+    subprocess.run([
+        'mediaproc', 'video', 'transcode',
+        input_path,
+        '--codec', 'h265',
+        '--output', output_path
+    ])
+
+    # Extract thumbnail
+    thumb_path = output_path.replace('.mp4', '.jpg')
+    subprocess.run([
+        'mediaproc', 'video', 'thumbnail',
+        output_path,
+        '--time', '00:00:10',
+        '--output', thumb_path
+    ])
+```
+
+---
+
+## Performance Tips
+
+### Parallel Processing
+
+Process multiple files in parallel:
+
+```bash
+# GNU Parallel
+ls *.jpg | parallel mediaproc image resize {} --width 1920 --output processed/{}
+
+# xargs with parallel execution
+find . -name "*.jpg" | xargs -P 4 -I {} mediaproc image resize {} --width 1920
+```
+
+---
+
+### Batch Optimization
+
+Optimize entire directory trees:
+
+```bash
+# Process all images recursively
+find ./assets -type f \( -name "*.jpg" -o -name "*.png" \) -exec mediaproc image optimize {} --quality 85 \;
+```
+
+---
+
+## Next Steps
+
+Explore more advanced features:
+
+- [CLI Overview](/docs/cli/overview) - Master the command-line
+- [Plugin Architecture](/docs/architecture/overview) - Understand the system
+- [Creating Plugins](/docs/community/creating-plugins) - Build custom plugins
+
+---
+
+**Have a unique use case?**
+
+[Share it in Discussions →](https://github.com/your-org/mediaproc/discussions)
