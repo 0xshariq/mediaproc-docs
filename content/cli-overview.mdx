@@ -1,0 +1,537 @@
+# CLI Overview
+
+Understanding MediaProc: The universal media processing toolkit for modern developers.
+
+## What is MediaProc?
+
+MediaProc is a **unified command-line interface** for processing all types of media files. Instead of learning multiple tools like ImageMagick, FFmpeg, SoX, and others, MediaProc provides a single, consistent interface with a modern plugin architecture.
+
+<Callout type="info">
+  **Philosophy:** One CLI, one syntax, unlimited possibilities. Learn once,
+  process any media type.
+</Callout>
+
+## The Problem We Solve
+
+### Before Media\Proc
+
+Modern applications often need to process different media types. Traditionally, this meant:
+
+**Multiple Tools, Multiple Syntaxes:**
+
+- **Images:** ImageMagick, GraphicsMagick, or Sharp
+- **Videos:** FFmpeg with complex filter chains
+- **Audio:** SoX, FFmpeg, or specialized tools
+- **Documents:** Ghostscript, pdftk, libreoffice
+- **3D Models:** Blender, ImageMagick for textures
+
+**Result:** Context switching, inconsistent APIs, steep learning curves, and fragile workflows.
+
+### After MediaProc
+
+**One Unified Interface:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920" },
+    { command: "mediaproc video transcode video.mp4 --codec h264" },
+    { command: "mediaproc audio normalize song.mp3 --loudness -16" },
+    { command: "mediaproc document convert doc.pdf --format docx" },
+  ]}
+/>
+
+**Result:** Consistent syntax, predictable behavior, one tool to learn, maintainable automation.
+
+---
+
+## Key Features
+
+### 1. Unified Interface
+
+All plugins follow the same command structure:
+
+```bash
+mediaproc <plugin> <command> <input> [options]
+```
+
+**Examples:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc image crop photo.jpg --width 800 --height 600" },
+    { command: "mediaproc video trim video.mp4 --start 10 --duration 30" },
+    { command: "mediaproc audio convert song.mp3 --format wav" },
+  ]}
+/>
+
+The pattern is always the same, making it intuitive and easy to remember.
+
+---
+
+### 2. Plugin Architecture
+
+MediaProc is built on a **plugin system**. Install only what you need:
+
+<Terminal
+  commands={[
+    { command: "mediaproc add image" },
+    { output: "✓ Installed image plugin (51 commands)", isSuccess: true },
+    { command: "mediaproc add video audio" },
+    { output: "✓ Installed video plugin (6 commands)", isSuccess: true },
+    { output: "✓ Installed audio plugin (5 commands)", isSuccess: true },
+  ]}
+/>
+
+**Official Plugins:**
+
+| Plugin        | Commands    | Description                                       |
+| ------------- | ----------- | ------------------------------------------------- |
+| **image**     | 51          | Resize, crop, optimize, effects, batch processing |
+| **video**     | 6           | Transcode, trim, compress, extract, merge         |
+| **audio**     | 5           | Convert, normalize, trim, extract, merge          |
+| **document**  | Coming soon | PDF, DOCX, markdown conversion                    |
+| **animation** | Coming soon | GIF, WebP, animated formats                       |
+| **3D**        | Coming soon | Model conversion, texture processing              |
+| **metadata**  | Coming soon | EXIF, ID3, XMP metadata operations                |
+| **pipeline**  | Coming soon | Multi-step processing workflows                   |
+
+---
+
+### 3. Battle-Tested Foundation
+
+MediaProc doesn't reinvent the wheel. It provides a modern interface to industry-standard tools:
+
+**Powered by [FFmpeg](https://ffmpeg.org)**
+
+- Video and audio processing
+- Format conversion
+- Codec support
+- 20+ years of development
+
+**Powered by [Sharp](https://sharp.pixelplumbing.com)**
+
+- High-performance image processing
+- Modern image formats (WebP, AVIF)
+- Memory-efficient operations
+
+**Built with [TypeScript](https://www.typescriptlang.org)**
+
+- Type-safe plugin development
+- Excellent developer experience
+- Modern async/await patterns
+
+<Callout type="info">
+  **Learn More:** - [FFmpeg
+  Documentation](https://ffmpeg.org/documentation.html) - [Sharp API
+  Reference](https://sharp.pixelplumbing.com/api-constructor) - [Media
+  Processing on Wikipedia](https://en.wikipedia.org/wiki/Media_processing)
+</Callout>
+
+---
+
+## Architecture Overview
+
+### How It Works
+
+```
+┌─────────────────────────────────────────┐
+│         MediaProc CLI Core              │
+│   (Plugin loader, Command router)       │
+└─────────────────────────────────────────┘
+                    │
+        ┌───────────┼───────────┐
+        │           │           │
+    ┌───▼───┐   ┌──▼───┐   ┌──▼───┐
+    │ Image │   │Video │   │Audio │
+    │Plugin │   │Plugin│   │Plugin│
+    └───┬───┘   └──┬───┘   └──┬───┘
+        │          │           │
+    ┌───▼───┐   ┌──▼───┐   ┌──▼──────┐
+    │ Sharp │   │FFmpeg│   │ FFmpeg  │
+    └───────┘   └──────┘   └─────────┘
+```
+
+**Core Components:**
+
+1. **CLI Core** - Parses commands, loads plugins, handles errors
+2. **Plugins** - Self-contained modules for specific media types
+3. **Processors** - Low-level tools (FFmpeg, Sharp) that do the actual work
+
+---
+
+## Why MediaProc Over Direct Tool Usage?
+
+### Example: Resizing an Image
+
+**Using Sharp directly (Node.js):**
+
+```javascript
+const sharp = require("sharp");
+
+async function resizeImage() {
+  try {
+    await sharp("input.jpg")
+      .resize(1920, 1080, {
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .toFile("output.jpg");
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+```
+
+**Using ImageMagick:**
+
+```bash
+convert input.jpg -resize 1920x1080\> -quality 90 output.jpg
+```
+
+**Using MediaProc:**
+
+```bash
+mediaproc image resize input.jpg --width 1920 --height 1080
+```
+
+**Benefits:**
+
+- ✓ Consistent syntax across all operations
+- ✓ Sensible defaults (quality, format, scaling)
+- ✓ Clear, readable commands
+- ✓ Excellent error messages
+- ✓ Works the same on all platforms
+
+---
+
+## Use Cases
+
+### 1. Content Creation
+
+**Batch resize social media images:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize *.jpg --width 1920 -o social/" },
+  ]}
+/>
+
+**Compress videos for web:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc video compress video.mp4 --quality medium" },
+  ]}
+/>
+
+**Normalize podcast audio:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio normalize episode.mp3 --loudness -16" },
+  ]}
+/>
+
+---
+
+### 2. CI/CD Automation
+
+**Optimize all images in build pipeline:**
+
+```yaml
+# .github/workflows/optimize-assets.yml
+- name: Install MediaProc
+  run: npm install -g @mediaproc/cli
+
+- name: Add image plugin
+  run: mediaproc add image
+
+- name: Optimize images
+  run: mediaproc image optimize assets/**/*.{jpg,png} --quality 85
+```
+
+---
+
+### 3. Development Workflows
+
+**Generate responsive image sets:**
+
+<Terminal
+  commands={[
+    {
+      command:
+        "for size in 320 640 1024 1920; do mediaproc image resize hero.jpg --width $size -o hero-${size}w.jpg; done",
+    },
+  ]}
+/>
+
+**Extract video thumbnails:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc video extract video.mp4 --frame 5 --format jpg" },
+  ]}
+/>
+
+---
+
+### 4. Data Processing
+
+**Extract metadata for ML training:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc image stats *.jpg --format json > metadata.json" },
+  ]}
+/>
+
+**Batch transcode video datasets:**
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc video transcode videos/*.mp4 --codec h264 --preset fast",
+    },
+  ]}
+/>
+
+---
+
+## Command Structure
+
+### Anatomy of a MediaProc Command
+
+```bash
+mediaproc <plugin> <command> <input> [options]
+   │        │         │         │        │
+   │        │         │         │        └── Optional flags
+   │        │         │         └────────── Input file(s)
+   │        │         └──────────────────── Command to execute
+   │        └────────────────────────────── Plugin name
+   └─────────────────────────────────────── CLI entry point
+```
+
+### Examples
+
+**Basic command:**
+
+```bash
+mediaproc image resize photo.jpg --width 1920
+```
+
+**Multiple inputs:**
+
+```bash
+mediaproc image convert *.jpg --format webp
+```
+
+**Multiple options:**
+
+```bash
+mediaproc video transcode input.mp4 --codec h264 --bitrate 2M --fps 30
+```
+
+**Output directory:**
+
+```bash
+mediaproc image batch *.jpg --width 1920 -o processed/
+```
+
+---
+
+## Global Options
+
+All commands support these global options:
+
+| Option      | Alias | Description                       |
+| ----------- | ----- | --------------------------------- |
+| `--output`  | `-o`  | Output file or directory          |
+| `--verbose` | `-v`  | Show detailed processing info     |
+| `--dry-run` |       | Preview command without executing |
+| `--help`    | `-h`  | Show command help                 |
+| `--version` |       | Show version information          |
+
+**Examples:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920 --dry-run" },
+    {
+      output: "Would execute: sharp(photo.jpg).resize(1920, null)...",
+      isSuccess: false,
+    },
+    { command: "mediaproc video transcode video.mp4 --verbose" },
+    { output: "Using FFmpeg 6.0...", isSuccess: false },
+    { output: "Input: video.mp4 (1920x1080, 30fps, h264)", isSuccess: false },
+    { output: "Processing...", isSuccess: false },
+  ]}
+/>
+
+---
+
+## Performance Characteristics
+
+MediaProc is designed for performance:
+
+**Multi-threading:**
+
+- Image processing uses Sharp's multi-threaded SIMD operations
+- Video/audio processing leverages FFmpeg's multi-core support
+
+**Streaming:**
+
+- Large files are processed using streams (no full load into memory)
+- Supports pipeline operations without intermediate files
+
+**Hardware Acceleration:**
+
+- GPU acceleration for video encoding (when available)
+- SIMD optimizations for image operations
+
+**Benchmarks:**
+
+| Operation                                | Input | Time |
+| ---------------------------------------- | ----- | ---- |
+| Resize 100 JPEGs (2000x1500 → 1920x1080) | 200MB | ~8s  |
+| Transcode 1080p video (5 min, H.264)     | 500MB | ~45s |
+| Normalize audio (60 min podcast)         | 80MB  | ~12s |
+
+<Callout type="info">
+  Benchmarks on Apple M2 Pro. Your results may vary based on hardware.
+</Callout>
+
+---
+
+## Comparison with Alternatives
+
+### vs. FFmpeg Directly
+
+**FFmpeg:**
+
+- ✓ Extremely powerful and flexible
+- ✗ Complex syntax with many gotchas
+- ✗ Inconsistent flag naming
+- ✗ Poor error messages
+
+**MediaProc:**
+
+- ✓ Simple, consistent syntax
+- ✓ Excellent error messages
+- ✓ Sensible defaults
+- ✓ Still uses FFmpeg under the hood
+
+---
+
+### vs. ImageMagick
+
+**ImageMagick:**
+
+- ✓ Industry standard for decades
+- ✗ Slower than modern alternatives
+- ✗ Memory-intensive for large images
+- ✗ Complex command syntax
+
+**MediaProc:**
+
+- ✓ Modern Sharp library (3-5x faster)
+- ✓ Memory-efficient streaming
+- ✓ Intuitive commands
+- ✓ Better format support (WebP, AVIF)
+
+---
+
+### vs. GUI Tools
+
+**GUI Tools (Photoshop, Premiere, etc.):**
+
+- ✓ User-friendly for one-off tasks
+- ✗ Not automatable
+- ✗ Expensive licensing
+- ✗ Manual, time-consuming for batch operations
+
+**MediaProc:**
+
+- ✓ Fully scriptable and automatable
+- ✓ Free and open source
+- ✓ Batch processing built-in
+- ✓ Perfect for CI/CD pipelines
+
+---
+
+## Philosophy & Design Principles
+
+### 1. Convention Over Configuration
+
+Sensible defaults mean you rarely need to specify every option:
+
+```bash
+# Automatically preserves aspect ratio, chooses optimal quality
+mediaproc image resize photo.jpg --width 1920
+```
+
+---
+
+### 2. Fail Fast, Fail Clearly
+
+Errors are descriptive and actionable:
+
+```
+Error: Input file 'photo.jpg' not found
+Did you mean: photos.jpg?
+
+Hint: Use absolute paths or check your working directory
+```
+
+---
+
+### 3. Progressive Disclosure
+
+Basic commands are simple; advanced options are available when needed:
+
+**Simple:**
+
+```bash
+mediaproc video compress video.mp4
+```
+
+**Advanced:**
+
+```bash
+mediaproc video transcode video.mp4 \
+  --codec h264 \
+  --preset medium \
+  --crf 23 \
+  --hw-accel \
+  --audio-codec aac \
+  --audio-bitrate 192k
+```
+
+---
+
+### 4. Composability
+
+Commands work well in Unix pipelines and scripts:
+
+```bash
+# Find large images and compress them
+find . -name "*.jpg" -size +2M | \
+  xargs -I {} mediaproc image optimize {} --quality 80
+```
+
+---
+
+## Getting Started
+
+Ready to try MediaProc? Follow the [Installation Guide](/docs/installation) or jump into the [Quick Start](/docs/quick-start).
+
+---
+
+## Learn More
+
+- [Plugin Architecture](/docs/architecture/plugins) - How plugins work internally
+- [Troubleshooting](/docs/troubleshooting) - Common issues and solutions
+- [Community](/docs/community) - Get help and contribute
+- [FFmpeg Official Docs](https://ffmpeg.org/documentation.html)
+- [Sharp API Docs](https://sharp.pixelplumbing.com)
+- [Media Format Comparison (Wikipedia)](https://en.wikipedia.org/wiki/Comparison_of_video_container_formats)

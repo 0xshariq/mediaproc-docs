@@ -1,0 +1,534 @@
+# Troubleshooting
+
+Common issues and solutions when working with MediaProc CLI.
+
+## Installation Issues
+
+### Command Not Found
+
+**Problem:** After installing MediaProc, running `mediaproc` returns "command not found".
+
+**Solutions:**
+
+**Check global npm bin directory:**
+
+<Terminal
+  commands={[
+    { command: "npm config get prefix" },
+    { output: "/usr/local", isSuccess: false },
+  ]}
+/>
+
+Ensure this directory is in your PATH. Add to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+export PATH="$PATH:/usr/local/bin"
+```
+
+**Reinstall globally:**
+
+<Terminal
+  commands={[
+    { command: "npm uninstall -g @mediaproc/cli" },
+    { command: "npm install -g @mediaproc/cli" },
+    { output: "✓ Installed @mediaproc/cli@latest", isSuccess: true },
+  ]}
+/>
+
+**Use npx as alternative:**
+
+<Terminal
+  commands={[
+    { command: "npx @mediaproc/cli image resize photo.jpg --width 1920" },
+  ]}
+/>
+
+---
+
+### Permission Errors
+
+**Problem:** Getting EACCES or permission denied errors during installation.
+
+**Solutions:**
+
+**Fix npm permissions (recommended):**
+
+<Terminal
+  commands={[
+    { command: "mkdir -p ~/.npm-global" },
+    { command: "npm config set prefix ~/.npm-global" },
+    { command: "echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc" },
+    { command: "source ~/.bashrc" },
+  ]}
+/>
+
+**Use sudo (not recommended):**
+
+<Terminal commands={[{ command: "sudo npm install -g @mediaproc/cli" }]} />
+
+<Callout type="warning">
+  Using sudo for npm installs can cause permission issues later. The first
+  solution is preferred.
+</Callout>
+
+---
+
+## Plugin Issues
+
+### Plugin Not Found
+
+**Problem:** After adding a plugin, commands return "plugin not found" error.
+
+**Check installed plugins:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc list" },
+    { output: "Installed plugins:", isSuccess: false },
+    { output: "• image (50 commands)", isSuccess: false },
+    { output: "• video (6 commands)", isSuccess: false },
+  ]}
+/>
+
+**Reinstall the plugin:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc remove audio" },
+    { command: "mediaproc add audio" },
+    { output: "✓ Installed audio plugin", isSuccess: true },
+  ]}
+/>
+
+**Verify plugin installation path:**
+
+<Terminal commands={[{ command: "ls ~/.mediaproc/plugins" }]} />
+
+---
+
+### Plugin Installation Fails
+
+**Problem:** Plugin installation fails with dependency errors.
+
+**Common causes:**
+
+- Missing system dependencies (FFmpeg, Sharp)
+- Network issues
+- Incompatible Node.js version
+
+**Check Node.js version:**
+
+<Terminal
+  commands={[
+    { command: "node --version" },
+    { output: "v18.17.0", isSuccess: true },
+  ]}
+/>
+
+MediaProc requires Node.js 16 or higher.
+
+**Install system dependencies:**
+
+**macOS:**
+
+<Terminal commands={[{ command: "brew install ffmpeg" }]} />
+
+**Ubuntu/Debian:**
+
+<Terminal
+  commands={[
+    { command: "sudo apt update" },
+    { command: "sudo apt install ffmpeg" },
+  ]}
+/>
+
+**Windows:**
+
+<Terminal commands={[{ command: "choco install ffmpeg" }]} />
+
+---
+
+## Processing Errors
+
+### FFmpeg Not Found
+
+**Problem:** Video or audio commands fail with "FFmpeg not found" error.
+
+**Install FFmpeg:**
+
+<Terminal
+  commands={[
+    { command: "ffmpeg -version" },
+    { output: "ffmpeg version 6.0", isSuccess: true },
+  ]}
+/>
+
+If not installed, see [FFmpeg installation guide](https://ffmpeg.org/download.html).
+
+**Specify FFmpeg path manually:**
+
+<Terminal
+  commands={[{ command: "export FFMPEG_PATH=/usr/local/bin/ffmpeg" }]}
+/>
+
+---
+
+### Out of Memory Errors
+
+**Problem:** Processing large files causes memory errors.
+
+**Solutions:**
+
+**Increase Node.js memory limit:**
+
+<Terminal
+  commands={[
+    {
+      command:
+        'NODE_OPTIONS="--max-old-space-size=8192" mediaproc video transcode large.mp4',
+    },
+  ]}
+/>
+
+**Process in smaller batches:**
+
+Instead of:
+
+<Terminal
+  commands={[{ command: "mediaproc image resize *.jpg --width 1920" }]}
+/>
+
+Do:
+
+<Terminal
+  commands={[
+    { command: "ls *.jpg | xargs -n 10 mediaproc image resize --width 1920" },
+  ]}
+/>
+
+**Use streaming mode for video:**
+
+<Terminal
+  commands={[{ command: "mediaproc video transcode large.mp4 --stream" }]}
+/>
+
+---
+
+### File Not Found Errors
+
+**Problem:** MediaProc can't find input files.
+
+**Common causes:**
+
+- Wrong working directory
+- Special characters in filenames
+- Glob patterns not expanding
+
+**Use absolute paths:**
+
+<Terminal
+  commands={[{ command: "mediaproc image resize /full/path/to/photo.jpg" }]}
+/>
+
+**Quote filenames with spaces:**
+
+<Terminal
+  commands={[{ command: 'mediaproc image resize "my photo.jpg" --width 1920' }]}
+/>
+
+**Check working directory:**
+
+<Terminal commands={[{ command: "pwd" }, { command: "ls -la photo.jpg" }]} />
+
+---
+
+## Format Issues
+
+### Unsupported Format
+
+**Problem:** Getting "unsupported format" errors.
+
+**Check supported formats:**
+
+<Terminal commands={[{ command: "mediaproc image convert --help" }]} />
+
+**Convert to supported format first:**
+
+<Terminal
+  commands={[
+    { command: "ffmpeg -i input.mkv -c copy temp.mp4" },
+    { command: "mediaproc video transcode temp.mp4" },
+  ]}
+/>
+
+---
+
+### Codec Issues
+
+**Problem:** Output video won't play in certain players.
+
+**Use widely compatible codecs:**
+
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video transcode video.mp4 --codec h264 --format mp4",
+    },
+  ]}
+/>
+
+**Check codec support:**
+
+<Terminal commands={[{ command: "ffmpeg -codecs | grep h264" }]} />
+
+---
+
+## Performance Issues
+
+### Slow Processing
+
+**Problem:** Processing takes much longer than expected.
+
+**Enable hardware acceleration:**
+
+<Terminal
+  commands={[{ command: "mediaproc video transcode video.mp4 --hw-accel" }]}
+/>
+
+**Use fast mode (stream copy):**
+
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video trim video.mp4 --start 10 --duration 30 --fast",
+    },
+  ]}
+/>
+
+**Process in parallel:**
+
+<Terminal
+  commands={[
+    { command: "ls *.mp4 | xargs -P 4 -I {} mediaproc video transcode {}" },
+  ]}
+/>
+
+**Reduce quality for faster processing:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize *.jpg --width 1920 --quality 80" },
+  ]}
+/>
+
+---
+
+### CPU Usage Too High
+
+**Problem:** MediaProc uses 100% CPU.
+
+**Limit concurrent operations:**
+
+<Terminal
+  commands={[{ command: "mediaproc image batch *.jpg --concurrency 2" }]}
+/>
+
+**Nice the process (lower priority):**
+
+<Terminal
+  commands={[{ command: "nice -n 10 mediaproc video transcode large.mp4" }]}
+/>
+
+---
+
+## Configuration Issues
+
+### Settings Not Persisting
+
+**Problem:** Configuration changes don't persist between runs.
+
+**Check config file location:**
+
+<Terminal commands={[{ command: "mediaproc config list" }]} />
+
+**Set config explicitly:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc config set output.directory ./processed" },
+    { command: "mediaproc config set image.default.quality 90" },
+  ]}
+/>
+
+**Reset to defaults:**
+
+<Terminal commands={[{ command: "mediaproc config reset" }]} />
+
+---
+
+## Common Error Messages
+
+### "ENOSPC: no space left on device"
+
+**Solution:** Free up disk space before processing.
+
+<Terminal
+  commands={[{ command: "df -h" }, { command: "du -sh * | sort -h" }]}
+/>
+
+---
+
+### "Error: spawn ENOMEM"
+
+**Solution:** Reduce memory usage or increase available memory.
+
+---
+
+### "Error: Command failed with exit code 1"
+
+**Run with verbose flag to see full error:**
+
+<Terminal
+  commands={[{ command: "mediaproc video transcode video.mp4 --verbose" }]}
+/>
+
+---
+
+## Debug Mode
+
+### Enable Detailed Logging
+
+<Terminal
+  commands={[{ command: "DEBUG=* mediaproc image resize photo.jpg --verbose" }]}
+/>
+
+### Save Debug Log to File
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc video transcode video.mp4 --verbose 2>&1 | tee debug.log",
+    },
+  ]}
+/>
+
+---
+
+## Getting Help
+
+### Check Command Help
+
+<Terminal
+  commands={[
+    { command: "mediaproc --help" },
+    { command: "mediaproc image --help" },
+    { command: "mediaproc image resize --help" },
+  ]}
+/>
+
+### Validate Configuration
+
+<Terminal commands={[{ command: "mediaproc validate" }]} />
+
+### Report an Issue
+
+If you've found a bug or issue not covered here:
+
+1. Check existing issues: [GitHub Issues](https://github.com/0xshariq/mediaproc-cli/issues)
+2. Collect debug information:
+   <Terminal
+     commands={[
+       { command: "mediaproc --version" },
+       { command: "node --version" },
+       { command: "npm --version" },
+       { command: "ffmpeg -version" },
+     ]}
+   />
+3. Create a new issue with reproduction steps
+
+---
+
+## Platform-Specific Issues
+
+### macOS
+
+**Gatekeeper blocking FFmpeg:**
+
+<Terminal
+  commands={[
+    { command: "xattr -d com.apple.quarantine /usr/local/bin/ffmpeg" },
+  ]}
+/>
+
+**M1/M2 Rosetta issues:**
+
+<Terminal
+  commands={[{ command: "arch -arm64 npm install -g @mediaproc/cli" }]}
+/>
+
+---
+
+### Windows
+
+**PowerShell execution policy:**
+
+<Terminal
+  commands={[
+    {
+      command:
+        "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser",
+    },
+  ]}
+/>
+
+**Path separator issues:**
+
+Use forward slashes or escape backslashes:
+
+<Terminal
+  commands={[{ command: "mediaproc image resize C:/Users/name/photo.jpg" }]}
+/>
+
+---
+
+### Linux
+
+**Missing shared libraries:**
+
+<Terminal
+  commands={[
+    { command: "ldd $(which ffmpeg)" },
+    { command: "sudo apt install libavcodec-extra" },
+  ]}
+/>
+
+---
+
+## Best Practices
+
+**Always test commands first:**
+
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg --width 1920 --dry-run" },
+  ]}
+/>
+
+**Keep backups of original files**
+
+**Use descriptive output names**
+
+**Monitor disk space for batch operations**
+
+**Update MediaProc regularly:**
+
+<Terminal commands={[{ command: "npm update -g @mediaproc/cli" }]} />
+
+---
+
+## Related Resources
+
+- [CLI Overview](/docs/cli-overview) - Understanding MediaProc architecture
+- [Plugin Architecture](/docs/architecture/plugins) - How plugins work
+- [Community Support](/docs/community) - Get help from the community

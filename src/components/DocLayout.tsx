@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Sidebar } from './Sidebar';
-import { TableOfContents } from './TableOfContents';
+import { OnThisPage } from './OnThisPage';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -98,7 +98,7 @@ export function DocLayout({ children }: { children: ReactNode }) {
         </main>
         
         {/* Right Sidebar - Table of Contents */}
-        <TableOfContents />
+        <OnThisPage />
       </div>
     </div>
   );
