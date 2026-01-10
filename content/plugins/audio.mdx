@@ -1,0 +1,582 @@
+# Audio Plugin
+
+Comprehensive audio processing powered by FFmpeg.
+
+## Overview
+
+The Audio Plugin provides professional audio processing capabilities through FFmpeg, the industry-standard multimedia framework. Process audio files with precision, apply effects, normalize loudness, and convert between formats—all from a simple, unified command-line interface.
+
+**Powered by:** [FFmpeg](https://ffmpeg.org/)
+
+---
+
+## What Can It Do?
+
+### Format Conversion
+
+Convert between all major audio formats with quality control:
+
+- **Lossy:** MP3, AAC, Opus, OGG
+- **Lossless:** FLAC, WAV, ALAC
+- **Quality presets:** Low, medium, high, max
+- **Custom bitrates:** Fine-tune compression
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio convert song.mp3 --format flac" },
+    { output: "Converting: song.mp3 → song.flac (lossless)", isSuccess: false },
+    { output: "Converted: 3.2 MB → 25.1 MB", isSuccess: true },
+  ]}
+/>
+
+[Learn more →](/docs/plugins/audio/convert)
+
+---
+
+### Audio Extraction
+
+Extract audio tracks from video files:
+
+- Support all video formats (MP4, MKV, AVI, MOV, WebM)
+- Fast mode with stream copy (no re-encoding)
+- Quality control for converted output
+- Automatic codec detection
+
+<Terminal
+  commands={[
+    {
+      command: "mediaproc audio extract video.mp4 --format mp3 --quality high",
+    },
+    { output: "Extracting audio from: video.mp4", isSuccess: false },
+    { output: "Created: video.mp3 (256k AAC)", isSuccess: true },
+  ]}
+/>
+
+[Learn more →](/docs/plugins/audio/extract)
+
+---
+
+### Loudness Normalization
+
+Professional loudness normalization using EBU R128 standard:
+
+- **LUFS-based normalization** for consistent perceived volume
+- **True peak limiting** to prevent clipping
+- **Platform presets:** Spotify (-14 LUFS), YouTube (-13 LUFS), Broadcast (-16 LUFS)
+- **Two-pass processing** for optimal results
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio normalize podcast.mp3 --loudness -16" },
+    { output: "Analyzing loudness: podcast.mp3", isSuccess: false },
+    { output: "Current: -20.3 LUFS | Target: -16.0 LUFS", isSuccess: false },
+    { output: "Normalized: podcast-normalized.mp3", isSuccess: true },
+  ]}
+/>
+
+[Learn more →](/docs/plugins/audio/normalize)
+
+---
+
+### Trimming & Cutting
+
+Cut audio segments with frame-accurate precision:
+
+- **Time-based trimming:** HH:MM:SS or seconds
+- **Duration control:** Extract specific lengths
+- **Fade effects:** Smooth fade-in/fade-out
+- **Fast mode:** Instant cuts without re-encoding
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio trim interview.mp3 --start 05:30 --duration 120 --fade-in 2 --fade-out 3",
+    },
+    { output: "Trimming: 05:30 for 2:00", isSuccess: false },
+    { output: "Adding fade-in: 2.0s, fade-out: 3.0s", isSuccess: false },
+    { output: "Created: interview-trimmed.mp3 (2:00)", isSuccess: true },
+  ]}
+/>
+
+[Learn more →](/docs/plugins/audio/trim)
+
+---
+
+### Merging & Concatenation
+
+Combine multiple audio files seamlessly:
+
+- **Unlimited files:** Concatenate any number of tracks
+- **Crossfade transitions:** Smooth blending between tracks
+- **Automatic normalization:** Handles different formats/sample rates
+- **Gapless playback:** Perfect for DJ mixes and albums
+
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc audio merge intro.mp3 main.mp3 outro.mp3 --crossfade 2 -o episode.mp3",
+    },
+    { output: "Merging 3 files with 2.0s crossfades...", isSuccess: false },
+    {
+      output: "intro.mp3 (0:30) → [fade] → main.mp3 (25:00)",
+      isSuccess: false,
+    },
+    {
+      output: "main.mp3 (25:00) → [fade] → outro.mp3 (1:00)",
+      isSuccess: false,
+    },
+    { output: "Created: episode.mp3 (26:26)", isSuccess: true },
+  ]}
+/>
+
+[Learn more →](/docs/plugins/audio/merge)
+
+---
+
+## Quick Start
+
+### Installation
+
+The Audio Plugin is included with MediaProc:
+
+```bash
+npm install -g @mediaproc/cli
+```
+
+Ensure FFmpeg is installed:
+
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt install ffmpeg
+
+# Windows
+choco install ffmpeg
+```
+
+---
+
+### Basic Usage
+
+```bash
+# Convert format
+mediaproc audio convert song.mp3 --format flac
+
+# Extract from video
+mediaproc audio extract video.mp4 --format mp3
+
+# Normalize loudness
+mediaproc audio normalize podcast.mp3 --loudness -16
+
+# Trim segment
+mediaproc audio trim song.mp3 --start 30 --duration 60
+
+# Merge files
+mediaproc audio merge track1.mp3 track2.mp3 --crossfade 2
+```
+
+---
+
+## Supported Formats
+
+### Input Formats
+
+The Audio Plugin accepts all FFmpeg-supported audio formats:
+
+| Format     | Extension  | Description                           |
+| ---------- | ---------- | ------------------------------------- |
+| MP3        | .mp3       | Most common lossy format              |
+| AAC        | .m4a, .aac | Modern lossy, better quality than MP3 |
+| Opus       | .opus      | Best lossy codec, low bitrate         |
+| OGG Vorbis | .ogg       | Open-source lossy                     |
+| FLAC       | .flac      | Lossless compression                  |
+| WAV        | .wav       | Uncompressed PCM                      |
+| ALAC       | .m4a       | Apple Lossless                        |
+| WMA        | .wma       | Windows Media Audio                   |
+| AIFF       | .aiff      | Uncompressed (Apple)                  |
+
+---
+
+### Output Formats
+
+Convert to any of these formats:
+
+**Lossy (Compressed):**
+
+- MP3 - Universal compatibility
+- AAC - Modern, efficient
+- Opus - Best quality/size ratio
+- OGG - Open source
+
+**Lossless:**
+
+- FLAC - Compressed lossless
+- WAV - Uncompressed
+- ALAC - Apple ecosystem
+
+---
+
+## Common Use Cases
+
+### Podcast Production
+
+```bash
+# Normalize episode loudness for streaming platforms
+mediaproc audio normalize episode.mp3 --loudness -16
+
+# Extract highlight clip with fades
+mediaproc audio trim episode.mp3 --start 15:30 --duration 120 --fade-in 1 --fade-out 2
+
+# Assemble episode from segments
+mediaproc audio merge intro.mp3 interview.mp3 outro.mp3 --crossfade 1 -o episode-final.mp3
+```
+
+---
+
+### Music Production
+
+```bash
+# Convert high-quality master to distribution format
+mediaproc audio convert master.flac --format mp3 --quality max
+
+# Extract chorus for social media
+mediaproc audio trim song.mp3 --start 90 --duration 30 --fade-in 0.5 --fade-out 1
+
+# Create album with crossfades
+mediaproc audio merge track*.mp3 --crossfade 2.5 --gapless -o album.mp3
+```
+
+---
+
+### Content Creation
+
+```bash
+# Extract audio from video for editing
+mediaproc audio extract interview.mp4 --format wav
+
+# Normalize for YouTube upload
+mediaproc audio normalize video-audio.mp3 --loudness -13
+
+# Create teaser clip
+mediaproc audio trim full-episode.mp3 --duration 60 --fade-out 3 -o teaser.mp3
+```
+
+---
+
+### Broadcasting
+
+```bash
+# Normalize to broadcast standard (EBU R128)
+mediaproc audio normalize program.mp3 --loudness -23 --true-peak -1
+
+# Convert to broadcast format
+mediaproc audio convert source.mp3 --format wav --sample-rate 48000
+
+# Trim and fade for air
+mediaproc audio trim spot.mp3 --start 0 --duration 30 --fade-in 0.5 --fade-out 0.5
+```
+
+---
+
+## Quality Guidelines
+
+### Bitrate Recommendations
+
+Choose appropriate bitrates for your needs:
+
+**Speech/Voice (Podcasts, Audiobooks):**
+
+```bash
+# Low (mobile): 64-96 kbps
+mediaproc audio convert podcast.wav --format mp3 --quality low
+
+# Medium (streaming): 96-128 kbps
+mediaproc audio convert podcast.wav --format aac --quality medium
+
+# High (archival): 128-192 kbps
+mediaproc audio convert podcast.wav --format mp3 --quality high
+```
+
+**Music:**
+
+```bash
+# Medium quality: 192 kbps
+mediaproc audio convert song.flac --format mp3 --quality medium
+
+# High quality: 256 kbps
+mediaproc audio convert song.flac --format mp3 --quality high
+
+# Maximum quality: 320 kbps
+mediaproc audio convert song.flac --format mp3 --quality max
+```
+
+---
+
+### Format Selection
+
+Choose the right format for your use case:
+
+**Web/Streaming:**
+
+- **Modern browsers:** Opus (best quality/size)
+- **Universal compatibility:** MP3 or AAC
+- **Progressive web apps:** AAC
+
+**Distribution:**
+
+- **iTunes/Apple:** AAC (256 kbps)
+- **Spotify:** OGG Vorbis (160-320 kbps) - platform converts
+- **YouTube:** AAC (128-256 kbps)
+
+**Archival:**
+
+- **Masters:** FLAC (lossless)
+- **Backup:** WAV (uncompressed)
+- **Space-efficient:** FLAC
+
+---
+
+### Loudness Standards
+
+Target loudness levels for different platforms:
+
+```bash
+# Spotify: -14 LUFS
+mediaproc audio normalize song.mp3 --loudness -14
+
+# YouTube: -13 LUFS
+mediaproc audio normalize video-audio.mp3 --loudness -13
+
+# Apple Music/iTunes: -16 LUFS
+mediaproc audio normalize track.mp3 --loudness -16
+
+# Broadcast (EBU R128): -23 LUFS
+mediaproc audio normalize program.mp3 --loudness -23
+
+# Podcast: -14 to -16 LUFS
+mediaproc audio normalize podcast.mp3 --loudness -16
+```
+
+---
+
+## Performance Tips
+
+### Fast Mode
+
+Use stream copy for instant processing when format/codec doesn't change:
+
+```bash
+# Instant trim (no re-encoding)
+mediaproc audio trim song.mp3 --start 30 --duration 60 --fast
+
+# Extract audio without re-encoding
+mediaproc audio extract video.mp4 --fast
+```
+
+---
+
+### Batch Processing
+
+Process multiple files efficiently:
+
+```bash
+# Convert all files in directory
+mediaproc audio convert *.mp3 --format flac -o ./converted/
+
+# Normalize all podcast episodes
+mediaproc audio normalize episode*.mp3 --loudness -16 -o ./normalized/
+
+# Trim multiple recordings to same length
+mediaproc audio trim recording*.mp3 --start 0 --duration 300 -o ./clips/
+```
+
+---
+
+### Quality vs Speed
+
+Balance processing speed and output quality:
+
+```
+Fast:     Stream copy (--fast) - Instant, no quality loss
+Medium:   Default settings - 2-5x realtime
+Slow:     Lossless conversion - 1-2x realtime
+```
+
+---
+
+## Integration Examples
+
+### Node.js
+
+```javascript
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
+
+async function normalizeAudio(input) {
+  const { stdout, stderr } = await execAsync(
+    `mediaproc audio normalize ${input} --loudness -16`
+  );
+
+  console.log("Normalized:", stdout);
+}
+```
+
+---
+
+### Python
+
+```python
+import subprocess
+
+def convert_audio(input_file, output_format):
+    result = subprocess.run([
+        'mediaproc', 'audio', 'convert', input_file,
+        '--format', output_format
+    ], capture_output=True, text=True)
+
+    print(f'Converted: {result.stdout}')
+```
+
+---
+
+### Shell Scripts
+
+```bash
+#!/bin/bash
+
+# Batch normalize podcast episodes
+for episode in episodes/*.mp3; do
+  mediaproc audio normalize "$episode" --loudness -16
+  echo "Normalized: $episode"
+done
+
+# Create teaser clips
+for full in full-episodes/*.mp3; do
+  basename=$(basename "$full" .mp3)
+  mediaproc audio trim "$full" --duration 60 --fade-out 3 -o "teasers/${basename}-teaser.mp3"
+done
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**FFmpeg not found:**
+
+```bash
+# Check if FFmpeg is installed
+ffmpeg -version
+
+# Install if missing:
+# macOS: brew install ffmpeg
+# Ubuntu: sudo apt install ffmpeg
+# Windows: choco install ffmpeg
+```
+
+**Permission errors:**
+
+```bash
+# Check file permissions
+ls -l audio.mp3
+
+# Fix if needed
+chmod 644 audio.mp3
+```
+
+**Unsupported format:**
+
+```bash
+# Check file format
+mediaproc audio convert unknown.xyz --format mp3
+# Error: Unsupported format: xyz
+
+# Use supported formats (mp3, aac, opus, ogg, flac, wav)
+```
+
+[More troubleshooting →](/docs/troubleshooting)
+
+---
+
+## Advanced Features
+
+### Custom FFmpeg Options
+
+Pass custom FFmpeg parameters (advanced):
+
+```bash
+# Custom sample rate
+mediaproc audio convert input.mp3 --format flac --sample-rate 96000
+
+# Custom bitrate
+mediaproc audio convert input.flac --format mp3 --bitrate 256k
+
+# Mono conversion
+mediaproc audio convert stereo.mp3 --channels 1
+```
+
+---
+
+### Metadata Preservation
+
+Audio metadata is preserved by default:
+
+```bash
+# Metadata (title, artist, album) copied automatically
+mediaproc audio convert song.mp3 --format flac
+
+# Verify metadata
+mediaproc audio info song-converted.flac
+```
+
+---
+
+## Command Reference
+
+| Command     | Purpose                | Documentation                      |
+| ----------- | ---------------------- | ---------------------------------- |
+| `convert`   | Format conversion      | [→](/docs/plugins/audio/convert)   |
+| `extract`   | Extract from video     | [→](/docs/plugins/audio/extract)   |
+| `normalize` | Loudness normalization | [→](/docs/plugins/audio/normalize) |
+| `trim`      | Cut segments           | [→](/docs/plugins/audio/trim)      |
+| `merge`     | Concatenate files      | [→](/docs/plugins/audio/merge)     |
+
+---
+
+## Learn More
+
+### Documentation
+
+- [Audio Commands Overview](/docs/plugins/audio)
+- [Audio Plugin Architecture](/docs/architecture/audio-plugin)
+- [FFmpeg Audio Filters](https://ffmpeg.org/ffmpeg-filters.html#Audio-Filters)
+
+### External Resources
+
+- [FFmpeg Official Documentation](https://ffmpeg.org/documentation.html)
+- [EBU R128 Loudness Standard](https://tech.ebu.ch/docs/r/r128.pdf)
+- [Audio Codec Comparison](https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats)
+
+---
+
+## Getting Help
+
+- [GitHub Discussions](https://github.com/your-org/mediaproc/discussions) - Ask questions
+- [GitHub Issues](https://github.com/your-org/mediaproc/issues) - Report bugs
+- [Discord Server](https://discord.gg/mediaproc) - Real-time chat
+
+---
+
+**Ready to process audio?**
+
+```bash
+npm install -g @mediaproc/cli
+mediaproc audio convert song.mp3 --format flac
+```
