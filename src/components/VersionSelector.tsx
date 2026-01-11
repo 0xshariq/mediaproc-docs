@@ -16,19 +16,7 @@ const versions: Version[] = [
         version: '0.6.0-beta',
         label: 'v0.6.0-beta (latest)',
         isCurrent: true,
-    },
-    {
-        version: '0.5.0',
-        label: 'v0.5.0',
-    },
-    {
-        version: '0.4.0',
-        label: 'v0.4.0',
-    },
-    {
-        version: '0.3.0',
-        label: 'v0.3.0',
-    },
+    }
 ];
 
 export function VersionSelector() {

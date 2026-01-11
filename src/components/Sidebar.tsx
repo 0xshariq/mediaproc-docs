@@ -77,7 +77,7 @@ export function Sidebar() {
 
       <div className="p-3 sm:p-4 border-t border-border/50 bg-muted/20 shrink-0">
         <div className="text-xs text-muted-foreground mb-1">Version</div>
-        <div className="text-xs sm:text-sm font-mono font-semibold text-foreground">v0.5.2</div>
+        <div className="text-xs sm:text-sm font-mono font-semibold text-foreground">v0.6.0-beta</div>
       </div>
     </aside>
   );
