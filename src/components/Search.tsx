@@ -218,10 +218,13 @@ export function Search() {
                                 {results.length > 0 ? (
                                     <div className="p-2">
                                         {results.map((result, index) => (
-                                            <Link key={`${result.slug}-${index}`} href={`/docs/${result.slug}`}>
-                                                <button
-                                                    onClick={() => handleSelect(result)}
-                                                    className={`w-full flex items-start justify-between gap-3 px-3 py-3 rounded-md transition-colors text-left ${index === selectedIndex
+                                            <Link 
+                                                key={`${result.slug}-${index}`} 
+                                                href={result.slug.startsWith('/') ? result.slug : `/docs/${result.slug}`}
+                                                onClick={() => handleSelect(result)}
+                                            >
+                                                <div
+                                                    className={`w-full flex items-start justify-between gap-3 px-3 py-3 rounded-md transition-colors text-left cursor-pointer ${index === selectedIndex
                                                             ? 'bg-primary/10 border border-primary/30'
                                                             : 'hover:bg-muted border border-transparent'
                                                         }`}
@@ -236,7 +239,7 @@ export function Search() {
                                                         )}
                                                     </div>
                                                     <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-1" />
-                                                </button>
+                                                </div>
                                             </Link>
                                         ))}
                                     </div>
