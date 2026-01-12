@@ -192,7 +192,7 @@ export function Search() {
                         >
                             {/* Search Input */}
                             <div className="flex items-center gap-3 border-b border-border px-4 py-4">
-                                <SearchIcon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                                <SearchIcon className="w-5 h-5 text-muted-foreground shrink-0" />
                                 <input
                                     ref={inputRef}
                                     type="text"
@@ -238,7 +238,7 @@ export function Search() {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-1" />
+                                                    <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
                                                 </div>
                                             </Link>
                                         ))}
@@ -246,7 +246,7 @@ export function Search() {
                                 ) : query ? (
                                     <div className="px-4 py-8 text-center text-muted-foreground">
                                         <SearchIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                                        <p className="text-sm">No results found for "{query}"</p>
+                                        <p className="text-sm">No results found for &quot;{query}&quot;</p>
                                     </div>
                                 ) : (
                                     <div className="px-4 py-8 text-center text-muted-foreground">
