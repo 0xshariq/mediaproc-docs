@@ -52,12 +52,15 @@ export function Search() {
 
     // Search function with improved scoring
     const search = useCallback((query: string) => {
+        const index = buildSearchIndex();
+        
+        // If no query, show all results
         if (!query.trim()) {
-            setResults([]);
+            setResults(index.slice(0, 20)); // Show first 20 items
+            setSelectedIndex(0);
             return;
         }
 
-        const index = buildSearchIndex();
         const searchQuery = query.toLowerCase();
         const searchWords = searchQuery.split(' ').filter(w => w.length > 0);
 
@@ -96,12 +99,27 @@ export function Search() {
             })
             .filter(({ score }) => score > 0)
             .sort((a, b) => b.score - a.score)
-            .slice(0, 10) // Increase limit to 10
+            .slice(0, 10)
             .map(({ item }) => item);
 
         setResults(scored);
         setSelectedIndex(0);
     }, [buildSearchIndex]);
+
+    // Initialize results when search opens
+    useEffect(() => {
+        if (isOpen && results.length === 0) {
+            // Use setTimeout to avoid cascading renders
+            setTimeout(() => search(''), 0);
+        }
+    }, [isOpen, search, results.length]);
+
+    // Handle select action
+    const handleSelect = useCallback(() => {
+        setIsOpen(false);
+        setQuery('');
+        // Navigation will be handled by Link component
+    }, []);
 
     // Handle keyboard shortcuts
     useEffect(() => {
@@ -130,7 +148,7 @@ export function Search() {
                 } else if (e.key === 'Enter') {
                     e.preventDefault();
                     if (results[selectedIndex]) {
-                        handleSelect(results[selectedIndex]);
+                        handleSelect();
                     }
                 }
             }
@@ -138,7 +156,7 @@ export function Search() {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, results, selectedIndex]);
+    }, [isOpen, results, selectedIndex, handleSelect]);
 
     // Close on outside click
     useEffect(() => {
@@ -151,12 +169,6 @@ export function Search() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-
-    const handleSelect = (result: SearchResult) => {
-        setIsOpen(false);
-        setQuery('');
-        // Navigation will be handled by Link component
-    };
 
     return (
         <>
@@ -223,7 +235,7 @@ export function Search() {
                                                 href={result.slug.startsWith('/') ? result.slug : `/docs/${result.slug}`}
                                             >
                                                 <div
-                                                    onClick={() => handleSelect(result)}
+                                                    onClick={handleSelect}
                                                     className={`w-full flex items-start justify-between gap-3 px-3 py-3 rounded-md transition-colors text-left cursor-pointer ${index === selectedIndex
                                                             ? 'bg-primary/10 border border-primary/30'
                                                             : 'hover:bg-muted border border-transparent'
@@ -248,26 +260,7 @@ export function Search() {
                                         <SearchIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
                                         <p className="text-sm">No results found for &quot;{query}&quot;</p>
                                     </div>
-                                ) : (
-                                    <div className="px-4 py-8 text-center text-muted-foreground">
-                                        <div className="space-y-3">
-                                            <p className="text-sm font-medium">Start typing to search...</p>
-                                            <div className="flex items-center justify-center gap-2 text-xs">
-                                                <kbd className="px-2 py-1 rounded bg-muted border border-border">
-                                                    <span>↑</span>
-                                                </kbd>
-                                                <kbd className="px-2 py-1 rounded bg-muted border border-border">
-                                                    <span>↓</span>
-                                                </kbd>
-                                                <span>to navigate</span>
-                                                <kbd className="px-2 py-1 rounded bg-muted border border-border">
-                                                    ↵
-                                                </kbd>
-                                                <span>to select</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
+                                ) : null}
                             </div>
                         </div>
                     </div>

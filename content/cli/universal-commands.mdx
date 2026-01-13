@@ -1,259 +1,814 @@
 # Universal Commands
 
-Universal commands work across the entire MediaProc CLI, regardless of which plugins you have installed. These commands manage plugins and provide essential utilities.
+Universal commands work across the entire MediaProc CLI, regardless of which plugins you have installed. These commands provide essential utilities for plugin management, workflow automation, system diagnostics, and productivity features.
 
-## Command Overview
+## Quick Reference
 
-| Command    | Description                         |
-| ---------- | ----------------------------------- |
-| `add`      | Install one or more plugins         |
-| `remove`   | Remove installed plugins            |
-| `list`     | List installed or available plugins |
-| `run`      | Run plugin commands                 |
-| `validate` | Validate plugin installations       |
-| `help`     | Display help information            |
-| `create`   | Create a new plugin from templates  |
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+  <div className="border rounded-lg p-4">
+    <h3 className="text-lg font-semibold mb-2">🔌 Plugin Management</h3>
+    <ul className="space-y-1 text-sm">
+      <li>
+        <code>add</code> - Install plugins
+      </li>
+      <li>
+        <code>remove</code> - Remove plugins
+      </li>
+      <li>
+        <code>list</code> - List plugins & commands
+      </li>
+      <li>
+        <code>validate</code> - Check installations
+      </li>
+      <li>
+        <code>update</code> - Update plugins
+      </li>
+      <li>
+        <code>detect</code> - Auto-detect & recommend
+      </li>
+    </ul>
+  </div>
 
-## add
+  <div className="border rounded-lg p-4">
+    <h3 className="text-lg font-semibold mb-2">⚡ Workflow & Automation</h3>
+    <ul className="space-y-1 text-sm">
+      <li>
+        <code>batch</code> - Queue processing jobs
+      </li>
+      <li>
+        <code>template</code> - Save command templates
+      </li>
+      <li>
+        <code>workspace</code> - Project workspaces
+      </li>
+      <li>
+        <code>watch</code> - Auto-process files
+      </li>
+    </ul>
+  </div>
 
-Install one or more MediaProc plugins.
+  <div className="border rounded-lg p-4">
+    <h3 className="text-lg font-semibold mb-2">📊 Analysis & Stats</h3>
+    <ul className="space-y-1 text-sm">
+      <li>
+        <code>history</code> - View & replay commands
+      </li>
+      <li>
+        <code>stats</code> - Usage statistics
+      </li>
+      <li>
+        <code>compare</code> - Compare files
+      </li>
+      <li>
+        <code>benchmark</code> - Performance tests
+      </li>
+    </ul>
+  </div>
 
-### Usage
+  <div className="border rounded-lg p-4">
+    <h3 className="text-lg font-semibold mb-2">🛠️ Utilities</h3>
+    <ul className="space-y-1 text-sm">
+      <li>
+        <code>doctor</code> - System diagnostics
+      </li>
+      <li>
+        <code>search</code> - Search commands
+      </li>
+      <li>
+        <code>help</code> - Get help
+      </li>
+    </ul>
+  </div>
+</div>
+
+---
+
+## Plugin Management Commands
+
+---
+
+## Plugin Management Commands
+
+### add
+
+Install MediaProc plugins from the official registry.
 
 ```bash
 mediaproc add <plugin-names...>
 ```
 
-### Options
+**Options:**
 
-| Option      | Description                     | Default |
-| ----------- | ------------------------------- | ------- |
-| `--verbose` | Show detailed installation logs | `false` |
+- `--verbose` - Show detailed installation logs
 
-### Examples
-
-**Install single plugin:**
+**Examples:**
 
 ```bash
+# Install single plugin
 mediaproc add image
-```
 
-**Install multiple plugins:** (Future Plan)
-
-```bash
+# Install multiple plugins
 mediaproc add image video audio
-```
 
-**Install with verbose output:**
-
-```bash
+# With verbose output
 mediaproc add video --verbose
 ```
 
-## remove
+---
+
+### remove
 
 Remove installed plugins from your system.
-
-### Usage
 
 ```bash
 mediaproc remove <plugin-names...>
 ```
 
-### Examples
-
-**Remove single plugin:**
+**Examples:**
 
 ```bash
+# Remove single plugin
 mediaproc remove image
+
+# Remove multiple plugins
+mediaproc remove image video audio
 ```
 
-**Remove multiple plugins:**
+---
 
-```bash
-mediaproc remove image video
-```
-
-```bash
-mediaproc remove image video
-```
-
-## list
+### list
 
 List installed plugins or view commands available in a plugin.
-
-### Usage
 
 ```bash
 mediaproc list [plugin-name]
 ```
 
-### Examples
-
-**List installed plugins:**
+**Examples:**
 
 ```bash
+# List all installed plugins
 mediaproc list
-```
 
-**List commands in a specific plugin:**
-
-```bash
+# List commands in specific plugin
 mediaproc list image
 ```
 
-## run
+---
 
-Run a plugin command.
+### validate
 
-### Usage
+Validate plugin installations and check dependencies.
 
 ```bash
-mediaproc run <plugin> <command> [args...]
+mediaproc validate [plugin-name]
 ```
 
-### Examples
+**Options:**
 
-**Run image resize:**
+- `--fix` - Attempt to fix issues automatically
 
-```bash
-mediaproc run image resize input.jpg -w 800
-```
-
-**Shorthand (without run):**
+**Examples:**
 
 ```bash
-mediaproc image resize input.jpg -w 800
-```
-
-## validate
-
-Validate plugin installations and dependencies.
-
-### Usage
-
-```bash
+# Validate all plugins
 mediaproc validate
+
+# Validate specific plugin
+mediaproc validate image
+
+# Auto-fix issues
+mediaproc validate --fix
 ```
 
-### Examples
+---
 
-**Validate all plugins:**
+### update
+
+Update plugins to their latest versions.
 
 ```bash
-mediaproc validate
+mediaproc update [plugin-name]
 ```
 
-## help
-
-Display help information for commands and plugins.
-
-### Usage
+**Examples:**
 
 ```bash
-mediaproc help [command]
-mediaproc <plugin> help [command]
+# Update all plugins
+mediaproc update
+
+# Update specific plugin
+mediaproc update image
 ```
 
-### Examples
+---
 
-**General help:**
+### detect
+
+Auto-detect file types and recommend appropriate plugins.
 
 ```bash
+mediaproc detect <directory>
+```
+
+**Examples:**
+
+```bash
+# Analyze current directory
+mediaproc detect .
+
+# Analyze specific folder
+mediaproc detect ./my-media-files
+```
+
+---
+
+## Workflow & Automation Commands
+
+### batch
+
+Manage a queue of batch processing jobs with priority support.
+
+```bash
+# Add job to queue
+mediaproc batch add <command> [files...] [options]
+
+# List queued jobs
+mediaproc batch list
+
+# Start processing
+mediaproc batch start
+
+# Pause/resume queue
+mediaproc batch pause
+mediaproc batch resume
+
+# Remove job
+mediaproc batch remove <job-id>
+
+# Clear all jobs
+mediaproc batch clear
+```
+
+**Options:**
+
+- `-p, --priority <number>` - Job priority (higher first, default: 5)
+- `--args <args>` - Additional command arguments
+- `-w, --workers <number>` - Parallel workers (default: 4)
+
+**Examples:**
+
+```bash
+# Add resize job
+mediaproc batch add "image resize" *.jpg --args "-w 800" -p 10
+
+# Start with 8 workers
+mediaproc batch start -w 8
+
+# List all jobs
+mediaproc batch list
+```
+
+---
+
+### template
+
+Save frequently used commands as reusable templates.
+
+```bash
+# Save template
+mediaproc template save <name> <command> [options]
+
+# List templates
+mediaproc template list
+
+# Run template
+mediaproc template run <name> [params...]
+
+# Delete template
+mediaproc template delete <name>
+```
+
+**Options:**
+
+- `-d, --description <text>` - Template description
+
+Use `{param}` syntax for parameterized templates.
+
+**Examples:**
+
+```bash
+# Save template
+mediaproc template save web-resize \
+  "image resize {input} -w {width} -o {output}" \
+  -d "Resize for web"
+
+# Run template
+mediaproc template run web-resize photo.jpg 1920 out.jpg
+
+# List templates
+mediaproc template list
+```
+
+---
+
+### workspace
+
+Create project-specific workspaces with presets and rules.
+
+```bash
+# Create workspace
+mediaproc workspace create <name> [options]
+
+# List workspaces
+mediaproc workspace list
+
+# Load workspace
+mediaproc workspace load <name>
+
+# Add rule
+mediaproc workspace rule add <pattern> <command>
+```
+
+**Options:**
+
+- `-d, --description <text>` - Description
+- `--preset <type>` - Preset (web, mobile, print, social)
+
+**Examples:**
+
+```bash
+# Create with preset
+mediaproc workspace create my-site --preset web
+
+# Add rules
+mediaproc workspace rule add "*.jpg" "image optimize -q 85"
+
+# Load workspace
+mediaproc workspace load my-site
+```
+
+---
+
+### watch
+
+Monitor directories and automatically process new files.
+
+```bash
+mediaproc watch <directory> [options]
+```
+
+**Options:**
+
+- `--on-image <cmd>` - Command for new images
+- `--on-video <cmd>` - Command for new videos
+- `--on-audio <cmd>` - Command for new audio
+- `--on-any <cmd>` - Command for any file
+- `--ignore <patterns>` - Patterns to ignore
+- `--recursive` - Watch subdirectories
+- `--debounce <ms>` - Debounce delay (default: 1000)
+
+**Examples:**
+
+```bash
+# Watch and optimize images
+mediaproc watch ./uploads --on-image "image optimize -q 85"
+
+# Multiple rules
+mediaproc watch ./media \
+  --on-image "image convert -f webp" \
+  --on-video "video compress -p medium"
+
+# Recursive with ignore patterns
+mediaproc watch ./content \
+  --recursive \
+  --ignore "node_modules,*.tmp"
+```
+
+---
+
+## Analysis & Statistics Commands
+
+### history
+
+View, search, and replay previously executed commands.
+
+```bash
+# Show recent history
+mediaproc history [options]
+
+# Replay command
+mediaproc history replay <id>
+
+# Search history
+mediaproc history search <query>
+```
+
+**Options:**
+
+- `-n, --limit <number>` - Number of entries (default: 20)
+- `--clear` - Clear all history
+- `--export <file>` - Export as shell script
+- `--json` - Output as JSON
+
+**Examples:**
+
+```bash
+# Show last 20 commands
+mediaproc history
+
+# Search for commands
+mediaproc history search resize
+
+# Replay command
+mediaproc history replay 42
+
+# Export as script
+mediaproc history --export workflow.sh
+```
+
+---
+
+### stats
+
+Display usage statistics and analytics.
+
+```bash
+mediaproc stats [options]
+```
+
+**Options:**
+
+- `-p, --plugin <name>` - Stats for specific plugin
+- `--period <days>` - Time period (default: 30)
+- `--reset` - Reset statistics
+- `--json` - Output as JSON
+
+**Metrics Tracked:**
+
+- Total files processed
+- Processing time
+- Storage saved
+- Plugin & command usage
+- Success rates
+
+**Examples:**
+
+```bash
+# Overall stats
+mediaproc stats
+
+# Plugin-specific
+mediaproc stats --plugin image
+
+# Custom period
+mediaproc stats --period 90
+```
+
+---
+
+### compare
+
+Compare two files for size, quality, and metadata differences.
+
+```bash
+mediaproc compare <file1> <file2> [options]
+```
+
+**Options:**
+
+- `--preview` - Visual preview
+- `--detailed` - Detailed comparison
+- `--json` - Output as JSON
+
+**Examples:**
+
+```bash
+# Basic comparison
+mediaproc compare original.jpg optimized.jpg
+
+# Detailed with metadata
+mediaproc compare before.mp4 after.mp4 --detailed
+
+# Visual preview
+mediaproc compare img1.png img2.png --preview
+```
+
+---
+
+### benchmark
+
+Run performance benchmarks to test system capabilities.
+
+```bash
+mediaproc benchmark [options]
+```
+
+**Options:**
+
+- `--system` - System capabilities
+- `--plugin <name>` - Benchmark plugin
+- `--operation <name>` - Benchmark operation
+- `--file <path>` - Test file
+- `--iterations <n>` - Iterations (default: 5)
+- `--json` - Output as JSON
+
+**Examples:**
+
+```bash
+# System benchmark
+mediaproc benchmark --system
+
+# Operation benchmark
+mediaproc benchmark --plugin image \
+  --operation resize \
+  --file test.jpg \
+  --iterations 10
+```
+
+---
+
+## Utility Commands
+
+### doctor
+
+Run comprehensive system diagnostics and health checks.
+
+```bash
+mediaproc doctor [options]
+```
+
+**Options:**
+
+- `--verbose` - Detailed diagnostics
+- `--fix` - Auto-fix issues
+
+**Checks:**
+
+- ✓ Node.js version
+- ✓ FFmpeg installation
+- ✓ Sharp/libvips
+- ✓ Plugin validation
+- ✓ System resources
+- ✓ Dependencies
+- ✓ Configuration
+
+**Examples:**
+
+```bash
+# Basic diagnostics
+mediaproc doctor
+
+# Detailed output
+mediaproc doctor --verbose
+
+# Auto-fix issues
+mediaproc doctor --fix
+```
+
+---
+
+### search
+
+Search for commands across all installed plugins.
+
+```bash
+mediaproc search <query> [options]
+```
+
+**Options:**
+
+- `-p, --plugin <name>` - Search in specific plugin
+- `-l, --limit <number>` - Result limit (default: 10)
+- `--json` - Output as JSON
+
+**Features:**
+
+- Fuzzy matching
+- Category filtering
+- Relevance scoring
+- Description search
+
+**Examples:**
+
+```bash
+# Search all plugins
+mediaproc search resize
+
+# Plugin-specific
+mediaproc search compress --plugin video
+
+# Limit results
+mediaproc search convert --limit 5
+```
+
+---
+
+### help
+
+Display comprehensive help information.
+
+```bash
+# General help
 mediaproc help
 mediaproc --help
+
+# Command help
+mediaproc <command> --help
+
+# Plugin help
+mediaproc <plugin> help
+mediaproc <plugin> <command> --help
 ```
 
-**Command help:**
+**Examples:**
 
 ```bash
-mediaproc help add
-mediaproc add --help
-```
+# All commands
+mediaproc help
 
-**Plugin help:**
+# Specific command
+mediaproc help batch
 
-```bash
+# Plugin commands
 mediaproc image help
-mediaproc image --help
-```
 
-**Plugin command help:**
-
-```bash
+# Plugin command
 mediaproc image resize --help
 ```
 
-## Future Features
-
-The following commands are planned for future releases:
-
-### create (Coming Soon)
-
-Create a new plugin from a template.
-
-**Planned usage:**
-
-```bash
-mediaproc create <plugin-name>
-```
-
-This feature will help developers quickly scaffold new plugins with best practices and proper structure.
-
-## Exit Codes
-
-MediaProc uses standard exit codes:
-
-| Code | Meaning           |
-| ---- | ----------------- |
-| `0`  | Success           |
-| `1`  | General error     |
-| `2`  | Invalid arguments |
-| `3`  | Plugin not found  |
-| `4`  | File not found    |
+---
 
 ## Best Practices
 
-### 1. List Commands First
+<div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 my-4">
+  <h4 className="font-semibold mb-2">💡 Pro Tips</h4>
+  <ul className="space-y-2 text-sm">
+    <li>
+      <strong>Start with doctor:</strong> Run <code>mediaproc doctor</code>{" "}
+      before processing important files
+    </li>
+    <li>
+      <strong>Use templates:</strong> Save time with{" "}
+      <code>mediaproc template save</code>
+    </li>
+    <li>
+      <strong>Batch processing:</strong> Queue jobs with{" "}
+      <code>mediaproc batch</code> for efficiency
+    </li>
+    <li>
+      <strong>Automate with watch:</strong> Monitor folders with{" "}
+      <code>mediaproc watch</code>
+    </li>
+    <li>
+      <strong>Track usage:</strong> Review stats with{" "}
+      <code>mediaproc stats</code>
+    </li>
+    <li>
+      <strong>Workspaces for projects:</strong> Use{" "}
+      <code>mediaproc workspace</code> for organization
+    </li>
+    <li>
+      <strong>Compare results:</strong> Verify quality with{" "}
+      <code>mediaproc compare</code>
+    </li>
+    <li>
+      <strong>Search when unsure:</strong> Find commands with{" "}
+      <code>mediaproc search</code>
+    </li>
+  </ul>
+</div>
 
-Check available commands before using a plugin:
+### Template Example Workflow
 
 ```bash
-mediaproc list image
+# 1. Save template for common task
+mediaproc template save blog-image \
+  "image resize {input} -w 1200 -q 90 -o {output}"
+
+# 2. Use template repeatedly
+mediaproc template run blog-image photo1.jpg photo1-blog.jpg
+mediaproc template run blog-image photo2.jpg photo2-blog.jpg
 ```
 
-### 2. Validate After Changes
-
-Run validation after installing or removing plugins:
+### Batch Processing Workflow
 
 ```bash
-mediaproc validate
+# 1. Queue multiple jobs
+mediaproc batch add "image optimize" folder1/*.jpg
+mediaproc batch add "image optimize" folder2/*.png
+mediaproc batch add "image convert" folder3/*.jpg --args "-f webp"
+
+# 2. Start processing with 8 workers
+mediaproc batch start -w 8
+
+# 3. Monitor progress
+mediaproc batch list
 ```
 
-### 3. Use Help Commands
-
-Don't memorize everything - use built-in help:
+### Workspace Setup
 
 ```bash
-mediaproc help
-mediaproc image resize --help
+# 1. Create workspace
+mediaproc workspace create my-project --preset web
+
+# 2. Add processing rules
+mediaproc workspace rule add "*.jpg" "image optimize -q 85"
+mediaproc workspace rule add "*.png" "image convert -f webp"
+
+# 3. Load and work
+mediaproc workspace load my-project
 ```
 
-### 4. Use Shorthand
+---
 
-Skip the `run` command for cleaner syntax:
+## Exit Codes
+
+| Code | Meaning            |
+| ---- | ------------------ |
+| `0`  | Success            |
+| `1`  | General error      |
+| `2`  | Invalid arguments  |
+| `3`  | Plugin not found   |
+| `4`  | File not found     |
+| `5`  | Permission denied  |
+| `6`  | Dependency missing |
+
+---
+
+## Advanced Usage
+
+### Combine Commands with Shell
 
 ```bash
-# Instead of
-mediaproc run image resize input.jpg -w 800
+# Count resize commands in history
+mediaproc history | grep resize | wc -l
 
-# Use
-mediaproc image resize input.jpg -w 800
+# Use jq for JSON parsing
+mediaproc stats --json | jq '.totalFiles'
+
+# Chain batch jobs
+mediaproc batch add "image resize" *.jpg --args "-w 1920"
+mediaproc batch add "image optimize" *.jpg --args "-q 85"
+mediaproc batch start
 ```
+
+### Watch Multiple Directories
+
+```bash
+# Background processes
+mediaproc watch ./folder1 --on-image "image optimize" &
+mediaproc watch ./folder2 --on-video "video compress" &
+```
+
+### Export and Share Workflows
+
+```bash
+# Export your workflow
+mediaproc history --export workflow.sh
+
+# Share with team
+# Team can run: bash workflow.sh
+```
+
+---
 
 ## See Also
 
-- [CLI Overview](/docs/cli/overview) - General CLI introduction
-- [Plugin Management](/docs/cli/plugin-management) - Managing plugins in detail
-- [Image Plugin](/docs/plugins/image) - Image processing commands
-- [Creating Plugins](/docs/community/creating-plugins) - Build custom plugins
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+  <a
+    href="/docs/cli/overview"
+    className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
+  >
+    <h4 className="font-semibold mb-1">CLI Overview</h4>
+    <p className="text-sm text-muted-foreground">
+      General CLI introduction and getting started
+    </p>
+  </a>
+
+  <a
+    href="/docs/cli/plugin-management"
+    className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
+  >
+    <h4 className="font-semibold mb-1">Plugin Management</h4>
+    <p className="text-sm text-muted-foreground">Managing plugins in detail</p>
+  </a>
+
+  <a
+    href="/docs/plugins/image"
+    className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
+  >
+    <h4 className="font-semibold mb-1">Image Plugin</h4>
+    <p className="text-sm text-muted-foreground">Image processing commands</p>
+  </a>
+
+  <a
+    href="/docs/plugins/video"
+    className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
+  >
+    <h4 className="font-semibold mb-1">Video Plugin</h4>
+    <p className="text-sm text-muted-foreground">Video processing commands</p>
+  </a>
+</div>
+
+---
