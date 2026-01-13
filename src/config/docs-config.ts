@@ -218,8 +218,14 @@ export const navigationConfig: NavSection[] = [
       { title: 'Contributing', slug: 'community/contributing' },
       { title: 'Plugin Integration', slug: 'community/plugin-integration' },
       { title: 'Plugin Ideas', slug: 'community/plugin-ideas' },
-      { title: 'Migration: ImageMagick to MediaProc', slug: 'community/migration-sharp' },
-      { title: 'Migration: FFmpeg to MediaProc', slug: 'community/migration-ffmpeg' },
+    ],
+  },
+  {
+    title: "Migration",
+    items: [
+      { title: 'Migration: ImageMagick to MediaProc', slug: 'migration/migration-sharp' },
+      { title: 'Migration: FFmpeg to MediaProc', slug: 'migration/migration-ffmpeg' },
+
     ],
   },
   {

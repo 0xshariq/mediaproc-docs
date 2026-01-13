@@ -13,8 +13,8 @@ interface Version {
 
 const versions: Version[] = [
     {
-        version: '0.6.0-beta',
-        label: 'v0.6.0-beta (latest)',
+        version: '0.7.0',
+        label: 'v0.7.0 (latest)',
         isCurrent: true,
     }
 ];
