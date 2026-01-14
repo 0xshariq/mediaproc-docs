@@ -108,11 +108,11 @@ export function Search() {
 
     // Initialize results when search opens
     useEffect(() => {
-        if (isOpen && results.length === 0) {
-            // Use setTimeout to avoid cascading renders
-            setTimeout(() => search(''), 0);
+        if (isOpen) {
+            // Always search when opening to show all results or filter current query
+            setTimeout(() => search(query), 0);
         }
-    }, [isOpen, search, results.length]);
+    }, [isOpen]);
 
     // Handle select action
     const handleSelect = useCallback(() => {

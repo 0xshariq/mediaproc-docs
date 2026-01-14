@@ -120,7 +120,7 @@ export function OnThisPage() {
           </h2>
         </div>
 
-        <nav className="space-y-1 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-border/50 scrollbar-track-transparent pr-2">
+        <nav className="space-y-0.5 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-border/50 scrollbar-track-transparent pr-2">
           {headings.map((heading) => {
             const isActive = activeId === heading.id;
             const isH3 = heading.level === 3;
@@ -130,14 +130,14 @@ export function OnThisPage() {
                 key={heading.id}
                 href={`#${heading.id}`}
                 className={`
-                  block text-sm py-2 px-3 transition-all duration-200 rounded-md
+                  block text-sm py-1 px-3 transition-all duration-200 rounded-md leading-tight
                   relative before:absolute before:left-0 before:top-0 before:h-full before:w-0.5 before:rounded-full
                   before:transition-all before:duration-200
                   ${isActive
                     ? 'text-primary font-medium bg-primary/5 before:bg-primary before:opacity-100'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 before:bg-border before:opacity-0 hover:before:opacity-100'
                   }
-                  ${isH3 ? 'ml-4 text-xs py-1.5' : ''}
+                  ${isH3 ? 'ml-4 text-xs py-0.5' : ''}
                 `}
                 onClick={(e) => {
                   e.preventDefault();
