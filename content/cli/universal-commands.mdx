@@ -29,41 +29,41 @@ Universal commands work across the entire MediaProc CLI, regardless of which plu
     </ul>
   </div>
 
-  <div className="border rounded-lg p-4">
-    <h3 className="text-lg font-semibold mb-2">⚡ Workflow & Automation</h3>
-    <ul className="space-y-1 text-sm">
-      <li>
-        <code>batch</code> - Queue processing jobs
-      </li>
-      <li>
-        <code>template</code> - Save command templates
-      </li>
-      <li>
-        <code>workspace</code> - Project workspaces
-      </li>
-      <li>
-        <code>watch</code> - Auto-process files
-      </li>
-    </ul>
-  </div>
+<div className="border rounded-lg p-4">
+  <h3 className="text-lg font-semibold mb-2">⚡ Workflow & Automation</h3>
+  <ul className="space-y-1 text-sm">
+    <li>
+      <code>batch</code> - Queue processing jobs
+    </li>
+    <li>
+      <code>template</code> - Save command templates
+    </li>
+    <li>
+      <code>workspace</code> - Project workspaces
+    </li>
+    <li>
+      <code>watch</code> - Auto-process files
+    </li>
+  </ul>
+</div>
 
-  <div className="border rounded-lg p-4">
-    <h3 className="text-lg font-semibold mb-2">📊 Analysis & Stats</h3>
-    <ul className="space-y-1 text-sm">
-      <li>
-        <code>history</code> - View & replay commands
-      </li>
-      <li>
-        <code>stats</code> - Usage statistics
-      </li>
-      <li>
-        <code>compare</code> - Compare files
-      </li>
-      <li>
-        <code>benchmark</code> - Performance tests
-      </li>
-    </ul>
-  </div>
+<div className="border rounded-lg p-4">
+  <h3 className="text-lg font-semibold mb-2">📊 Analysis & Stats</h3>
+  <ul className="space-y-1 text-sm">
+    <li>
+      <code>history</code> - View & replay commands
+    </li>
+    <li>
+      <code>stats</code> - Usage statistics
+    </li>
+    <li>
+      <code>compare</code> - Compare files
+    </li>
+    <li>
+      <code>benchmark</code> - Performance tests
+    </li>
+  </ul>
+</div>
 
   <div className="border rounded-lg p-4">
     <h3 className="text-lg font-semibold mb-2">🛠️ Utilities</h3>
@@ -80,10 +80,6 @@ Universal commands work across the entire MediaProc CLI, regardless of which plu
     </ul>
   </div>
 </div>
-
----
-
-## Plugin Management Commands
 
 ---
 
@@ -152,33 +148,6 @@ mediaproc list
 
 # List commands in specific plugin
 mediaproc list image
-```
-
----
-
-### validate
-
-Validate plugin installations and check dependencies.
-
-```bash
-mediaproc validate [plugin-name]
-```
-
-**Options:**
-
-- `--fix` - Attempt to fix issues automatically
-
-**Examples:**
-
-```bash
-# Validate all plugins
-mediaproc validate
-
-# Validate specific plugin
-mediaproc validate image
-
-# Auto-fix issues
-mediaproc validate --fix
 ```
 
 ---
@@ -425,44 +394,6 @@ mediaproc history replay 42
 
 # Export as script
 mediaproc history --export workflow.sh
-```
-
----
-
-### stats
-
-Display usage statistics and analytics.
-
-```bash
-mediaproc stats [options]
-```
-
-**Options:**
-
-- `-p, --plugin <name>` - Stats for specific plugin
-- `--period <days>` - Time period (default: 30)
-- `--reset` - Reset statistics
-- `--json` - Output as JSON
-
-**Metrics Tracked:**
-
-- Total files processed
-- Processing time
-- Storage saved
-- Plugin & command usage
-- Success rates
-
-**Examples:**
-
-```bash
-# Overall stats
-mediaproc stats
-
-# Plugin-specific
-mediaproc stats --plugin image
-
-# Custom period
-mediaproc stats --period 90
 ```
 
 ---
@@ -734,6 +665,9 @@ mediaproc workspace load my-project
 | `5`  | Permission denied  |
 | `6`  | Dependency missing |
 
+<Callout type="info" title="Exit Codes">
+  See [exit-codes](./exit-codes)
+</Callout>
 ---
 
 ## Advanced Usage
@@ -786,21 +720,21 @@ mediaproc history --export workflow.sh
     </p>
   </a>
 
-  <a
-    href="/docs/cli/plugin-management"
-    className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
-  >
-    <h4 className="font-semibold mb-1">Plugin Management</h4>
-    <p className="text-sm text-muted-foreground">Managing plugins in detail</p>
-  </a>
+<a
+  href="/docs/cli/plugin-management"
+  className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
+>
+  <h4 className="font-semibold mb-1">Plugin Management</h4>
+  <p className="text-sm text-muted-foreground">Managing plugins in detail</p>
+</a>
 
-  <a
-    href="/docs/plugins/image"
-    className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
-  >
-    <h4 className="font-semibold mb-1">Image Plugin</h4>
-    <p className="text-sm text-muted-foreground">Image processing commands</p>
-  </a>
+<a
+  href="/docs/plugins/image"
+  className="block p-4 border rounded-lg hover:border-blue-500 transition-colors"
+>
+  <h4 className="font-semibold mb-1">Image Plugin</h4>
+  <p className="text-sm text-muted-foreground">Image processing commands</p>
+</a>
 
   <a
     href="/docs/plugins/video"
