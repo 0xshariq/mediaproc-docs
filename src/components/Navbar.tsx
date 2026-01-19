@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Terminal, Github, Menu, X } from 'lucide-react';
+import {  Github, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Search } from '@/components/Search';
 import { VersionSelector } from '@/components/VersionSelector';
+import Image from 'next/image';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -15,15 +16,12 @@ export function Navbar() {
   const isDocsPage = pathname?.startsWith('/docs');
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Terminal className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-            </div>
-            <span className="text-lg sm:text-xl font-bold">MediaProc</span>
+            <Image src={'/mediaproc-logo.png'} alt="MediaProc Logo" width={40} height={40} />
           </Link>
 
           {/* Desktop Navigation */}
