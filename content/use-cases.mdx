@@ -523,12 +523,12 @@ const execAsync = promisify(exec);
 async function processUploadedImage(filePath) {
   // Generate web version
   await execAsync(
-    `mediaproc image resize ${filePath} --width 1920 --format webp --output web/${filePath}`
+    `mediaproc image resize ${filePath} --width 1920 --format webp --output web/${filePath}`,
   );
 
   // Generate thumbnail
   await execAsync(
-    `mediaproc image resize ${filePath} --width 400 --height 400 --fit cover --output thumbs/${filePath}`
+    `mediaproc image resize ${filePath} --width 400 --height 400 --fit cover --output thumbs/${filePath}`,
   );
 
   console.log("Image processed successfully");
@@ -605,4 +605,4 @@ Explore more advanced features:
 
 **Have a unique use case?**
 
-[Share it in Discussions →](https://github.com/your-org/mediaproc/discussions)
+[Share it in Discussions →](https://github.com/0xshariq/mediaproc/discussions)
