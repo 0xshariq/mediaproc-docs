@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to **MediaProc** - the universal media processing CLI that unifies all your media workflows into one *powerful* tool.
+Welcome to **MediaProc** - the universal media processing CLI that unifies all your media workflows into one _powerful_ tool.
 
 ## What is MediaProc?
 
@@ -10,26 +10,29 @@ MediaProc is a modern, plugin-based command-line interface designed to process a
 
 Traditional media processing is fragmented:
 
-- **Multiple Tools**: <abbr>FFmpeg</abbr> for videos, ImageMagick for images, SoX for audio
-- **Inconsistent Interfaces**: *Each tool has different command syntax*
+- **Multiple Tools**: <abbr>FFmpeg</abbr> for videos, ImageMagick and Sharp for images, SoX for audio
+- **Inconsistent Interfaces**: _Each tool has different command syntax_
 - **Complex Workflows**: Chaining tools requires custom scripts
-- **Steep Learning Curve**: Learn *multiple tools separately*
+- **Steep Learning Curve**: Learn _multiple tools separately_
 
 ## Our Solution
 
-**One tool. Consistent interface. *Extensible* architecture.**
+**One tool. Consistent interface. _Extensible_ architecture.**
 
-<Terminal title="Traditional vs MediaProc" commands={[
-  { output: '# Traditional approach (different tools, different syntax)' },
-  { command: 'convert input.jpg -resize 1920x1080 output.jpg' },
-  { command: 'ffmpeg -i input.mp4 -c:v h264 -crf 23 output.mp4' },
-  { output: '' },
-  { output: '# MediaProc approach (one tool, consistent syntax)' },
-  { command: 'mediaproc image resize input.jpg --width 1920 --height 1080' },
-  { output: '✓ Resized successfully', isSuccess: true },
-  { command: 'mediaproc video transcode input.mp4 --codec h264 --crf 23' },
-  { output: '✓ Transcoded successfully', isSuccess: true }
-]} />
+<Terminal
+  title="Traditional vs MediaProc"
+  commands={[
+    { output: "# Traditional approach (different tools, different syntax)" },
+    { command: "convert input.jpg -resize 1920x1080 output.jpg" },
+    { command: "ffmpeg -i input.mp4 -c:v h264 -crf 23 output.mp4" },
+    { output: "" },
+    { output: "# MediaProc approach (one tool, consistent syntax)" },
+    { command: "mediaproc image resize input.jpg --width 1920 --height 1080" },
+    { output: "✓ Resized successfully", isSuccess: true },
+    { command: "mediaproc video transcode input.mp4 --codec h264 --crf 23" },
+    { output: "✓ Transcoded successfully", isSuccess: true },
+  ]}
+/>
 
 ## Key Features
 
