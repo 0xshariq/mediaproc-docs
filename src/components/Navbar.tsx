@@ -21,7 +21,7 @@ export function Navbar() {
         <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group">
-            <Image src={'/mediaproc-logo.png'} alt="MediaProc Logo" width={400} height={400} />
+            <Image src={'/mediaproc-logo.png'} alt="MediaProc Logo" width={100} height={100} />
             <span className="text-lg font-semibold transition-colors group-hover:text-foreground">MediaProc</span>
           </Link>
 
