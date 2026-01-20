@@ -4,9 +4,9 @@ Create beautiful image grids and collages from multiple images. Perfect for soci
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image grid <images...> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image grid <images...> [options]" }]}
+/>
 
 ### Basic Syntax
 
@@ -555,42 +555,36 @@ mediaproc image grid photo{1..16}.jpg  # Instead of all
 ## Best Practices
 
 1. **Plan Grid Layout**
-
    - Decide on columns/rows based on image count
    - Use square cells for consistency
    - Consider target platform requirements
    - Preview layout with --dry-run first
 
 2. **Image Preparation**
-
    - Pre-resize very large images
    - Use similar aspect ratios for best results
    - Pre-crop if specific framing needed
    - Optimize images before grid creation
 
 3. **Cell Sizing**
-
    - 300×300: Good for thumbnails
    - 400×400: Balanced for most uses
    - 500×500: Larger, more detailed
    - 1080×1080: Instagram full quality
 
 4. **Gap Selection**
-
    - 0px: Seamless, modern look
    - 5-10px: Subtle separation
    - 15-20px: Clear separation
    - 30+px: Gallery-style breathing room
 
 5. **Background Colors**
-
    - White: Clean, professional
    - Black: Dramatic, gallery-style
    - Gray: Subtle, modern
    - Brand colors: Consistent identity
 
 6. **Performance**
-
    - Limit to 36 images per grid (6×6)
    - Use reasonable cell sizes (200-800px)
    - Resize large source images first
