@@ -4,13 +4,17 @@ Apply median filter to reduce image noise while preserving edges. The median fil
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image median <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image median <input> [options]" }]}
+/>
 
 ### Basic Usage
 
@@ -335,7 +339,6 @@ mediaproc image blur photo.jpg -s 5
 ### Noise Types
 
 - **Median Best For**:
-
   - Salt-and-pepper noise
   - Outlier pixels
   - Random speckles

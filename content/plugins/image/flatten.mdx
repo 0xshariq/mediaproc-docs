@@ -4,16 +4,18 @@ Remove the alpha channel (transparency) from images by compositing them onto a s
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image flatten <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image flatten <input> [options]" }]}
+/>
 
 ### Basic Syntax
 
-<Terminal commands={[
-  { command: 'mediaproc image flatten logo.png' },
-  { output: '✓ Flattened with white background', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image flatten logo.png" },
+    { output: "✓ Flattened with white background", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command='mediaproc image flatten logo.png --background "#2C3E50"' />
 <InlineTerminal command="mediaproc image flatten transparent.png -o output.jpg" />
@@ -503,42 +505,36 @@ mediaproc image flatten input.png --background "white"           # ✗ Named col
 ## Best Practices
 
 1. **Choose Appropriate Background Colors**
-
    - White (`#ffffff`) for general use and print
    - Light gray (`#F5F5F5`) for subtle contrast
    - Black (`#000000`) for dark theme versions
    - Brand colors for consistent identity
 
 2. **Format Selection**
-
    - JPEG for photographs and web use
    - PNG when you might need transparency later
    - WebP for modern web (good compression)
    - AVIF for cutting-edge web (best compression)
 
 3. **Quality Settings**
-
    - 100: Print and archival (large files)
    - 90-95: High-quality web (default)
    - 80-90: Balanced web use
    - 70-80: Email attachments (smaller files)
 
 4. **Verify Before Batch Processing**
-
    - Test with one image first
    - Use `--dry-run` to preview
    - Check output quality and appearance
    - Verify background color is correct
 
 5. **Consider Use Context**
-
    - E-commerce: White background standard
    - Social media: Brand color backgrounds
    - Print: White or specified background
    - Web: Optimize for file size and quality balance
 
 6. **Preserve Original Files**
-
    - Keep transparent originals
    - Create flattened versions as needed
    - Don't overwrite source files

@@ -7,6 +7,7 @@ Intelligently reduce video file size using CRF-based compression while maintaini
 The `compress` command uses FFmpeg's Constant Rate Factor (CRF) encoding to reduce video file sizes by 30-70% while preserving visual quality. Unlike fixed bitrate encoding, CRF dynamically allocates more bits to complex scenes and fewer to simple ones, resulting in better quality-to-size ratios.
 
 **Key Features:**
+
 - 🎯 Quality presets (low, medium, high, extreme)
 - 📉 Typical file size reduction: 40-60%
 - 🎬 Multiple codec support with optimal settings
@@ -15,6 +16,7 @@ The `compress` command uses FFmpeg's Constant Rate Factor (CRF) encoding to redu
 - 📦 Batch compression for entire folders
 
 **Common Use Cases:**
+
 - Reducing storage requirements for video archives
 - Preparing videos for web/mobile delivery
 - Email attachments and file sharing
@@ -22,40 +24,47 @@ The `compress` command uses FFmpeg's Constant Rate Factor (CRF) encoding to redu
 - Cloud storage optimization
 
 <Callout type="info">
-**How CRF Works:** CRF (Constant Rate Factor) maintains consistent perceived quality throughout the video. Complex scenes get more bits, simple scenes get fewer. This produces better visual quality than fixed bitrate at smaller file sizes.
+  **How CRF Works:** CRF (Constant Rate Factor) maintains consistent perceived
+  quality throughout the video. Complex scenes get more bits, simple scenes get
+  fewer. This produces better visual quality than fixed bitrate at smaller file
+  sizes.
 </Callout>
 
 <Callout type="warning">
-**Compression is Lossy:** Each compression reduces quality slightly. Never compress already-compressed videos multiple times. Always work from original/high-quality sources.
+  **Compression is Lossy:** Each compression reduces quality slightly. Never
+  compress already-compressed videos multiple times. Always work from
+  original/high-quality sources.
 </Callout>
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc video compress <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc video compress <input> [options]" }]}
+/>
 
 ## Options
 
-| Option              | Alias | Type    | Default  | Description                                              |
-| ------------------- | ----- | ------- | -------- | -------------------------------------------------------- |
-| `--output`          | `-o`  | string  | Auto     | Output file or directory path                            |
-| `--quality`         | `-q`  | string  | `medium` | Quality preset: `low`, `medium`, `high`, `extreme`       |
-| `--codec`           | `-c`  | string  | `h264`   | Video codec: `h264`, `h265`, `vp9`, `av1`                |
-| `--crf`             |       | number  | Auto     | Custom CRF value (0-51, lower=better quality)            |
-| `--preset`          |       | string  | `medium` | Encoding: ultrafast, fast, medium, slow, veryslow        |
-| `--bitrate`         | `-b`  | string  |          | Target bitrate (e.g., 2M, 5M)                            |
-| `--min-bitrate`     |       | string  |          | Minimum bitrate (e.g., 1M)                               |
-| `--max-bitrate`     |       | string  |          | Maximum bitrate (e.g., 8M)                               |
-| `--audio-bitrate`   |       | string  | `128k`   | Audio bitrate (default: 128k)                            |
-| `--audio-codec`     |       | string  | `aac`    | Audio codec: aac, mp3, opus                              |
-| `--format`          |       | string  | `mp4`    | Output format: mp4, mkv, webm                            |
-| `--optimize-for`    |       | string  |          | Optimize for: web, streaming, archive, mobile            |
-| `--resize`          |       | string  |          | Also resize during compression (e.g., 720p, 1080p)       |
-| `--threads`         |       | number  | auto     | Number of threads for encoding                           |
-| `--hw-accel`        |       | boolean | false    | Enable hardware acceleration (GPU)                       |
-| `--strip-metadata`  |       | boolean | false    | Remove all metadata from output                          |
-| `--two-pass`        |       | boolean | false    | Use two-pass encoding for better quality                 |
-| `--dry-run`         |       | boolean | false    | Preview without executing                                |
-| `--verbose`         | `-v`  | boolean | false    | Show detailed FFmpeg output                              |
+| Option             | Alias | Type    | Default  | Description                                        |
+| ------------------ | ----- | ------- | -------- | -------------------------------------------------- |
+| `--output`         | `-o`  | string  | Auto     | Output file or directory path                      |
+| `--quality`        | `-q`  | string  | `medium` | Quality preset: `low`, `medium`, `high`, `extreme` |
+| `--codec`          | `-c`  | string  | `h264`   | Video codec: `h264`, `h265`, `vp9`, `av1`          |
+| `--crf`            |       | number  | Auto     | Custom CRF value (0-51, lower=better quality)      |
+| `--preset`         |       | string  | `medium` | Encoding: ultrafast, fast, medium, slow, veryslow  |
+| `--bitrate`        | `-b`  | string  |          | Target bitrate (e.g., 2M, 5M)                      |
+| `--min-bitrate`    |       | string  |          | Minimum bitrate (e.g., 1M)                         |
+| `--max-bitrate`    |       | string  |          | Maximum bitrate (e.g., 8M)                         |
+| `--audio-bitrate`  |       | string  | `128k`   | Audio bitrate (default: 128k)                      |
+| `--audio-codec`    |       | string  | `aac`    | Audio codec: aac, mp3, opus                        |
+| `--format`         |       | string  | `mp4`    | Output format: mp4, mkv, webm                      |
+| `--optimize-for`   |       | string  |          | Optimize for: web, streaming, archive, mobile      |
+| `--resize`         |       | string  |          | Also resize during compression (e.g., 720p, 1080p) |
+| `--threads`        |       | number  | auto     | Number of threads for encoding                     |
+| `--hw-accel`       |       | boolean | false    | Enable hardware acceleration (GPU)                 |
+| `--strip-metadata` |       | boolean | false    | Remove all metadata from output                    |
+| `--two-pass`       |       | boolean | false    | Use two-pass encoding for better quality           |
+| `--dry-run`        |       | boolean | false    | Preview without executing                          |
+| `--verbose`        | `-v`  | boolean | false    | Show detailed FFmpeg output                        |
 
 ## Flag Details
 
@@ -65,20 +74,22 @@ Quick presets that balance quality, file size, and encoding time.
 
 **Preset Comparison:**
 
-| Preset | CRF | File Size Reduction | Visual Quality | Encoding Time | Best For |
-|--------|-----|---------------------|----------------|---------------|----------|
-| `low` | 28 | 60-70% | Acceptable | Fast | Storage optimization, previews |
-| `medium` | 23 | 40-50% | High | Moderate | Web delivery, general use **← default** |
-| `high` | 20 | 30-40% | Near-lossless | Slow | Professional distribution |
-| `extreme` | 18 | 20-30% | Visually lossless | Very slow | Archival, masters |
+| Preset    | CRF | File Size Reduction | Visual Quality    | Encoding Time | Best For                                |
+| --------- | --- | ------------------- | ----------------- | ------------- | --------------------------------------- |
+| `low`     | 28  | 60-70%              | Acceptable        | Fast          | Storage optimization, previews          |
+| `medium`  | 23  | 40-50%              | High              | Moderate      | Web delivery, general use **← default** |
+| `high`    | 20  | 30-40%              | Near-lossless     | Slow          | Professional distribution               |
+| `extreme` | 18  | 20-30%              | Visually lossless | Very slow     | Archival, masters                       |
 
 **Selection Guide:**
+
 - **Email/sharing:** `low` (smallest files)
 - **YouTube/social media:** `medium` (good balance)
 - **Client delivery:** `high` (professional quality)
 - **Archive/backup:** `extreme` (preserve maximum quality)
 
 **Learn More:**
+
 - [Understanding CRF](https://trac.ffmpeg.org/wiki/Encode/H.264#crf)
 
 ---
@@ -88,6 +99,7 @@ Quick presets that balance quality, file size, and encoding time.
 Override quality presets with a specific CRF (Constant Rate Factor) value.
 
 **Range:** 0-51
+
 - **0:** Lossless (huge files, rarely used)
 - **15-18:** Near-lossless, archival quality
 - **19-23:** High quality, imperceptible loss **← recommended range**
@@ -96,30 +108,34 @@ Override quality presets with a specific CRF (Constant Rate Factor) value.
 - **36-51:** Low quality, significant artifacts
 
 **Rule of Thumb:**
+
 - Each +6 CRF ≈ halves file size
 - Each -6 CRF ≈ doubles file size
 
 <Callout type="tip">
-**Sweet Spot:** CRF 20-23 provides excellent quality-to-size ratio for most content. Go lower (18-19) only for critical professional work.
+  **Sweet Spot:** CRF 20-23 provides excellent quality-to-size ratio for most
+  content. Go lower (18-19) only for critical professional work.
 </Callout>
 
 ---
 
 ### `--codec` - Video Encoder
 
-| Codec | Compatibility | Speed | Compression | File Size | Best For |
-|-------|---------------|-------|-------------|-----------|----------|
-| **h264** | ✅ Universal | Fast | Good | Baseline | Maximum compatibility |
-| **h265** | Modern (2016+) | Slow | Excellent | 40-50% smaller | 4K video, storage savings |
-| **vp9** | Web browsers | Very slow | Excellent | 40-50% smaller | WebM, YouTube |
-| **av1** | Latest (2020+) | Extremely slow | Best | 50-60% smaller | Future-proofing |
+| Codec    | Compatibility  | Speed          | Compression | File Size      | Best For                  |
+| -------- | -------------- | -------------- | ----------- | -------------- | ------------------------- |
+| **h264** | ✅ Universal   | Fast           | Good        | Baseline       | Maximum compatibility     |
+| **h265** | Modern (2016+) | Slow           | Excellent   | 40-50% smaller | 4K video, storage savings |
+| **vp9**  | Web browsers   | Very slow      | Excellent   | 40-50% smaller | WebM, YouTube             |
+| **av1**  | Latest (2020+) | Extremely slow | Best        | 50-60% smaller | Future-proofing           |
 
 **Recommendations:**
+
 - **General use:** h264 (fast, compatible)
 - **4K/storage:** h265 (best compression/speed balance)
 - **Web only:** vp9 or av1 (if time permits)
 
 **Learn More:**
+
 - [Codec Comparison Guide](https://www.adobe.com/creativecloud/video/discover/video-codec.html)
 
 ---
@@ -130,15 +146,16 @@ Controls encoding time vs file size efficiency (not quality).
 
 **Presets:** `ultrafast` → `superfast` → `veryfast` → `faster` → `fast` → `medium` → `slow` → `slower` → `veryslow`
 
-| Preset | Speed | File Size | Quality at Same CRF |
-|--------|-------|-----------|---------------------|
-| ultrafast | 10x faster | +25% larger | Slightly lower |
-| fast | 2x faster | +10% larger | Minimal difference |
-| medium | Baseline | Baseline | Baseline **← default** |
-| slow | 1.5x slower | -8% smaller | Slightly better |
-| veryslow | 3x slower | -15% smaller | Better |
+| Preset    | Speed       | File Size    | Quality at Same CRF    |
+| --------- | ----------- | ------------ | ---------------------- |
+| ultrafast | 10x faster  | +25% larger  | Slightly lower         |
+| fast      | 2x faster   | +10% larger  | Minimal difference     |
+| medium    | Baseline    | Baseline     | Baseline **← default** |
+| slow      | 1.5x slower | -8% smaller  | Slightly better        |
+| veryslow  | 3x slower   | -15% smaller | Better                 |
 
 **When to Use:**
+
 - **Quick compression:** `fast` or `faster`
 - **Balanced:** `medium` (default)
 - **Maximum compression:** `slow` or `veryslow`
@@ -151,21 +168,26 @@ Controls encoding time vs file size efficiency (not quality).
 Specify target, minimum, and maximum bitrates. Switches from CRF to bitrate-based encoding.
 
 **Format:** Number + unit (`M` = Mbps, `k` = kbps)
+
 - Examples: `5M` (5 Mbps), `2500k` (2.5 Mbps)
 
 **Constrained Bitrate Example:**
+
 ```bash
 mediaproc video compress video.mp4 -b 5M --min-bitrate 3M --max-bitrate 8M
 ```
+
 This keeps bitrate between 3-8 Mbps, targeting 5 Mbps average.
 
 **When to Use Bitrate:**
+
 - Streaming with bandwidth limits
 - Platform-specific requirements
 - Predictable file sizes needed
 
 <Callout type="info">
-**CRF vs Bitrate:** CRF produces better quality distribution. Use bitrate only when file size predictability is required.
+  **CRF vs Bitrate:** CRF produces better quality distribution. Use bitrate only
+  when file size predictability is required.
 </Callout>
 
 ---
@@ -175,6 +197,7 @@ This keeps bitrate between 3-8 Mbps, targeting 5 Mbps average.
 Set audio compression level (default: 128k).
 
 **Recommended Values:**
+
 - `96k` - Acceptable for speech, lowest size
 - `128k` - Good for general content **← default**
 - `192k` - High quality, music videos
@@ -187,11 +210,11 @@ Set audio compression level (default: 128k).
 
 ### `--audio-codec` - Audio Encoder
 
-| Codec | Quality | Compatibility | Best For |
-|-------|---------|---------------|----------|
-| `aac` | Excellent | Universal | MP4 videos, general use **← default** |
-| `mp3` | Good | Universal | Broader compatibility needs |
-| `opus` | Best | Modern browsers | WebM, lowest bitrate for quality |
+| Codec  | Quality   | Compatibility   | Best For                              |
+| ------ | --------- | --------------- | ------------------------------------- |
+| `aac`  | Excellent | Universal       | MP4 videos, general use **← default** |
+| `mp3`  | Good      | Universal       | Broader compatibility needs           |
+| `opus` | Best      | Modern browsers | WebM, lowest bitrate for quality      |
 
 ---
 
@@ -202,21 +225,25 @@ Apply codec and encoding settings optimized for specific platforms.
 **Available Options:**
 
 **`web`** - Web streaming
+
 - H.264 High Profile
 - Optimized for progressive download
 - FastStart enabled (playback while downloading)
 
 **`streaming`** - Live/VOD streaming
+
 - Lower latency settings
 - Balanced quality/bandwidth
 - Suitable for adaptive bitrate
 
 **`mobile`** - Mobile devices
+
 - H.264 Baseline/Main Profile
 - Lower resolution/bitrate consideration
 - Battery-efficient decoding
 
 **`archive`** - Long-term storage
+
 - Maximum quality preservation
 - Metadata retention
 - Future-proof codec selection
@@ -228,13 +255,16 @@ Apply codec and encoding settings optimized for specific platforms.
 Simultaneously compress and resize video (more efficient than separate operations).
 
 **Format:** Resolution preset or dimensions
+
 - Presets: `360p`, `480p`, `720p`, `1080p`, `1440p`, `2160p`
 - Custom: `1280x720`, `1920x1080`
 
 **Example:**
+
 ```bash
 mediaproc video compress 4k-video.mp4 -q medium --resize 1080p
 ```
+
 This downscales from 4K to 1080p while compressing, resulting in much smaller file than 4K compression alone.
 
 ---
@@ -244,17 +274,20 @@ This downscales from 4K to 1080p while compressing, resulting in much smaller fi
 Enable GPU-accelerated encoding (5-10x faster).
 
 **Supported Hardware:**
+
 - NVIDIA GPUs (NVENC)
 - Intel processors (Quick Sync)
 - AMD GPUs (VCE/AMF)
 - Apple Silicon (VideoToolbox)
 
 **Trade-offs:**
+
 - ✅ Much faster encoding
 - ⚠️ Slightly lower quality than CPU
 - ⚠️ May have limited codec options
 
 **Learn More:**
+
 - [FFmpeg Hardware Acceleration Guide](https://trac.ffmpeg.org/wiki/HWAccelIntro)
 
 ---
@@ -264,6 +297,7 @@ Enable GPU-accelerated encoding (5-10x faster).
 Removes all metadata (date, location, camera info, copyright) from output.
 
 **Use When:**
+
 - Privacy concerns
 - Reducing file size (minimal impact, ~1-5KB)
 - Publishing to public platforms
@@ -278,10 +312,12 @@ Removes all metadata (date, location, camera info, copyright) from output.
 Encodes video twice for optimal quality distribution at target bitrate.
 
 **How It Works:**
+
 1. **First pass:** Analyzes complexity, collects statistics
 2. **Second pass:** Encodes using statistics for optimal bit allocation
 
 **When to Use:**
+
 - Target bitrate specified (`--bitrate`)
 - Maximum quality at specific file size
 - Consistent quality critical
@@ -289,6 +325,7 @@ Encodes video twice for optimal quality distribution at target bitrate.
 **Cost:** 2x encoding time (processes video twice)
 
 **Learn More:**
+
 - [FFmpeg Two-Pass Encoding](https://trac.ffmpeg.org/wiki/Encode/H.264#twopass)
 
 ### Low Quality (CRF 28)
@@ -346,81 +383,124 @@ Encodes video twice for optimal quality distribution at target bitrate.
 
 ### Basic Compression
 
-<Terminal commands={[
-  { command: 'mediaproc video compress video.mp4' },
-  { output: 'Input file: video.mp4' },
-  { output: 'Duration: 00:05:30 • Resolution: 1920x1080' },
-  { output: 'Original size: 450.5 MB' },
-  { output: '' },
-  { output: 'Compressing with CRF 23 (H.264)...' },
-  { output: '✓ Compression complete', isSuccess: true },
-  { output: '' },
-  { output: 'Output file: video_compressed.mp4' },
-  { output: 'New size: 225.3 MB • Saved: 225.2 MB (50.0%)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress video.mp4" },
+    { output: "Input file: video.mp4" },
+    { output: "Duration: 00:05:30 • Resolution: 1920x1080" },
+    { output: "Original size: 450.5 MB" },
+    { output: "" },
+    { output: "Compressing with CRF 23 (H.264)..." },
+    { output: "✓ Compression complete", isSuccess: true },
+    { output: "" },
+    { output: "Output file: video_compressed.mp4" },
+    { output: "New size: 225.3 MB • Saved: 225.2 MB (50.0%)", isSuccess: true },
+  ]}
+/>
 
 ### Specify Output Location
 
-<Terminal commands={[
-  { command: 'mediaproc video compress input.mp4 -o output/compressed.mp4' },
-  { output: '✓ Saved to output/compressed.mp4', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress input.mp4 -o output/compressed.mp4" },
+    { output: "✓ Saved to output/compressed.mp4", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video compress input.mp4 -o output/' },
-  { output: '✓ Saved to output/input_compressed.mp4', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress input.mp4 -o output/" },
+    { output: "✓ Saved to output/input_compressed.mp4", isSuccess: true },
+  ]}
+/>
 
 ### Quality Presets
 
-<Terminal commands={[
-  { command: 'mediaproc video compress large-video.mp4 -q low' },
-  { output: '✓ Compressed with CRF 28 • 600 MB → 180 MB (70% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress large-video.mp4 -q low" },
+    {
+      output: "✓ Compressed with CRF 28 • 600 MB → 180 MB (70% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video compress important-video.mp4 -q high' },
-  { output: '✓ Compressed with CRF 18 • 450 MB → 315 MB (30% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress important-video.mp4 -q high" },
+    {
+      output: "✓ Compressed with CRF 18 • 450 MB → 315 MB (30% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video compress video.mp4 -q medium' },
-  { output: '✓ Compressed with CRF 23 • 450 MB → 225 MB (50% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress video.mp4 -q medium" },
+    {
+      output: "✓ Compressed with CRF 23 • 450 MB → 225 MB (50% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Custom CRF Value
 
-<Terminal title="Ultra-high quality" commands={[
-  { command: 'mediaproc video compress source.mp4 --crf 15' },
-  { output: '✓ Compressed with CRF 15 (near-lossless)', isSuccess: true }
-]} />
+<Terminal
+  title="Ultra-high quality"
+  commands={[
+    { command: "mediaproc video compress source.mp4 --crf 15" },
+    { output: "✓ Compressed with CRF 15 (near-lossless)", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="Balanced quality" commands={[
-  { command: 'mediaproc video compress video.mp4 --crf 20' },
-  { output: '✓ Compressed with CRF 20', isSuccess: true }
-]} />
+<Terminal
+  title="Balanced quality"
+  commands={[
+    { command: "mediaproc video compress video.mp4 --crf 20" },
+    { output: "✓ Compressed with CRF 20", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="Higher compression" commands={[
-  { command: 'mediaproc video compress video.mp4 --crf 30' },
-  { output: '✓ Compressed with CRF 30 (smaller file)', isSuccess: true }
-]} />
+<Terminal
+  title="Higher compression"
+  commands={[
+    { command: "mediaproc video compress video.mp4 --crf 30" },
+    { output: "✓ Compressed with CRF 30 (smaller file)", isSuccess: true },
+  ]}
+/>
 
 ### Different Codecs
 
-<Terminal commands={[
-  { command: 'mediaproc video compress 4k-video.mp4 -c h265 -q medium' },
-  { output: '✓ Compressed with H.265 • 1.2 GB → 600 MB (50% smaller than H.264)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress 4k-video.mp4 -c h265 -q medium" },
+    {
+      output:
+        "✓ Compressed with H.265 • 1.2 GB → 600 MB (50% smaller than H.264)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video compress video.mp4 -c vp9 -q high' },
-  { output: '✓ Compressed with VP9 codec', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress video.mp4 -c vp9 -q high" },
+    { output: "✓ Compressed with VP9 codec", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video compress video.mp4 -c h264 -q medium' },
-  { output: '✓ Compressed with H.264 (maximum compatibility)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video compress video.mp4 -c h264 -q medium" },
+    {
+      output: "✓ Compressed with H.264 (maximum compatibility)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Audio Bitrate Control
 

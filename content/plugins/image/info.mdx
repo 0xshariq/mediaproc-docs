@@ -4,7 +4,7 @@ Display comprehensive image information and metadata including dimensions, forma
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc image info <input> [options]' }]} />
+<Terminal commands={[{ command: "mediaproc image info <input> [options]" }]} />
 
 ## Description
 
@@ -22,15 +22,17 @@ The `info` command provides a quick way to inspect image files and retrieve deta
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image info photo.jpg' },
-  { output: 'File: photo.jpg' },
-  { output: 'Size: 2.45 MB (2,570,240 bytes)' },
-  { output: 'Dimensions: 4032 × 3024 pixels' },
-  { output: 'Format: JPEG' },
-  { output: 'Color Space: srgb' },
-  { output: 'Channels: 3' }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image info photo.jpg" },
+    { output: "File: photo.jpg" },
+    { output: "Size: 2.45 MB (2,570,240 bytes)" },
+    { output: "Dimensions: 4032 × 3024 pixels" },
+    { output: "Format: JPEG" },
+    { output: "Color Space: srgb" },
+    { output: "Channels: 3" },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image info image.png --json" />
 
@@ -40,39 +42,64 @@ The `info` command provides a quick way to inspect image files and retrieve deta
 
 ### Scripting with JSON Output
 
-<Terminal commands={[
-  { command: 'WIDTH=$(mediaproc image info photo.jpg --json | jq -r \'.format.width\')' },
-  { command: 'echo $WIDTH' },
-  { output: '4032' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "WIDTH=$(mediaproc image info photo.jpg --json | jq -r '.format.width')",
+    },
+    { command: "echo $WIDTH" },
+    { output: "4032" },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'HAS_ALPHA=$(mediaproc image info image.png --json | jq -r \'.format.hasAlpha\')' },
-  { command: 'echo $HAS_ALPHA' },
-  { output: 'true' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "HAS_ALPHA=$(mediaproc image info image.png --json | jq -r '.format.hasAlpha')",
+    },
+    { command: "echo $HAS_ALPHA" },
+    { output: "true" },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'SIZE=$(mediaproc image info photo.jpg --json | jq -r \'.file.size\')' },
-  { command: 'echo $SIZE' },
-  { output: '2570240' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "SIZE=$(mediaproc image info photo.jpg --json | jq -r '.file.size')",
+    },
+    { command: "echo $SIZE" },
+    { output: "2570240" },
+  ]}
+/>
 
 ### Batch Information Gathering
 
-<Terminal commands={[
-  { command: 'for img in *.jpg; do echo "=== $img ==="; mediaproc image info "$img"; echo; done' },
-  { output: '=== photo1.jpg ===' },
-  { output: 'Size: 2.1 MB • 3840×2160 • JPEG' },
-  { output: '' },
-  { output: '=== photo2.jpg ===' },
-  { output: 'Size: 1.8 MB • 3264×2448 • JPEG' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        'for img in *.jpg; do echo "=== $img ==="; mediaproc image info "$img"; echo; done',
+    },
+    { output: "=== photo1.jpg ===" },
+    { output: "Size: 2.1 MB • 3840×2160 • JPEG" },
+    { output: "" },
+    { output: "=== photo2.jpg ===" },
+    { output: "Size: 1.8 MB • 3264×2448 • JPEG" },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'for img in *.png; do mediaproc image info "$img" --json >> images-info.json; done' },
-  { output: '✓ Exported metadata for 23 images', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        'for img in *.png; do mediaproc image info "$img" --json >> images-info.json; done',
+    },
+    { output: "✓ Exported metadata for 23 images", isSuccess: true },
+  ]}
+/>
 
 ## Information Displayed
 
@@ -173,60 +200,82 @@ Everything from standard mode plus:
 
 ### Quality Verification
 
-<Terminal commands={[
-  { command: 'mediaproc image info product.jpg' },
-  { output: 'Dimensions: 2400×1800 • Format: JPEG • Size: 1.2 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image info product.jpg" },
+    {
+      output: "Dimensions: 2400×1800 • Format: JPEG • Size: 1.2 MB",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal title="Image Resolution Check" commands={[
-  { command: 'WIDTH=$(mediaproc image info image.jpg --json | jq -r \'.format.width\')' },
-  { command: 'if [ $WIDTH -lt 1920 ]; then echo "Image too small for web"; fi' },
-  { output: 'Image too small for web', isError: true }
-]} />
+<Terminal
+  title="Image Resolution Check"
+  commands={[
+    {
+      command:
+        "WIDTH=$(mediaproc image info image.jpg --json | jq -r '.format.width')",
+    },
+    {
+      command:
+        'if [ $WIDTH -lt 1920 ]; then echo "Image too small for web"; fi',
+    },
+    { output: "Image too small for web", isError: true },
+  ]}
+/>
 
 ### Pre-Processing Inspection
 
 <InlineTerminal command="mediaproc image info source.png" />
 
-<Terminal commands={[
-  { command: 'mediaproc image info artwork.tiff -v' },
-  { output: 'Format: TIFF' },
-  { output: 'Color Space: cmyk' },
-  { output: 'Bit Depth: 16-bit' },
-  { output: '✓ Ready for print', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image info artwork.tiff -v" },
+    { output: "Format: TIFF" },
+    { output: "Color Space: cmyk" },
+    { output: "Bit Depth: 16-bit" },
+    { output: "✓ Ready for print", isSuccess: true },
+  ]}
+/>
 
 ### Batch Quality Control
 
-<Terminal commands={[
-  { command: 'for img in uploads/*.jpg; do' },
-  { command: '  INFO=$(mediaproc image info "$img" --json)' },
-  { command: '  WIDTH=$(echo $INFO | jq -r \'.format.width\')' },
-  { command: '  HEIGHT=$(echo $INFO | jq -r \'.format.height\')' },
-  { command: '  if [ $WIDTH -lt 800 ] || [ $HEIGHT -lt 600 ]; then' },
-  { command: '    echo "$img: Too small ($WIDTH×$HEIGHT)"' },
-  { command: '  fi' },
-  { command: 'done' },
-  { output: 'uploads/thumb1.jpg: Too small (640×480)' },
-  { output: 'uploads/thumb2.jpg: Too small (720×540)' }
-]} />
+<Terminal
+  commands={[
+    { command: "for img in uploads/*.jpg; do" },
+    { command: '  INFO=$(mediaproc image info "$img" --json)' },
+    { command: "  WIDTH=$(echo $INFO | jq -r '.format.width')" },
+    { command: "  HEIGHT=$(echo $INFO | jq -r '.format.height')" },
+    { command: "  if [ $WIDTH -lt 800 ] || [ $HEIGHT -lt 600 ]; then" },
+    { command: '    echo "$img: Too small ($WIDTH×$HEIGHT)"' },
+    { command: "  fi" },
+    { command: "done" },
+    { output: "uploads/thumb1.jpg: Too small (640×480)" },
+    { output: "uploads/thumb2.jpg: Too small (720×540)" },
+  ]}
+/>
 
 ### Metadata Extraction
 
-<Terminal commands={[
-  { command: 'mediaproc image info photo.jpg -v' },
-  { output: 'File: photo.jpg' },
-  { output: 'Size: 2.45 MB' },
-  { output: 'Dimensions: 4032×3024' },
-  { output: 'Camera: Canon EOS 5D Mark IV' },
-  { output: 'ISO: 400 • f/2.8 • 1/250s' },
-  { output: 'Focal Length: 85mm' }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image info photo.jpg -v" },
+    { output: "File: photo.jpg" },
+    { output: "Size: 2.45 MB" },
+    { output: "Dimensions: 4032×3024" },
+    { output: "Camera: Canon EOS 5D Mark IV" },
+    { output: "ISO: 400 • f/2.8 • 1/250s" },
+    { output: "Focal Length: 85mm" },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image info image.jpg --json > metadata.json' },
-  { output: '✓ Metadata exported to metadata.json', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image info image.jpg --json > metadata.json" },
+    { output: "✓ Metadata exported to metadata.json", isSuccess: true },
+  ]}
+/>
 
 ## Technical Details
 
@@ -269,25 +318,40 @@ EXIF orientation tag (1-8):
 
 ### Parse with jq
 
-<Terminal commands={[
-  { command: 'mediaproc image info img.jpg --json | jq \'.format | {width, height}\'' },
-  { output: '{' },
-  { output: '  "width": 3840,' },
-  { output: '  "height": 2160' },
-  { output: '}' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image info img.jpg --json | jq '.format | {width, height}'",
+    },
+    { output: "{" },
+    { output: '  "width": 3840,' },
+    { output: '  "height": 2160' },
+    { output: "}" },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'ORIENTATION=$(mediaproc image info photo.jpg --json | jq -r \'.format.orientation\')' },
-  { command: 'echo $ORIENTATION' },
-  { output: '6' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "ORIENTATION=$(mediaproc image info photo.jpg --json | jq -r '.format.orientation')",
+    },
+    { command: "echo $ORIENTATION" },
+    { output: "6" },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'SIZE_MB=$(mediaproc image info img.png --json | jq -r \'.file.size / 1024 / 1024\')' },
-  { command: 'echo $SIZE_MB' },
-  { output: '2.45' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "SIZE_MB=$(mediaproc image info img.png --json | jq -r '.file.size / 1024 / 1024')",
+    },
+    { command: "echo $SIZE_MB" },
+    { output: "2.45" },
+  ]}
+/>
 
 ### Parse with Node.js
 
@@ -295,7 +359,7 @@ EXIF orientation tag (1-8):
 const { execSync } = require("child_process");
 
 const info = JSON.parse(
-  execSync("mediaproc image info photo.jpg --json").toString()
+  execSync("mediaproc image info photo.jpg --json").toString(),
 );
 
 console.log(`Dimensions: ${info.format.width}×${info.format.height}`);

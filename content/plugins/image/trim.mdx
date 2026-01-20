@@ -4,20 +4,24 @@ Automatically trim/remove boring border edges from images. Perfect for removing 
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image trim <input> [options]' }
-]} />
+<Terminal commands={[{ command: "mediaproc image trim <input> [options]" }]} />
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image trim photo.jpg' },
-  { output: '✓ Trimmed borders (threshold: 10)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image trim photo.jpg" },
+    { output: "✓ Trimmed borders (threshold: 10)", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image trim image.png -t 5" />
 <InlineTerminal command="mediaproc image trim pic.jpg -t 20" />

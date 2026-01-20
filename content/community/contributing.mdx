@@ -57,39 +57,52 @@ Extend MediaProc:
 
 ### Fork and Clone
 
-<Terminal commands={[
-  { command: 'git clone https://github.com/YOUR_USERNAME/mediaproc.git' },
-  { output: '✓ Cloned repository', isSuccess: true },
-  { command: 'cd mediaproc' },
-  { command: 'git remote add upstream https://github.com/mediaproc/mediaproc.git' },
-  { output: '✓ Added upstream remote', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "git clone https://github.com/YOUR_USERNAME/mediaproc.git" },
+    { output: "✓ Cloned repository", isSuccess: true },
+    { command: "cd mediaproc" },
+    {
+      command:
+        "git remote add upstream https://github.com/mediaproc/mediaproc.git",
+    },
+    { output: "✓ Added upstream remote", isSuccess: true },
+  ]}
+/>
 
 ### Install Dependencies
 
-<Terminal commands={[
-  { command: 'npm install -g pnpm' },
-  { output: '✓ Installed pnpm globally', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "npm install -g pnpm" },
+    { output: "✓ Installed pnpm globally", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'pnpm install' },
-  { output: '✓ Installed dependencies', isSuccess: true },
-  { command: 'pnpm build' },
-  { output: '✓ Built all packages', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "pnpm install" },
+    { output: "✓ Installed dependencies", isSuccess: true },
+    { command: "pnpm build" },
+    { output: "✓ Built all packages", isSuccess: true },
+  ]}
+/>
 
 ### Create a Branch
 
-<Terminal commands={[
-  { command: 'git checkout -b feature/my-new-feature' },
-  { output: '✓ Created and switched to new branch', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "git checkout -b feature/my-new-feature" },
+    { output: "✓ Created and switched to new branch", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'git checkout -b fix/issue-123' },
-  { output: '✓ Created bugfix branch', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "git checkout -b fix/issue-123" },
+    { output: "✓ Created bugfix branch", isSuccess: true },
+  ]}
+/>
 
 ## Development Workflow
 

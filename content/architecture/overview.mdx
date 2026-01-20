@@ -101,6 +101,7 @@ Discovers, loads, and manages plugins.
 **Validation:**
 
 Each plugin must export:
+
 - `name: string` - Unique plugin identifier
 - `commands: Command[]` - Available commands
 - `register()` - Registration function
@@ -146,19 +147,19 @@ Interface for plugin development.
 interface PluginAPI {
   // Register plugin with CLI
   registerPlugin(plugin: Plugin): void;
-  
+
   // Register commands
   registerCommand(command: Command): void;
-  
+
   // Access configuration
   getConfig(key: string): any;
-  
+
   // Logging utilities
   log(message: string, level: LogLevel): void;
-  
+
   // File system helpers
   resolveInputFiles(pattern: string): string[];
-  
+
   // Progress reporting
   createProgressBar(total: number): ProgressBar;
 }
@@ -170,13 +171,13 @@ interface PluginAPI {
 interface Plugin {
   // Called when plugin is loaded
   onLoad?(): Promise<void>;
-  
+
   // Called before any command
   beforeCommand?(context: CommandContext): Promise<void>;
-  
+
   // Called after command completes
   afterCommand?(context: CommandContext): Promise<void>;
-  
+
   // Cleanup on CLI exit
   onUnload?(): Promise<void>;
 }
@@ -236,43 +237,43 @@ plugins/
 ```typescript
 // plugins/image/src/commands/resize.ts
 
-import type { Command, CommandContext } from '@mediaproc/core';
+import type { Command, CommandContext } from "@mediaproc/core";
 
 export const resizeCommand: Command = {
-  name: 'resize',
-  description: 'Resize images to specified dimensions',
-  
+  name: "resize",
+  description: "Resize images to specified dimensions",
+
   options: [
     {
-      name: 'width',
-      alias: 'w',
-      type: 'number',
-      description: 'Target width in pixels'
+      name: "width",
+      alias: "w",
+      type: "number",
+      description: "Target width in pixels",
     },
     {
-      name: 'height',
-      alias: 'h',
-      type: 'number',
-      description: 'Target height in pixels'
-    }
+      name: "height",
+      alias: "h",
+      type: "number",
+      description: "Target height in pixels",
+    },
   ],
-  
+
   async handler(context: CommandContext) {
     const { input, options, logger } = context;
-    
+
     // Validate inputs
     if (!options.width && !options.height) {
-      throw new Error('Provide at least width or height');
+      throw new Error("Provide at least width or height");
     }
-    
+
     // Process files
     for (const file of input) {
       logger.info(`Resizing: ${file}`);
       await resizeImage(file, options);
     }
-    
+
     return { success: true, processed: input.length };
-  }
+  },
 };
 ```
 
@@ -359,12 +360,12 @@ MediaProc looks for configuration in this order (later overrides earlier):
       "preset": "medium"
     }
   },
-  
+
   "output": {
     "directory": "./output",
     "overwrite": false
   },
-  
+
   "logging": {
     "level": "info",
     "format": "pretty"
@@ -384,16 +385,16 @@ Plugins can share data through the command context:
 interface CommandContext {
   // Input files
   input: string[];
-  
+
   // Parsed options
   options: Record<string, any>;
-  
+
   // Shared state (between plugins)
   state: Map<string, any>;
-  
+
   // Logger instance
   logger: Logger;
-  
+
   // Configuration
   config: Config;
 }
@@ -403,10 +404,10 @@ interface CommandContext {
 
 ```typescript
 // Plugin A registers a utility
-context.state.set('imageMetadata', extractMetadata);
+context.state.set("imageMetadata", extractMetadata);
 
 // Plugin B uses it
-const getMetadata = context.state.get('imageMetadata');
+const getMetadata = context.state.get("imageMetadata");
 const metadata = getMetadata(file);
 ```
 
@@ -422,21 +423,21 @@ Create your own plugins:
 // my-plugin/src/index.ts
 
 export const plugin = {
-  name: 'my-custom-plugin',
-  version: '1.0.0',
-  
+  name: "my-custom-plugin",
+  version: "1.0.0",
+
   commands: [
     {
-      name: 'process',
+      name: "process",
       handler: async (context) => {
         // Your custom logic
-      }
-    }
+      },
+    },
   ],
-  
+
   register(api) {
     api.registerPlugin(this);
-  }
+  },
 };
 ```
 
@@ -445,8 +446,8 @@ export const plugin = {
 Plugins can wrap any command-line tool:
 
 ```typescript
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { exec } from "child_process";
+import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
@@ -494,7 +495,7 @@ async loadPlugin(name: string): Promise<Plugin> {
   if (this.pluginCache.has(name)) {
     return this.pluginCache.get(name)!;
   }
-  
+
   const plugin = await this.discover(name);
   this.pluginCache.set(name, plugin);
   return plugin;
@@ -515,7 +516,7 @@ const safePath = path.normalize(path.resolve(userInput));
 
 // Validate against directory traversal
 if (!safePath.startsWith(projectRoot)) {
-  throw new Error('Path outside project root');
+  throw new Error("Path outside project root");
 }
 ```
 
@@ -528,7 +529,7 @@ Plugins run in isolated contexts:
 const safeAPI = {
   registerCommand,
   log,
-  getConfig: (key) => allowedConfigs[key]
+  getConfig: (key) => allowedConfigs[key],
   // No direct file system access
 };
 
@@ -544,7 +545,7 @@ All external commands use parameterized execution:
 exec(`convert ${userInput} output.jpg`);
 
 // GOOD: Parameterized
-execFile('convert', [userInput, 'output.jpg']);
+execFile("convert", [userInput, "output.jpg"]);
 ```
 
 ---
@@ -556,11 +557,11 @@ execFile('convert', [userInput, 'output.jpg']);
 Each component is independently testable:
 
 ```typescript
-describe('Plugin Manager', () => {
-  it('should load plugins', async () => {
+describe("Plugin Manager", () => {
+  it("should load plugins", async () => {
     const manager = new PluginManager();
-    const plugin = await manager.load('image');
-    expect(plugin.name).toBe('image');
+    const plugin = await manager.load("image");
+    expect(plugin.name).toBe("image");
   });
 });
 ```
@@ -570,9 +571,13 @@ describe('Plugin Manager', () => {
 Test plugin interactions:
 
 ```typescript
-it('should execute image resize command', async () => {
+it("should execute image resize command", async () => {
   const result = await cli.execute([
-    'image', 'resize', 'test.jpg', '--width', '1920'
+    "image",
+    "resize",
+    "test.jpg",
+    "--width",
+    "1920",
   ]);
   expect(result.success).toBe(true);
 });
@@ -599,10 +604,10 @@ test -f input-resized.jpg && echo "PASS" || echo "FAIL"
 Structured logging throughout:
 
 ```typescript
-logger.info('Processing file', {
-  file: 'image.jpg',
-  command: 'resize',
-  options: { width: 1920 }
+logger.info("Processing file", {
+  file: "image.jpg",
+  command: "resize",
+  options: { width: 1920 },
 });
 ```
 
@@ -611,9 +616,9 @@ logger.info('Processing file', {
 Track command usage:
 
 ```typescript
-metrics.increment('command.executed', {
-  plugin: 'image',
-  command: 'resize'
+metrics.increment("command.executed", {
+  plugin: "image",
+  command: "resize",
 });
 ```
 
@@ -625,11 +630,11 @@ Comprehensive error context:
 try {
   await processFile(file);
 } catch (error) {
-  logger.error('Processing failed', {
+  logger.error("Processing failed", {
     file,
     error: error.message,
     stack: error.stack,
-    context: { ...context }
+    context: { ...context },
   });
 }
 ```

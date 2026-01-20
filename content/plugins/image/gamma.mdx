@@ -4,21 +4,23 @@ Apply gamma correction to adjust image brightness, particularly in midtone regio
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image gamma <input> [options]' }
-]} />
+<Terminal commands={[{ command: "mediaproc image gamma <input> [options]" }]} />
 
 ### Basic Syntax
 
-<Terminal commands={[
-  { command: 'mediaproc image gamma photo.jpg' },
-  { output: '✓ Applied gamma correction (2.2)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image gamma photo.jpg" },
+    { output: "✓ Applied gamma correction (2.2)", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image gamma photo.jpg -g 1.8' },
-  { output: '✓ Image brightened (gamma 1.8)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image gamma photo.jpg -g 1.8" },
+    { output: "✓ Image brightened (gamma 1.8)", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image gamma photo.jpg -g 2.8" />
 <InlineTerminal command="mediaproc image gamma photo.jpg -g 2.2 --gamma-out 1.8" />
@@ -585,42 +587,36 @@ mediaproc image linear photo.jpg -b 30
 ## Best Practices
 
 1. **Understand Gamma Values**
-
    - Lower gamma (< 2.2) = brighten
    - Higher gamma (> 2.2) = darken
    - 2.2 is standard for web/Windows
    - Stay within 1.5-3.0 range for natural results
 
 2. **Preview Before Applying**
-
    - Use `--dry-run` to test values
    - Compare multiple gamma values
    - Check highlights and shadows
    - Verify overall appearance
 
 3. **Combine with Other Adjustments**
-
    - Gamma is one tool in workflow
    - May need contrast adjustment too
    - Consider color correction
    - Apply sharpening after gamma
 
 4. **Display Considerations**
-
    - Know target display gamma
    - Test on actual target device
    - Consider viewing environment
    - Account for ambient light
 
 5. **Quality Management**
-
    - Use high quality for final output
    - PNG for lossless corrections
    - JPEG 90+ for photography
    - Consider bit depth for gradients
 
 6. **Batch Processing**
-
    - Test on sample images first
    - Group similar exposures
    - Use consistent gamma per group

@@ -4,16 +4,16 @@ Flip images along the horizontal axis (mirror left-right), vertical axis (mirror
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image flip <input> [options]' }
-]} />
+<Terminal commands={[{ command: "mediaproc image flip <input> [options]" }]} />
 
 ### Basic Syntax
 
-<Terminal commands={[
-  { command: 'mediaproc image flip photo.jpg' },
-  { output: '✓ Flipped horizontally', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image flip photo.jpg" },
+    { output: "✓ Flipped horizontally", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image flip photo.jpg --vertical" />
 <InlineTerminal command="mediaproc image flip photo.jpg --both" />
@@ -545,37 +545,31 @@ mediaproc image rotate input.jpg -a 180 -o rotated.jpg
 ## Best Practices
 
 1. **Understand the Direction**
-
    - Horizontal = left-right mirror (flop)
    - Vertical = top-bottom mirror (flip)
    - Both = complete inversion (flip + flop)
 
 2. **Selfie Corrections**
-
    - Always use horizontal flip for front camera photos
    - Check if text/logos need to face specific direction
    - Preview before batch processing
 
 3. **Preserve Originals**
-
    - Keep unflipped originals
    - Use descriptive output names
    - Create flipped copies, don't overwrite
 
 4. **Quality Considerations**
-
    - Use quality 90-100 for important images
    - PNG for lossless flipping
    - JPEG for web-optimized output
 
 5. **Batch Operations**
-
    - Test with one image first
    - Use consistent naming convention
    - Verify results before processing thousands
 
 6. **Combine with Auto-Orient**
-
    - Use auto-orient first to fix EXIF issues
    - Then flip if needed for specific requirements
    - Ensures correct starting orientation

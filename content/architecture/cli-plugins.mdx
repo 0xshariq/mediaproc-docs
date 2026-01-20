@@ -175,29 +175,29 @@ Plugins register with the main CLI:
 ```typescript
 // plugins/image/src/register.ts
 
-import { Plugin } from '@mediaproc/core';
-import { resizeCommand } from './commands/resize';
-import { convertCommand } from './commands/convert';
+import { Plugin } from "@mediaproc/core";
+import { resizeCommand } from "./commands/resize";
+import { convertCommand } from "./commands/convert";
 
 export const plugin: Plugin = {
-  name: 'image',
-  version: '1.0.0',
-  description: 'Image processing plugin powered by Sharp',
-  
+  name: "image",
+  version: "1.0.0",
+  description: "Image processing plugin powered by Sharp",
+
   commands: [
     resizeCommand,
     convertCommand,
     // ... more commands
   ],
-  
+
   register(api) {
     api.registerPlugin(this);
-    
+
     // Register all commands
-    this.commands.forEach(cmd => {
+    this.commands.forEach((cmd) => {
       api.registerCommand(cmd);
     });
-  }
+  },
 };
 ```
 
@@ -213,23 +213,23 @@ interface Command {
   description: string;
   options: CommandOption[];
   examples?: string[];
-  
+
   handler(context: CommandContext): Promise<CommandResult>;
 }
 
 interface CommandContext {
   // Input files
   input: string[];
-  
+
   // Parsed options
   options: Record<string, any>;
-  
+
   // Plugin API access
   api: PluginAPI;
-  
+
   // Logger
   logger: Logger;
-  
+
   // Configuration
   config: Config;
 }
@@ -291,15 +291,15 @@ CLI validates inputs before processing:
 async function validateInputs(files: string[]): Promise<void> {
   for (const file of files) {
     // Check if file exists
-    if (!await fileExists(file)) {
+    if (!(await fileExists(file))) {
       throw new Error(`File not found: ${file}`);
     }
-    
+
     // Check if readable
-    if (!await isReadable(file)) {
+    if (!(await isReadable(file))) {
       throw new Error(`Cannot read file: ${file}`);
     }
-    
+
     // Check file extension
     if (!hasValidExtension(file, allowedExtensions)) {
       throw new Error(`Invalid file type: ${file}`);
@@ -353,7 +353,7 @@ Default output naming patterns:
 ```typescript
 function generateOutputName(input: string, command: string): string {
   const { name, ext } = path.parse(input);
-  
+
   // Pattern: <name>-<command><ext>
   return `${name}-${command}${ext}`;
 }
@@ -484,22 +484,18 @@ class CLIError extends Error {
   constructor(
     message: string,
     public code: number,
-    public suggestions?: string[]
+    public suggestions?: string[],
   ) {
     super(message);
   }
 }
 
 // Example usage
-throw new CLIError(
-  'File not found: photo.jpg',
-  1,
-  [
-    'Check if the file path is correct',
-    'Ensure the file exists in the current directory',
-    'Try using an absolute path'
-  ]
-);
+throw new CLIError("File not found: photo.jpg", 1, [
+  "Check if the file path is correct",
+  "Ensure the file exists in the current directory",
+  "Try using an absolute path",
+]);
 ```
 
 **Output:**
@@ -524,7 +520,7 @@ For long-running operations:
 ```typescript
 const progress = context.api.createProgressBar({
   total: files.length,
-  format: 'Processing [{bar}] {percentage}% | {value}/{total} files'
+  format: "Processing [{bar}] {percentage}% | {value}/{total} files",
 });
 
 for (const file of files) {
@@ -571,18 +567,16 @@ Process multiple files in parallel:
 async function processBatch(
   files: string[],
   handler: ProcessHandler,
-  concurrency: number = 4
+  concurrency: number = 4,
 ): Promise<Result[]> {
   const chunks = chunkArray(files, concurrency);
   const results: Result[] = [];
-  
+
   for (const chunk of chunks) {
-    const batchResults = await Promise.all(
-      chunk.map(file => handler(file))
-    );
+    const batchResults = await Promise.all(chunk.map((file) => handler(file)));
     results.push(...batchResults);
   }
-  
+
   return results;
 }
 ```
@@ -638,13 +632,13 @@ Configuration merges from multiple sources:
       "fit": "cover"
     }
   },
-  
+
   "video": {
     "codec": "h264",
     "preset": "medium",
     "bitrate": "5000k"
   },
-  
+
   "output": {
     "directory": "./output",
     "overwrite": false,
@@ -676,19 +670,19 @@ The CLI discovers plugins automatically:
 ```typescript
 async function discoverPlugins(): Promise<Plugin[]> {
   const discovered: Plugin[] = [];
-  
+
   // 1. Built-in plugins (monorepo)
-  const builtIn = await discoverBuiltInPlugins('./plugins');
+  const builtIn = await discoverBuiltInPlugins("./plugins");
   discovered.push(...builtIn);
-  
+
   // 2. Installed npm packages
-  const installed = await discoverNpmPlugins('node_modules');
+  const installed = await discoverNpmPlugins("node_modules");
   discovered.push(...installed);
-  
+
   // 3. Custom plugin directories
   const custom = await discoverCustomPlugins(config.pluginDirs);
   discovered.push(...custom);
-  
+
   return discovered;
 }
 ```
@@ -702,20 +696,20 @@ Plugins are loaded lazily:
 ```typescript
 class PluginManager {
   private cache = new Map<string, Plugin>();
-  
+
   async load(pluginName: string): Promise<Plugin> {
     // Check cache
     if (this.cache.has(pluginName)) {
       return this.cache.get(pluginName)!;
     }
-    
+
     // Dynamic import
     const module = await import(`./plugins/${pluginName}`);
     const plugin = module.plugin;
-    
+
     // Validate
     this.validate(plugin);
-    
+
     // Cache and return
     this.cache.set(pluginName, plugin);
     return plugin;
@@ -740,12 +734,12 @@ module.exports = {
       commands: {
         // Add custom command
         watermark: {
-          handler: './custom/watermark.js',
-          description: 'Add watermark to images'
-        }
-      }
-    }
-  }
+          handler: "./custom/watermark.js",
+          description: "Add watermark to images",
+        },
+      },
+    },
+  },
 };
 ```
 
@@ -820,15 +814,19 @@ Scanning 100 files...
 Test CLI commands end-to-end:
 
 ```typescript
-import { runCLI } from '@mediaproc/test-utils';
+import { runCLI } from "@mediaproc/test-utils";
 
-test('should resize image', async () => {
+test("should resize image", async () => {
   const result = await runCLI([
-    'image', 'resize', 'test.jpg', '--width', '1920'
+    "image",
+    "resize",
+    "test.jpg",
+    "--width",
+    "1920",
   ]);
-  
+
   expect(result.exitCode).toBe(0);
-  expect(result.stdout).toContain('Successfully processed');
+  expect(result.stdout).toContain("Successfully processed");
 });
 ```
 
@@ -840,16 +838,18 @@ Test plugin system:
 
 ```typescript
 const mockPlugin = {
-  name: 'test-plugin',
-  commands: [{
-    name: 'test-command',
-    handler: jest.fn().mockResolvedValue({ success: true })
-  }],
-  register: jest.fn()
+  name: "test-plugin",
+  commands: [
+    {
+      name: "test-command",
+      handler: jest.fn().mockResolvedValue({ success: true }),
+    },
+  ],
+  register: jest.fn(),
 };
 
 const cli = new CLI({ plugins: [mockPlugin] });
-await cli.execute(['test-plugin', 'test-command']);
+await cli.execute(["test-plugin", "test-command"]);
 
 expect(mockPlugin.commands[0].handler).toHaveBeenCalled();
 ```

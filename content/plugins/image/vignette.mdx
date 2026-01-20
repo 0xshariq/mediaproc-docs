@@ -4,20 +4,26 @@ Add vignette effect by darkening or lightening the edges of an image. Creates fo
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image vignette <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image vignette <input> [options]" }]}
+/>
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image vignette photo.jpg' },
-  { output: '✓ Vignette applied (strength: 50)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image vignette photo.jpg" },
+    { output: "✓ Vignette applied (strength: 50)", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image vignette portrait.jpg -s 30" />
 <InlineTerminal command="mediaproc image vignette landscape.png -s 80" />

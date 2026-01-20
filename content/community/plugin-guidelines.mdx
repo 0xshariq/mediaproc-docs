@@ -173,7 +173,7 @@ if (options.width && options.width < 1) {
 
 if (!SUPPORTED_FORMATS.includes(format)) {
   throw new Error(
-    `Unsupported format: ${format}. Supported: ${SUPPORTED_FORMATS.join(", ")}`
+    `Unsupported format: ${format}. Supported: ${SUPPORTED_FORMATS.join(", ")}`,
   );
 }
 ```
@@ -248,7 +248,7 @@ spinner.succeed(chalk.green(`✓ Processed ${files.length} files`));
 console.log(chalk.green("✓ Resized image from 1920x1080 to 800x600"));
 console.log(chalk.blue("ℹ Using quality: 90"));
 console.log(
-  chalk.yellow("⚠ Output file already exists, use --overwrite to replace")
+  chalk.yellow("⚠ Output file already exists, use --overwrite to replace"),
 );
 
 // Avoid
@@ -350,7 +350,7 @@ pluginCmd
   .example("resize image.jpg -w 800", "Resize to 800px width")
   .example(
     "resize image.jpg -w 800 -h 600 --fit contain",
-    "Resize with contain fit"
+    "Resize with contain fit",
   );
 ```
 
@@ -367,7 +367,7 @@ pluginCmd
  */
 export async function resize(
   input: string,
-  options: ResizeOptions
+  options: ResizeOptions,
 ): Promise<string> {
   // Implementation
 }
@@ -403,7 +403,7 @@ describe("validateInput", () => {
 
   it("should reject invalid quality", () => {
     expect(() => validateInput("image.jpg", { quality: 101 })).toThrow(
-      "Quality must be between 1 and 100"
+      "Quality must be between 1 and 100",
     );
   });
 });

@@ -4,9 +4,9 @@ Convert color images to grayscale (black and white), removing all color informat
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image grayscale <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image grayscale <input> [options]" }]}
+/>
 
 Alternative spelling (UK):
 
@@ -14,10 +14,12 @@ Alternative spelling (UK):
 
 ### Basic Syntax
 
-<Terminal commands={[
-  { command: 'mediaproc image grayscale photo.jpg' },
-  { output: '✓ Converted to grayscale', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image grayscale photo.jpg" },
+    { output: "✓ Converted to grayscale", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image grayscale photo.jpg -o blackandwhite.jpg" />
 <InlineTerminal command="mediaproc image greyscale photo.jpg" />
@@ -35,21 +37,25 @@ Alternative spelling (UK):
 
 ### 1. Basic Grayscale Conversion
 
-<Terminal commands={[
-  { command: 'mediaproc image grayscale photo.jpg' },
-  { output: '✓ Converted to grayscale', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image grayscale photo.jpg" },
+    { output: "✓ Converted to grayscale", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image grayscale color-photo.jpg -o bw-photo.jpg" />
 <InlineTerminal command="mediaproc image greyscale portrait.jpg" />
 
 ### 2. High Quality Conversion
 
-<Terminal commands={[
-  { command: 'mediaproc image grayscale photo.jpg -q 100 -o print-bw.jpg' },
-  { command: 'mediaproc image grayscale photo.jpg -q 85 -o web-bw.jpg' },
-  { command: 'mediaproc image grayscale photo.jpg -q 75 -o small-bw.jpg' }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image grayscale photo.jpg -q 100 -o print-bw.jpg" },
+    { command: "mediaproc image grayscale photo.jpg -q 85 -o web-bw.jpg" },
+    { command: "mediaproc image grayscale photo.jpg -q 75 -o small-bw.jpg" },
+  ]}
+/>
 
 ### 3. Portrait Photography
 
@@ -518,42 +524,36 @@ mediaproc image greyscale photo.jpg  # UK spelling
 ## Best Practices
 
 1. **Choose Appropriate Quality**
-
    - Print: Use quality 95-100
    - Web: Use quality 80-90
    - Thumbnails: Use quality 70-80
    - Archives: Use quality 100 with PNG
 
 2. **Consider Output Format**
-
    - JPEG: Best for photographs
    - PNG: Best for graphics/text
    - WebP: Best compression for web
    - TIFF: Best for archival
 
 3. **Preserve Originals**
-
    - Keep color originals
    - Create grayscale copies
    - Use descriptive file names
    - Organize in separate folders
 
 4. **Batch Processing Efficiency**
-
    - Process similar images together
    - Use consistent quality settings
    - Create organized output structure
    - Test with one image first
 
 5. **File Size Management**
-
    - Lower quality for smaller files
    - Use efficient formats (WebP)
    - Balance quality vs size
    - Consider use case requirements
 
 6. **Creative Workflow**
-
    - Convert to grayscale early
    - Easier to see composition
    - Adjust contrast after conversion

@@ -4,25 +4,40 @@ Add watermarks to images for copyright protection, branding, or attribution. Sup
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image watermark <input> <watermark> [options]' }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image watermark <input> <watermark> [options]" },
+  ]}
+/>
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image watermark photo.jpg logo.png' },
-  { output: '✓ Watermark applied (bottom-right, 50% opacity)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image watermark photo.jpg logo.png" },
+    {
+      output: "✓ Watermark applied (bottom-right, 50% opacity)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image watermark image.jpg mark.png --position center' },
-  { output: '✓ Centered watermark applied', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc image watermark image.jpg mark.png --position center",
+    },
+    { output: "✓ Centered watermark applied", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image watermark pic.jpg logo.png --opacity 0.3" />
 <InlineTerminal command="mediaproc image watermark photo.jpg brand.png --scale 0.3 --position top-right" />

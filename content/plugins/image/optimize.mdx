@@ -4,28 +4,49 @@ Optimize image file size with minimal quality loss. Perfect for web optimization
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc image optimize <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc image optimize <input> [options]" }]}
+/>
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image optimize photo.jpg' },
-  { output: '✓ Optimized • 2.4 MB → 1.8 MB (25% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image optimize photo.jpg" },
+    {
+      output: "✓ Optimized • 2.4 MB → 1.8 MB (25% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image optimize image.png -q 90' },
-  { output: '✓ Optimized • 845 KB → 712 KB (16% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image optimize image.png -q 90" },
+    {
+      output: "✓ Optimized • 845 KB → 712 KB (16% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image optimize pic.jpg --aggressive' },
-  { output: '✓ Optimized • 3.2 MB → 1.1 MB (66% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image optimize pic.jpg --aggressive" },
+    {
+      output: "✓ Optimized • 3.2 MB → 1.1 MB (66% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image optimize photo.webp -q 80" />
 
@@ -71,13 +92,15 @@ When `--aggressive` flag is used:
 
 ### JPEG Optimization
 
-<Terminal commands={[
-  { command: 'mediaproc image optimize photo.jpg -q 85' },
-  { output: '✓ Progressive JPEG enabled', isSuccess: true },
-  { output: '✓ MozJPEG compression applied', isSuccess: true },
-  { output: '✓ Metadata stripped', isSuccess: true },
-  { output: '✓ Optimized: 2.4 MB → 1.6 MB (33% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image optimize photo.jpg -q 85" },
+    { output: "✓ Progressive JPEG enabled", isSuccess: true },
+    { output: "✓ MozJPEG compression applied", isSuccess: true },
+    { output: "✓ Metadata stripped", isSuccess: true },
+    { output: "✓ Optimized: 2.4 MB → 1.6 MB (33% reduction)", isSuccess: true },
+  ]}
+/>
 
 **Techniques Applied:**
 

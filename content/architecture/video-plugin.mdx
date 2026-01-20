@@ -99,56 +99,56 @@ Input → Demuxer → Decoder → Filter Graph → Encoder → Muxer → Output
 All video commands follow this pattern:
 
 ```typescript
-import type { Command, CommandContext } from '@mediaproc/core';
-import { execFFmpeg } from '../utils/ffmpeg-helpers';
+import type { Command, CommandContext } from "@mediaproc/core";
+import { execFFmpeg } from "../utils/ffmpeg-helpers";
 
 export const transcodeCommand: Command = {
-  name: 'transcode',
-  description: 'Convert video format and codec',
-  
+  name: "transcode",
+  description: "Convert video format and codec",
+
   options: [
     {
-      name: 'codec',
-      alias: 'c',
-      type: 'string',
-      choices: ['h264', 'h265', 'vp9', 'av1'],
-      default: 'h264',
-      description: 'Video codec'
+      name: "codec",
+      alias: "c",
+      type: "string",
+      choices: ["h264", "h265", "vp9", "av1"],
+      default: "h264",
+      description: "Video codec",
     },
     {
-      name: 'preset',
-      alias: 'p',
-      type: 'string',
-      choices: ['ultrafast', 'fast', 'medium', 'slow', 'veryslow'],
-      default: 'medium',
-      description: 'Encoding preset'
+      name: "preset",
+      alias: "p",
+      type: "string",
+      choices: ["ultrafast", "fast", "medium", "slow", "veryslow"],
+      default: "medium",
+      description: "Encoding preset",
     },
     {
-      name: 'crf',
-      type: 'number',
+      name: "crf",
+      type: "number",
       default: 23,
-      description: 'Constant Rate Factor (quality)'
-    }
+      description: "Constant Rate Factor (quality)",
+    },
   ],
-  
+
   async handler(context: CommandContext) {
     const { input, options, logger } = context;
-    
+
     // Validate options
     validateTranscodeOptions(options);
-    
+
     // Process each input file
     const results = await Promise.all(
-      input.map(file => transcodeVideo(file, options, logger))
+      input.map((file) => transcodeVideo(file, options, logger)),
     );
-    
+
     // Return summary
     return {
       success: true,
-      processed: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length
+      processed: results.filter((r) => r.success).length,
+      failed: results.filter((r) => !r.success).length,
     };
-  }
+  },
 };
 ```
 
@@ -162,29 +162,29 @@ Build FFmpeg commands programmatically:
 function buildFFmpegCommand(
   input: string,
   output: string,
-  options: TranscodeOptions
+  options: TranscodeOptions,
 ): string[] {
   const args: string[] = [];
-  
+
   // Input
-  args.push('-i', input);
-  
+  args.push("-i", input);
+
   // Video codec
-  args.push('-c:v', getVideoCodec(options.codec));
-  
+  args.push("-c:v", getVideoCodec(options.codec));
+
   // Encoding preset
-  args.push('-preset', options.preset);
-  
+  args.push("-preset", options.preset);
+
   // Quality (CRF)
-  args.push('-crf', String(options.crf));
-  
+  args.push("-crf", String(options.crf));
+
   // Audio codec
-  args.push('-c:a', 'aac');
-  args.push('-b:a', '128k');
-  
+  args.push("-c:a", "aac");
+  args.push("-b:a", "128k");
+
   // Output
   args.push(output);
-  
+
   return args;
 }
 ```
@@ -196,22 +196,22 @@ function buildFFmpegCommand(
 Execute FFmpeg with progress tracking:
 
 ```typescript
-import { spawn } from 'child_process';
+import { spawn } from "child_process";
 
 async function execFFmpeg(
   args: string[],
-  onProgress?: (progress: Progress) => void
+  onProgress?: (progress: Progress) => void,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const ffmpeg = spawn('ffmpeg', args, {
-      stdio: ['ignore', 'pipe', 'pipe']
+    const ffmpeg = spawn("ffmpeg", args, {
+      stdio: ["ignore", "pipe", "pipe"],
     });
-    
-    let stderr = '';
-    
-    ffmpeg.stderr.on('data', (data) => {
+
+    let stderr = "";
+
+    ffmpeg.stderr.on("data", (data) => {
       stderr += data.toString();
-      
+
       // Parse progress
       if (onProgress) {
         const progress = parseFFmpegProgress(stderr);
@@ -220,16 +220,16 @@ async function execFFmpeg(
         }
       }
     });
-    
-    ffmpeg.on('close', (code) => {
+
+    ffmpeg.on("close", (code) => {
       if (code === 0) {
         resolve();
       } else {
         reject(new Error(`FFmpeg failed with code ${code}`));
       }
     });
-    
-    ffmpeg.on('error', reject);
+
+    ffmpeg.on("error", reject);
   });
 }
 ```
@@ -242,13 +242,13 @@ async function execFFmpeg(
 
 Supported video codecs and their characteristics:
 
-| Codec | Container | Quality | Speed | Size | Hardware Accel |
-|-------|-----------|---------|-------|------|----------------|
-| H.264 | MP4, MKV  | Good    | Fast  | Medium | ✅ Wide        |
-| H.265 | MP4, MKV  | Excellent| Slow | Small | ✅ Modern      |
-| VP9   | WebM      | Excellent| Very Slow | Small | ❌ Limited  |
-| AV1   | MP4, WebM | Best    | Slowest | Smallest | ⚠️ Emerging |
-| ProRes| MOV       | Excellent| Fast | Large | ✅ Apple       |
+| Codec  | Container | Quality   | Speed     | Size     | Hardware Accel |
+| ------ | --------- | --------- | --------- | -------- | -------------- |
+| H.264  | MP4, MKV  | Good      | Fast      | Medium   | ✅ Wide        |
+| H.265  | MP4, MKV  | Excellent | Slow      | Small    | ✅ Modern      |
+| VP9    | WebM      | Excellent | Very Slow | Small    | ❌ Limited     |
+| AV1    | MP4, WebM | Best      | Slowest   | Smallest | ⚠️ Emerging    |
+| ProRes | MOV       | Excellent | Fast      | Large    | ✅ Apple       |
 
 ---
 
@@ -259,15 +259,15 @@ Choose codec based on use case:
 ```typescript
 function selectCodec(purpose: string): string {
   const codecMap: Record<string, string> = {
-    'web': 'h264',           // Universal web support
-    'streaming': 'h264',      // Best compatibility
-    'archival': 'h265',       // Small size, high quality
-    'editing': 'prores',      // Fast decode, high quality
-    'youtube': 'h264',        // Platform recommendation
-    'modern-web': 'vp9'       // Better compression
+    web: "h264", // Universal web support
+    streaming: "h264", // Best compatibility
+    archival: "h265", // Small size, high quality
+    editing: "prores", // Fast decode, high quality
+    youtube: "h264", // Platform recommendation
+    "modern-web": "vp9", // Better compression
   };
-  
-  return codecMap[purpose] || 'h264';
+
+  return codecMap[purpose] || "h264";
 }
 ```
 
@@ -292,39 +292,39 @@ ultrafast ←→ veryslow
 ```typescript
 const presetInfo = {
   ultrafast: {
-    speed: '10x realtime',
-    size: '100% (baseline)',
-    quality: 'Acceptable',
-    use: 'Live streaming, screen recording'
+    speed: "10x realtime",
+    size: "100% (baseline)",
+    quality: "Acceptable",
+    use: "Live streaming, screen recording",
   },
-  
+
   fast: {
-    speed: '5x realtime',
-    size: '90%',
-    quality: 'Good',
-    use: 'Quick encoding, previews'
+    speed: "5x realtime",
+    size: "90%",
+    quality: "Good",
+    use: "Quick encoding, previews",
   },
-  
+
   medium: {
-    speed: '2x realtime',
-    size: '80%',
-    quality: 'Very good',
-    use: 'General purpose (default)'
+    speed: "2x realtime",
+    size: "80%",
+    quality: "Very good",
+    use: "General purpose (default)",
   },
-  
+
   slow: {
-    speed: '1x realtime',
-    size: '70%',
-    quality: 'Excellent',
-    use: 'Final exports, archival'
+    speed: "1x realtime",
+    size: "70%",
+    quality: "Excellent",
+    use: "Final exports, archival",
   },
-  
+
   veryslow: {
-    speed: '0.5x realtime',
-    size: '65%',
-    quality: 'Best',
-    use: 'Maximum quality, small size'
-  }
+    speed: "0.5x realtime",
+    size: "65%",
+    quality: "Best",
+    use: "Maximum quality, small size",
+  },
 };
 ```
 
@@ -349,25 +349,25 @@ CRF Value    Quality          Use Case
 
 ```typescript
 const crfRecommendations = {
-  'h264': {
+  h264: {
     lossless: 0,
     excellent: 18,
     good: 23,
-    acceptable: 28
+    acceptable: 28,
   },
-  
-  'h265': {
+
+  h265: {
     lossless: 0,
     excellent: 20,
     good: 25,
-    acceptable: 30
+    acceptable: 30,
   },
-  
-  'vp9': {
+
+  vp9: {
     excellent: 15,
     good: 24,
-    acceptable: 31
-  }
+    acceptable: 31,
+  },
 };
 ```
 
@@ -381,43 +381,43 @@ Apply video transformations using filter graphs:
 
 ```typescript
 interface FilterOptions {
-  scale?: string;        // e.g., '1920:1080'
-  crop?: string;         // e.g., '640:480:0:0'
-  fps?: number;          // Frame rate
-  vflip?: boolean;       // Vertical flip
-  hflip?: boolean;       // Horizontal flip
-  rotate?: number;       // Rotation angle
-  watermark?: string;    // Overlay image
+  scale?: string; // e.g., '1920:1080'
+  crop?: string; // e.g., '640:480:0:0'
+  fps?: number; // Frame rate
+  vflip?: boolean; // Vertical flip
+  hflip?: boolean; // Horizontal flip
+  rotate?: number; // Rotation angle
+  watermark?: string; // Overlay image
 }
 
 function buildFilterGraph(options: FilterOptions): string {
   const filters: string[] = [];
-  
+
   if (options.scale) {
     filters.push(`scale=${options.scale}`);
   }
-  
+
   if (options.crop) {
     filters.push(`crop=${options.crop}`);
   }
-  
+
   if (options.fps) {
     filters.push(`fps=${options.fps}`);
   }
-  
+
   if (options.vflip) {
-    filters.push('vflip');
+    filters.push("vflip");
   }
-  
+
   if (options.hflip) {
-    filters.push('hflip');
+    filters.push("hflip");
   }
-  
+
   if (options.rotate) {
-    filters.push(`rotate=${options.rotate * Math.PI / 180}`);
+    filters.push(`rotate=${(options.rotate * Math.PI) / 180}`);
   }
-  
-  return filters.join(',');
+
+  return filters.join(",");
 }
 ```
 
@@ -442,10 +442,13 @@ const filterComplex = `
 `;
 
 const args = [
-  '-i', 'main.mp4',
-  '-i', 'overlay.mp4',
-  '-filter_complex', filterComplex,
-  'output.mp4'
+  "-i",
+  "main.mp4",
+  "-i",
+  "overlay.mp4",
+  "-filter_complex",
+  filterComplex,
+  "output.mp4",
 ];
 ```
 
@@ -458,24 +461,26 @@ const args = [
 Extract video metadata using ffprobe:
 
 ```typescript
-import { execFile } from 'child_process';
-import { promisify } from 'util';
+import { execFile } from "child_process";
+import { promisify } from "util";
 
 const execFileAsync = promisify(execFile);
 
 async function getVideoMetadata(file: string): Promise<VideoMetadata> {
-  const { stdout } = await execFileAsync('ffprobe', [
-    '-v', 'quiet',
-    '-print_format', 'json',
-    '-show_format',
-    '-show_streams',
-    file
+  const { stdout } = await execFileAsync("ffprobe", [
+    "-v",
+    "quiet",
+    "-print_format",
+    "json",
+    "-show_format",
+    "-show_streams",
+    file,
   ]);
-  
+
   const probe = JSON.parse(stdout);
-  const videoStream = probe.streams.find(s => s.codec_type === 'video');
-  const audioStream = probe.streams.find(s => s.codec_type === 'audio');
-  
+  const videoStream = probe.streams.find((s) => s.codec_type === "video");
+  const audioStream = probe.streams.find((s) => s.codec_type === "audio");
+
   return {
     // Video
     width: videoStream.width,
@@ -484,15 +489,15 @@ async function getVideoMetadata(file: string): Promise<VideoMetadata> {
     fps: eval(videoStream.r_frame_rate), // e.g., "30/1" → 30
     bitrate: parseInt(videoStream.bit_rate),
     duration: parseFloat(probe.format.duration),
-    
+
     // Audio
     audioCodec: audioStream?.codec_name,
     sampleRate: parseInt(audioStream?.sample_rate),
     channels: audioStream?.channels,
-    
+
     // File
     format: probe.format.format_name,
-    size: parseInt(probe.format.size)
+    size: parseInt(probe.format.size),
   };
 }
 ```
@@ -505,10 +510,13 @@ Copy metadata to output:
 
 ```typescript
 const args = [
-  '-i', input,
-  '-map_metadata', '0',  // Copy all metadata
-  '-c', 'copy',          // Stream copy (no re-encode)
-  output
+  "-i",
+  input,
+  "-map_metadata",
+  "0", // Copy all metadata
+  "-c",
+  "copy", // Stream copy (no re-encode)
+  output,
 ];
 ```
 
@@ -523,22 +531,25 @@ Use GPU encoding when available:
 ```typescript
 function getHardwareEncoder(codec: string, platform: string): string {
   const hwEncoders = {
-    'darwin': {  // macOS
-      'h264': 'h264_videotoolbox',
-      'h265': 'hevc_videotoolbox'
+    darwin: {
+      // macOS
+      h264: "h264_videotoolbox",
+      h265: "hevc_videotoolbox",
     },
-    'linux': {   // Linux
-      'h264': 'h264_nvenc',     // NVIDIA
-      'h265': 'hevc_nvenc',
-      'h264_vaapi': 'h264_vaapi' // Intel/AMD
+    linux: {
+      // Linux
+      h264: "h264_nvenc", // NVIDIA
+      h265: "hevc_nvenc",
+      h264_vaapi: "h264_vaapi", // Intel/AMD
     },
-    'win32': {   // Windows
-      'h264': 'h264_nvenc',
-      'h265': 'hevc_nvenc',
-      'h264_qsv': 'h264_qsv'    // Intel QuickSync
-    }
+    win32: {
+      // Windows
+      h264: "h264_nvenc",
+      h265: "hevc_nvenc",
+      h264_qsv: "h264_qsv", // Intel QuickSync
+    },
   };
-  
+
   return hwEncoders[platform]?.[codec] || codec;
 }
 ```
@@ -560,25 +571,34 @@ For optimal quality/size ratio:
 async function twoPassEncode(
   input: string,
   output: string,
-  options: EncodeOptions
+  options: EncodeOptions,
 ): Promise<void> {
   // Pass 1: Analyze video
   await execFFmpeg([
-    '-i', input,
-    '-c:v', options.codec,
-    '-b:v', options.bitrate,
-    '-pass', '1',
-    '-f', 'null',
-    '/dev/null'
+    "-i",
+    input,
+    "-c:v",
+    options.codec,
+    "-b:v",
+    options.bitrate,
+    "-pass",
+    "1",
+    "-f",
+    "null",
+    "/dev/null",
   ]);
-  
+
   // Pass 2: Encode with analysis
   await execFFmpeg([
-    '-i', input,
-    '-c:v', options.codec,
-    '-b:v', options.bitrate,
-    '-pass', '2',
-    output
+    "-i",
+    input,
+    "-c:v",
+    options.codec,
+    "-b:v",
+    options.bitrate,
+    "-pass",
+    "2",
+    output,
   ]);
 }
 ```
@@ -593,21 +613,21 @@ Process segments in parallel:
 async function parallelEncode(
   input: string,
   output: string,
-  options: EncodeOptions
+  options: EncodeOptions,
 ): Promise<void> {
   // 1. Get duration
   const metadata = await getVideoMetadata(input);
   const segmentDuration = 60; // 60 seconds per segment
   const numSegments = Math.ceil(metadata.duration / segmentDuration);
-  
+
   // 2. Encode segments in parallel
   const segments = await Promise.all(
     Array.from({ length: numSegments }, (_, i) => {
       const start = i * segmentDuration;
       return encodeSegment(input, start, segmentDuration, options);
-    })
+    }),
   );
-  
+
   // 3. Concatenate segments
   await concatenateSegments(segments, output);
 }
@@ -628,17 +648,17 @@ function parseFFmpegError(stderr: string): string {
     /Error .* (.*)/,
     /Invalid .* (.*)/,
     /(.*): No such file or directory/,
-    /Unsupported codec (.*)/
+    /Unsupported codec (.*)/,
   ];
-  
+
   for (const pattern of errorPatterns) {
     const match = stderr.match(pattern);
     if (match) {
       return match[1];
     }
   }
-  
-  return 'Unknown FFmpeg error';
+
+  return "Unknown FFmpeg error";
 }
 ```
 
@@ -652,15 +672,14 @@ Validate video files before processing:
 async function validateVideo(file: string): Promise<void> {
   try {
     const metadata = await getVideoMetadata(file);
-    
+
     if (!metadata.width || !metadata.height) {
-      throw new Error('Invalid video file');
+      throw new Error("Invalid video file");
     }
-    
+
     if (metadata.duration === 0) {
-      throw new Error('Video has zero duration');
+      throw new Error("Video has zero duration");
     }
-    
   } catch (error) {
     throw new Error(`Validation failed: ${error.message}`);
   }
@@ -689,21 +708,19 @@ function parseFFmpegProgress(stderr: string): Progress | null {
   const fpsMatch = stderr.match(/fps=\s*([\d.]+)/);
   const timeMatch = stderr.match(/time=(\d+):(\d+):(\d+\.\d+)/);
   const speedMatch = stderr.match(/speed=\s*([\d.]+)x/);
-  
+
   if (!timeMatch) return null;
-  
+
   const [, hours, minutes, seconds] = timeMatch;
-  const currentTime = 
-    parseInt(hours) * 3600 +
-    parseInt(minutes) * 60 +
-    parseFloat(seconds);
-  
+  const currentTime =
+    parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseFloat(seconds);
+
   return {
     frame: frameMatch ? parseInt(frameMatch[1]) : 0,
     fps: fpsMatch ? parseFloat(fpsMatch[1]) : 0,
     time: currentTime,
-    speed: speedMatch ? speedMatch[1] : '0',
-    percentage: (currentTime / totalDuration) * 100
+    speed: speedMatch ? speedMatch[1] : "0",
+    percentage: (currentTime / totalDuration) * 100,
   };
 }
 ```
@@ -718,21 +735,21 @@ Display progress to user:
 async function transcodeWithProgress(
   input: string,
   output: string,
-  options: any
+  options: any,
 ): Promise<void> {
   const metadata = await getVideoMetadata(input);
   const progressBar = createProgressBar(metadata.duration);
-  
+
   await execFFmpeg(args, (progress) => {
     progressBar.update(progress.time);
-    
+
     console.log(
       `Frame: ${progress.frame} | ` +
-      `FPS: ${progress.fps} | ` +
-      `Speed: ${progress.speed}x`
+        `FPS: ${progress.fps} | ` +
+        `Speed: ${progress.speed}x`,
     );
   });
-  
+
   progressBar.stop();
 }
 ```
@@ -746,18 +763,18 @@ async function transcodeWithProgress(
 Test command logic:
 
 ```typescript
-describe('Transcode Command', () => {
-  it('should build correct FFmpeg command', () => {
-    const args = buildFFmpegCommand('input.mp4', 'output.mp4', {
-      codec: 'h264',
-      preset: 'medium',
-      crf: 23
+describe("Transcode Command", () => {
+  it("should build correct FFmpeg command", () => {
+    const args = buildFFmpegCommand("input.mp4", "output.mp4", {
+      codec: "h264",
+      preset: "medium",
+      crf: 23,
     });
-    
-    expect(args).toContain('-c:v');
-    expect(args).toContain('libx264');
-    expect(args).toContain('-preset');
-    expect(args).toContain('medium');
+
+    expect(args).toContain("-c:v");
+    expect(args).toContain("libx264");
+    expect(args).toContain("-preset");
+    expect(args).toContain("medium");
   });
 });
 ```
@@ -769,16 +786,16 @@ describe('Transcode Command', () => {
 Test with actual videos:
 
 ```typescript
-describe('Video Processing', () => {
-  it('should transcode video', async () => {
-    await transcodeVideo('test.mp4', {
-      codec: 'h264',
-      preset: 'fast',
-      crf: 23
+describe("Video Processing", () => {
+  it("should transcode video", async () => {
+    await transcodeVideo("test.mp4", {
+      codec: "h264",
+      preset: "fast",
+      crf: 23,
     });
-    
-    const metadata = await getVideoMetadata('test-transcoded.mp4');
-    expect(metadata.codec).toBe('h264');
+
+    const metadata = await getVideoMetadata("test-transcoded.mp4");
+    expect(metadata.codec).toBe("h264");
   });
 });
 ```

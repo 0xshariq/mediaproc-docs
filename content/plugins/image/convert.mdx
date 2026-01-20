@@ -4,7 +4,11 @@ Convert images between different formats with quality and compression control.
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc image convert <input> -f <format> [options]' }]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image convert <input> -f <format> [options]" },
+  ]}
+/>
 
 ## Description
 
@@ -43,20 +47,26 @@ WebP and AVIF formats offer 25-50% better compression than JPEG while maintainin
 
 Convert between formats:
 
-<Terminal commands={[
-  { command: 'mediaproc image convert photo.jpg' },
-  { output: '✓ Converted to WebP • 2.4 MB → 1.1 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image convert photo.jpg" },
+    { output: "✓ Converted to WebP • 2.4 MB → 1.1 MB", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image convert image.png -f avif -o image.avif' },
-  { output: '✓ Converted to AVIF • 892 KB → 312 KB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image convert image.png -f avif -o image.avif" },
+    { output: "✓ Converted to AVIF • 892 KB → 312 KB", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image convert modern.webp -f jpg -o legacy.jpg' },
-  { output: '✓ Converted to JPEG', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image convert modern.webp -f jpg -o legacy.jpg" },
+    { output: "✓ Converted to JPEG", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image convert photo.jpg -f png -o photo.png" />
 
@@ -68,20 +78,33 @@ Convert between formats:
 
 Adjust output quality:
 
-<Terminal commands={[
-  { command: 'mediaproc image convert photo.jpg -f webp -q 95 -o high_quality.webp' },
-  { output: '✓ Converted • Quality: 95 • Size: 2.8 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image convert photo.jpg -f webp -q 95 -o high_quality.webp",
+    },
+    { output: "✓ Converted • Quality: 95 • Size: 2.8 MB", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image convert image.png -f jpg -q 90 -o standard.jpg' },
-  { output: '✓ Converted • Quality: 90 • Size: 1.2 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc image convert image.png -f jpg -q 90 -o standard.jpg",
+    },
+    { output: "✓ Converted • Quality: 90 • Size: 1.2 MB", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image convert photo.jpg -f avif -q 80 -o medium.avif' },
-  { output: '✓ Converted • Quality: 80 • Size: 420 KB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc image convert photo.jpg -f avif -q 80 -o medium.avif",
+    },
+    { output: "✓ Converted • Quality: 80 • Size: 420 KB", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image convert image.jpg -f webp -q 70 -o compressed.webp" />
 
@@ -487,35 +510,30 @@ mediaproc image convert frame.png -f gif -o animation.gif
 ## Best Practices
 
 1. **Choose the Right Format**:
-
    - Photos → WebP or AVIF for web, JPG for legacy
    - Graphics/logos → PNG or WebP
    - Transparency needed → PNG or WebP
    - Print → TIFF or high-quality JPG
 
 2. **Quality Selection**:
-
    - Start with quality 85 and adjust
    - Use higher quality (90-95) for important images
    - Use lower quality (70-80) for thumbnails
    - Test visually to find acceptable quality level
 
 3. **Web Optimization Strategy**:
-
    - Primary: WebP or AVIF
    - Fallback: JPG or PNG
    - Use `<picture>` element for format support detection
    - Serve format based on browser capabilities
 
 4. **Batch Processing**:
-
    - Convert similar images with same parameters
    - Test on sample images first
    - Preserve originals in separate folder
    - Use consistent naming convention
 
 5. **Progressive Images**:
-
    - Use for images over 100KB
    - Better perceived performance
    - Especially important for hero images

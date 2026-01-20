@@ -4,9 +4,14 @@ Overlay/composite one image on top of another with precise positioning and blend
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image composite <input> --overlay <overlay> [options]' }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image composite <input> --overlay <overlay> [options]",
+    },
+  ]}
+/>
 
 ## Description
 
@@ -493,40 +498,34 @@ southwest    south    southeast
 ## Best Practices
 
 1. **Watermarking**:
-
    - Use PNG overlays with transparency
    - Position in corners (southeast common)
    - Use 0.3-0.7 opacity for subtlety
    - Consider --tile with low opacity for full protection
 
 2. **Blend Mode Selection**:
-
    - Start with `over` for standard overlays
    - Use `multiply` for textures and darkening
    - Use `screen` for glows and lightening
    - `overlay` for balanced blending
 
 3. **Opacity Guidelines**:
-
    - 0.1-0.3: Very subtle, background effects
    - 0.3-0.5: Watermarks, subtle overlays
    - 0.5-0.7: Visible but not dominant
    - 0.7-1.0: Strong, prominent overlays
 
 4. **Performance**:
-
    - Overlay image is loaded once for batch processing
    - Use appropriate overlay sizes (don't use massive files)
    - PNG format best for transparency preservation
 
 5. **Quality Preservation**:
-
    - Use high-quality overlay images
    - Match overlay and base image quality levels
    - Save in appropriate format (PNG for transparency)
 
 6. **Positioning**:
-
    - Use gravity for dynamic positioning
    - Use --left/--top for precise pixel placement
    - Consider different screen sizes for web watermarks

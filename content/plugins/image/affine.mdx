@@ -4,9 +4,9 @@ Apply affine transformation matrix for custom scaling, rotation, shearing, and r
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image affine <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image affine <input> [options]" }]}
+/>
 
 ## Description
 
@@ -14,16 +14,16 @@ The `affine` command applies a 2x2 or 2x3 affine transformation matrix to an ima
 
 ## Options
 
-| Option           | Type   | Default                | Description                                                   |
-| ---------------- | ------ | ---------------------- | -----------------------------------
--------------------------- |
-| `-o, --output`   | path   | `<input>-affine.<ext>` | Output file path                                              |
-| `--matrix`       | string | `[1,0,0,1]`            | Affine matrix as JSON array: [a,b,c,d] or [a,b,c,d,e,f]       |
-| `--background`   | color  | `transparent`          | Background color for empty areas (hex, rgb, or name)          |
-| `--interpolator` | string | `bilinear`             | Interpolation: nearest, bilinear, bicubic, nohalo, lbb, vsqbs |
-| `-q, --quality`  | number | 90                     | Output quality (1-100)                                        |
-| `--dry-run`      | flag   | -                      | Preview changes without executing                             |
-| `-v, --verbose`  | flag   | -                      | Show detailed output                                          |
+| Option                     | Type   | Default                | Description                                                   |
+| -------------------------- | ------ | ---------------------- | ------------------------------------------------------------- |
+| -------------------------- |
+| `-o, --output`             | path   | `<input>-affine.<ext>` | Output file path                                              |
+| `--matrix`                 | string | `[1,0,0,1]`            | Affine matrix as JSON array: [a,b,c,d] or [a,b,c,d,e,f]       |
+| `--background`             | color  | `transparent`          | Background color for empty areas (hex, rgb, or name)          |
+| `--interpolator`           | string | `bilinear`             | Interpolation: nearest, bilinear, bicubic, nohalo, lbb, vsqbs |
+| `-q, --quality`            | number | 90                     | Output quality (1-100)                                        |
+| `--dry-run`                | flag   | -                      | Preview changes without executing                             |
+| `-v, --verbose`            | flag   | -                      | Show detailed output                                          |
 
 ## Matrix Format
 

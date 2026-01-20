@@ -64,12 +64,12 @@ npm install sharp
 **Basic Usage:**
 
 ```typescript
-import sharp from 'sharp';
+import sharp from "sharp";
 
-await sharp('input.jpg')
+await sharp("input.jpg")
   .resize(1920, 1080)
   .webp({ quality: 85 })
-  .toFile('output.webp');
+  .toFile("output.webp");
 ```
 
 ---
@@ -97,60 +97,60 @@ Sharp is built on libvips, a C library:
 All image commands follow this pattern:
 
 ```typescript
-import type { Command, CommandContext } from '@mediaproc/core';
-import sharp from 'sharp';
+import type { Command, CommandContext } from "@mediaproc/core";
+import sharp from "sharp";
 
 export const resizeCommand: Command = {
-  name: 'resize',
-  description: 'Resize images to specified dimensions',
-  
+  name: "resize",
+  description: "Resize images to specified dimensions",
+
   options: [
     {
-      name: 'width',
-      alias: 'w',
-      type: 'number',
-      description: 'Target width in pixels'
+      name: "width",
+      alias: "w",
+      type: "number",
+      description: "Target width in pixels",
     },
     {
-      name: 'height',
-      alias: 'h',
-      type: 'number',
-      description: 'Target height in pixels'
+      name: "height",
+      alias: "h",
+      type: "number",
+      description: "Target height in pixels",
     },
     {
-      name: 'fit',
-      type: 'string',
-      choices: ['cover', 'contain', 'fill', 'inside', 'outside'],
-      default: 'cover',
-      description: 'How to fit the image'
+      name: "fit",
+      type: "string",
+      choices: ["cover", "contain", "fill", "inside", "outside"],
+      default: "cover",
+      description: "How to fit the image",
     },
     {
-      name: 'format',
-      alias: 'f',
-      type: 'string',
-      choices: ['jpg', 'png', 'webp', 'avif', 'tiff'],
-      description: 'Output format'
-    }
+      name: "format",
+      alias: "f",
+      type: "string",
+      choices: ["jpg", "png", "webp", "avif", "tiff"],
+      description: "Output format",
+    },
   ],
-  
+
   async handler(context: CommandContext) {
     const { input, options, logger } = context;
-    
+
     // Validate options
     validateResizeOptions(options);
-    
+
     // Process each input file
     const results = await Promise.all(
-      input.map(file => resizeImage(file, options, logger))
+      input.map((file) => resizeImage(file, options, logger)),
     );
-    
+
     // Return summary
     return {
       success: true,
-      processed: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length
+      processed: results.filter((r) => r.success).length,
+      failed: results.filter((r) => !r.success).length,
     };
-  }
+  },
 };
 ```
 
@@ -164,40 +164,39 @@ Each command uses Sharp's fluent API:
 async function resizeImage(
   input: string,
   options: ResizeOptions,
-  logger: Logger
+  logger: Logger,
 ): Promise<ProcessResult> {
   try {
     const pipeline = sharp(input);
-    
+
     // 1. Read metadata
     const metadata = await pipeline.metadata();
     logger.info(`Processing: ${input} (${metadata.width}x${metadata.height})`);
-    
+
     // 2. Build pipeline
     pipeline
       .resize({
         width: options.width,
         height: options.height,
         fit: options.fit,
-        withoutEnlargement: options.noEnlarge
+        withoutEnlargement: options.noEnlarge,
       })
       .rotate() // Auto-rotate based on EXIF
       .withMetadata(); // Preserve metadata
-    
+
     // 3. Apply format conversion
     if (options.format) {
       applyFormatOptions(pipeline, options.format, options);
     }
-    
+
     // 4. Generate output path
     const output = generateOutputPath(input, options);
-    
+
     // 5. Execute pipeline
     await pipeline.toFile(output);
-    
+
     logger.success(`Created: ${output}`);
     return { success: true, output };
-    
   } catch (error) {
     logger.error(`Failed: ${input} - ${error.message}`);
     return { success: false, error: error.message };
@@ -213,17 +212,17 @@ async function resizeImage(
 
 The Image Plugin supports all formats Sharp provides:
 
-| Format | Extension | Read | Write | Notes                          |
-|--------|-----------|------|-------|--------------------------------|
-| JPEG   | .jpg      | ✅   | ✅    | Lossy, universal support       |
-| PNG    | .png      | ✅   | ✅    | Lossless, transparency         |
-| WebP   | .webp     | ✅   | ✅    | Modern, efficient              |
-| AVIF   | .avif     | ✅   | ✅    | Best compression, slower       |
-| GIF    | .gif      | ✅   | ✅    | Animation support              |
-| TIFF   | .tiff     | ✅   | ✅    | Professional, uncompressed     |
-| HEIF   | .heic     | ✅   | ✅    | Apple ecosystem                |
-| SVG    | .svg      | ✅   | ❌    | Vector (rasterized on read)    |
-| PDF    | .pdf      | ✅   | ❌    | First page only                |
+| Format | Extension | Read | Write | Notes                       |
+| ------ | --------- | ---- | ----- | --------------------------- |
+| JPEG   | .jpg      | ✅   | ✅    | Lossy, universal support    |
+| PNG    | .png      | ✅   | ✅    | Lossless, transparency      |
+| WebP   | .webp     | ✅   | ✅    | Modern, efficient           |
+| AVIF   | .avif     | ✅   | ✅    | Best compression, slower    |
+| GIF    | .gif      | ✅   | ✅    | Animation support           |
+| TIFF   | .tiff     | ✅   | ✅    | Professional, uncompressed  |
+| HEIF   | .heic     | ✅   | ✅    | Apple ecosystem             |
+| SVG    | .svg      | ✅   | ❌    | Vector (rasterized on read) |
+| PDF    | .pdf      | ✅   | ❌    | First page only             |
 
 ---
 
@@ -235,46 +234,46 @@ Each format has specific quality settings:
 function applyFormatOptions(
   pipeline: sharp.Sharp,
   format: string,
-  options: any
+  options: any,
 ): void {
   switch (format) {
-    case 'jpg':
-    case 'jpeg':
+    case "jpg":
+    case "jpeg":
       pipeline.jpeg({
         quality: options.quality ?? 85,
         progressive: options.progressive ?? true,
-        mozjpeg: options.mozjpeg ?? true
+        mozjpeg: options.mozjpeg ?? true,
       });
       break;
-      
-    case 'png':
+
+    case "png":
       pipeline.png({
         quality: options.quality ?? 100,
         compressionLevel: options.compression ?? 9,
-        progressive: options.progressive ?? true
+        progressive: options.progressive ?? true,
       });
       break;
-      
-    case 'webp':
+
+    case "webp":
       pipeline.webp({
         quality: options.quality ?? 85,
         lossless: options.lossless ?? false,
-        effort: options.effort ?? 4
+        effort: options.effort ?? 4,
       });
       break;
-      
-    case 'avif':
+
+    case "avif":
       pipeline.avif({
         quality: options.quality ?? 85,
         lossless: options.lossless ?? false,
-        effort: options.effort ?? 4
+        effort: options.effort ?? 4,
       });
       break;
-      
-    case 'tiff':
+
+    case "tiff":
       pipeline.tiff({
         quality: options.quality ?? 100,
-        compression: options.compression ?? 'lzw'
+        compression: options.compression ?? "lzw",
       });
       break;
   }
@@ -292,19 +291,19 @@ Sharp provides multiple resize strategies:
 ```typescript
 enum FitMode {
   // Cover entire area, crop if needed
-  COVER = 'cover',
-  
+  COVER = "cover",
+
   // Contain within area, letterbox if needed
-  CONTAIN = 'contain',
-  
+  CONTAIN = "contain",
+
   // Fill entire area, stretch if needed
-  FILL = 'fill',
-  
+  FILL = "fill",
+
   // Fit inside, never enlarge
-  INSIDE = 'inside',
-  
+  INSIDE = "inside",
+
   // Fit outside, always fill
-  OUTSIDE = 'outside'
+  OUTSIDE = "outside",
 }
 ```
 
@@ -339,36 +338,34 @@ OUTSIDE: [========]  (ensures fill)
 Control how images are positioned when resizing:
 
 ```typescript
-type Position = 
-  | 'center'       // Default
-  | 'top'
-  | 'bottom'
-  | 'left'
-  | 'right'
-  | 'top left'
-  | 'top right'
-  | 'bottom left'
-  | 'bottom right'
-  | 'entropy'      // Auto-detect important area
-  | 'attention';   // Auto-detect faces/features
+type Position =
+  | "center" // Default
+  | "top"
+  | "bottom"
+  | "left"
+  | "right"
+  | "top left"
+  | "top right"
+  | "bottom left"
+  | "bottom right"
+  | "entropy" // Auto-detect important area
+  | "attention"; // Auto-detect faces/features
 ```
 
 **Smart Cropping:**
 
 ```typescript
 // Entropy-based (high contrast areas)
-sharp(input)
-  .resize(800, 600, { 
-    fit: 'cover',
-    position: 'entropy'
-  });
+sharp(input).resize(800, 600, {
+  fit: "cover",
+  position: "entropy",
+});
 
 // Attention-based (faces, text)
-sharp(input)
-  .resize(800, 600, {
-    fit: 'cover',
-    position: 'attention'
-  });
+sharp(input).resize(800, 600, {
+  fit: "cover",
+  position: "attention",
+});
 ```
 
 ---
@@ -380,15 +377,13 @@ sharp(input)
 Sharp uses streams for memory efficiency:
 
 ```typescript
-import { pipeline } from 'stream/promises';
+import { pipeline } from "stream/promises";
 
 async function processStream(input: string, output: string) {
   await pipeline(
     fs.createReadStream(input),
-    sharp()
-      .resize(1920, 1080)
-      .webp({ quality: 85 }),
-    fs.createWriteStream(output)
+    sharp().resize(1920, 1080).webp({ quality: 85 }),
+    fs.createWriteStream(output),
   );
 }
 ```
@@ -409,18 +404,18 @@ Process multiple images in parallel:
 async function processBatch(
   files: string[],
   options: ProcessOptions,
-  concurrency: number = 4
+  concurrency: number = 4,
 ): Promise<Result[]> {
   const chunks = chunkArray(files, concurrency);
   const results: Result[] = [];
-  
+
   for (const chunk of chunks) {
     const batchResults = await Promise.all(
-      chunk.map(file => processImage(file, options))
+      chunk.map((file) => processImage(file, options)),
     );
     results.push(...batchResults);
   }
-  
+
   return results;
 }
 ```
@@ -432,24 +427,24 @@ async function processBatch(
 Cache processed images to avoid redundant work:
 
 ```typescript
-import crypto from 'crypto';
+import crypto from "crypto";
 
 function getCacheKey(input: string, options: any): string {
   const optionsHash = crypto
-    .createHash('md5')
+    .createHash("md5")
     .update(JSON.stringify(options))
-    .digest('hex');
-    
+    .digest("hex");
+
   return `${input}-${optionsHash}`;
 }
 
 async function getCached(key: string): Promise<string | null> {
-  const cachePath = path.join('.cache', `${key}.jpg`);
-  
+  const cachePath = path.join(".cache", `${key}.jpg`);
+
   if (await fileExists(cachePath)) {
     return cachePath;
   }
-  
+
   return null;
 }
 ```
@@ -466,33 +461,33 @@ Extract comprehensive image metadata:
 async function getMetadata(input: string): Promise<ImageMetadata> {
   const image = sharp(input);
   const metadata = await image.metadata();
-  
+
   return {
     // Dimensions
     width: metadata.width,
     height: metadata.height,
     aspectRatio: metadata.width / metadata.height,
-    
+
     // Format
     format: metadata.format,
     space: metadata.space, // Color space
     channels: metadata.channels,
     depth: metadata.depth, // Bit depth
-    
+
     // EXIF data
     exif: metadata.exif,
     orientation: metadata.orientation,
-    
+
     // Size
     size: metadata.size,
-    
+
     // Color
     hasAlpha: metadata.hasAlpha,
     hasProfile: metadata.hasProfile,
-    
+
     // Animation
     isAnimated: metadata.pages > 1,
-    pages: metadata.pages
+    pages: metadata.pages,
   };
 }
 ```
@@ -509,14 +504,14 @@ sharp(input)
   .withMetadata({
     // Preserve orientation
     orientation: metadata.orientation,
-    
+
     // Custom metadata
     exif: {
       IFD0: {
-        Copyright: 'MediaProc 2026',
-        Artist: 'Your Name'
-      }
-    }
+        Copyright: "MediaProc 2026",
+        Artist: "Your Name",
+      },
+    },
   })
   .toFile(output);
 ```
@@ -557,19 +552,13 @@ Convert between color spaces:
 
 ```typescript
 // Convert to grayscale
-sharp(input)
-  .grayscale()
-  .toFile(output);
+sharp(input).grayscale().toFile(output);
 
 // Convert to specific space
-sharp(input)
-  .toColorspace('lab')
-  .toFile(output);
+sharp(input).toColorspace("lab").toFile(output);
 
 // Normalize to sRGB
-sharp(input)
-  .toColorspace('srgb')
-  .toFile(output);
+sharp(input).toColorspace("srgb").toFile(output);
 ```
 
 ---
@@ -581,18 +570,21 @@ sharp(input)
 The Image Plugin supports all Sharp operations:
 
 **Resizing:**
+
 - `resize()` - Change dimensions
 - `extend()` - Add padding
 - `extract()` - Crop region
 - `trim()` - Remove borders
 
 **Transformations:**
+
 - `rotate()` - Rotate image
 - `flip()` - Flip vertically
 - `flop()` - Flip horizontally
 - `affine()` - Affine transform
 
 **Effects:**
+
 - `blur()` - Gaussian blur
 - `sharpen()` - Sharpen edges
 - `median()` - Median filter
@@ -602,6 +594,7 @@ The Image Plugin supports all Sharp operations:
 - `tint()` - Apply color tint
 
 **Composition:**
+
 - `composite()` - Layer images
 - `overlayWith()` - Add overlay
 
@@ -614,23 +607,23 @@ Chain operations in a pipeline:
 ```typescript
 await sharp(input)
   // 1. Resize
-  .resize(1920, 1080, { fit: 'cover' })
-  
+  .resize(1920, 1080, { fit: "cover" })
+
   // 2. Rotate
   .rotate(90)
-  
+
   // 3. Sharpen
   .sharpen()
-  
+
   // 4. Adjust colors
   .modulate({
     brightness: 1.1,
-    saturation: 0.9
+    saturation: 0.9,
   })
-  
+
   // 5. Convert format
   .webp({ quality: 85 })
-  
+
   // 6. Save
   .toFile(output);
 ```
@@ -646,23 +639,22 @@ Handle Sharp-specific errors:
 ```typescript
 async function processImage(input: string, options: any) {
   try {
-    await sharp(input)
-      .resize(options.width, options.height)
-      .toFile(output);
-      
+    await sharp(input).resize(options.width, options.height).toFile(output);
   } catch (error) {
-    if (error.message.includes('Input file is missing')) {
+    if (error.message.includes("Input file is missing")) {
       throw new Error(`File not found: ${input}`);
     }
-    
-    if (error.message.includes('Input buffer contains unsupported image format')) {
+
+    if (
+      error.message.includes("Input buffer contains unsupported image format")
+    ) {
       throw new Error(`Unsupported image format: ${input}`);
     }
-    
-    if (error.message.includes('Image dimensions exceed maximum')) {
+
+    if (error.message.includes("Image dimensions exceed maximum")) {
       throw new Error(`Image too large: ${input}`);
     }
-    
+
     // Generic error
     throw new Error(`Processing failed: ${error.message}`);
   }
@@ -678,22 +670,22 @@ Validate inputs before processing:
 ```typescript
 async function validateImage(file: string): Promise<void> {
   // Check if file exists
-  if (!await fileExists(file)) {
+  if (!(await fileExists(file))) {
     throw new Error(`File not found: ${file}`);
   }
-  
+
   // Check if readable
-  if (!await isReadable(file)) {
+  if (!(await isReadable(file))) {
     throw new Error(`Cannot read file: ${file}`);
   }
-  
+
   // Validate format
   const metadata = await sharp(file).metadata();
-  
+
   if (!metadata.format) {
     throw new Error(`Invalid image format: ${file}`);
   }
-  
+
   // Check dimensions
   if (metadata.width > 50000 || metadata.height > 50000) {
     throw new Error(`Image dimensions too large: ${file}`);
@@ -710,18 +702,18 @@ async function validateImage(file: string): Promise<void> {
 Test individual commands:
 
 ```typescript
-import { resizeCommand } from '../commands/resize';
+import { resizeCommand } from "../commands/resize";
 
-describe('Resize Command', () => {
-  it('should resize image', async () => {
+describe("Resize Command", () => {
+  it("should resize image", async () => {
     const context = {
-      input: ['test.jpg'],
+      input: ["test.jpg"],
       options: { width: 1920, height: 1080 },
-      logger: mockLogger
+      logger: mockLogger,
     };
-    
+
     const result = await resizeCommand.handler(context);
-    
+
     expect(result.success).toBe(true);
     expect(result.processed).toBe(1);
   });
@@ -735,21 +727,21 @@ describe('Resize Command', () => {
 Test with actual images:
 
 ```typescript
-import sharp from 'sharp';
+import sharp from "sharp";
 
-describe('Image Processing', () => {
-  it('should produce correct output', async () => {
-    await processImage('input.jpg', {
+describe("Image Processing", () => {
+  it("should produce correct output", async () => {
+    await processImage("input.jpg", {
       width: 800,
       height: 600,
-      format: 'webp'
+      format: "webp",
     });
-    
-    const metadata = await sharp('output.webp').metadata();
-    
+
+    const metadata = await sharp("output.webp").metadata();
+
     expect(metadata.width).toBe(800);
     expect(metadata.height).toBe(600);
-    expect(metadata.format).toBe('webp');
+    expect(metadata.format).toBe("webp");
   });
 });
 ```

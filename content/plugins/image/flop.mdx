@@ -4,16 +4,16 @@ Flip images horizontally (mirror left-right) using a dedicated command. This is 
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image flop <input> [options]' }
-]} />
+<Terminal commands={[{ command: "mediaproc image flop <input> [options]" }]} />
 
 ### Basic Syntax
 
-<Terminal commands={[
-  { command: 'mediaproc image flop photo.jpg' },
-  { output: '✓ Flopped (flipped horizontally)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image flop photo.jpg" },
+    { output: "✓ Flopped (flipped horizontally)", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image flop photo.jpg -o mirrored.jpg" />
 <InlineTerminal command="mediaproc image flop photo.jpg -q 100 -o high-quality.jpg" />
@@ -511,37 +511,31 @@ mediaproc image flip input.jpg --vertical
 ## Best Practices
 
 1. **Understand the Operation**
-
    - Flop = horizontal only (left becomes right)
    - Creates mirror image along vertical axis
    - Fast and lossless operation
 
 2. **Selfie Corrections**
-
    - Always flop front camera photos
    - Check if text/logos need correction
    - Preview one image before batch processing
 
 3. **Preserve Originals**
-
    - Keep original files unmodified
    - Create flopped copies with descriptive names
    - Don't overwrite source images
 
 4. **Quality Settings**
-
    - Use q=90-100 for important images
    - PNG for lossless operations
    - JPEG q=80-90 for web delivery
 
 5. **Batch Operations**
-
    - Test with single image first
    - Use consistent naming convention
    - Verify results before processing large batches
 
 6. **Documentation**
-
    - Note why images were flopped
    - Maintain consistent workflow
    - Script repetitive operations

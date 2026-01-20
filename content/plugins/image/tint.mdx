@@ -4,20 +4,24 @@ Apply color tint overlay to images. Great for creating artistic effects, adjusti
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image tint <input> [options]' }
-]} />
+<Terminal commands={[{ command: "mediaproc image tint <input> [options]" }]} />
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image tint photo.jpg' },
-  { output: '✓ Applied blue tint', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image tint photo.jpg" },
+    { output: "✓ Applied blue tint", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image tint image.png -c red" />
 <InlineTerminal command='mediaproc image tint pic.jpg -c "#ff6600"' />

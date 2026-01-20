@@ -4,16 +4,18 @@ Add padding or borders around images by extending the canvas in any direction. C
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image extend <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image extend <input> [options]" }]}
+/>
 
 ### Basic Syntax
 
-<Terminal commands={[
-  { command: 'mediaproc image extend photo.jpg --all 50' },
-  { output: '✓ Extended all sides by 50px', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image extend photo.jpg --all 50" },
+    { output: "✓ Extended all sides by 50px", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image extend photo.jpg --top 20 --bottom 20 --left 30 --right 30" />
 <InlineTerminal command='mediaproc image extend photo.jpg --all 40 --background "#FF5733"' />
@@ -467,39 +469,33 @@ mediaproc image extend input.jpg --all 50 --background "#2C3E50" --dry-run
 ## Best Practices
 
 1. **Use Dry Run for Testing**
-
    - Preview dimensions and settings before processing
    - Verify background color appearance
    - Check file size estimates
 
 2. **Choose Appropriate Backgrounds**
-
    - White for clean, professional look
    - Black for dramatic, gallery-style presentation
    - Transparent for logos and graphics (PNG only)
    - Brand colors for consistent identity
 
 3. **Consider Output Format**
-
    - PNG for transparency support
    - JPEG for photography with solid backgrounds
    - WebP for efficient web delivery with transparency
 
 4. **Calculate Dimensions Carefully**
-
    - Use `--dry-run` to verify final dimensions
    - Plan padding for specific aspect ratios
    - Account for platform-specific requirements
 
 5. **Optimize for Use Case**
-
    - Social media: Use platform-specific dimensions
    - Print: Include bleed and safe zones
    - Web: Optimize quality vs. file size balance
    - E-commerce: Maintain consistency across products
 
 6. **Batch Processing Consistency**
-
    - Use same padding values for related images
    - Maintain consistent background colors
    - Create scripts for repeatable workflows

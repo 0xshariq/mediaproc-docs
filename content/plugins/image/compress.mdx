@@ -4,7 +4,9 @@ Compress images with advanced quality control. Reduce file sizes significantly w
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc image compress <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc image compress <input> [options]" }]}
+/>
 
 ## Description
 
@@ -31,79 +33,121 @@ Lower quality settings (below 60) can significantly reduce file size but may int
 
 ### Basic Compression
 
-<Terminal commands={[
-  { command: 'mediaproc image compress photo.jpg' },
-  { output: '✓ Compressed: 2.45 MB → 1.12 MB (54% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress photo.jpg" },
+    {
+      output: "✓ Compressed: 2.45 MB → 1.12 MB (54% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image compress image.png -q 60' },
-  { output: '✓ Compressed: 845 KB → 312 KB (63% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress image.png -q 60" },
+    {
+      output: "✓ Compressed: 845 KB → 312 KB (63% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image compress pic.jpg --lossy' },
-  { output: '✓ Compressed: 3.2 MB → 890 KB (72% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress pic.jpg --lossy" },
+    {
+      output: "✓ Compressed: 3.2 MB → 890 KB (72% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image compress photo.webp -q 80 -o small.webp' },
-  { output: '✓ Compressed: 1.8 MB → 945 KB (48% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress photo.webp -q 80 -o small.webp" },
+    {
+      output: "✓ Compressed: 1.8 MB → 945 KB (48% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Batch Compression
 
-<Terminal commands={[
-  { command: 'for img in *.jpg; do mediaproc image compress "$img" -q 70; done' },
-  { output: '✓ Processed 15 images', isSuccess: true },
-  { output: '✓ Total reduction: 18.5 MB → 6.2 MB (66%)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        'for img in *.jpg; do mediaproc image compress "$img" -q 70; done',
+    },
+    { output: "✓ Processed 15 images", isSuccess: true },
+    { output: "✓ Total reduction: 18.5 MB → 6.2 MB (66%)", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image compress large-image.jpg --lossy -o thumbnail.jpg' },
-  { output: '✓ Compressed: 5.8 MB → 425 KB (93% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image compress large-image.jpg --lossy -o thumbnail.jpg",
+    },
+    {
+      output: "✓ Compressed: 5.8 MB → 425 KB (93% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Format-Specific Examples
 
-<Terminal title="JPEG Compression" commands={[
-  { command: 'mediaproc image compress photo.jpg -q 75' },
-  { output: '✓ Progressive encoding enabled', isSuccess: true },
-  { output: '✓ Compressed: 2.4 MB → 1.1 MB (54%)', isSuccess: true }
-]} />
+<Terminal
+  title="JPEG Compression"
+  commands={[
+    { command: "mediaproc image compress photo.jpg -q 75" },
+    { output: "✓ Progressive encoding enabled", isSuccess: true },
+    { output: "✓ Compressed: 2.4 MB → 1.1 MB (54%)", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="PNG Compression" commands={[
-  { command: 'mediaproc image compress screenshot.png --lossy' },
-  { output: '✓ Palette reduced to 256 colors', isSuccess: true },
-  { output: '✓ Compressed: 892 KB → 234 KB (74%)', isSuccess: true }
-]} />
+<Terminal
+  title="PNG Compression"
+  commands={[
+    { command: "mediaproc image compress screenshot.png --lossy" },
+    { output: "✓ Palette reduced to 256 colors", isSuccess: true },
+    { output: "✓ Compressed: 892 KB → 234 KB (74%)", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="WebP Compression" commands={[
-  { command: 'mediaproc image compress image.webp -q 60' },
-  { output: '✓ Compressed: 1.5 MB → 580 KB (61%)', isSuccess: true }
-]} />
+<Terminal
+  title="WebP Compression"
+  commands={[
+    { command: "mediaproc image compress image.webp -q 60" },
+    { output: "✓ Compressed: 1.5 MB → 580 KB (61%)", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="AVIF Compression" commands={[
-  { command: 'mediaproc image compress photo.avif -q 70' },
-  { output: '✓ Compressed: 2.2 MB → 512 KB (77%)', isSuccess: true }
-]} />
+<Terminal
+  title="AVIF Compression"
+  commands={[
+    { command: "mediaproc image compress photo.avif -q 70" },
+    { output: "✓ Compressed: 2.2 MB → 512 KB (77%)", isSuccess: true },
+  ]}
+/>
 
 ## Quality Levels
 
 ### Recommended Settings
 
 - **Quality 80-100**: High quality, moderate compression
-
   - Best for: Hero images, portfolios, print-ready
   - Typical reduction: 10-30%
 
 - **Quality 60-79**: Good quality, good compression (recommended)
-
   - Best for: General web use, galleries, blogs
   - Typical reduction: 30-60%
 
 - **Quality 40-59**: Lower quality, high compression
-
   - Best for: Backgrounds, decorative images
   - Typical reduction: 60-80%
 
@@ -150,42 +194,74 @@ Enabling `--lossy` activates aggressive compression algorithms:
 
 ### Web Optimization
 
-<Terminal commands={[
-  { command: 'mediaproc image compress hero.jpg -q 75 -o hero-web.jpg' },
-  { output: '✓ Compressed: 3.2 MB → 1.4 MB (56% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress hero.jpg -q 75 -o hero-web.jpg" },
+    {
+      output: "✓ Compressed: 3.2 MB → 1.4 MB (56% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image compress large.jpg -q 50 --lossy -o thumb.jpg' },
-  { output: '✓ Compressed: 4.5 MB → 680 KB (85% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc image compress large.jpg -q 50 --lossy -o thumb.jpg",
+    },
+    {
+      output: "✓ Compressed: 4.5 MB → 680 KB (85% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Social Media
 
-<Terminal commands={[
-  { command: 'mediaproc image compress photo.jpg -q 70 -o instagram.jpg' },
-  { output: '✓ Compressed: 2.8 MB → 1.1 MB (61% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress photo.jpg -q 70 -o instagram.jpg" },
+    {
+      output: "✓ Compressed: 2.8 MB → 1.1 MB (61% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image compress pic.jpg -q 65 -o twitter.jpg' },
-  { output: '✓ Compressed: 3.5 MB → 890 KB (75% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress pic.jpg -q 65 -o twitter.jpg" },
+    {
+      output: "✓ Compressed: 3.5 MB → 890 KB (75% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Email Attachments
 
-<Terminal commands={[
-  { command: 'mediaproc image compress photo.jpg -q 60 --lossy' },
-  { output: '✓ Compressed: 2.5 MB → 420 KB (83% reduction)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image compress photo.jpg -q 60 --lossy" },
+    {
+      output: "✓ Compressed: 2.5 MB → 420 KB (83% reduction)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ### Storage Optimization
 
-<Terminal commands={[
-  { command: 'for img in archive/*.jpg; do mediaproc image compress "$img" -q 65; done' },
-  { output: '✓ Processed 247 images', isSuccess: true },
-  { output: '✓ Total space saved: 1.2 GB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        'for img in archive/*.jpg; do mediaproc image compress "$img" -q 65; done',
+    },
+    { output: "✓ Processed 247 images", isSuccess: true },
+    { output: "✓ Total space saved: 1.2 GB", isSuccess: true },
+  ]}
+/>
 
 ## vs Optimize
 

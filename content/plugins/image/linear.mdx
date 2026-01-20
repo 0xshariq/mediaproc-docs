@@ -4,9 +4,9 @@ Apply linear transformation to pixel values using the formula: `output = (a × i
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image linear <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image linear <input> [options]" }]}
+/>
 
 ### Basic Syntax
 
@@ -602,42 +602,36 @@ mediaproc image linear photo.jpg -a 1.1 -b 25 --dry-run
 ## Best Practices
 
 1. **Start with Moderate Values**
-
    - a: 0.8-1.5 (safe contrast range)
    - b: -30 to 30 (safe brightness range)
    - Test with --dry-run first
    - Increase gradually
 
 2. **Use for Reproducibility**
-
    - Document exact values used
    - Apply same values to similar images
    - Create processing scripts with fixed values
    - Maintain consistency across projects
 
 3. **Preserve Originals**
-
    - Keep original files
    - Use descriptive output names
    - Document adjustments
    - Allow for re-processing
 
 4. **Combine Parameters Carefully**
-
    - High a + high b = blown highlights
    - High a + negative b = crushed shadows
    - Moderate both for balanced results
    - Preview combinations
 
 5. **Quality Management**
-
    - Use high quality (90-100) for important images
    - PNG for lossless adjustments
    - JPEG for final output
    - Consider re-compression impact
 
 6. **Scientific Work**
-
    - Document formula and parameters
    - Apply same transformation to all samples
    - Maintain metadata

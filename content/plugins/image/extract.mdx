@@ -4,16 +4,18 @@ Extract individual color channels (red, green, blue, alpha) as grayscale images,
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image extract <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image extract <input> [options]" }]}
+/>
 
 ### Basic Syntax
 
-<Terminal commands={[
-  { command: 'mediaproc image extract photo.jpg -c red' },
-  { output: '✓ Red channel extracted', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image extract photo.jpg -c red" },
+    { output: "✓ Red channel extracted", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image extract photo.jpg --left 100 --top 50 -w 300 -h 200" />
 <InlineTerminal command="mediaproc image extract image.png -c alpha" />
@@ -518,37 +520,31 @@ mediaproc image extract input.jpg --left 100 --top 50 -w 400 -h 300 -o output.pn
 ## Best Practices
 
 1. **Verify Coordinates Before Extraction**
-
    - Use `--dry-run` to test coordinates
    - Check image dimensions with metadata command
    - Calculate bounds carefully to avoid errors
 
 2. **Use Appropriate Output Formats**
-
    - PNG for alpha channel extraction
    - JPEG for photographic region extraction
    - PNG for lossless region extraction
 
 3. **Channel Extraction for Analysis**
-
    - Extract all RGB channels for complete color analysis
    - Use alpha channel for mask creation
    - Analyze channels separately for color correction
 
 4. **Region Extraction Efficiency**
-
    - Extract multiple regions in batch processing
    - Use precise coordinates for consistent results
    - Plan extraction grid for systematic processing
 
 5. **Quality Management**
-
    - Use high quality settings for important extractions
    - Consider output format impact on file size
    - Balance quality with storage requirements
 
 6. **Coordinate Calculation**
-
    - Use image dimensions to calculate center regions
    - Account for aspect ratio in region selection
    - Validate bounds before processing large batches

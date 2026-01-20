@@ -420,7 +420,7 @@ const execAsync = promisify(exec);
 
 async function normalizeAudio(input) {
   const { stdout, stderr } = await execAsync(
-    `mediaproc audio normalize ${input} --loudness -16`
+    `mediaproc audio normalize ${input} --loudness -16`,
   );
 
   console.log("Normalized:", stdout);

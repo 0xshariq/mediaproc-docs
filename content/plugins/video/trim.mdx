@@ -7,6 +7,7 @@ Extract specific video segments with frame-perfect precision or fast stream copy
 The `trim` command extracts portions of videos by specifying start/end times or duration. It offers two modes: **fast mode** (stream copy, instant) for quick cuts, and **accurate mode** (re-encoding) for frame-perfect precision. Perfect for creating highlights, removing unwanted sections, or extracting specific scenes.
 
 **Key Features:**
+
 - ⏱️ Flexible time formats (HH:MM:SS or seconds)
 - ⚡ Fast mode: Stream copy (no quality loss, instant)
 - 🎯 Accurate mode: Frame-perfect cuts
@@ -15,6 +16,7 @@ The `trim` command extracts portions of videos by specifying start/end times or 
 - 📁 Batch trim multiple segments
 
 **Common Use Cases:**
+
 - Creating video highlights or teasers
 - Removing intro/outro from videos
 - Extracting specific scenes or chapters
@@ -23,33 +25,35 @@ The `trim` command extracts portions of videos by specifying start/end times or 
 - Removing mistakes or unwanted content
 
 <Callout type="info">
-**Fast vs Accurate:** Fast mode uses stream copy (instant, no re-encoding) but may be off by 1-2 seconds due to keyframe positions. Accurate mode re-encodes for frame-perfect cuts but takes longer.
+  **Fast vs Accurate:** Fast mode uses stream copy (instant, no re-encoding) but
+  may be off by 1-2 seconds due to keyframe positions. Accurate mode re-encodes
+  for frame-perfect cuts but takes longer.
 </Callout>
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc video trim <input> [options]' }]} />
+<Terminal commands={[{ command: "mediaproc video trim <input> [options]" }]} />
 
 ## Options
 
-| Option         | Alias | Type    | Default | Description                                         |
-| -------------- | ----- | ------- | ------- | --------------------------------------------------- |
-| `--output`     | `-o`  | string  | Auto    | Output file or directory path                       |
-| `--start`      | `-s`  | string  | `0`     | Start time (HH:MM:SS or seconds)                    |
-| `--end`        | `-e`  | string  |         | End time (HH:MM:SS or seconds)                      |
-| `--duration`   | `-d`  | string  |         | Duration from start (HH:MM:SS or seconds)           |
-| `--fast`       |       | boolean | false   | Fast mode (stream copy, may be slightly inaccurate) |
-| `--accurate`   |       | boolean | false   | Accurate mode (re-encode for frame accuracy)        |
-| `--codec`      | `-c`  | string  | `copy`  | Video codec: h264, h265, copy                       |
-| `--format`     |       | string  |         | Output format: mp4, mkv, webm                       |
-| `--fade-in`    |       | number  |         | Add fade-in effect (seconds)                        |
-| `--fade-out`   |       | number  |         | Add fade-out effect (seconds)                       |
-| `--speed`      |       | number  |         | Adjust playback speed (0.5-2.0)                     |
-| `--volume`     |       | number  | 1.0     | Adjust audio volume (0.0-2.0)                       |
-| `--quality`    |       | number  | 23      | CRF quality if re-encoding (default: 23)            |
-| `--no-audio`   |       | boolean | false   | Remove audio track from output                      |
-| `--dry-run`    |       | boolean | false   | Preview without executing                           |
-| `--verbose`    | `-v`  | boolean | false   | Show detailed FFmpeg output                         |
+| Option       | Alias | Type    | Default | Description                                         |
+| ------------ | ----- | ------- | ------- | --------------------------------------------------- |
+| `--output`   | `-o`  | string  | Auto    | Output file or directory path                       |
+| `--start`    | `-s`  | string  | `0`     | Start time (HH:MM:SS or seconds)                    |
+| `--end`      | `-e`  | string  |         | End time (HH:MM:SS or seconds)                      |
+| `--duration` | `-d`  | string  |         | Duration from start (HH:MM:SS or seconds)           |
+| `--fast`     |       | boolean | false   | Fast mode (stream copy, may be slightly inaccurate) |
+| `--accurate` |       | boolean | false   | Accurate mode (re-encode for frame accuracy)        |
+| `--codec`    | `-c`  | string  | `copy`  | Video codec: h264, h265, copy                       |
+| `--format`   |       | string  |         | Output format: mp4, mkv, webm                       |
+| `--fade-in`  |       | number  |         | Add fade-in effect (seconds)                        |
+| `--fade-out` |       | number  |         | Add fade-out effect (seconds)                       |
+| `--speed`    |       | number  |         | Adjust playback speed (0.5-2.0)                     |
+| `--volume`   |       | number  | 1.0     | Adjust audio volume (0.0-2.0)                       |
+| `--quality`  |       | number  | 23      | CRF quality if re-encoding (default: 23)            |
+| `--no-audio` |       | boolean | false   | Remove audio track from output                      |
+| `--dry-run`  |       | boolean | false   | Preview without executing                           |
+| `--verbose`  | `-v`  | boolean | false   | Show detailed FFmpeg output                         |
 
 ## Flag Details
 
@@ -60,17 +64,20 @@ Specify where to start and end the trim operation.
 **Time Formats:**
 
 **HH:MM:SS Format:**
+
 - `00:01:30` = 1 minute 30 seconds
 - `01:30:45` = 1 hour 30 minutes 45 seconds
 - `05:30` = 5 minutes 30 seconds (MM:SS)
 - `00:00:15` = 15 seconds
 
 **Seconds Format:**
+
 - `90` = 1 minute 30 seconds
 - `3665` = 1 hour 1 minute 5 seconds
 - `30.5` = 30.5 seconds (decimals supported)
 
 **Examples:**
+
 ```bash
 # Extract from 1:30 to 3:45
 mediaproc video trim video.mp4 --start 00:01:30 --end 00:03:45
@@ -91,10 +98,12 @@ Specify how long the output should be (alternative to `--end`).
 **Format:** HH:MM:SS or seconds
 
 **Relationship:**
+
 - `--end` = `--start` + `--duration`
 - Only use `--end` OR `--duration`, not both
 
 **Examples:**
+
 ```bash
 # First 10 seconds
 mediaproc video trim video.mp4 --duration 10
@@ -113,33 +122,39 @@ mediaproc video trim video.mp4 --start 00:01:30 --duration 00:02:00
 Enable ultra-fast trimming by copying video/audio streams without re-encoding.
 
 **Advantages:**
+
 - ⚡ Instant operation (real-time or faster)
 - 🎯 Zero quality loss (bit-perfect copy)
 - 💾 Minimal CPU/memory usage
 
 **Limitations:**
+
 - ⚠️ May be off by 1-3 seconds (keyframe dependent)
 - ⚠️ Cannot add effects (fade, speed, filters)
 - ⚠️ Start point snaps to nearest keyframe
 
 **How It Works:**
+
 - Videos are encoded with keyframes every 2-10 seconds
 - Stream copy can only cut at keyframe positions
 - Start time snaps to nearest keyframe before requested time
 
 **When to Use:**
+
 - Quick rough cuts
 - Time precision not critical
 - Preserving exact original quality
 - Large files (4K, high bitrate)
 
 **Example:**
+
 ```bash
 # Fast trim from 5:00 to 10:00 (may start at 4:58)
 mediaproc video trim video.mp4 -s 05:00 -e 10:00 --fast
 ```
 
 **Learn More:**
+
 - [Video Keyframes Explained](https://en.wikipedia.org/wiki/Key_frame)
 
 ---
@@ -149,20 +164,24 @@ mediaproc video trim video.mp4 -s 05:00 -e 10:00 --fast
 Re-encode video for frame-perfect cuts (default behavior).
 
 **Advantages:**
+
 - 🎯 Frame-accurate cuts (perfect timing)
 - ✨ Can apply effects (fade, speed, filters)
 - 📐 Can change resolution/codec simultaneously
 
 **Limitations:**
+
 - ⏱️ Slower (depends on video length and settings)
 - 📉 Slight quality loss (minimized with high CRF)
 
 **Encoding Time:**
+
 - 1080p 30fps: ~0.2-0.5x realtime (2 min → 4-10 min)
 - 4K 60fps: ~0.05-0.2x realtime (2 min → 10-40 min)
 - Hardware acceleration helps significantly
 
 **When to Use:**
+
 - Professional editing (precision required)
 - Adding effects (fade, speed changes)
 - Changing codec/resolution while trimming
@@ -175,12 +194,14 @@ Re-encode video for frame-perfect cuts (default behavior).
 Specify output codec when re-encoding (accurate mode only).
 
 **Options:**
+
 - `copy` - Stream copy, no re-encoding **← default in fast mode**
 - `h264` - Universal compatibility
 - `h265` - Better compression, modern devices
 - `vp9` - Web/YouTube
 
 **Examples:**
+
 ```bash
 # Trim and compress with H.265
 mediaproc video trim video.mp4 -s 60 -d 30 -c h265
@@ -198,14 +219,17 @@ Add smooth fade-in at start and/or fade-out at end (requires re-encoding).
 **Format:** Duration in seconds
 
 **Fade-In:**
+
 - Gradually increases brightness from black
 - Duration counted from trim start point
 
 **Fade-Out:**
-- Gradually decreases brightness to black  
+
+- Gradually decreases brightness to black
 - Duration counted backward from trim end point
 
 **Examples:**
+
 ```bash
 # 2-second fade-in, 3-second fade-out
 mediaproc video trim video.mp4 -s 30 -d 60 --fade-in 2 --fade-out 3
@@ -215,12 +239,14 @@ mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 --fade-out 2
 ```
 
 **Result Preview:**
+
 ```
 [0s=====fade-in====2s]===normal====[58s====fade-out====60s]
 ```
 
 <Callout type="tip">
-**Professional Touch:** Use 1-2 second fades for professional-looking clips. Longer fades (3-5s) work for dramatic effect.
+  **Professional Touch:** Use 1-2 second fades for professional-looking clips.
+  Longer fades (3-5s) work for dramatic effect.
 </Callout>
 
 ---
@@ -230,6 +256,7 @@ mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 --fade-out 2
 Adjust playback speed while trimming (requires re-encoding).
 
 **Range:** 0.5 to 2.0
+
 - `0.5` = Half speed (slow motion)
 - `0.75` = 3/4 speed
 - `1.0` = Normal speed **← default**
@@ -238,6 +265,7 @@ Adjust playback speed while trimming (requires re-encoding).
 - `2.0` = Double speed (fast forward)
 
 **Examples:**
+
 ```bash
 # Slow motion trim (half speed)
 mediaproc video trim action.mp4 -s 30 -d 10 --speed 0.5
@@ -250,11 +278,13 @@ mediaproc video trim video.mp4 -s 60 -d 120 --speed 1.5
 ```
 
 **Audio Behavior:**
+
 - Audio pitch is preserved (not chipmunk/deep voice effect)
 - Uses FFmpeg's atempo filter for natural-sounding speed changes
 
 <Callout type="info">
-**Duration Changes:** Changing speed affects output duration. 60s at 2x speed = 30s output. 60s at 0.5x speed = 120s output.
+  **Duration Changes:** Changing speed affects output duration. 60s at 2x speed
+  = 30s output. 60s at 0.5x speed = 120s output.
 </Callout>
 
 ---
@@ -264,6 +294,7 @@ mediaproc video trim video.mp4 -s 60 -d 120 --speed 1.5
 Adjust audio volume level (requires re-encoding).
 
 **Range:** 0.0 to 2.0
+
 - `0.0` = Mute (silent)
 - `0.5` = Half volume (-6 dB)
 - `1.0` = Original volume **← default**
@@ -271,6 +302,7 @@ Adjust audio volume level (requires re-encoding).
 - `2.0` = Double volume (+6 dB)
 
 **Examples:**
+
 ```bash
 # Lower volume by half
 mediaproc video trim video.mp4 -s 30 -d 60 --volume 0.5
@@ -283,7 +315,8 @@ mediaproc video trim video.mp4 -s 60 -d 30 --volume 0
 ```
 
 <Callout type="warning">
-**Avoid Distortion:** Values above 1.5 may cause audio clipping/distortion. Use audio normalization tools for professional volume adjustment.
+  **Avoid Distortion:** Values above 1.5 may cause audio clipping/distortion.
+  Use audio normalization tools for professional volume adjustment.
 </Callout>
 
 ---
@@ -293,12 +326,14 @@ mediaproc video trim video.mp4 -s 60 -d 30 --volume 0
 Set CRF quality when re-encoding (accurate mode only).
 
 **Range:** 0-51, lower = better quality
+
 - `18` = Near-lossless (large files)
 - `20-23` = High quality **← 23 is default**
 - `24-28` = Good quality (smaller files)
 - `29+` = Lower quality (compression artifacts)
 
 **Examples:**
+
 ```bash
 # High quality trim
 mediaproc video trim video.mp4 -s 30 -d 60 --quality 20
@@ -314,12 +349,14 @@ mediaproc video trim video.mp4 -s 30 -d 60 --quality 28
 Strip audio track from output (video only).
 
 **Use Cases:**
+
 - Creating GIF-like clips
 - Background/B-roll footage
 - Silent video for presentations
 - Reducing file size when audio not needed
 
 **Example:**
+
 ```bash
 mediaproc video trim video.mp4 -s 30 -d 60 --no-audio
 ```
@@ -333,12 +370,14 @@ Specify output container format.
 **Options:** `mp4`, `mkv`, `webm`, `avi`
 
 **Format Guide:**
+
 - `mp4` - Universal compatibility **← default**
 - `mkv` - Advanced features, multi-audio/subtitle support
 - `webm` - Web streaming (requires VP9/VP8 codec)
 - `avi` - Legacy compatibility
 
 **Example:**
+
 ```bash
 mediaproc video trim video.mp4 -s 60 -d 120 --format mkv
 ```
@@ -378,44 +417,64 @@ Time can be specified in two formats:
 
 ### Basic Trimming
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 --start 00:01:00 --end 00:02:00' },
-  { output: 'Input: video.mp4 • Duration: 00:05:30' },
-  { output: 'Resolution: 1920x1080' },
-  { output: '' },
-  { output: 'Trimming from 00:01:00 to 00:02:00...' },
-  { output: '✓ Trim complete', isSuccess: true },
-  { output: 'Output: video_trimmed.mp4 • Duration: 00:01:00 • 45.2 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video trim video.mp4 --start 00:01:00 --end 00:02:00",
+    },
+    { output: "Input: video.mp4 • Duration: 00:05:30" },
+    { output: "Resolution: 1920x1080" },
+    { output: "" },
+    { output: "Trimming from 00:01:00 to 00:02:00..." },
+    { output: "✓ Trim complete", isSuccess: true },
+    {
+      output: "Output: video_trimmed.mp4 • Duration: 00:01:00 • 45.2 MB",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 --start 30 --duration 60' },
-  { output: '✓ Trimmed from 30s for 60s duration', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video trim video.mp4 --start 30 --duration 60" },
+    { output: "✓ Trimmed from 30s for 60s duration", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 --duration 10' },
-  { output: '✓ Extracted first 10 seconds', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video trim video.mp4 --duration 10" },
+    { output: "✓ Extracted first 10 seconds", isSuccess: true },
+  ]}
+/>
 
 ### Specify Output Location
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 -o highlight.mp4' },
-  { output: '✓ Saved to highlight.mp4', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 -o highlight.mp4",
+    },
+    { output: "✓ Saved to highlight.mp4", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 -s 01:00 -d 30 -o clips/' },
-  { output: '✓ Saved to clips/video_trimmed.mp4', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video trim video.mp4 -s 01:00 -d 30 -o clips/" },
+    { output: "✓ Saved to clips/video_trimmed.mp4", isSuccess: true },
+  ]}
+/>
 
 ### Using Seconds
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 -s 90 -e 180' },
-  { output: '✓ Trimmed from 1:30 to 3:00', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video trim video.mp4 -s 90 -e 180" },
+    { output: "✓ Trimmed from 1:30 to 3:00", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc video trim video.mp4 -d 45" />
 
@@ -423,37 +482,52 @@ Time can be specified in two formats:
 
 ### Fast Mode (Stream Copy)
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 --fast' },
-  { output: '✓ Fast trim complete (no re-encoding)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video trim video.mp4 -s 00:01:00 -e 00:02:00 --fast",
+    },
+    { output: "✓ Fast trim complete (no re-encoding)", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video trim long-video.mp4 -s 10:00 -d 60 --fast' },
-  { output: 'Input: long-video.mp4 • Duration: 01:30:00' },
-  { output: '' },
-  { output: '[FAST MODE] Stream copy (no re-encoding)' },
-  { output: 'Trimming from 00:10:00 for 00:01:00...' },
-  { output: '✓ Trim complete (2.3 seconds)', isSuccess: true },
-  { output: 'Output: long-video_trimmed.mp4', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video trim long-video.mp4 -s 10:00 -d 60 --fast" },
+    { output: "Input: long-video.mp4 • Duration: 01:30:00" },
+    { output: "" },
+    { output: "[FAST MODE] Stream copy (no re-encoding)" },
+    { output: "Trimming from 00:10:00 for 00:01:00..." },
+    { output: "✓ Trim complete (2.3 seconds)", isSuccess: true },
+    { output: "Output: long-video_trimmed.mp4", isSuccess: true },
+  ]}
+/>
 
 ### Extract Specific Segments
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 -d 5 -o intro.mp4' },
-  { output: '✓ Extracted intro (first 5 seconds)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video trim video.mp4 -d 5 -o intro.mp4" },
+    { output: "✓ Extracted intro (first 5 seconds)", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 -s 00:01:00 -e 00:03:00 -o middle.mp4' },
-  { output: '✓ Extracted middle section (1:00 - 3:00)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc video trim video.mp4 -s 00:01:00 -e 00:03:00 -o middle.mp4",
+    },
+    { output: "✓ Extracted middle section (1:00 - 3:00)", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video trim video.mp4 -s 00:05:20 -o outro.mp4' },
-  { output: '✓ Extracted outro (last 10 seconds)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video trim video.mp4 -s 00:05:20 -o outro.mp4" },
+    { output: "✓ Extracted outro (last 10 seconds)", isSuccess: true },
+  ]}
+/>
 
 ### Dry Run Preview
 

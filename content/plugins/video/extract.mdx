@@ -7,6 +7,7 @@ Extract audio tracks, image frames, or thumbnails from video files.
 The `extract` command provides powerful extraction capabilities for videos, offering three specialized sub-commands: **extract-audio** (save soundtrack separately), **extract-frames** (create image sequences), and **extract-thumbnail** (generate preview images). Essential for content repurposing, thumbnail creation, and media analysis.
 
 **Key Features:**
+
 - 🎵 Audio extraction in multiple formats (MP3, AAC, WAV, Opus)
 - 🖼️ Frame sequence export (JPEG, PNG, WebP)
 - 📸 Smart thumbnail generation (scene analysis)
@@ -15,6 +16,7 @@ The `extract` command provides powerful extraction capabilities for videos, offe
 - 📁 Batch processing support
 
 **Common Use Cases:**
+
 - Creating podcast/music tracks from videos
 - Generating thumbnails for video galleries
 - Extracting frames for animation/VFX work
@@ -23,7 +25,9 @@ The `extract` command provides powerful extraction capabilities for videos, offe
 - Archiving audio separately
 
 <Callout type="info">
-**Performance:** Audio extraction uses stream copy when format matches (instant, lossless). Format conversion requires re-encoding (fast, minimal quality loss at high bitrates).
+  **Performance:** Audio extraction uses stream copy when format matches
+  (instant, lossless). Format conversion requires re-encoding (fast, minimal
+  quality loss at high bitrates).
 </Callout>
 
 ## Sub-commands
@@ -40,7 +44,9 @@ Extract the audio track from a video file.
 
 ### Usage
 
-<Terminal commands={[{ command: 'mediaproc video extract-audio <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc video extract-audio <input> [options]" }]}
+/>
 
 ### Options
 
@@ -59,6 +65,7 @@ Extract the audio track from a video file.
 Choose output audio format based on compatibility and quality needs.
 
 **MP3** - Universal Compatibility
+
 - **Quality:** Good
 - **File Size:** Medium
 - **Compatibility:** All devices, all platforms
@@ -66,6 +73,7 @@ Choose output audio format based on compatibility and quality needs.
 - **Bitrate:** 128k (acceptable), 192k (good), 320k (excellent)
 
 **AAC** - Modern Efficient
+
 - **Quality:** Better than MP3 at same bitrate
 - **File Size:** Smaller than MP3
 - **Compatibility:** All modern devices (2010+)
@@ -73,6 +81,7 @@ Choose output audio format based on compatibility and quality needs.
 - **Bitrate:** 128k (good), 192k (high quality), 256k (excellent)
 
 **WAV** - Lossless Quality
+
 - **Quality:** Perfect (no compression)
 - **File Size:** Very large (~10 MB per minute)
 - **Compatibility:** Universal
@@ -80,6 +89,7 @@ Choose output audio format based on compatibility and quality needs.
 - **Bitrate:** N/A (uncompressed)
 
 **Opus** - Best Efficiency
+
 - **Quality:** Excellent at low bitrates
 - **File Size:** Smallest
 - **Compatibility:** Modern browsers, limited device support
@@ -87,6 +97,7 @@ Choose output audio format based on compatibility and quality needs.
 - **Bitrate:** 64k (voice), 96k (music), 128k (transparent)
 
 **Selection Guide:**
+
 - **General use:** MP3 at 192k
 - **Modern platforms:** AAC at 128-192k
 - **Professional work:** WAV
@@ -94,6 +105,7 @@ Choose output audio format based on compatibility and quality needs.
 - **Archival:** WAV or AAC at 256k
 
 **Learn More:**
+
 - [Audio Format Comparison](https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats)
 
 ---
@@ -104,37 +116,42 @@ Set audio bitrate (quality vs file size trade-off).
 
 **Bitrate Guide:**
 
-| Bitrate | Quality | Use Case |
-|---------|---------|----------|
-| 64k | Acceptable | Voice, podcasts (Opus) |
-| 96k | Good | Podcasts, audiobooks |
-| 128k | High | General music, streaming |
-| 192k | Very High | Music distribution **← default** |
-| 256k | Excellent | High-quality music |
-| 320k | Maximum | Archival, professional |
+| Bitrate | Quality    | Use Case                         |
+| ------- | ---------- | -------------------------------- |
+| 64k     | Acceptable | Voice, podcasts (Opus)           |
+| 96k     | Good       | Podcasts, audiobooks             |
+| 128k    | High       | General music, streaming         |
+| 192k    | Very High  | Music distribution **← default** |
+| 256k    | Excellent  | High-quality music               |
+| 320k    | Maximum    | Archival, professional           |
 
 **Format-Specific Recommendations:**
 
 **MP3:**
+
 - 128k minimum for music
 - 192k recommended
 - 320k for archival
 
 **AAC:**
+
 - 96k acceptable for music
 - 128-192k recommended
 - 256k for professional
 
 **Opus:**
+
 - 64k excellent for voice
 - 96k transparent for music
 - 128k overkill for most content
 
 <Callout type="tip">
-**Sweet Spot:** 192k provides excellent quality for most music content. Going higher (256k, 320k) offers minimal perceptible improvement.
+  **Sweet Spot:** 192k provides excellent quality for most music content. Going
+  higher (256k, 320k) offers minimal perceptible improvement.
 </Callout>
 
 **Learn More:**
+
 - [Understanding Audio Bitrates](https://www.lifewire.com/what-is-audio-bitrate-2438527)
 
 ### Audio Formats
@@ -150,15 +167,20 @@ Set audio bitrate (quality vs file size trade-off).
 
 #### Basic Audio Extraction
 
-<Terminal commands={[
-  { command: 'mediaproc video extract-audio video.mp4' },
-  { output: 'Input: video.mp4 • Duration: 00:03:45' },
-  { output: 'Audio codec: AAC' },
-  { output: '' },
-  { output: 'Extracting audio...' },
-  { output: '✓ Extraction complete', isSuccess: true },
-  { output: 'Output: video.mp3 • Format: MP3 • 192 kbps • 5.4 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video extract-audio video.mp4" },
+    { output: "Input: video.mp4 • Duration: 00:03:45" },
+    { output: "Audio codec: AAC" },
+    { output: "" },
+    { output: "Extracting audio..." },
+    { output: "✓ Extraction complete", isSuccess: true },
+    {
+      output: "Output: video.mp3 • Format: MP3 • 192 kbps • 5.4 MB",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc video extract-audio video.mp4 -f aac" />
 
@@ -168,19 +190,25 @@ Set audio bitrate (quality vs file size trade-off).
 
 #### Custom Bitrate
 
-<Terminal commands={[
-  { command: 'mediaproc video extract-audio video.mp4 --bitrate 320k' },
-  { output: '✓ Extracted at 320 kbps (high quality)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video extract-audio video.mp4 --bitrate 320k" },
+    { output: "✓ Extracted at 320 kbps (high quality)", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc video extract-audio video.mp4 --bitrate 192k" />
 
 <InlineTerminal command="mediaproc video extract-audio video.mp4 --bitrate 128k" />
 
-<Terminal commands={[
-  { command: 'mediaproc video extract-audio video.mp4 --bitrate 64k -f opus' },
-  { output: '✓ Extracted at 64 kbps (podcast quality)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video extract-audio video.mp4 --bitrate 64k -f opus",
+    },
+    { output: "✓ Extracted at 64 kbps (podcast quality)", isSuccess: true },
+  ]}
+/>
 
 #### Specify Output
 
@@ -192,36 +220,62 @@ Set audio bitrate (quality vs file size trade-off).
 
 #### Use Cases
 
-<Terminal title="Podcast from video" commands={[
-  { command: 'mediaproc video extract-audio interview.mp4 -f mp3 --bitrate 128k -o podcast.mp3' },
-  { output: '✓ Podcast created from interview', isSuccess: true }
-]} />
+<Terminal
+  title="Podcast from video"
+  commands={[
+    {
+      command:
+        "mediaproc video extract-audio interview.mp4 -f mp3 --bitrate 128k -o podcast.mp3",
+    },
+    { output: "✓ Podcast created from interview", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="Music extraction" commands={[
-  { command: 'mediaproc video extract-audio music-video.mp4 -f mp3 --bitrate 320k -o song.mp3' },
-  { output: '✓ High-quality music extracted', isSuccess: true }
-]} />
+<Terminal
+  title="Music extraction"
+  commands={[
+    {
+      command:
+        "mediaproc video extract-audio music-video.mp4 -f mp3 --bitrate 320k -o song.mp3",
+    },
+    { output: "✓ High-quality music extracted", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="Voice extraction" commands={[
-  { command: 'mediaproc video extract-audio lecture.mp4 -f opus --bitrate 64k -o lecture-audio.opus' },
-  { output: '✓ Voice optimized audio extracted', isSuccess: true }
-]} />
+<Terminal
+  title="Voice extraction"
+  commands={[
+    {
+      command:
+        "mediaproc video extract-audio lecture.mp4 -f opus --bitrate 64k -o lecture-audio.opus",
+    },
+    { output: "✓ Voice optimized audio extracted", isSuccess: true },
+  ]}
+/>
 
-<Terminal title="Batch audio extraction" commands={[
-  { command: 'for file in *.mp4; do mediaproc video extract-audio "$file" -f mp3 -o audio/; done' },
-  { output: 'Extracting audio from all videos...' },
-  { output: '✓ 8 audio files extracted', isSuccess: true }
-]} />
+<Terminal
+  title="Batch audio extraction"
+  commands={[
+    {
+      command:
+        'for file in *.mp4; do mediaproc video extract-audio "$file" -f mp3 -o audio/; done',
+    },
+    { output: "Extracting audio from all videos..." },
+    { output: "✓ 8 audio files extracted", isSuccess: true },
+  ]}
+/>
 
 #### Folder Processing
 
-<Terminal commands={[
-  { command: 'mediaproc video extract-audio videos/ -f mp3 -o audio/' },
-  { output: 'Processing 10 video files...' },
-  { output: '✓ video1.mp4 → audio/video1.mp3', isSuccess: true },
-  { output: '✓ video2.mp4 → audio/video2.mp3', isSuccess: true },
-  { output: '✓ All audio extracted', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video extract-audio videos/ -f mp3 -o audio/" },
+    { output: "Processing 10 video files..." },
+    { output: "✓ video1.mp4 → audio/video1.mp3", isSuccess: true },
+    { output: "✓ video2.mp4 → audio/video2.mp3", isSuccess: true },
+    { output: "✓ All audio extracted", isSuccess: true },
+  ]}
+/>
 
 ```bash
 # Extract audio from all videos in folder
@@ -239,7 +293,9 @@ Extract video frames as an image sequence.
 
 ### Usage
 
-<Terminal commands={[{ command: 'mediaproc video extract-frames <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc video extract-frames <input> [options]" }]}
+/>
 
 ### Options
 

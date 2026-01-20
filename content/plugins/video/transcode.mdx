@@ -7,6 +7,7 @@ Convert videos between formats, codecs, and containers for universal compatibili
 The `transcode` command converts videos from one format/codec to another, ensuring compatibility across platforms, devices, and use cases. Whether you're converting old AVI files to modern MP4, preparing videos for web delivery, or migrating to more efficient codecs, transcode handles it intelligently.
 
 **Key Features:**
+
 - 🔄 Format conversion (MP4, WebM, MKV, AVI)
 - 🎬 Codec migration (H.264, H.265, VP9, AV1)
 - 📦 Container remuxing (fast, lossless)
@@ -15,6 +16,7 @@ The `transcode` command converts videos from one format/codec to another, ensuri
 - ⚡ Smart codec defaults per format
 
 **Common Use Cases:**
+
 - Converting legacy formats (AVI, WMV) to modern MP4
 - Preparing videos for web (MP4 with H.264)
 - Creating HTML5-compatible WebM files
@@ -23,16 +25,22 @@ The `transcode` command converts videos from one format/codec to another, ensuri
 - Container changes without re-encoding
 
 <Callout type="info">
-**Remux vs Re-encode:** If only the container changes (e.g., MP4 → MKV with same codec), transcode uses fast remuxing (instant, lossless). Different codecs require re-encoding (slower, slight quality loss).
+  **Remux vs Re-encode:** If only the container changes (e.g., MP4 → MKV with
+  same codec), transcode uses fast remuxing (instant, lossless). Different
+  codecs require re-encoding (slower, slight quality loss).
 </Callout>
 
 <Callout type="warning">
-**Quality Loss:** Transcoding between lossy codecs (H.264 → H.265) involves re-compression. For maximum quality, always work from original/uncompressed sources.
+  **Quality Loss:** Transcoding between lossy codecs (H.264 → H.265) involves
+  re-compression. For maximum quality, always work from original/uncompressed
+  sources.
 </Callout>
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc video transcode <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc video transcode <input> [options]" }]}
+/>
 
 ## Options
 
@@ -57,6 +65,7 @@ Specify the output container format.
 **Available Formats:**
 
 **MP4 (`.mp4`)** - Universal
+
 - **Compatibility:** All devices, browsers, platforms
 - **Best Codecs:** H.264, H.265 (HEVC)
 - **Audio:** AAC, MP3
@@ -64,6 +73,7 @@ Specify the output container format.
 - **Best For:** General distribution, mobile devices, web, social media
 
 **WebM (`.webm`)** - Open Web Standard
+
 - **Compatibility:** All modern browsers, limited device support
 - **Best Codecs:** VP9, VP8, AV1
 - **Audio:** Opus, Vorbis
@@ -71,6 +81,7 @@ Specify the output container format.
 - **Best For:** Web streaming, progressive web apps
 
 **MKV (`.mkv`)** - Matroska
+
 - **Compatibility:** Desktop players, advanced features
 - **Best Codecs:** Any codec (highly flexible)
 - **Audio:** Multiple audio tracks, subtitles
@@ -78,6 +89,7 @@ Specify the output container format.
 - **Best For:** High-quality archival, media centers, anime
 
 **AVI (`.avi`)** - Legacy Format
+
 - **Compatibility:** Universal, older systems
 - **Best Codecs:** H.264, MPEG-4, DivX
 - **Audio:** MP3, PCM
@@ -85,6 +97,7 @@ Specify the output container format.
 - **Best For:** Older editing software, retro compatibility
 
 **Learn More:**
+
 - [Container Format Comparison](https://en.wikipedia.org/wiki/Comparison_of_video_container_formats)
 
 ---
@@ -94,6 +107,7 @@ Specify the output container format.
 Select the video encoding codec.
 
 **H.264 (AVC)** - Universal Standard
+
 - **Compatibility:** ✅✅✅ All devices
 - **Encoding Speed:** Fast
 - **Compression:** Good
@@ -102,6 +116,7 @@ Select the video encoding codec.
 - **Patent Status:** Free for end users
 
 **H.265 (HEVC)** - High Efficiency
+
 - **Compatibility:** Modern devices (2016+)
 - **Encoding Speed:** Slow (2-3x longer)
 - **Compression:** Excellent (40-50% smaller than H.264)
@@ -110,6 +125,7 @@ Select the video encoding codec.
 - **Patent Status:** Licensing complexities
 
 **VP9** - Google's Open Codec
+
 - **Compatibility:** Web browsers, YouTube
 - **Encoding Speed:** Very slow
 - **Compression:** Excellent (similar to H.265)
@@ -118,6 +134,7 @@ Select the video encoding codec.
 - **Patent Status:** Royalty-free
 
 **AV1** - Next Generation
+
 - **Compatibility:** Latest browsers/devices (2020+)
 - **Encoding Speed:** Extremely slow
 - **Compression:** Best (20-30% better than H.265)
@@ -127,12 +144,14 @@ Select the video encoding codec.
 
 **Auto-Selection:**
 If not specified, codec is chosen based on output format:
+
 - MP4 → H.264
 - WebM → VP9
 - MKV → H.264
 - AVI → H.264
 
 **Learn More:**
+
 - [Video Codec Guide](https://www.adobe.com/creativecloud/video/discover/video-codec.html)
 - [H.264 vs H.265 vs VP9](https://blog.streamelements.com/h264-vs-h265-vs-vp9-3ac7bc7b5ba0)
 
@@ -143,6 +162,7 @@ If not specified, codec is chosen based on output format:
 Select the audio encoding codec.
 
 **AAC** - Advanced Audio Coding
+
 - **Compatibility:** Universal
 - **Quality:** Excellent
 - **File Size:** Efficient
@@ -150,6 +170,7 @@ Select the audio encoding codec.
 - **Bitrate:** 128k standard, 192k high quality
 
 **MP3** - MPEG Audio Layer 3
+
 - **Compatibility:** Universal (older than AAC)
 - **Quality:** Good
 - **File Size:** Moderate
@@ -157,6 +178,7 @@ Select the audio encoding codec.
 - **Bitrate:** 128k standard, 192k high quality
 
 **Opus** - Modern Open Codec
+
 - **Compatibility:** Modern browsers, WebM
 - **Quality:** Best (better than AAC at lower bitrates)
 - **File Size:** Very efficient
@@ -164,6 +186,7 @@ Select the audio encoding codec.
 - **Bitrate:** 96k excellent, 128k transparent
 
 **Auto-Selection:**
+
 - MP4/MKV → AAC
 - WebM → Opus
 - AVI → MP3
@@ -175,20 +198,22 @@ Select the audio encoding codec.
 Set target video bitrate (alternative to CRF-based quality).
 
 **Format:** Number + unit
+
 - `k` = kilobits per second (e.g., `2000k` = 2 Mbps)
 - `M` = megabits per second (e.g., `5M` = 5 Mbps)
 
 **Recommended Bitrates:**
 
-| Resolution | H.264 | H.265 | Purpose |
-|------------|-------|-------|----------|
-| 480p | 1-2M | 0.7-1.5M | Mobile, low bandwidth |
-| 720p | 2.5-5M | 1.5-3M | HD streaming |
-| 1080p | 5-8M | 3-5M | Full HD |
-| 1440p | 10-15M | 6-10M | QHD |
-| 4K | 20-40M | 15-25M | Ultra HD |
+| Resolution | H.264  | H.265    | Purpose               |
+| ---------- | ------ | -------- | --------------------- |
+| 480p       | 1-2M   | 0.7-1.5M | Mobile, low bandwidth |
+| 720p       | 2.5-5M | 1.5-3M   | HD streaming          |
+| 1080p      | 5-8M   | 3-5M     | Full HD               |
+| 1440p      | 10-15M | 6-10M    | QHD                   |
+| 4K         | 20-40M | 15-25M   | Ultra HD              |
 
 **CRF vs Bitrate:**
+
 - **CRF:** Better quality distribution, variable file size
 - **Bitrate:** Predictable file size, may waste bits on simple scenes
 
@@ -199,12 +224,14 @@ Set target video bitrate (alternative to CRF-based quality).
 Control encoding quality (used when bitrate not specified).
 
 **Range:** 0-51, lower = better quality
+
 - `15-18` - Near-lossless (large files)
 - `19-23` - High quality **← 23 is default**
 - `24-28` - Good quality (smaller files)
 - `29+` - Lower quality (compression artifacts)
 
 **Codec-Specific Recommendations:**
+
 - **H.264:** CRF 18-23 (23 default)
 - **H.265:** CRF 22-28 (can go higher due to better compression)
 - **VP9:** CRF 23-31
@@ -217,6 +244,7 @@ Control encoding quality (used when bitrate not specified).
 Set audio quality/bitrate.
 
 **Common Values:**
+
 - `96k` - Acceptable for speech
 - `128k` - Standard quality **← default**
 - `192k` - High quality for music
@@ -271,15 +299,17 @@ The plugin automatically selects appropriate codecs for each format:
 
 ### Basic Format Conversion
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.avi -f mp4' },
-  { output: 'Input: input.avi • Format: AVI • Codec: MPEG-4' },
-  { output: 'Audio: MP3 • Duration: 00:03:45' },
-  { output: '' },
-  { output: 'Transcoding to MP4 (H.264 + AAC)...' },
-  { output: '✓ Transcoding complete', isSuccess: true },
-  { output: 'Output: input.mp4 • Size: 125.3 MB', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.avi -f mp4" },
+    { output: "Input: input.avi • Format: AVI • Codec: MPEG-4" },
+    { output: "Audio: MP3 • Duration: 00:03:45" },
+    { output: "" },
+    { output: "Transcoding to MP4 (H.264 + AAC)..." },
+    { output: "✓ Transcoding complete", isSuccess: true },
+    { output: "Output: input.mp4 • Size: 125.3 MB", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc video transcode input.mp4 -f webm" />
 
@@ -287,64 +317,97 @@ The plugin automatically selects appropriate codecs for each format:
 
 ### Specify Output Location
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.avi -f mp4 -o output/video.mp4' },
-  { output: '✓ Saved to output/video.mp4', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video transcode input.avi -f mp4 -o output/video.mp4",
+    },
+    { output: "✓ Saved to output/video.mp4", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.avi -f mp4 -o output/' },
-  { output: '✓ Saved to output/input.mp4', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.avi -f mp4 -o output/" },
+    { output: "✓ Saved to output/input.mp4", isSuccess: true },
+  ]}
+/>
 
 ### Codec Selection
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.mp4 -c h265' },
-  { output: '✓ Transcoded to H.265 (50% better compression)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.mp4 -c h265" },
+    {
+      output: "✓ Transcoded to H.265 (50% better compression)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.mp4 -c vp9 -f webm' },
-  { output: '✓ Transcoded to VP9 WebM', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.mp4 -c vp9 -f webm" },
+    { output: "✓ Transcoded to VP9 WebM", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.mp4 -c av1 -f mp4' },
-  { output: 'Transcoding to AV1 (this may take a while)...' },
-  { output: '✓ Transcoded with maximum compression', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.mp4 -c av1 -f mp4" },
+    { output: "Transcoding to AV1 (this may take a while)..." },
+    { output: "✓ Transcoded with maximum compression", isSuccess: true },
+  ]}
+/>
 
 ### Audio Codec Control
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.avi -f mp4 --audio-codec aac' },
-  { output: '✓ Transcoded with AAC audio', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.avi -f mp4 --audio-codec aac" },
+    { output: "✓ Transcoded with AAC audio", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.mp4 -f webm --audio-codec opus' },
-  { output: '✓ Transcoded with Opus audio (excellent quality)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command: "mediaproc video transcode input.mp4 -f webm --audio-codec opus",
+    },
+    {
+      output: "✓ Transcoded with Opus audio (excellent quality)",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc video transcode input.mkv -f mp4 --audio-codec mp3" />
 
 ### Bitrate Control
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.avi -f mp4 --bitrate 2000k' },
-  { output: '✓ Transcoded at 2000 kbps', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.avi -f mp4 --bitrate 2000k" },
+    { output: "✓ Transcoded at 2000 kbps", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.avi -f mp4 --bitrate 5M' },
-  { output: '✓ Transcoded at 5 Mbps (high quality)', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode input.avi -f mp4 --bitrate 5M" },
+    { output: "✓ Transcoded at 5 Mbps (high quality)", isSuccess: true },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode input.avi -f mp4 --bitrate 3000k --audio-bitrate 192k' },
-  { output: '✓ Video: 3000 kbps • Audio: 192 kbps', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc video transcode input.avi -f mp4 --bitrate 3000k --audio-bitrate 192k",
+    },
+    { output: "✓ Video: 3000 kbps • Audio: 192 kbps", isSuccess: true },
+  ]}
+/>
 
 ### CRF-Based Quality
 
@@ -404,11 +467,16 @@ Output: input.mp4 (Format: MP4, Codec: H.264)
 
 ### Batch Transcoding
 
-<Terminal commands={[
-  { command: 'for file in *.avi; do mediaproc video transcode "$file" -f mp4 -o converted/; done' },
-  { output: 'Converting all AVI files to MP4...' },
-  { output: '✓ Processed 5 files', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        'for file in *.avi; do mediaproc video transcode "$file" -f mp4 -o converted/; done',
+    },
+    { output: "Converting all AVI files to MP4..." },
+    { output: "✓ Processed 5 files", isSuccess: true },
+  ]}
+/>
 
 ```bash
 # Create WebM versions of all MP4 files
@@ -424,13 +492,15 @@ done
 
 ### Folder Processing
 
-<Terminal commands={[
-  { command: 'mediaproc video transcode raw-footage/ -f mp4 -o converted/' },
-  { output: 'Processing 12 video files...' },
-  { output: '✓ video1.mov → video1.mp4', isSuccess: true },
-  { output: '✓ video2.avi → video2.mp4', isSuccess: true },
-  { output: '✓ All files transcoded', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc video transcode raw-footage/ -f mp4 -o converted/" },
+    { output: "Processing 12 video files..." },
+    { output: "✓ video1.mov → video1.mp4", isSuccess: true },
+    { output: "✓ video2.avi → video2.mp4", isSuccess: true },
+    { output: "✓ All files transcoded", isSuccess: true },
+  ]}
+/>
 
 ```bash
 # Convert entire folder to WebM

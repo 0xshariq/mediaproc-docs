@@ -106,7 +106,7 @@ export default {
 async function executeCommand(
   command: string,
   args: string[],
-  options: CommandOptions
+  options: CommandOptions,
 ): Promise<void> {
   try {
     // Pre-execution hook
@@ -281,14 +281,22 @@ export const configSchema = {
 
 ```typescript
 export class PluginError extends Error {
-  constructor(message: string, public plugin: string, public code?: string) {
+  constructor(
+    message: string,
+    public plugin: string,
+    public code?: string,
+  ) {
     super(message);
     this.name = "PluginError";
   }
 }
 
 export class CommandError extends PluginError {
-  constructor(message: string, plugin: string, public command: string) {
+  constructor(
+    message: string,
+    plugin: string,
+    public command: string,
+  ) {
     super(message, plugin);
     this.name = "CommandError";
   }
@@ -457,7 +465,7 @@ import semver from "semver";
 
 function checkCompatibility(
   coreVersion: string,
-  pluginVersion: string
+  pluginVersion: string,
 ): boolean {
   return semver.satisfies(coreVersion, pluginVersion);
 }

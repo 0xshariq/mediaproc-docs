@@ -4,9 +4,11 @@ Apply custom convolution kernels for advanced image filtering and effects.
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image convolve <input> --kernel <preset> [options]' }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image convolve <input> --kernel <preset> [options]" },
+  ]}
+/>
 
 Or with custom kernel:
 
@@ -508,37 +510,31 @@ Horizontal:  -1  -1  -1     Vertical:  -1  0  1
 ## Best Practices
 
 1. **Kernel Selection**:
-
    - Start with predefined kernels for common effects
    - Use custom kernels for specialized processing
    - Test on small images first
 
 2. **Normalization**:
-
    - Ensure kernel values sum to 1 for brightness preservation
    - Use `--scale` to normalize if needed
    - Non-normalized kernels may darken/brighten image
 
 3. **Edge Handling**:
-
    - Convolution affects edge pixels differently
    - Expect slight changes at image borders
    - Consider cropping edges if necessary
 
 4. **Performance**:
-
    - 3×3 kernels faster than 5×5
    - Convolution is computationally intensive
    - Process smaller images when testing
 
 5. **Effect Intensity**:
-
    - Use `--scale` to adjust effect strength
    - Start with scale=1, adjust up/down
    - Higher scale = more pronounced effect
 
 6. **Batch Processing**:
-
    - Use consistent kernels across image sets
    - Test on samples before batch processing
    - Monitor output quality

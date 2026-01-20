@@ -4,38 +4,69 @@ Resize images to specified dimensions with advanced options for fit modes, quali
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[{ command: 'mediaproc image resize <input> [options]' }]} />
+<Terminal
+  commands={[{ command: "mediaproc image resize <input> [options]" }]}
+/>
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image resize photo.jpg -w 800' },
-  { output: '✓ Resized to 800×600 • Saved as photo-resized.jpg', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg -w 800" },
+    {
+      output: "✓ Resized to 800×600 • Saved as photo-resized.jpg",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image resize image.png -h 600' },
-  { output: '✓ Resized to 800×600 • Saved as image-resized.png', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image resize image.png -h 600" },
+    {
+      output: "✓ Resized to 800×600 • Saved as image-resized.png",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image resize photo.jpg -w 1920 -h 1080' },
-  { output: '✓ Resized to 1920×1080 • Saved as photo-resized.jpg', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg -w 1920 -h 1080" },
+    {
+      output: "✓ Resized to 1920×1080 • Saved as photo-resized.jpg",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image resize photo.jpg -w 500 -h 500 --fit cover' },
-  { output: '✓ Resized to 500×500 (cover mode) • Saved as photo-resized.jpg', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg -w 500 -h 500 --fit cover" },
+    {
+      output: "✓ Resized to 500×500 (cover mode) • Saved as photo-resized.jpg",
+      isSuccess: true,
+    },
+  ]}
+/>
 
-<Terminal commands={[
-  { command: 'mediaproc image resize logo.png -w 200 -h 200 --fit contain' },
-  { output: '✓ Resized to 200×200 (contain mode) • Saved as logo-resized.png', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image resize logo.png -w 200 -h 200 --fit contain" },
+    {
+      output: "✓ Resized to 200×200 (contain mode) • Saved as logo-resized.png",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 ## Options
 
@@ -61,10 +92,15 @@ Resize images to specified dimensions with advanced options for fit modes, quali
 
 **Crop to fill dimensions**, maintaining aspect ratio:
 
-<Terminal commands={[
-  { command: 'mediaproc image resize photo.jpg -w 500 -h 500 --fit cover' },
-  { output: '✓ Cropped to 500×500 • Aspect ratio maintained', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image resize photo.jpg -w 500 -h 500 --fit cover" },
+    {
+      output: "✓ Cropped to 500×500 • Aspect ratio maintained",
+      isSuccess: true,
+    },
+  ]}
+/>
 
 - Image fills entire area
 - Crops overflow
@@ -75,10 +111,15 @@ Resize images to specified dimensions with advanced options for fit modes, quali
 
 **Fit within dimensions**, add padding if needed:
 
-<Terminal commands={[
-  { command: 'mediaproc image resize logo.png -w 500 -h 500 --fit contain --background transparent' },
-  { output: '✓ Fit to 500×500 • Transparent padding added', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    {
+      command:
+        "mediaproc image resize logo.png -w 500 -h 500 --fit contain --background transparent",
+    },
+    { output: "✓ Fit to 500×500 • Transparent padding added", isSuccess: true },
+  ]}
+/>
 
 - Entire image visible
 - May add padding

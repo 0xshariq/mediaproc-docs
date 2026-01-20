@@ -4,20 +4,26 @@ Automatically enhance image contrast by stretching the histogram to use the full
 
 ## Installation
 
-<Install package="@mediaproc/image" title="To install the Image plugin:" global={true} />
+<Install
+  package="@mediaproc/image"
+  title="To install the Image plugin:"
+  global={true}
+/>
 
 ## Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image normalize <input> [options]' }
-]} />
+<Terminal
+  commands={[{ command: "mediaproc image normalize <input> [options]" }]}
+/>
 
 ### Basic Usage
 
-<Terminal commands={[
-  { command: 'mediaproc image normalize photo.jpg' },
-  { output: '✓ Contrast enhanced automatically', isSuccess: true }
-]} />
+<Terminal
+  commands={[
+    { command: "mediaproc image normalize photo.jpg" },
+    { output: "✓ Contrast enhanced automatically", isSuccess: true },
+  ]}
+/>
 
 <InlineTerminal command="mediaproc image normalize dark-image.png -o enhanced.png" />
 <InlineTerminal command="mediaproc image normalize pic.jpg -q 95" />

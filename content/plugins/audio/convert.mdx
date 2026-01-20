@@ -23,7 +23,9 @@ The `convert` command is your primary tool for audio format conversion, supporti
 - Creating archive copies in lossless format
 
 <Callout type="info">
-  **Lossy vs Lossless:** Converting from lossy to lossless (e.g., MP3 to FLAC) does not improve quality - it only increases file size. Always start with the highest quality source when creating distribution files.
+  **Lossy vs Lossless:** Converting from lossy to lossless (e.g., MP3 to FLAC)
+  does not improve quality - it only increases file size. Always start with the
+  highest quality source when creating distribution files.
 </Callout>
 
 ## Usage
@@ -36,22 +38,22 @@ The `convert` command is your primary tool for audio format conversion, supporti
 
 ### Basic Options
 
-| Option      | Alias | Type    | Default | Description                               |
-| ----------- | ----- | ------- | ------- | ----------------------------------------- |
-| `--output`  | `-o`  | string  | Auto    | Output file or directory path             |
-| `--format`  | `-f`  | string  | mp3     | Output format (see format table below)    |
-| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output               |
-| `--dry-run` |       | boolean | false   | Preview command without executing         |
+| Option      | Alias | Type    | Default | Description                            |
+| ----------- | ----- | ------- | ------- | -------------------------------------- |
+| `--output`  | `-o`  | string  | Auto    | Output file or directory path          |
+| `--format`  | `-f`  | string  | mp3     | Output format (see format table below) |
+| `--verbose` | `-v`  | boolean | false   | Show detailed FFmpeg output            |
+| `--dry-run` |       | boolean | false   | Preview command without executing      |
 
 ### Quality & Encoding
 
-| Option          | Alias | Type   | Default | Description                                          |
-| --------------- | ----- | ------ | ------- | ---------------------------------------------------- |
-| `--quality`     | `-q`  | string | medium  | Quality preset: `low`, `medium`, `high`, `lossless`  |
-| `--bitrate`     | `-b`  | string | 192k    | Audio bitrate (e.g., `128k`, `192k`, `320k`)         |
-| `--sample-rate` | `-s`  | number |         | Sample rate in Hz (e.g., `44100`, `48000`, `96000`)  |
-| `--channels`    | `-c`  | number |         | Number of channels: `1` (mono), `2` (stereo)         |
-| `--codec`       |       | string |         | Override audio codec (advanced use)                  |
+| Option          | Alias | Type   | Default | Description                                         |
+| --------------- | ----- | ------ | ------- | --------------------------------------------------- |
+| `--quality`     | `-q`  | string | medium  | Quality preset: `low`, `medium`, `high`, `lossless` |
+| `--bitrate`     | `-b`  | string | 192k    | Audio bitrate (e.g., `128k`, `192k`, `320k`)        |
+| `--sample-rate` | `-s`  | number |         | Sample rate in Hz (e.g., `44100`, `48000`, `96000`) |
+| `--channels`    | `-c`  | number |         | Number of channels: `1` (mono), `2` (stereo)        |
+| `--codec`       |       | string |         | Override audio codec (advanced use)                 |
 
 ## Flag Details
 
@@ -62,24 +64,28 @@ Choose the output audio format based on quality, compatibility, and file size re
 **Lossy Formats:**
 
 **MP3** (`mp3`) - Universal Compatibility
+
 - **Compatibility:** All devices, players, browsers
 - **Quality Range:** 96k (low) to 320k (maximum)
 - **File Size:** Baseline reference
 - **Use When:** Maximum compatibility needed, podcasts, general music distribution
 
 **AAC** (`aac`, `m4a`) - Modern Compression
+
 - **Compatibility:** Modern devices, iOS, iTunes
 - **Quality Range:** 96k to 320k
 - **File Size:** 20-30% smaller than MP3 at same bitrate
 - **Use When:** iOS apps, iTunes distribution, better quality/size ratio needed
 
 **Opus** (`opus`) - Best Modern Codec
+
 - **Compatibility:** Web browsers, modern apps
 - **Quality Range:** 32k to 256k (optimal at 96-128k)
 - **File Size:** Best compression (30-50% smaller than MP3)
 - **Use When:** Streaming, VoIP, web applications, podcasts
 
 **OGG Vorbis** (`ogg`) - Open Source
+
 - **Compatibility:** Open source players, games, web
 - **Quality Range:** 96k to 320k
 - **File Size:** Similar to AAC
@@ -88,12 +94,14 @@ Choose the output audio format based on quality, compatibility, and file size re
 **Lossless Formats:**
 
 **FLAC** (`flac`) - Free Lossless Audio Codec
+
 - **Compatibility:** Most modern players (not iOS native)
 - **Compression:** 40-50% of original WAV size
 - **Quality:** Bit-perfect lossless
 - **Use When:** Archival, hi-fi playback, mastering backups
 
 **WAV** (`wav`) - Uncompressed PCM
+
 - **Compatibility:** Universal
 - **File Size:** Largest (no compression)
 - **Quality:** Uncompressed lossless
@@ -113,31 +121,36 @@ Convenient presets that set appropriate bitrate for common use cases.
 **Available Presets:**
 
 **low** (96k bitrate)
+
 - Voice recordings
 - Podcasts (speech-focused)
 - Low bandwidth streaming
 - Draft/preview files
 
 **medium** (192k bitrate) - Default
+
 - Music streaming
 - General music files
 - Balanced quality/size
 - Web distribution
 
 **high** (320k bitrate)
+
 - High-quality music
 - Critical listening
 - Distribution masters
 - Near-transparent to source
 
 **lossless** (FLAC/WAV)
+
 - Archival storage
 - Professional mastering
 - Source files for conversion
 - Hi-fi playback
 
 <Callout type="info">
-  **Quality Equivalence:** Opus 128k ≈ AAC 192k ≈ MP3 256k in perceived quality. Modern codecs (Opus, AAC) achieve better quality at lower bitrates.
+  **Quality Equivalence:** Opus 128k ≈ AAC 192k ≈ MP3 256k in perceived quality.
+  Modern codecs (Opus, AAC) achieve better quality at lower bitrates.
 </Callout>
 
 ---
@@ -172,27 +185,32 @@ Set the output sample rate in Hertz. Higher sample rates capture more frequency 
 **Common Sample Rates:**
 
 **44100 Hz (44.1 kHz)** - CD Quality
+
 - Standard for music distribution
 - Nyquist frequency: 22.05 kHz (above human hearing)
 - Use for: Music, podcasts, general audio
 
 **48000 Hz (48 kHz)** - Professional Audio
+
 - Standard for video production
 - Film and TV industry standard
 - Use for: Video soundtracks, professional recording
 
 **96000 Hz (96 kHz)** - Hi-Res Audio
+
 - Professional mastering
 - Captures ultrasonic frequencies
 - Use for: Hi-res music, professional archival
 
 **22050 Hz (22.05 kHz)** - Low Quality
+
 - Voice-only content
 - Very low bandwidth
 - Use for: Voice recordings, low-quality streaming
 
 <Callout type="warning">
-  **Upsampling:** Converting 44.1kHz to 96kHz does not add real information - it only increases file size. Always record/capture at the desired sample rate.
+  **Upsampling:** Converting 44.1kHz to 96kHz does not add real information - it
+  only increases file size. Always record/capture at the desired sample rate.
 </Callout>
 
 ---
@@ -204,12 +222,14 @@ Control the number of audio channels in the output.
 **Channel Options:**
 
 **2 (Stereo)** - Default
+
 - Left and right channels
 - Spatial imaging and depth
 - Standard for music and movies
 - File size: Baseline
 
 **1 (Mono)**
+
 - Single channel
 - No spatial information
 - File size: ~50% smaller
@@ -229,10 +249,16 @@ The mono channel is duplicated to both left and right channels.
 
 <Terminal
   commands={[
-    { command: 'mediaproc audio convert master.wav -f mp3 -b 320k' },
-    { output: 'Converting: master.wav → master-converted.mp3', isSuccess: false },
-    { output: 'Duration: 03:45.2 | Bitrate: 320k | Size: 8.9 MB', isSuccess: false },
-    { output: 'Conversion complete', isSuccess: true }
+    { command: "mediaproc audio convert master.wav -f mp3 -b 320k" },
+    {
+      output: "Converting: master.wav → master-converted.mp3",
+      isSuccess: false,
+    },
+    {
+      output: "Duration: 03:45.2 | Bitrate: 320k | Size: 8.9 MB",
+      isSuccess: false,
+    },
+    { output: "Conversion complete", isSuccess: true },
   ]}
 />
 
@@ -242,10 +268,13 @@ The mono channel is duplicated to both left and right channels.
 
 <Terminal
   commands={[
-    { command: 'mediaproc audio convert album.flac -f m4a -b 256k' },
-    { output: 'Converting: album.flac → album-converted.m4a', isSuccess: false },
-    { output: 'AAC encoder (libfdk_aac) | 256k | 48000 Hz', isSuccess: false },
-    { output: 'Conversion complete', isSuccess: true }
+    { command: "mediaproc audio convert album.flac -f m4a -b 256k" },
+    {
+      output: "Converting: album.flac → album-converted.m4a",
+      isSuccess: false,
+    },
+    { output: "AAC encoder (libfdk_aac) | 256k | 48000 Hz", isSuccess: false },
+    { output: "Conversion complete", isSuccess: true },
   ]}
 />
 
@@ -255,12 +284,12 @@ The mono channel is duplicated to both left and right channels.
 
 <Terminal
   commands={[
-    { command: 'mediaproc audio convert *.wav -f opus -b 128k -o converted/' },
-    { output: 'Processing 12 files...', isSuccess: false },
-    { output: 'song1.wav → converted/song1-converted.opus', isSuccess: false },
-    { output: 'song2.wav → converted/song2-converted.opus', isSuccess: false },
-    { output: '...', isSuccess: false },
-    { output: 'Completed 12/12 files', isSuccess: true }
+    { command: "mediaproc audio convert *.wav -f opus -b 128k -o converted/" },
+    { output: "Processing 12 files...", isSuccess: false },
+    { output: "song1.wav → converted/song1-converted.opus", isSuccess: false },
+    { output: "song2.wav → converted/song2-converted.opus", isSuccess: false },
+    { output: "...", isSuccess: false },
+    { output: "Completed 12/12 files", isSuccess: true },
   ]}
 />
 
@@ -270,9 +299,9 @@ The mono channel is duplicated to both left and right channels.
 
 <Terminal
   commands={[
-    { command: 'mediaproc audio convert interview.mp3 -c 1 -b 96k' },
-    { output: 'Downmixing stereo to mono', isSuccess: false },
-    { output: 'Size reduced: 5.2 MB → 2.8 MB (46% smaller)', isSuccess: true }
+    { command: "mediaproc audio convert interview.mp3 -c 1 -b 96k" },
+    { output: "Downmixing stereo to mono", isSuccess: false },
+    { output: "Size reduced: 5.2 MB → 2.8 MB (46% smaller)", isSuccess: true },
   ]}
 />
 
@@ -282,9 +311,14 @@ The mono channel is duplicated to both left and right channels.
 
 <Terminal
   commands={[
-    { command: 'mediaproc audio convert studio-master.wav -f flac -q lossless' },
-    { output: 'FLAC compression level: 8 (maximum)', isSuccess: false },
-    { output: 'Original: 52.4 MB | Compressed: 28.1 MB (46% savings)', isSuccess: true }
+    {
+      command: "mediaproc audio convert studio-master.wav -f flac -q lossless",
+    },
+    { output: "FLAC compression level: 8 (maximum)", isSuccess: false },
+    {
+      output: "Original: 52.4 MB | Compressed: 28.1 MB (46% savings)",
+      isSuccess: true,
+    },
   ]}
 />
 
@@ -364,4 +398,4 @@ mediaproc audio convert file.wav -f mp3 -v
 
 - [FFmpeg Audio Encoding Guide](https://trac.ffmpeg.org/wiki/Encode/HighQualityAudio)
 - [Audio Format Comparison](https://opus-codec.org/comparison/)
-- [Sample Rate Explained](https://en.wikipedia.org/wiki/Sampling_(signal_processing))
+- [Sample Rate Explained](<https://en.wikipedia.org/wiki/Sampling_(signal_processing)>)
