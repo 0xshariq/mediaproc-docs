@@ -41,7 +41,7 @@ const plugins: Plugin[] = [
     description: 'Comprehensive image processing with 51 commands for resizing, converting, effects, and optimization.',
     icon: Image,
     status: 'available',
-    commandCount: 51,
+    commandCount: 48,
     link: '/docs/plugins/image',
     features: ['Resize & Crop', 'Format Conversion', 'Effects & Filters', 'Optimization', 'Watermarking']
   },
