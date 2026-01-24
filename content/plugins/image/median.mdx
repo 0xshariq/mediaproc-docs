@@ -38,7 +38,7 @@ mediaproc image median photo.jpg --dry-run
 | --------------------- | ----- | ------- | ---------------------- | --------------------------------------------------- |
 | `--size <size>`       | `-s`  | number  | `3`                    | Filter size (1-50) - higher values = more smoothing |
 | `--output <path>`     | `-o`  | string  | `<input>-median.<ext>` | Output file path                                    |
-| `--quality <quality>` | `-q`  | number  | `90`                   | Output quality (1-100) for lossy formats            |
+| `--quality <quality>` | `-q`  | number  | (none)                 | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--dry-run`           |       | boolean | `false`                | Show what would be done without executing           |
 | `--verbose`           | `-v`  | boolean | `false`                | Show detailed processing information                |
 | `--help`              |       | boolean | `false`                | Display help information                            |

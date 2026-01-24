@@ -35,7 +35,7 @@ The command uses Sharp's `extract()` method for efficient, high-quality cropping
 | `-w, --width`   | number  | _required_              | Crop width in pixels                       |
 | `-h, --height`  | number  | _required_              | Crop height in pixels                      |
 | `-o, --output`  | string  | `<input>_cropped.<ext>` | Output file path                           |
-| `-q, --quality` | number  | `90`                    | Output quality 1-100                       |
+| `-q, --quality` | number  | (none)                  | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--dry-run`     | boolean | `false`                 | Show what would be done without processing |
 | `-v, --verbose` | boolean | `false`                 | Enable verbose logging                     |
 

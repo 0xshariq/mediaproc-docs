@@ -22,13 +22,13 @@ Remove the alpha channel (transparency) from images by compositing them onto a s
 
 ## Options
 
-| Option         | Alias | Type      | Default             | Description                          |
-| -------------- | ----- | --------- | ------------------- | ------------------------------------ |
-| `--background` |       | `string`  | `#ffffff`           | Background color (hex format)        |
-| `--output`     | `-o`  | `string`  | `flattened-[input]` | Output file path                     |
-| `--quality`    | `-q`  | `number`  | `90`                | Output quality (1-100)               |
-| `--dry-run`    |       | `boolean` | `false`             | Preview operation without saving     |
-| `--verbose`    | `-v`  | `boolean` | `false`             | Show detailed processing information |
+| Option         | Alias | Type      | Default             | Description                                                                                                                                                       |
+| -------------- | ----- | --------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--background` |       | `string`  | `#ffffff`           | Background color (hex format)                                                                                                                                     |
+| `--output`     | `-o`  | `string`  | `flattened-[input]` | Output file path                                                                                                                                                  |
+| `--quality`    | `-q`  | `number`  | -                   | Output quality (1-100) (optional). Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
+| `--dry-run`    |       | `boolean` | `false`             | Preview operation without saving                                                                                                                                  |
+| `--verbose`    | `-v`  | `boolean` | `false`             | Show detailed processing information                                                                                                                              |
 
 ### Background Color Format
 

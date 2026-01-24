@@ -35,7 +35,7 @@ WebP and AVIF formats offer 25-50% better compression than JPEG while maintainin
 | `<input>`       | string  | _required_         | Input image file path or glob pattern                |
 | `-f, --format`  | string  | `webp`             | Output format: jpg, jpeg, png, webp, avif, tiff, gif |
 | `-o, --output`  | string  | `<input>.<format>` | Output file path                                     |
-| `-q, --quality` | number  | `90`               | Output quality 1-100                                 |
+| `-q, --quality` | number  | -                  | Output quality 1-100 (optional). Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--compression` | number  | `9`                | PNG compression level 0-9 (0=none, 9=max)            |
 | `--progressive` | boolean | `false`            | Use progressive/interlaced format                    |
 | `--dry-run`     | boolean | `false`            | Show what would be done without processing           |

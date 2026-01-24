@@ -37,7 +37,7 @@ Perfect for:
 | `--width`         | number | -                           | Width in pixels (for resize/thumbnail)  |
 | `--height`        | number | -                           | Height in pixels (for resize/thumbnail) |
 | `-f, --format`    | string | -                           | Output format (for convert operation)   |
-| `-q, --quality`   | number | varies                      | Output quality (1-100)                  |
+| `-q, --quality`   | number | (none)                      | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--sigma`         | number | 5                           | Blur sigma (for blur operation)         |
 | `--dry-run`       | flag   | -                           | Preview changes without executing       |
 | `-v, --verbose`   | flag   | -                           | Show detailed output                    |

@@ -34,10 +34,21 @@ Automatically enhance image contrast by stretching the histogram to use the full
 | Option                | Alias | Type    | Default                    | Description                               |
 | --------------------- | ----- | ------- | -------------------------- | ----------------------------------------- |
 | `--output <path>`     | `-o`  | string  | `<input>-normalized.<ext>` | Output file path                          |
-| `--quality <quality>` | `-q`  | number  | `90`                       | Output quality (1-100) for lossy formats  |
+| `-q, --quality <num>` |       | number  | —                          | Set output quality for JPEG, WEBP, AVIF (1-100), or compression level for PNG (0-9). Ignored for other formats. Optional, no default. |
 | `--dry-run`           |       | boolean | `false`                    | Show what would be done without executing |
 | `--verbose`           | `-v`  | boolean | `false`                    | Show detailed processing information      |
 | `--help`              |       | boolean | `false`                    | Display help information                  |
+
+
+### Quality Flag Details
+
+The `--quality` flag is **optional** and has no default value. It only affects output for these formats:
+
+- **JPEG, WEBP, AVIF**: Sets output quality (1-100)
+- **PNG**: Sets `compressionLevel` (0-9)
+- **Other formats**: The flag is ignored
+
+If not specified, the encoder's default quality is used for supported formats.
 
 ## How Normalize Works
 

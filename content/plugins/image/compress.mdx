@@ -20,14 +20,14 @@ Lower quality settings (below 60) can significantly reduce file size but may int
 
 ## Options
 
-| Option          | Type   | Default                    | Description                                    |
-| --------------- | ------ | -------------------------- | ---------------------------------------------- |
-| `<input>`       | string | _required_                 | Input image file path                          |
-| `-o, --output`  | path   | `<input>-compressed.<ext>` | Output file path                               |
-| `-q, --quality` | number | 75                         | Compression quality (1-100)                    |
-| `--lossy`       | flag   | -                          | Enable lossy compression for maximum reduction |
-| `--dry-run`     | flag   | -                          | Preview changes without executing              |
-| `-v, --verbose` | flag   | -                          | Show detailed output                           |
+| Option          | Type   | Default                    | Description                                                                                                                                                                                |
+| --------------- | ------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `<input>`       | string | _required_                 | Input image file path                                                                                                                                                                      |
+| `-o, --output`  | path   | `<input>-compressed.<ext>` | Output file path                                                                                                                                                                           |
+| `-q, --quality` | number | -                          | Compression quality (1-100) (optional). Only applies to JPEG, WEBP, and AVIF. For PNG, quality is mapped to compression level (0-9, higher is more compressed). Ignored for other formats. |
+| `--lossy`       | flag   | -                          | Enable lossy compression for maximum reduction                                                                                                                                             |
+| `--dry-run`     | flag   | -                          | Preview changes without executing                                                                                                                                                          |
+| `-v, --verbose` | flag   | -                          | Show detailed output                                                                                                                                                                       |
 
 ## Examples
 
@@ -178,6 +178,8 @@ Enabling `--lossy` activates aggressive compression algorithms:
 - Optional palette reduction (with --lossy)
 - Alpha channel preservation
 
+_Quality flag is mapped to compression level (0-9) for PNG. Higher quality means lower compression._
+
 ### WebP Compression
 
 - Lossless by default
@@ -189,6 +191,8 @@ Enabling `--lossy` activates aggressive compression algorithms:
 - Next-generation format
 - 50% smaller than JPEG
 - Slower encoding, best quality
+
+_Quality flag applies to AVIF and WebP. For other formats, the quality flag is ignored._
 
 ## Use Cases
 

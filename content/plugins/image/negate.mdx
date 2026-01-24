@@ -34,7 +34,7 @@ Create negative (inverted) image by reversing all colors. The negate command tra
 | Option                | Alias | Type    | Default                 | Description                               |
 | --------------------- | ----- | ------- | ----------------------- | ----------------------------------------- |
 | `--output <path>`     | `-o`  | string  | `<input>-negated.<ext>` | Output file path                          |
-| `--quality <quality>` | `-q`  | number  | `90`                    | Output quality (1-100) for lossy formats  |
+| `-q, --quality`       |       | number  | (none)                  | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--alpha`             |       | boolean | `false`                 | Also negate alpha/transparency channel    |
 | `--dry-run`           |       | boolean | `false`                 | Show what would be done without executing |
 | `--verbose`           | `-v`  | boolean | `false`                 | Show detailed processing information      |

@@ -37,6 +37,7 @@ Includes predefined kernels for common effects and supports custom kernel matric
 | `--scale`       | number  | `1`                      | Kernel scale factor (multiplies all kernel values)                                             |
 | `--offset`      | number  | `0`                      | Kernel offset (added to each pixel value)                                                      |
 | `-o, --output`  | string  | `<input>_<kernel>.<ext>` | Output file path                                                                               |
+| `-q, --quality` | number  | (none)                   | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--dry-run`     | boolean | `false`                  | Show what would be done without processing                                                     |
 | `-v, --verbose` | boolean | `false`                  | Enable verbose logging                                                                         |
 

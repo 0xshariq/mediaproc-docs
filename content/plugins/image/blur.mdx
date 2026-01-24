@@ -16,7 +16,7 @@ The `blur` command applies a Gaussian blur effect to images using a configurable
 | --------------- | ------ | ----------------------- | --------------------------------- |
 | `-s, --sigma`   | number | 10                      | Blur strength (0.3-1000)          |
 | `-o, --output`  | path   | `<input>-blurred.<ext>` | Output file path                  |
-| `-q, --quality` | number | 90                      | Output quality (1-100)            |
+| `-q, --quality` | number | -                       | Output quality (1-100) (optional). Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--dry-run`     | flag   | -                       | Preview changes without executing |
 | `-v, --verbose` | flag   | -                       | Show detailed output              |
 

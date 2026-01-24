@@ -20,13 +20,13 @@ Uses a 3×3 kernel that examines each pixel and its 8 neighbors, replacing the c
 
 ## Options
 
-| Option          | Type    | Default                | Description                                |
-| --------------- | ------- | ---------------------- | ------------------------------------------ |
-| `<input>`       | string  | _required_             | Input image file path                      |
-| `-o, --output`  | string  | `<input>_eroded.<ext>` | Output file path                           |
-| `-q, --quality` | number  | `90`                   | Output quality 1-100                       |
-| `--dry-run`     | boolean | `false`                | Show what would be done without processing |
-| `-v, --verbose` | boolean | `false`                | Enable verbose logging                     |
+| Option          | Type    | Default                | Description                                                                                                                                                    |
+| --------------- | ------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<input>`       | string  | _required_             | Input image file path                                                                                                                                          |
+| `-o, --output`  | string  | `<input>_eroded.<ext>` | Output file path                                                                                                                                               |
+| `-q, --quality` | number  | -                      | Output quality 1-100. Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
+| `--dry-run`     | boolean | `false`                | Show what would be done without processing                                                                                                                     |
+| `-v, --verbose` | boolean | `false`                | Enable verbose logging                                                                                                                                         |
 
 ## Examples
 

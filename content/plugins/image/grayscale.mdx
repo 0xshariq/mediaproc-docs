@@ -29,7 +29,7 @@ Alternative spelling (UK):
 | Option      | Alias | Type      | Default                   | Description                          |
 | ----------- | ----- | --------- | ------------------------- | ------------------------------------ |
 | `--output`  | `-o`  | `string`  | `[input]-grayscale.[ext]` | Output file path                     |
-| `--quality` | `-q`  | `number`  | `90`                      | Output quality (1-100)               |
+| `-q, --quality`|    | `number`  | (none)                    | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--dry-run` |       | `boolean` | `false`                   | Preview operation without saving     |
 | `--verbose` | `-v`  | `boolean` | `false`                   | Show detailed processing information |
 

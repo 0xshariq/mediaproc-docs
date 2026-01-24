@@ -19,14 +19,14 @@ The `boolean` command performs bitwise boolean operations between two images at 
 
 ## Options
 
-| Option          | Type   | Default                 | Description                         |
-| --------------- | ------ | ----------------------- | ----------------------------------- |
-| `--operation`   | string | _required_              | Operation: `and`, `or`, `eor` (XOR) |
-| `--operand`     | path   | _required_              | Second image for operation          |
-| `-o, --output`  | path   | `<input>-boolean.<ext>` | Output file path                    |
-| `-q, --quality` | number | 90                      | Output quality (1-100)              |
-| `--dry-run`     | flag   | -                       | Preview changes without executing   |
-| `-v, --verbose` | flag   | -                       | Show detailed output                |
+| Option          | Type   | Default                 | Description                                                                                                                                            |
+| --------------- | ------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--operation`   | string | _required_              | Operation: `and`, `or`, `eor` (XOR)                                                                                                                    |
+| `--operand`     | path   | _required_              | Second image for operation                                                                                                                             |
+| `-o, --output`  | path   | `<input>-boolean.<ext>` | Output file path                                                                                                                                       |
+| `-q, --quality` | number | (none)                  | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
+| `--dry-run`     | flag   | -                       | Preview changes without executing                                                                                                                      |
+| `-v, --verbose` | flag   | -                       | Show detailed output                                                                                                                                   |
 
 ## Operations
 

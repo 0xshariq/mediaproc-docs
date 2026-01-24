@@ -57,7 +57,7 @@ Optimize image file size with minimal quality loss. Perfect for web optimization
 | Option                | Alias | Type    | Default                   | Description                               |
 | --------------------- | ----- | ------- | ------------------------- | ----------------------------------------- |
 | `--output <path>`     | `-o`  | string  | `<input>-optimized.<ext>` | Output file path                          |
-| `--quality <quality>` | `-q`  | number  | `85`                      | Quality level (1-100)                     |
+| `--quality <quality>` | `-q`  | number  | -                         | Quality level (1-100) (optional). Only applies to JPEG, WEBP, and AVIF. For PNG, quality is mapped to compression level (0-9, higher is more compressed). Ignored for other formats. |
 | `--aggressive`        |       | boolean | `false`                   | Aggressive compression (quality 70)       |
 | `--dry-run`           |       | boolean | `false`                   | Show what would be done without executing |
 | `--verbose`           | `-v`  | boolean | `false`                   | Show detailed processing information      |
@@ -118,7 +118,7 @@ mediaproc image optimize image.png -q 85
 
 **Techniques Applied:**
 
-- Maximum compression level (9)
+- Compression level (0-9) is mapped from quality flag (higher quality = lower compression)
 - Progressive rendering
 - Metadata removal
 - Maximum optimization effort (10)
@@ -136,6 +136,8 @@ mediaproc image optimize modern.webp -q 85
 - Effort level 6 (high quality/size balance)
 - Metadata removal
 - Smart lossy compression
+
+*Quality flag applies to WebP and AVIF. For PNG, quality is mapped to compression level. For other formats, the quality flag is ignored.*
 
 ### AVIF Optimization
 

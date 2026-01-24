@@ -41,8 +41,7 @@ Generate square thumbnails from images with customizable size and fit modes. Per
 | Option                | Alias | Type    | Default | Description                                       |
 | --------------------- | ----- | ------- | ------- | ------------------------------------------------- |
 | `--size <pixels>`     | `-s`  | number  | `150`   | Thumbnail size (creates square)                   |
-| `--output <path>`     | `-o`  | string  | -       | Output file path (default: `<input>-thumb.<ext>`) |
-| `--quality <quality>` | `-q`  | number  | `85`    | Output quality (1-100)                            |
+| `--quality <quality>` | `-q`  | number  | -       | Output quality (1-100) (optional). Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--fit <mode>`        |       | string  | `cover` | Fit mode: cover, contain, fill, inside, outside   |
 | `--dry-run`           |       | boolean | `false` | Preview without making changes                    |
 | `--verbose`           | `-v`  | boolean | `false` | Show detailed output                              |

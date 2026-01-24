@@ -32,6 +32,7 @@ The command supports various positioning strategies (gravity-based or exact coor
 | `<input>`       | string  | _required_                | Base input image file path                                                             |
 | `--overlay`     | string  | _required_                | Overlay image file path to composite on top                                            |
 | `-o, --output`  | string  | `<input>_composite.<ext>` | Output file path                                                                       |
+| `-q, --quality` | number  | (none)                    | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--gravity`     | string  | `center`                  | Position: center, north, south, east, west, northeast, northwest, southeast, southwest |
 | `--blend`       | string  | `over`                    | Blend mode: over, multiply, screen, overlay, darken, lighten, add, saturate, etc.      |
 | `--left`        | number  | (none)                    | X position in pixels (overrides gravity)                                               |

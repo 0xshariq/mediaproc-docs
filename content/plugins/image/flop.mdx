@@ -23,7 +23,7 @@ Flip images horizontally (mirror left-right) using a dedicated command. This is 
 | Option      | Alias | Type      | Default           | Description                          |
 | ----------- | ----- | --------- | ----------------- | ------------------------------------ |
 | `--output`  | `-o`  | `string`  | `flopped-[input]` | Output file path                     |
-| `--quality` | `-q`  | `number`  | `90`              | Output quality (1-100)               |
+| `-q, --quality`|    | `number`  | (none)            | Output quality (1-100). Optional. Applies to JPEG/WEBP/AVIF. For PNG, maps to compression level (higher quality = lower compression). Ignored for other formats. |
 | `--dry-run` |       | `boolean` | `false`           | Preview operation without saving     |
 | `--verbose` | `-v`  | `boolean` | `false`           | Show detailed processing information |
 

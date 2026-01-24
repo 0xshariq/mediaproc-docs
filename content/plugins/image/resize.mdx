@@ -75,7 +75,7 @@ Resize images to specified dimensions with advanced options for fit modes, quali
 | `--width <pixels>`           | `-w`  | number  | -                       | Width in pixels                                  |
 | `--height <pixels>`          | `-h`  | number  | -                       | Height in pixels                                 |
 | `--output <path>`            | `-o`  | string  | `<input>-resized.<ext>` | Output file path                                 |
-| `--quality <quality>`        | `-q`  | number  | `90`                    | Output quality (1-100)                           |
+| `--quality <quality>`        | `-q`  | number  | -                        | Output quality (1-100) (optional). Only applies to JPEG, WEBP, and AVIF. For PNG, quality is mapped to compression level (0-9, higher is more compressed). Ignored for other formats. |
 | `--fit <mode>`               |       | string  | `cover`                 | Fit mode (cover, contain, fill, inside, outside) |
 | `--maintain-aspect-ratio`    |       | boolean | `true`                  | Maintain aspect ratio (default)                  |
 | `--no-maintain-aspect-ratio` |       | boolean | -                       | Do not maintain aspect ratio (uses fill mode)    |
