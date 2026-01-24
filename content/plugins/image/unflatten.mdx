@@ -36,9 +36,17 @@ mediaproc image unflatten "images/*.jpg"
 
 | Option                | Alias | Type    | Default | Description                                      |
 | --------------------- | ----- | ------- | ------- | ------------------------------------------------ |
+| `--quality <value>`   | `-q`  | number  | —         | Output quality (optional; only for JPEG, WEBP, AVIF; mapped to compressionLevel for PNG; ignored for other formats) |
 | `--output <path>`     | `-o`  | string  | -       | Output file path (default: `<input>-unflat.png`) |
 | `--dry-run`           |       | boolean | `false` | Preview without making changes                   |
 | `--verbose`           | `-v`  | boolean | `false` | Show detailed output                             |
+
+
+## Output Format and Quality Flag
+
+The `--quality` flag is **optional** and only affects JPEG, WEBP, and AVIF outputs. For PNG, it is mapped to `compressionLevel`. For all other formats, the flag is ignored. If not specified, the encoder's default quality is used.
+
+---
 
 ## What is Unflatten?
 
