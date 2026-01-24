@@ -34,13 +34,14 @@ mediaproc image recomb image.png --matrix "[[1,0,0],[0,0,0],[0,0,0]]"
 
 ## Options
 
-| Option                | Alias | Type    | Default                     | Description                       |
-| --------------------- | ----- | ------- | --------------------------- | --------------------------------- |
-| `--matrix <values>`   |       | string  | `[[1,0,0],[0,1,0],[0,0,1]]` | 3×3 transformation matrix as JSON |
-| `--output <path>`     | `-o`  | string  | `<input>-recomb.<ext>`      | Output file path                  |
-| `--dry-run`           |       | boolean | `false`                     | Preview without making changes    |
-| `--verbose`           | `-v`  | boolean | `false`                     | Show detailed output              |
-| `--help`              |       | boolean | `false`                     | Display help information          |
+| Option                | Alias | Type    | Default                     | Description                                                                                                        |
+| --------------------- | ----- | ------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `--matrix <values>`   |       | string  | `[[1,0,0],[0,1,0],[0,0,1]]` | 3×3 transformation matrix as JSON                                                                                  |
+| `--output <path>`     | `-o`  | string  | `<input>-recomb.<ext>`      | Output file path                                                                                                   |
+| `--quality <quality>` | `-q`  | number  | _(none)_                    | Output quality 1-100 (optional, only for JPEG, WebP, AVIF; for PNG, maps to compression level; ignored for others) |
+| `--dry-run`           |       | boolean | `false`                     | Preview without making changes                                                                                     |
+| `--verbose`           | `-v`  | boolean | `false`                     | Show detailed output                                                                                               |
+| `--help`              |       | boolean | `false`                     | Display help information                                                                                           |
 
 ## Understanding the Matrix
 
@@ -426,10 +427,11 @@ Values clamped to 0-255 range.
 
 Supports:
 
-- **JPEG**: Quality control with `-q`
-- **PNG**: Quality control (compression level)
-- **WebP**: Quality control
-- **Other formats**: Based on extension
+- **JPEG, WebP, AVIF**: Quality can be set with `-q` (1-100). If not provided, encoder default is used.
+- **PNG**: `-q` maps to compression level (higher quality = lower compression). If not provided, encoder default is used.
+- **Other formats**: The `-q` flag is ignored.
+
+> **Note:** The `--quality`/`-q` flag is optional and only affects JPEG, WebP, AVIF, and PNG outputs. For PNG, the value is mapped to compression level (0-9). For all other formats, this flag is ignored.
 
 ## Best Practices
 

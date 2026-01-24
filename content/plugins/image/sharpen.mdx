@@ -38,11 +38,20 @@ Sharpen images to enhance details and edges. Perfect for improving slightly blur
 
 ## Options
 
+| --------------------- | ----- | ------- | ------------------------- | --------------------------------- |
+| `--sigma <value>`     | `-s`  | number  | `1`                       | Sharpening strength (0.01-10)     |
+| `--flat <value>`      |       | number  | `1`                       | Sharpening level for flat areas   |
+| `--jagged <value>`    |       | number  | `2`                       | Sharpening level for jagged areas |
+| `--output <path>`     | `-o`  | string  | `<input>-sharpened.<ext>` | Output file path                  |
+| `--dry-run`           |       | boolean | `false`                   | Preview without making changes    |
+| `--verbose`           | `-v`  | boolean | `false`                   | Show detailed output              |
+| `--help`              |       | boolean | `false`                   | Display help information          |
 | Option                | Alias | Type    | Default                   | Description                       |
 | --------------------- | ----- | ------- | ------------------------- | --------------------------------- |
 | `--sigma <value>`     | `-s`  | number  | `1`                       | Sharpening strength (0.01-10)     |
 | `--flat <value>`      |       | number  | `1`                       | Sharpening level for flat areas   |
 | `--jagged <value>`    |       | number  | `2`                       | Sharpening level for jagged areas |
+| `--quality <value>`   | `-q`  | number  | —                         | Output quality (optional; only for JPEG, WEBP, AVIF; mapped to compressionLevel for PNG; ignored for other formats) |
 | `--output <path>`     | `-o`  | string  | `<input>-sharpened.<ext>` | Output file path                  |
 | `--dry-run`           |       | boolean | `false`                   | Preview without making changes    |
 | `--verbose`           | `-v`  | boolean | `false`                   | Show detailed output              |
@@ -238,6 +247,13 @@ mediaproc image sharpen photo.jpg -s 2 -o strong.jpg
 ```
 
 **Testing**: Find optimal strength.
+
+
+## Output Formats and Quality Flag
+
+The `--quality` flag is **optional** and only affects JPEG, WEBP, and AVIF outputs. For PNG, it is mapped to `compressionLevel`. For all other formats, the flag is ignored. If not specified, the encoder's default quality is used.
+
+---
 
 ### 10. Web Image Sharpening
 
