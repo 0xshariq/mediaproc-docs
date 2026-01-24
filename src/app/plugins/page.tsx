@@ -51,7 +51,7 @@ const plugins: Plugin[] = [
     description: 'Professional video processing including conversion, trimming, compression, and effects.',
     icon: Video,
     status: 'available',
-    commandCount: 6,
+    commandCount: 7,
     link: '/docs/plugins/video',
     features: ['Format Conversion', 'Trimming & Cutting', 'Compression', 'Effects', 'Metadata']
   },
