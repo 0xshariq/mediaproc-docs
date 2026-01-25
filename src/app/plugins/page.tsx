@@ -38,7 +38,7 @@ const plugins: Plugin[] = [
   {
     id: 'image',
     name: 'Image Plugin',
-    description: 'Comprehensive image processing with 51 commands for resizing, converting, effects, and optimization.',
+    description: 'Comprehensive image processing with 46 commands for resizing, converting, effects, and optimization.',
     icon: Image,
     status: 'available',
     commandCount: 46,
