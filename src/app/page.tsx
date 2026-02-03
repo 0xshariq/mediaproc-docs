@@ -395,7 +395,7 @@ export default function Home() {
                 <span className="text-sm font-medium">Join Discord</span>
               </Link>
               <Link 
-                href="https://twitter.com/0xshariq" 
+                href="https://x.com/Sharique_Ch" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
