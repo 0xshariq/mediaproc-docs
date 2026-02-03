@@ -13,8 +13,8 @@ interface Version {
 
 const versions: Version[] = [
     {
-        version: '0.7.0',
-        label: 'v0.7.0 (latest)',
+        version: '1.0.0',
+        label: 'v1.0.0 (latest)',
         isCurrent: true,
     }
 ];
@@ -84,8 +84,8 @@ export function VersionSelector() {
                                         setIsOpen(false);
                                     }}
                                     className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors ${version.isCurrent
-                                            ? 'bg-primary/10 text-primary'
-                                            : 'hover:bg-muted text-foreground'
+                                        ? 'bg-primary/10 text-primary'
+                                        : 'hover:bg-muted text-foreground'
                                         }`}
                                     role="option"
                                     aria-selected={version.isCurrent}
@@ -97,7 +97,7 @@ export function VersionSelector() {
                                         )}
                                     </div>
                                     {version.isCurrent && (
-                                        <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                                        <Check className="w-4 h-4 text-primary shrink-0" />
                                     )}
                                 </button>
                             ))}
