@@ -24,8 +24,6 @@ export interface NavItem {
 
 export const imageCommands: Command[] = [
   { name: 'affine', slug: 'affine', description: 'Apply affine transformation' },
-  { name: 'auto-enhance', slug: 'auto-enhance', description: 'Auto enhance image quality' },
-  { name: 'auto-orient', slug: 'auto-orient', description: 'Auto orient based on EXIF' },
   { name: 'batch', slug: 'batch', description: 'Batch process multiple images' },
   { name: 'blur', slug: 'blur', description: 'Apply blur effect' },
   { name: 'boolean', slug: 'boolean', description: 'Boolean operations on images' },
@@ -45,7 +43,6 @@ export const imageCommands: Command[] = [
   { name: 'flop', slug: 'flop', description: 'Flip images vertically' },
   { name: 'gamma', slug: 'gamma', description: 'Adjust gamma correction' },
   { name: 'grayscale', slug: 'grayscale', description: 'Convert to grayscale' },
-  { name: 'grid', slug: 'grid', description: 'Create image grid' },
   { name: 'linear', slug: 'linear', description: 'Apply linear adjustment' },
   { name: 'median', slug: 'median', description: 'Apply median filter' },
   { name: 'metadata-cmd', slug: 'metadata-cmd', description: 'View and edit image metadata' },
@@ -61,9 +58,7 @@ export const imageCommands: Command[] = [
   { name: 'rotate', slug: 'rotate', description: 'Rotate images by degrees' },
   { name: 'sepia', slug: 'sepia', description: 'Apply sepia tone effect' },
   { name: 'sharpen', slug: 'sharpen', description: 'Sharpen image details' },
-  { name: 'smart-crop', slug: 'smart-crop', description: 'Smart crop with AI' },
   { name: 'split', slug: 'split', description: 'Split image into parts' },
-  { name: 'stack', slug: 'stack', description: 'Stack images together' },
   { name: 'stats', slug: 'stats', description: 'Show image statistics' },
   { name: 'threshold', slug: 'threshold', description: 'Apply threshold effect' },
   { name: 'thumbnail', slug: 'thumbnail', description: 'Generate thumbnails' },
@@ -78,6 +73,7 @@ export const videoCommands: Command[] = [
   { name: 'compress', slug: 'compress', description: 'Compress video files' },
   { name: 'extract', slug: 'extract', description: 'Extract audio or frames from video' },
   { name: 'merge', slug: 'merge', description: 'Merge multiple video files' },
+  { name: 'metadata', slug: 'metadata', description: 'View and edit video metadata' },
   { name: 'resize', slug: 'resize', description: 'Resize video dimensions' },
   { name: 'trim', slug: 'trim', description: 'Trim video segments' },
   { name: 'transcode', slug: 'transcode', description: 'Transcode video to different formats' },
@@ -87,6 +83,7 @@ export const audioCommands: Command[] = [
   { name: 'convert', slug: 'convert', description: 'Convert audio between formats' },
   { name: 'normalize', slug: 'normalize', description: 'Normalize audio volume levels' },
   { name: 'merge', slug: 'merge', description: 'Merge multiple audio files' },
+  { name: 'metadata', slug: 'metadata', description: 'View and edit audio metadata' },
   { name: 'extract', slug: 'extract', description: 'Extract audio from video files' },
   { name: 'trim', slug: 'trim', description: 'Trim audio segments' }
 ];
