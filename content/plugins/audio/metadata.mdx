@@ -1,0 +1,319 @@
+# metadata
+
+Display comprehensive metadata information about audio files including format details, streams, codecs, bitrates, sample rates, and tags.
+
+## Overview
+
+The `metadata` command provides detailed technical information about audio files using FFmpeg's powerful metadata extraction capabilities. Extract and analyze format information, audio stream properties, codec details, and embedded tags.
+
+**Key Features:**
+
+- View all metadata in human-readable format
+- Export metadata to JSON for programmatic use
+- Inspect format details (container, duration, bitrate, size)
+- Analyze audio streams (codec, sample rate, channels, bitrate)
+- Read embedded tags (title, artist, album, genre, year)
+- Batch processing for multiple files
+- Verbose mode for complete technical details
+
+**Common Use Cases:**
+
+- Inspecting audio file properties before processing
+- Extracting metadata for cataloging music libraries
+- Debugging encoding issues
+- Verifying audio specifications
+- Automating metadata collection with JSON export
+- Checking codec and bitrate information
+
+<Callout type="info">
+  **FFmpeg Required:** This command uses FFmpeg's ffprobe tool to extract
+  metadata. Ensure FFmpeg is installed and available in your system PATH.
+</Callout>
+
+## Installation
+
+<Install
+  package="@mediaproc/audio"
+  title="To install the Audio plugin:"
+  global
+/>
+
+## Usage
+
+<Terminal
+  commands={[{ command: "mediaproc audio metadata <input> [options]" }]}
+/>
+
+### Basic Usage
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio metadata song.mp3" },
+    {
+      output:
+        "📊 Audio Metadata\n\nFile: song.mp3\nFormat: MP3 (MPEG audio layer 3)\nDuration: 3:42\nBitrate: 320 kbps\nSize: 8.5 MB\n\nAudio Stream:\n  Codec: mp3 (MPEG Audio Layer 3)\n  Sample Rate: 44.1 kHz\n  Channels: 2 (stereo)\n  Bitrate: 320 kbps\n\nTags:\n  Title: Example Song\n  Artist: Example Artist\n  Album: Example Album\n  Year: 2024\n  Genre: Pop",
+      isSuccess: true,
+    },
+  ]}
+/>
+
+<Terminal
+  commands={[
+    { command: "mediaproc audio metadata podcast.mp3 --json" },
+    {
+      output:
+        '{\n  "file": "podcast.mp3",\n  "format": {\n    "format_name": "mp3",\n    "duration": 3456.78,\n    "bit_rate": 128000\n  },\n  "streams": [...]\n}',
+      isSuccess: true,
+    },
+  ]}
+/>
+
+<InlineTerminal command="mediaproc audio metadata audio.flac -v" />
+<InlineTerminal command="mediaproc audio metadata audio.wav --json -o meta.json" />
+<InlineTerminal command="mediaproc audio metadata music-folder/" />
+
+## Options
+
+| Option      | Alias | Type    | Default | Description                                        |
+| ----------- | ----- | ------- | ------- | -------------------------------------------------- |
+| `--json`    |       | boolean | false   | Export metadata in JSON format                     |
+| `--output`  | `-o`  | string  |         | Output file path for JSON export (requires --json) |
+| `--verbose` | `-v`  | boolean | false   | Show all technical details                         |
+| `--help`    | `-h`  | boolean | false   | Display help for metadata command                  |
+
+## Metadata Information
+
+### Format Details
+
+**Container Information:**
+
+- **Format Name**: Audio container format (MP3, WAV, FLAC, etc.)
+- **Format Long Name**: Full descriptive name
+- **Duration**: Total playback time in seconds
+- **Size**: File size in bytes
+- **Bitrate**: Overall bitrate of the file
+
+### Audio Stream Properties
+
+**Codec Information:**
+
+- **Codec Name**: Audio codec identifier (mp3, aac, flac, opus)
+- **Codec Long Name**: Full codec description
+- **Sample Rate**: Samples per second (Hz)
+- **Channels**: Number of audio channels
+- **Channel Layout**: Channel configuration (mono, stereo, 5.1)
+- **Bitrate**: Stream bitrate in bits per second
+- **Sample Format**: Audio sample format
+- **Bits per Sample**: Bit depth of audio samples
+
+### Embedded Tags
+
+Common audio metadata tags:
+
+- **Title**: Song or track title
+- **Artist**: Performing artist
+- **Album**: Album name
+- **Album Artist**: Album artist (may differ from track artist)
+- **Genre**: Music genre
+- **Year**: Release year
+- **Track**: Track number
+- **Disc**: Disc number (for multi-disc albums)
+- **Comment**: Additional comments
+- **Composer**: Music composer
+- **Copyright**: Copyright information
+- **Encoder**: Software used for encoding
+
+## Examples
+
+### Basic Metadata Display
+
+View metadata in human-readable format:
+
+```bash
+mediaproc audio metadata song.mp3
+```
+
+**Output includes:**
+
+- Format and container information
+- Audio stream details
+- Embedded tags
+
+### JSON Export
+
+Export metadata in machine-readable JSON format:
+
+```bash
+mediaproc audio metadata audio.flac --json
+```
+
+**Use cases:**
+
+- Programmatic metadata processing
+- Integration with other tools
+- Data analysis and cataloging
+
+### Save to File
+
+Export metadata to a JSON file:
+
+```bash
+mediaproc audio metadata song.mp3 --json -o metadata.json
+```
+
+**Benefits:**
+
+- Store metadata separately
+- Batch processing results
+- Archive metadata alongside audio
+
+### Batch Processing
+
+Process multiple audio files:
+
+```bash
+mediaproc audio metadata music-folder/
+```
+
+**Features:**
+
+- Displays metadata for all audio files in directory
+- Supports all audio formats
+- Processes files sequentially
+
+### Verbose Details
+
+Show all available technical information:
+
+```bash
+mediaproc audio metadata audio.wav -v
+```
+
+**Additional information:**
+
+- Complete stream details
+- All available tags
+- Format-specific metadata
+- Timing information
+
+## Use Cases
+
+### Music Library Cataloging
+
+Extract metadata for organizing music collections:
+
+```bash
+# Export metadata for entire music library
+mediaproc audio metadata ~/Music/ --json -o library-metadata.json
+```
+
+### Quality Verification
+
+Check audio specifications after encoding:
+
+```bash
+# Verify sample rate and bitrate
+mediaproc audio metadata encoded.mp3 -v
+```
+
+### Tag Inspection
+
+Review embedded metadata tags:
+
+```bash
+# Check if tags are present
+mediaproc audio metadata album/
+```
+
+### Format Analysis
+
+Identify audio file properties:
+
+```bash
+# Determine codec and container format
+mediaproc audio metadata unknown-file.audio --json
+```
+
+## Output Formats
+
+### Human-Readable Output
+
+Organized, easy-to-read format showing:
+
+- File information summary
+- Format details
+- Audio stream properties
+- Embedded tags
+
+### JSON Output
+
+Structured JSON with:
+
+- `file`: File path
+- `format`: Format details object
+- `streams`: Array of audio stream objects
+- Complete technical specifications
+
+## Tips
+
+<Callout type="tip" title="Export for Automation">
+  Use `--json -o` to save metadata to files for batch processing scripts and
+  automated workflows.
+</Callout>
+
+<Callout type="tip" title="Batch Processing">
+  Process entire directories to collect metadata from multiple files at once.
+</Callout>
+
+<Callout type="tip" title="Verbose Mode">
+  Use `-v` flag to see all available technical details including frame-level
+  information.
+</Callout>
+
+<Callout type="tip" title="FFmpeg Backend">
+  This command uses FFmpeg's ffprobe, so all formats supported by FFmpeg are
+  supported here.
+</Callout>
+
+## Common Workflows
+
+### Verify Encoding Results
+
+Check if conversion maintained desired properties:
+
+```bash
+# Convert and verify
+mediaproc audio convert source.wav --format mp3 --bitrate 320k
+mediaproc audio metadata source.mp3
+```
+
+### Catalog Music Collection
+
+Export metadata for library management:
+
+```bash
+# Create metadata database
+mediaproc audio metadata ~/Music/ --json -o music-catalog.json
+```
+
+### Debug Audio Issues
+
+Investigate playback or compatibility problems:
+
+```bash
+# Get detailed technical information
+mediaproc audio metadata problematic.mp3 -v
+```
+
+## Related Commands
+
+- [`convert`](./convert) - Convert audio between formats
+- [`normalize`](./normalize) - Normalize audio levels
+- [`trim`](./trim) - Extract audio segments
+- [`extract`](./extract) - Extract audio from video
+
+## See Also
+
+- [FFmpeg Documentation](https://ffmpeg.org/ffprobe.html) - ffprobe reference
+- [Audio Codecs](https://en.wikipedia.org/wiki/Audio_codec) - Audio codec information
+- [Metadata Standards](https://en.wikipedia.org/wiki/ID3) - ID3 and other metadata formats
