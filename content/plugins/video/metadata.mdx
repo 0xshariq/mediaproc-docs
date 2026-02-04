@@ -1,0 +1,379 @@
+# metadata
+
+Display comprehensive metadata information about video files including format details, video/audio/subtitle streams, codecs, bitrates, and more.
+
+## Overview
+
+The `metadata` command provides detailed technical information about video files using FFmpeg's powerful metadata extraction capabilities. Extract and analyze format information, video stream properties, audio tracks, subtitle streams, codec details, and embedded tags.
+
+**Key Features:**
+
+- View all metadata in human-readable format
+- Export metadata to JSON for programmatic use
+- Inspect format details (container, duration, bitrate, size)
+- Analyze video streams (codec, resolution, frame rate, pixel format)
+- Examine audio streams (codec, sample rate, channels, bitrate)
+- Review subtitle streams (format, language)
+- Read embedded tags and chapter information
+- Batch processing for multiple files
+- Verbose mode for complete technical details
+
+**Common Use Cases:**
+
+- Inspecting video file properties before processing
+- Extracting metadata for media asset management
+- Debugging encoding or playback issues
+- Verifying video specifications
+- Automating metadata collection with JSON export
+- Checking codec compatibility
+- Analyzing stream structure
+
+<Callout type="info">
+  **FFmpeg Required:** This command uses FFmpeg's ffprobe tool to extract
+  metadata. Ensure FFmpeg is installed and available in your system PATH.
+</Callout>
+
+## Installation
+
+<Install
+  package="@mediaproc/video"
+  title="To install the Video plugin:"
+  global
+/>
+
+## Usage
+
+<Terminal
+  commands={[{ command: "mediaproc video metadata <input> [options]" }]}
+/>
+
+### Basic Usage
+
+<Terminal
+  commands={[
+    { command: "mediaproc video metadata movie.mp4" },
+    {
+      output:
+        "📊 Video Metadata\n\nFile: movie.mp4\nFormat: MP4 (MPEG-4 Part 14)\nDuration: 1:32:45\nBitrate: 5.2 Mbps\nSize: 3.5 GB\n\nVideo Stream #0:\n  Codec: h264 (High Profile)\n  Resolution: 1920x1080 (Full HD)\n  Frame Rate: 24 fps\n  Bitrate: 4.8 Mbps\n  Pixel Format: yuv420p\n  Aspect Ratio: 16:9\n\nAudio Stream #1:\n  Codec: aac (AAC LC)\n  Sample Rate: 48 kHz\n  Channels: 2 (stereo)\n  Bitrate: 192 kbps\n\nSubtitle Stream #2:\n  Codec: subrip\n  Language: eng",
+      isSuccess: true,
+    },
+  ]}
+/>
+
+<Terminal
+  commands={[
+    { command: "mediaproc video metadata video.mkv --json" },
+    {
+      output:
+        '{\n  "file": "video.mkv",\n  "format": {\n    "format_name": "matroska,webm",\n    "duration": 5567.89,\n    "bit_rate": 5200000\n  },\n  "streams": [...]\n}',
+      isSuccess: true,
+    },
+  ]}
+/>
+
+<InlineTerminal command="mediaproc video metadata video.mp4 -v" />
+<InlineTerminal command="mediaproc video metadata video.avi --json -o meta.json" />
+<InlineTerminal command="mediaproc video metadata videos/" />
+
+## Options
+
+| Option      | Alias | Type    | Default | Description                                        |
+| ----------- | ----- | ------- | ------- | -------------------------------------------------- |
+| `--json`    |       | boolean | false   | Export metadata in JSON format                     |
+| `--output`  | `-o`  | string  |         | Output file path for JSON export (requires --json) |
+| `--verbose` | `-v`  | boolean | false   | Show all technical details                         |
+| `--help`    | `-h`  | boolean | false   | Display help for metadata command                  |
+
+## Metadata Information
+
+### Format Details
+
+**Container Information:**
+
+- **Format Name**: Video container format (mp4, mkv, avi, webm)
+- **Format Long Name**: Full descriptive name
+- **Duration**: Total playback time in seconds
+- **Size**: File size in bytes
+- **Bitrate**: Overall bitrate of the file
+- **Tags**: Container-level metadata
+
+### Video Stream Properties
+
+**Video Codec Information:**
+
+- **Codec Name**: Video codec identifier (h264, hevc, vp9, av1)
+- **Codec Long Name**: Full codec description
+- **Profile**: Codec profile (High, Main, Baseline)
+- **Level**: Codec level specification
+- **Width**: Video width in pixels
+- **Height**: Video height in pixels
+- **Frame Rate**: Frames per second (fps)
+- **Bitrate**: Video stream bitrate
+- **Pixel Format**: Color space format (yuv420p, yuv444p)
+- **Aspect Ratio**: Display aspect ratio (16:9, 4:3)
+- **Sample Aspect Ratio**: Pixel aspect ratio
+
+### Audio Stream Properties
+
+**Audio Codec Information:**
+
+- **Codec Name**: Audio codec identifier (aac, mp3, opus, ac3)
+- **Codec Long Name**: Full codec description
+- **Sample Rate**: Samples per second (Hz)
+- **Channels**: Number of audio channels
+- **Channel Layout**: Channel configuration (stereo, 5.1, 7.1)
+- **Bitrate**: Audio stream bitrate
+- **Language**: Audio track language code
+
+### Subtitle Stream Properties
+
+**Subtitle Information:**
+
+- **Codec Name**: Subtitle format (subrip, ass, webvtt)
+- **Language**: Subtitle language code
+- **Title**: Subtitle track title
+- **Forced**: Whether subtitle is forced
+
+### Chapter Information
+
+If present, displays:
+
+- Chapter start and end times
+- Chapter titles
+- Time base information
+
+### Embedded Tags
+
+Common video metadata tags:
+
+- **Title**: Video title
+- **Artist**: Content creator
+- **Album**: Collection or series name
+- **Year**: Release year
+- **Genre**: Video genre
+- **Comment**: Additional comments
+- **Description**: Video description
+- **Copyright**: Copyright information
+- **Encoder**: Software used for encoding
+- **Creation Time**: File creation timestamp
+
+## Examples
+
+### Basic Metadata Display
+
+View metadata in human-readable format:
+
+```bash
+mediaproc video metadata movie.mp4
+```
+
+**Output includes:**
+
+- Format and container information
+- All video streams
+- All audio streams
+- Subtitle streams
+- Embedded tags
+
+### JSON Export
+
+Export metadata in machine-readable JSON format:
+
+```bash
+mediaproc video metadata video.mkv --json
+```
+
+**Use cases:**
+
+- Programmatic metadata processing
+- Integration with media asset management systems
+- Data analysis and reporting
+
+### Save to File
+
+Export metadata to a JSON file:
+
+```bash
+mediaproc video metadata movie.mp4 --json -o metadata.json
+```
+
+**Benefits:**
+
+- Store metadata separately from video
+- Batch processing results
+- Archive metadata for analysis
+
+### Batch Processing
+
+Process multiple video files:
+
+```bash
+mediaproc video metadata video-library/
+```
+
+**Features:**
+
+- Displays metadata for all video files in directory
+- Supports all video formats
+- Processes files sequentially
+
+### Verbose Details
+
+Show all available technical information:
+
+```bash
+mediaproc video metadata video.mp4 -v
+```
+
+**Additional information:**
+
+- Complete stream details
+- All available tags
+- Format-specific metadata
+- Frame-level timing information
+- Codec-specific parameters
+
+## Use Cases
+
+### Video Library Management
+
+Extract metadata for cataloging video collections:
+
+```bash
+# Export metadata for entire video library
+mediaproc video metadata ~/Videos/ --json -o library-metadata.json
+```
+
+### Quality Verification
+
+Check video specifications after encoding:
+
+```bash
+# Verify resolution, codec, and bitrate
+mediaproc video metadata encoded.mp4 -v
+```
+
+### Stream Analysis
+
+Identify all streams in a video file:
+
+```bash
+# Check for multiple audio tracks or subtitles
+mediaproc video metadata movie.mkv
+```
+
+### Format Compatibility
+
+Determine codec and container format:
+
+```bash
+# Check if video is compatible with target platform
+mediaproc video metadata video.mp4 --json
+```
+
+### Debugging Playback Issues
+
+Investigate compatibility or playback problems:
+
+```bash
+# Get detailed codec and stream information
+mediaproc video metadata problematic.mp4 -v
+```
+
+## Output Formats
+
+### Human-Readable Output
+
+Organized, easy-to-read format showing:
+
+- File information summary
+- Format details
+- Video stream properties
+- Audio stream properties
+- Subtitle streams
+- Chapter information
+- Embedded tags
+
+### JSON Output
+
+Structured JSON with:
+
+- `file`: File path
+- `format`: Format details object
+- `streams`: Array of stream objects (video/audio/subtitle)
+- `chapters`: Chapter information (if present)
+- Complete technical specifications
+
+## Tips
+
+<Callout type="tip" title="Multi-Stream Files">
+  MKV and other advanced containers can have multiple video, audio, and subtitle
+  streams. Use metadata to identify all available streams.
+</Callout>
+
+<Callout type="tip" title="JSON for Automation">
+  Export to JSON for automated quality checks, format verification, and media
+  asset management workflows.
+</Callout>
+
+<Callout type="tip" title="Codec Compatibility">
+  Check codec compatibility before transcoding to ensure target devices support
+  the format.
+</Callout>
+
+<Callout type="tip" title="Batch Analysis">
+  Process entire directories to quickly analyze large video collections.
+</Callout>
+
+## Common Workflows
+
+### Pre-Transcoding Analysis
+
+Check source file before conversion:
+
+```bash
+# Analyze source properties
+mediaproc video metadata source.mp4 -v
+
+# Transcode based on findings
+mediaproc video transcode source.mp4 --codec h264 --preset slow
+```
+
+### Multi-Audio Track Management
+
+Identify audio tracks in multi-language videos:
+
+```bash
+# Check available audio streams
+mediaproc video metadata movie.mkv
+
+# Extract specific audio track
+mediaproc video extract movie.mkv --type audio --audio-track 2
+```
+
+### Quality Assurance
+
+Verify encoding output meets specifications:
+
+```bash
+# Encode video
+mediaproc video transcode input.mp4 --codec hevc --preset medium
+
+# Verify output
+mediaproc video metadata output.mp4
+```
+
+## Related Commands
+
+- [`transcode`](./transcode) - Convert video codecs and formats
+- [`compress`](./compress) - Reduce video file size
+- [`extract`](./extract) - Extract audio or video streams
+- [`resize`](./resize) - Change video resolution
+- [`trim`](./trim) - Extract video segments
+
+## See Also
+
+- [FFmpeg Documentation](https://ffmpeg.org/ffprobe.html) - ffprobe reference
+- [Video Codecs](https://en.wikipedia.org/wiki/Video_codec) - Video codec information
+- [Container Formats](https://en.wikipedia.org/wiki/Comparison_of_video_container_formats) - Container comparison
+- [Matroska Format](https://www.matroska.org/) - MKV container specification
