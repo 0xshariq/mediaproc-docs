@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   turbopack : {
-    root: "/home/sharique/desktop/mcp-servers-and-cli/mediaproc/web/"
+    root: "/home/sharique/desktop/dev-ecosystem/web/web-docs",
   }
 };
 
